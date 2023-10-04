@@ -222,6 +222,7 @@ html.dark {
 <li><a class="reference internal" href="#advanced_alchemy.types.EncryptedString.cache_ok"><code class="docutils literal notranslate"><span class="pre">EncryptedString.cache_ok</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.EncryptedString.__init__"><code class="docutils literal notranslate"><span class="pre">EncryptedString.__init__()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.EncryptedString.bind_expression"><code class="docutils literal notranslate"><span class="pre">EncryptedString.bind_expression()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.EncryptedString.process_result_value"><code class="docutils literal notranslate"><span class="pre">EncryptedString.process_result_value()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.EncryptedString.column_expression"><code class="docutils literal notranslate"><span class="pre">EncryptedString.column_expression()</span></code></a></li>
 </ul>
 </li>
@@ -1209,6 +1210,34 @@ particular parameter at statement execution time.</p>
 to provide custom bind expression behavior for the type.  This
 implementation will <strong>replace</strong> that of the underlying implementation
 type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.EncryptedString.process_result_value">
+<span class="sig-name descname"><span class="pre">process_result_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dialect</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dialect</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/advanced_alchemy/types.html#EncryptedString.process_result_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.EncryptedString.process_result_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receive a result-row column value to be converted.</p>
+<p>Custom subclasses of <code class="xref py py-class docutils literal notranslate"><span class="pre">_types.TypeDecorator</span></code> should override
+this method to provide custom behaviors for data values
+being received in result rows coming from the database.
+This method is called at <strong>result fetching time</strong> and is passed
+the literal Python data value that’s extracted from a database result
+row.</p>
+<p>The operation could be anything desired to perform custom
+behavior, such as transforming or deserializing data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Data to operate upon, of any type expected by
+this method in the subclass.  Can be <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>dialect</strong> – the <code class="xref py py-class docutils literal notranslate"><span class="pre">Dialect</span></code> in use.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/custom_types.html#types-typedecorator" title="(in SQLAlchemy v2.0)"><span>Augmenting Existing Types</span></a></p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">_types.TypeDecorator.process_bind_param()</span></code></p>
+</div>
 </dd></dl>
 
 <dl class="py method">
