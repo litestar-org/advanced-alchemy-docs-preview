@@ -280,7 +280,7 @@ html.dark {
 </span><span id="1-41">        <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">binary</span></div>
 </span><span id="1-42">
 <div class="viewcode-block" id="GUID.load_dialect_impl"><a class="viewcode-back" href="../../reference/types.html#advanced_alchemy.types.GUID.load_dialect_impl">[docs]</a></span><span id="1-43">    <span class="k">def</span> <span class="nf">load_dialect_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span id="1-44">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;postgresql&quot;</span><span class="p">,</span> <span class="s2">&quot;duckdb&quot;</span><span class="p">}:</span>
+</span><span id="1-44">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;postgresql&quot;</span><span class="p">,</span> <span class="s2">&quot;duckdb&quot;</span><span class="p">,</span> <span class="s2">&quot;cockroachdb&quot;</span><span class="p">}:</span>
 </span><span id="1-45">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">PG_UUID</span><span class="p">())</span>
 </span><span id="1-46">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;oracle&quot;</span><span class="p">:</span>
 </span><span id="1-47">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">ORA_RAW</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
@@ -291,7 +291,7 @@ html.dark {
 <div class="viewcode-block" id="GUID.process_bind_param"><a class="viewcode-back" href="../../reference/types.html#advanced_alchemy.types.GUID.process_bind_param">[docs]</a></span><span id="1-52">    <span class="k">def</span> <span class="nf">process_bind_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="1-53">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="1-54">            <span class="k">return</span> <span class="n">value</span>
-</span><span id="1-55">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;postgresql&quot;</span><span class="p">,</span> <span class="s2">&quot;duckdb&quot;</span><span class="p">}:</span>
+</span><span id="1-55">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;postgresql&quot;</span><span class="p">,</span> <span class="s2">&quot;duckdb&quot;</span><span class="p">,</span> <span class="s2">&quot;cockroachdb&quot;</span><span class="p">}:</span>
 </span><span id="1-56">            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 </span><span id="1-57">        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_uuid</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 </span><span id="1-58">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -410,61 +410,63 @@ html.dark {
 </span><span id="1-171"><span class="n">BigIntIdentity</span> <span class="o">=</span> <span class="n">BigInteger</span><span class="p">()</span><span class="o">.</span><span class="n">with_variant</span><span class="p">(</span><span class="n">Integer</span><span class="p">,</span> <span class="s2">&quot;sqlite&quot;</span><span class="p">)</span>
 </span><span id="1-172"><span class="sd">&quot;&quot;&quot;A ``BigInteger`` variant that reverts to an ``Integer`` for unsupported variants.&quot;&quot;&quot;</span>
 </span><span id="1-173">
-</span><span id="1-174"><span class="n">JsonB</span> <span class="o">=</span> <span class="n">_JSON</span><span class="p">()</span><span class="o">.</span><span class="n">with_variant</span><span class="p">(</span><span class="n">PG_JSONB</span><span class="p">,</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">with_variant</span><span class="p">(</span><span class="n">ORA_JSONB</span><span class="p">,</span> <span class="s2">&quot;oracle&quot;</span><span class="p">)</span>
-</span><span id="1-175"><span class="sd">&quot;&quot;&quot;A JSON type that uses  native ``JSONB`` where possible and ``Binary`` or ``Blob`` as</span>
-</span><span id="1-176"><span class="sd">an alternative.</span>
-</span><span id="1-177"><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="1-178">
-</span><span id="1-179">
-<div class="viewcode-block" id="EncryptedString"><a class="viewcode-back" href="../../reference/types.html#advanced_alchemy.types.EncryptedString">[docs]</a></span><span id="1-180"><span class="k">class</span> <span class="nc">EncryptedString</span><span class="p">(</span><span class="n">TypeDecorator</span><span class="p">):</span>
-</span><span id="1-181"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Encrypted String</span>
-</span><span id="1-182">
-</span><span id="1-183"><span class="sd">    Configurable encrypted string field for SQL Alchemy</span>
+</span><span id="1-174"><span class="n">JsonB</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="1-175">    <span class="n">_JSON</span><span class="p">()</span><span class="o">.</span><span class="n">with_variant</span><span class="p">(</span><span class="n">PG_JSONB</span><span class="p">,</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">with_variant</span><span class="p">(</span><span class="n">ORA_JSONB</span><span class="p">,</span> <span class="s2">&quot;oracle&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">with_variant</span><span class="p">(</span><span class="n">PG_JSONB</span><span class="p">,</span> <span class="s2">&quot;cockroachdb&quot;</span><span class="p">)</span>
+</span><span id="1-176"><span class="p">)</span>
+</span><span id="1-177"><span class="sd">&quot;&quot;&quot;A JSON type that uses  native ``JSONB`` where possible and ``Binary`` or ``Blob`` as</span>
+</span><span id="1-178"><span class="sd">an alternative.</span>
+</span><span id="1-179"><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="1-180">
+</span><span id="1-181">
+<div class="viewcode-block" id="EncryptedString"><a class="viewcode-back" href="../../reference/types.html#advanced_alchemy.types.EncryptedString">[docs]</a></span><span id="1-182"><span class="k">class</span> <span class="nc">EncryptedString</span><span class="p">(</span><span class="n">TypeDecorator</span><span class="p">):</span>
+</span><span id="1-183"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Encrypted String</span>
 </span><span id="1-184">
-</span><span id="1-185"><span class="sd">    Raises:</span>
-</span><span id="1-186"><span class="sd">        NotImplementedError: Unsupported backend</span>
-</span><span id="1-187"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="1-188">
-</span><span id="1-189">    <span class="c1"># todo: should be BYTEA for postgres.  determine best field for others.  # noqa: FIX002</span>
-</span><span id="1-190">    <span class="n">impl</span> <span class="o">=</span> <span class="n">BINARY</span>
-</span><span id="1-191">
-</span><span id="1-192">    <span class="n">cache_ok</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="1-185"><span class="sd">    Configurable encrypted string field for SQL Alchemy</span>
+</span><span id="1-186">
+</span><span id="1-187"><span class="sd">    Raises:</span>
+</span><span id="1-188"><span class="sd">        NotImplementedError: Unsupported backend</span>
+</span><span id="1-189"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="1-190">
+</span><span id="1-191">    <span class="c1"># todo: should be BYTEA for postgres.  determine best field for others.  # noqa: FIX002</span>
+</span><span id="1-192">    <span class="n">impl</span> <span class="o">=</span> <span class="n">BINARY</span>
 </span><span id="1-193">
-<div class="viewcode-block" id="EncryptedString.__init__"><a class="viewcode-back" href="../../reference/types.html#advanced_alchemy.types.EncryptedString.__init__">[docs]</a></span><span id="1-194">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">passphrase</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;pgcrypto&quot;</span><span class="p">,</span> <span class="s2">&quot;tink&quot;</span><span class="p">,</span> <span class="s2">&quot;cryptography&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;cryptography&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-195">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="1-196">        <span class="bp">self</span><span class="o">.</span><span class="n">passphrase</span> <span class="o">=</span> <span class="n">passphrase</span>
-</span><span id="1-197">        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span></div>
-</span><span id="1-198">
-<div class="viewcode-block" id="EncryptedString.bind_expression"><a class="viewcode-back" href="../../reference/types.html#advanced_alchemy.types.EncryptedString.bind_expression">[docs]</a></span><span id="1-199">    <span class="k">def</span> <span class="nf">bind_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bindparam</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span id="1-200">        <span class="c1"># convert the bind&#39;s type from EncryptedString to</span>
-</span><span id="1-201">        <span class="c1"># String, so that it&#39;s passed as is without</span>
-</span><span id="1-202">        <span class="c1"># a dbapi.Binary wrapper</span>
-</span><span id="1-203">        <span class="n">bindparam</span> <span class="o">=</span> <span class="n">type_coerce</span><span class="p">(</span><span class="n">bindparam</span><span class="p">,</span> <span class="n">String</span><span class="p">)</span>
-</span><span id="1-204">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_encrypted_data</span><span class="p">(</span><span class="n">bindparam</span><span class="p">)</span></div>
-</span><span id="1-205">
-<div class="viewcode-block" id="EncryptedString.process_result_value"><a class="viewcode-back" href="../../reference/types.html#advanced_alchemy.types.EncryptedString.process_result_value">[docs]</a></span><span id="1-206">    <span class="k">def</span> <span class="nf">process_result_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-207">        <span class="c1"># sourcery skip: class-extract-method</span>
-</span><span id="1-208">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-209">            <span class="k">return</span> <span class="n">value</span>
-</span><span id="1-210">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;pgcrypto&quot;</span><span class="p">:</span>
-</span><span id="1-211">            <span class="k">return</span> <span class="n">sql_func</span><span class="o">.</span><span class="n">pgp_sym_decrypt</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">passphrase</span><span class="p">)</span>  <span class="c1"># type: ignore[return-value]</span>
-</span><span id="1-212">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;tink&quot;</span><span class="p">:</span>
-</span><span id="1-213">            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-</span><span id="1-214">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;cryptography&quot;</span><span class="p">:</span>
+</span><span id="1-194">    <span class="n">cache_ok</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="1-195">
+<div class="viewcode-block" id="EncryptedString.__init__"><a class="viewcode-back" href="../../reference/types.html#advanced_alchemy.types.EncryptedString.__init__">[docs]</a></span><span id="1-196">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">passphrase</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;pgcrypto&quot;</span><span class="p">,</span> <span class="s2">&quot;tink&quot;</span><span class="p">,</span> <span class="s2">&quot;cryptography&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;cryptography&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-197">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="1-198">        <span class="bp">self</span><span class="o">.</span><span class="n">passphrase</span> <span class="o">=</span> <span class="n">passphrase</span>
+</span><span id="1-199">        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span></div>
+</span><span id="1-200">
+<div class="viewcode-block" id="EncryptedString.bind_expression"><a class="viewcode-back" href="../../reference/types.html#advanced_alchemy.types.EncryptedString.bind_expression">[docs]</a></span><span id="1-201">    <span class="k">def</span> <span class="nf">bind_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bindparam</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span id="1-202">        <span class="c1"># convert the bind&#39;s type from EncryptedString to</span>
+</span><span id="1-203">        <span class="c1"># String, so that it&#39;s passed as is without</span>
+</span><span id="1-204">        <span class="c1"># a dbapi.Binary wrapper</span>
+</span><span id="1-205">        <span class="n">bindparam</span> <span class="o">=</span> <span class="n">type_coerce</span><span class="p">(</span><span class="n">bindparam</span><span class="p">,</span> <span class="n">String</span><span class="p">)</span>
+</span><span id="1-206">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_encrypted_data</span><span class="p">(</span><span class="n">bindparam</span><span class="p">)</span></div>
+</span><span id="1-207">
+<div class="viewcode-block" id="EncryptedString.process_result_value"><a class="viewcode-back" href="../../reference/types.html#advanced_alchemy.types.EncryptedString.process_result_value">[docs]</a></span><span id="1-208">    <span class="k">def</span> <span class="nf">process_result_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-209">        <span class="c1"># sourcery skip: class-extract-method</span>
+</span><span id="1-210">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-211">            <span class="k">return</span> <span class="n">value</span>
+</span><span id="1-212">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;pgcrypto&quot;</span><span class="p">:</span>
+</span><span id="1-213">            <span class="k">return</span> <span class="n">sql_func</span><span class="o">.</span><span class="n">pgp_sym_decrypt</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">passphrase</span><span class="p">)</span>  <span class="c1"># type: ignore[return-value]</span>
+</span><span id="1-214">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;tink&quot;</span><span class="p">:</span>
 </span><span id="1-215">            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-</span><span id="1-216">        <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># type: ignore[unreachable]</span></div>
-</span><span id="1-217">
-<div class="viewcode-block" id="EncryptedString.column_expression"><a class="viewcode-back" href="../../reference/types.html#advanced_alchemy.types.EncryptedString.column_expression">[docs]</a></span><span id="1-218">    <span class="k">def</span> <span class="nf">column_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span id="1-219">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_encrypted_data</span><span class="p">(</span><span class="n">column</span><span class="p">)</span></div>
-</span><span id="1-220">
-</span><span id="1-221">    <span class="k">def</span> <span class="nf">_handle_encrypted_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="1-222">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;pgcrypto&quot;</span><span class="p">:</span>
-</span><span id="1-223">            <span class="k">return</span> <span class="n">sql_func</span><span class="o">.</span><span class="n">pgp_sym_encrypt</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">passphrase</span><span class="p">)</span>  <span class="c1"># type: ignore[return-value]</span>
-</span><span id="1-224">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;tink&quot;</span><span class="p">:</span>
-</span><span id="1-225">            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-</span><span id="1-226">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;cryptography&quot;</span><span class="p">:</span>
+</span><span id="1-216">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;cryptography&quot;</span><span class="p">:</span>
+</span><span id="1-217">            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</span><span id="1-218">        <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># type: ignore[unreachable]</span></div>
+</span><span id="1-219">
+<div class="viewcode-block" id="EncryptedString.column_expression"><a class="viewcode-back" href="../../reference/types.html#advanced_alchemy.types.EncryptedString.column_expression">[docs]</a></span><span id="1-220">    <span class="k">def</span> <span class="nf">column_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span id="1-221">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_encrypted_data</span><span class="p">(</span><span class="n">column</span><span class="p">)</span></div>
+</span><span id="1-222">
+</span><span id="1-223">    <span class="k">def</span> <span class="nf">_handle_encrypted_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="1-224">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;pgcrypto&quot;</span><span class="p">:</span>
+</span><span id="1-225">            <span class="k">return</span> <span class="n">sql_func</span><span class="o">.</span><span class="n">pgp_sym_encrypt</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">passphrase</span><span class="p">)</span>  <span class="c1"># type: ignore[return-value]</span>
+</span><span id="1-226">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;tink&quot;</span><span class="p">:</span>
 </span><span id="1-227">            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-</span><span id="1-228">        <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># type: ignore[unreachable]</span></div>
+</span><span id="1-228">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;cryptography&quot;</span><span class="p">:</span>
+</span><span id="1-229">            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</span><span id="1-230">        <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># type: ignore[unreachable]</span></div>
 </span></pre></div>
         </article>
         
