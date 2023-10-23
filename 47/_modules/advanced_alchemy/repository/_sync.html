@@ -1159,7 +1159,7 @@ html.dark {
 </span><span id="1-920">            <span class="n">existing_objs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
 </span><span id="1-921">                <span class="n">CollectionFilter</span><span class="p">(</span>
 </span><span id="1-922">                    <span class="n">field_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">,</span>
-</span><span id="1-923">                    <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">],</span>
+</span><span id="1-923">                    <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span> <span class="k">if</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="1-924">                <span class="p">),</span>
 </span><span id="1-925">            <span class="p">)</span>
 </span><span id="1-926">            <span class="n">existing_ids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">existing_objs</span><span class="p">]</span>
@@ -1241,7 +1241,7 @@ html.dark {
 </span><span id="1-1002"><span class="sd">            ``True`` if healthy.</span>
 </span><span id="1-1003"><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="1-1004">
-</span><span id="1-1005">        <span class="k">return</span> <span class="p">(</span>  <span class="c1"># type:ignore[no-any-return]</span>
+</span><span id="1-1005">        <span class="k">return</span> <span class="p">(</span>  <span class="c1"># type: ignore[no-any-return]</span>
 </span><span id="1-1006">            <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_get_health_check_statement</span><span class="p">(</span><span class="n">session</span><span class="p">))</span>
 </span><span id="1-1007">        <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span></div>
 </span><span id="1-1008">
@@ -1323,7 +1323,7 @@ html.dark {
 </span><span id="1-1084">                <span class="p">)</span>
 </span><span id="1-1085">
 </span><span id="1-1086">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">NotInCollectionFilter</span><span class="p">,)):</span>
-</span><span id="1-1087">                <span class="k">if</span> <span class="n">filter_</span><span class="o">.</span><span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: PD011</span>
+</span><span id="1-1087">                <span class="k">if</span> <span class="n">filter_</span><span class="o">.</span><span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="1-1088">                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span><span class="p">:</span>
 </span><span id="1-1089">                        <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_not_any_collection</span><span class="p">(</span>
 </span><span id="1-1090">                            <span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span>
@@ -1338,7 +1338,7 @@ html.dark {
 </span><span id="1-1099">                        <span class="p">)</span>
 </span><span id="1-1100">
 </span><span id="1-1101">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">CollectionFilter</span><span class="p">,)):</span>
-</span><span id="1-1102">                <span class="k">if</span> <span class="n">filter_</span><span class="o">.</span><span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: PD011</span>
+</span><span id="1-1102">                <span class="k">if</span> <span class="n">filter_</span><span class="o">.</span><span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="1-1103">                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span><span class="p">:</span>
 </span><span id="1-1104">                        <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_any_collection</span><span class="p">(</span><span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="n">filter_</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">)</span>
 </span><span id="1-1105">                    <span class="k">else</span><span class="p">:</span>
