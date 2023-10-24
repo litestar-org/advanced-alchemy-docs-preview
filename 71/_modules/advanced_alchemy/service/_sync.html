@@ -562,225 +562,223 @@ html.dark {
 </span><span id="1-323">                <span class="s2">&quot;Could not identify ID attribute value.  One of the following is required: &quot;</span>
 </span><span id="1-324">                <span class="sa">f</span><span class="s2">&quot;``item_id`` or ``data.</span><span class="si">{</span><span class="n">id_attribute</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">id_attribute</span><span class="si">}</span><span class="s2">``&quot;</span>
 </span><span id="1-325">            <span class="p">)</span>
-</span><span id="1-326">            <span class="k">raise</span> <span class="n">RepositoryError</span><span class="p">(</span>
-</span><span id="1-327">                <span class="n">msg</span><span class="p">,</span>
-</span><span id="1-328">            <span class="p">)</span>
-</span><span id="1-329">        <span class="k">if</span> <span class="n">item_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-330">            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">set_id_attribute_value</span><span class="p">(</span><span class="n">item_id</span><span class="o">=</span><span class="n">item_id</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">)</span>
-</span><span id="1-331">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-</span><span id="1-332">            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-</span><span id="1-333">            <span class="n">attribute_names</span><span class="o">=</span><span class="n">attribute_names</span><span class="p">,</span>
-</span><span id="1-334">            <span class="n">with_for_update</span><span class="o">=</span><span class="n">with_for_update</span><span class="p">,</span>
-</span><span id="1-335">            <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">,</span>
-</span><span id="1-336">            <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
-</span><span id="1-337">            <span class="n">auto_refresh</span><span class="o">=</span><span class="n">auto_refresh</span><span class="p">,</span>
-</span><span id="1-338">            <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">,</span>
-</span><span id="1-339">        <span class="p">)</span></div>
-</span><span id="1-340">
-<div class="viewcode-block" id="SQLAlchemySyncRepositoryService.update_many"><a class="viewcode-back" href="../../../reference/service.html#advanced_alchemy.service.SQLAlchemySyncRepositoryService.update_many">[docs]</a></span><span id="1-341">    <span class="k">def</span> <span class="nf">update_many</span><span class="p">(</span>
-</span><span id="1-342">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-343">        <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
-</span><span id="1-344">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-345">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-346">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
-</span><span id="1-347"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap repository bulk instance update.</span>
-</span><span id="1-348">
-</span><span id="1-349"><span class="sd">        Args:</span>
-</span><span id="1-350"><span class="sd">            data: Representations to be updated.</span>
-</span><span id="1-351"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
-</span><span id="1-352"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
-</span><span id="1-353"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
-</span><span id="1-354"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-355">
-</span><span id="1-356"><span class="sd">        Returns:</span>
-</span><span id="1-357"><span class="sd">            Representation of updated instances.</span>
-</span><span id="1-358"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-359">        <span class="n">data</span> <span class="o">=</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="s2">&quot;update&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
-</span><span id="1-360">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span></div>
-</span><span id="1-361">
-<div class="viewcode-block" id="SQLAlchemySyncRepositoryService.upsert"><a class="viewcode-back" href="../../../reference/service.html#advanced_alchemy.service.SQLAlchemySyncRepositoryService.upsert">[docs]</a></span><span id="1-362">    <span class="k">def</span> <span class="nf">upsert</span><span class="p">(</span>
-</span><span id="1-363">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-364">        <span class="n">data</span><span class="p">:</span> <span class="n">ModelT</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-</span><span id="1-365">        <span class="n">item_id</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-366">        <span class="n">attribute_names</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-367">        <span class="n">with_for_update</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-368">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-369">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-370">        <span class="n">auto_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-371">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
-</span><span id="1-372"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap repository upsert operation.</span>
-</span><span id="1-373">
-</span><span id="1-374"><span class="sd">        Args:</span>
-</span><span id="1-375"><span class="sd">            data: Instance to update existing, or be created. Identifier used to determine if an</span>
-</span><span id="1-376"><span class="sd">                existing instance exists is the value of an attribute on `data` named as value of</span>
-</span><span id="1-377"><span class="sd">                `self.id_attribute`.</span>
-</span><span id="1-378"><span class="sd">            item_id: Identifier of the object for upsert.</span>
-</span><span id="1-379"><span class="sd">            attribute_names: an iterable of attribute names to pass into the ``update`` method.</span>
-</span><span id="1-380"><span class="sd">            with_for_update: indicating FOR UPDATE should be used, or may be a</span>
-</span><span id="1-381"><span class="sd">                dictionary containing flags to indicate a more specific set of</span>
-</span><span id="1-382"><span class="sd">                FOR UPDATE flags for the SELECT</span>
-</span><span id="1-383"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
-</span><span id="1-384"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
-</span><span id="1-385"><span class="sd">            auto_refresh: Refresh object from session before returning. Defaults to</span>
-</span><span id="1-386"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_refresh &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-387"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
-</span><span id="1-388"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-389">
-</span><span id="1-390">
-</span><span id="1-391"><span class="sd">        Returns:</span>
-</span><span id="1-392"><span class="sd">            Updated or created representation.</span>
-</span><span id="1-393"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-394">        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;upsert&quot;</span><span class="p">)</span>
-</span><span id="1-395">        <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">set_id_attribute_value</span><span class="p">(</span><span class="n">item_id</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-</span><span id="1-396">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">upsert</span><span class="p">(</span>
-</span><span id="1-397">            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-</span><span id="1-398">            <span class="n">attribute_names</span><span class="o">=</span><span class="n">attribute_names</span><span class="p">,</span>
-</span><span id="1-399">            <span class="n">with_for_update</span><span class="o">=</span><span class="n">with_for_update</span><span class="p">,</span>
-</span><span id="1-400">            <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">,</span>
-</span><span id="1-401">            <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
-</span><span id="1-402">            <span class="n">auto_refresh</span><span class="o">=</span><span class="n">auto_refresh</span><span class="p">,</span>
-</span><span id="1-403">        <span class="p">)</span></div>
-</span><span id="1-404">
-<div class="viewcode-block" id="SQLAlchemySyncRepositoryService.upsert_many"><a class="viewcode-back" href="../../../reference/service.html#advanced_alchemy.service.SQLAlchemySyncRepositoryService.upsert_many">[docs]</a></span><span id="1-405">    <span class="k">def</span> <span class="nf">upsert_many</span><span class="p">(</span>
-</span><span id="1-406">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-407">        <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
-</span><span id="1-408">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-409">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-410">        <span class="n">no_merge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="1-411">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
-</span><span id="1-412"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap repository upsert operation.</span>
-</span><span id="1-413">
-</span><span id="1-414"><span class="sd">        Args:</span>
-</span><span id="1-415"><span class="sd">            data: Instance to update existing, or be created. Identifier used to determine if an</span>
-</span><span id="1-416"><span class="sd">                existing instance exists is the value of an attribute on ``data`` named as value of</span>
-</span><span id="1-417"><span class="sd">                :attr:`~advanced_alchemy.repository.AbstractAsyncRepository.id_attribute`.</span>
-</span><span id="1-418"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
-</span><span id="1-419"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
-</span><span id="1-420"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
+</span><span id="1-326">            <span class="k">raise</span> <span class="n">RepositoryError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span id="1-327">        <span class="k">if</span> <span class="n">item_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-328">            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">set_id_attribute_value</span><span class="p">(</span><span class="n">item_id</span><span class="o">=</span><span class="n">item_id</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">)</span>
+</span><span id="1-329">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+</span><span id="1-330">            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+</span><span id="1-331">            <span class="n">attribute_names</span><span class="o">=</span><span class="n">attribute_names</span><span class="p">,</span>
+</span><span id="1-332">            <span class="n">with_for_update</span><span class="o">=</span><span class="n">with_for_update</span><span class="p">,</span>
+</span><span id="1-333">            <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">,</span>
+</span><span id="1-334">            <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
+</span><span id="1-335">            <span class="n">auto_refresh</span><span class="o">=</span><span class="n">auto_refresh</span><span class="p">,</span>
+</span><span id="1-336">            <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">,</span>
+</span><span id="1-337">        <span class="p">)</span></div>
+</span><span id="1-338">
+<div class="viewcode-block" id="SQLAlchemySyncRepositoryService.update_many"><a class="viewcode-back" href="../../../reference/service.html#advanced_alchemy.service.SQLAlchemySyncRepositoryService.update_many">[docs]</a></span><span id="1-339">    <span class="k">def</span> <span class="nf">update_many</span><span class="p">(</span>
+</span><span id="1-340">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-341">        <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
+</span><span id="1-342">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-343">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-344">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
+</span><span id="1-345"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap repository bulk instance update.</span>
+</span><span id="1-346">
+</span><span id="1-347"><span class="sd">        Args:</span>
+</span><span id="1-348"><span class="sd">            data: Representations to be updated.</span>
+</span><span id="1-349"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
+</span><span id="1-350"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
+</span><span id="1-351"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
+</span><span id="1-352"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-353">
+</span><span id="1-354"><span class="sd">        Returns:</span>
+</span><span id="1-355"><span class="sd">            Representation of updated instances.</span>
+</span><span id="1-356"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-357">        <span class="n">data</span> <span class="o">=</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="s2">&quot;update&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+</span><span id="1-358">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span></div>
+</span><span id="1-359">
+<div class="viewcode-block" id="SQLAlchemySyncRepositoryService.upsert"><a class="viewcode-back" href="../../../reference/service.html#advanced_alchemy.service.SQLAlchemySyncRepositoryService.upsert">[docs]</a></span><span id="1-360">    <span class="k">def</span> <span class="nf">upsert</span><span class="p">(</span>
+</span><span id="1-361">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-362">        <span class="n">data</span><span class="p">:</span> <span class="n">ModelT</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+</span><span id="1-363">        <span class="n">item_id</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-364">        <span class="n">attribute_names</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-365">        <span class="n">with_for_update</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-366">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-367">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-368">        <span class="n">auto_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-369">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
+</span><span id="1-370"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap repository upsert operation.</span>
+</span><span id="1-371">
+</span><span id="1-372"><span class="sd">        Args:</span>
+</span><span id="1-373"><span class="sd">            data: Instance to update existing, or be created. Identifier used to determine if an</span>
+</span><span id="1-374"><span class="sd">                existing instance exists is the value of an attribute on `data` named as value of</span>
+</span><span id="1-375"><span class="sd">                `self.id_attribute`.</span>
+</span><span id="1-376"><span class="sd">            item_id: Identifier of the object for upsert.</span>
+</span><span id="1-377"><span class="sd">            attribute_names: an iterable of attribute names to pass into the ``update`` method.</span>
+</span><span id="1-378"><span class="sd">            with_for_update: indicating FOR UPDATE should be used, or may be a</span>
+</span><span id="1-379"><span class="sd">                dictionary containing flags to indicate a more specific set of</span>
+</span><span id="1-380"><span class="sd">                FOR UPDATE flags for the SELECT</span>
+</span><span id="1-381"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
+</span><span id="1-382"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
+</span><span id="1-383"><span class="sd">            auto_refresh: Refresh object from session before returning. Defaults to</span>
+</span><span id="1-384"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_refresh &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-385"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
+</span><span id="1-386"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-387">
+</span><span id="1-388">
+</span><span id="1-389"><span class="sd">        Returns:</span>
+</span><span id="1-390"><span class="sd">            Updated or created representation.</span>
+</span><span id="1-391"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-392">        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;upsert&quot;</span><span class="p">)</span>
+</span><span id="1-393">        <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">set_id_attribute_value</span><span class="p">(</span><span class="n">item_id</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</span><span id="1-394">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">upsert</span><span class="p">(</span>
+</span><span id="1-395">            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+</span><span id="1-396">            <span class="n">attribute_names</span><span class="o">=</span><span class="n">attribute_names</span><span class="p">,</span>
+</span><span id="1-397">            <span class="n">with_for_update</span><span class="o">=</span><span class="n">with_for_update</span><span class="p">,</span>
+</span><span id="1-398">            <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">,</span>
+</span><span id="1-399">            <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
+</span><span id="1-400">            <span class="n">auto_refresh</span><span class="o">=</span><span class="n">auto_refresh</span><span class="p">,</span>
+</span><span id="1-401">        <span class="p">)</span></div>
+</span><span id="1-402">
+<div class="viewcode-block" id="SQLAlchemySyncRepositoryService.upsert_many"><a class="viewcode-back" href="../../../reference/service.html#advanced_alchemy.service.SQLAlchemySyncRepositoryService.upsert_many">[docs]</a></span><span id="1-403">    <span class="k">def</span> <span class="nf">upsert_many</span><span class="p">(</span>
+</span><span id="1-404">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-405">        <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
+</span><span id="1-406">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-407">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-408">        <span class="n">no_merge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="1-409">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
+</span><span id="1-410"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap repository upsert operation.</span>
+</span><span id="1-411">
+</span><span id="1-412"><span class="sd">        Args:</span>
+</span><span id="1-413"><span class="sd">            data: Instance to update existing, or be created. Identifier used to determine if an</span>
+</span><span id="1-414"><span class="sd">                existing instance exists is the value of an attribute on ``data`` named as value of</span>
+</span><span id="1-415"><span class="sd">                :attr:`~advanced_alchemy.repository.AbstractAsyncRepository.id_attribute`.</span>
+</span><span id="1-416"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
+</span><span id="1-417"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
+</span><span id="1-418"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
+</span><span id="1-419"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-420"><span class="sd">            no_merge: Skip the usage of optimized Merge statements</span>
 </span><span id="1-421"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-422"><span class="sd">            no_merge: Skip the usage of optimized Merge statements</span>
-</span><span id="1-423"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-424">
-</span><span id="1-425">
-</span><span id="1-426"><span class="sd">        Returns:</span>
-</span><span id="1-427"><span class="sd">            Updated or created representation.</span>
-</span><span id="1-428"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-429">        <span class="n">data</span> <span class="o">=</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="s2">&quot;upsert&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
-</span><span id="1-430">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">upsert_many</span><span class="p">(</span>
-</span><span id="1-431">            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-</span><span id="1-432">            <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">,</span>
-</span><span id="1-433">            <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
-</span><span id="1-434">            <span class="n">no_merge</span><span class="o">=</span><span class="n">no_merge</span><span class="p">,</span>
-</span><span id="1-435">        <span class="p">)</span></div>
-</span><span id="1-436">
-<div class="viewcode-block" id="SQLAlchemySyncRepositoryService.get_or_upsert"><a class="viewcode-back" href="../../../reference/service.html#advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_or_upsert">[docs]</a></span><span id="1-437">    <span class="k">def</span> <span class="nf">get_or_upsert</span><span class="p">(</span>
-</span><span id="1-438">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-439">        <span class="n">match_fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-440">        <span class="n">upsert</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="1-441">        <span class="n">attribute_names</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-442">        <span class="n">with_for_update</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-443">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-444">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-445">        <span class="n">auto_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-446">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span id="1-447">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
-</span><span id="1-448"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap repository instance creation.</span>
-</span><span id="1-449">
-</span><span id="1-450"><span class="sd">        Args:</span>
-</span><span id="1-451"><span class="sd">            match_fields: a list of keys to use to match the existing model.  When</span>
-</span><span id="1-452"><span class="sd">                empty, all fields are matched.</span>
-</span><span id="1-453"><span class="sd">            upsert: When using match_fields and actual model values differ from</span>
-</span><span id="1-454"><span class="sd">                `kwargs`, perform an update operation on the model.</span>
-</span><span id="1-455"><span class="sd">            attribute_names: an iterable of attribute names to pass into the ``update``</span>
-</span><span id="1-456"><span class="sd">                method.</span>
-</span><span id="1-457"><span class="sd">            with_for_update: indicating FOR UPDATE should be used, or may be a</span>
-</span><span id="1-458"><span class="sd">                dictionary containing flags to indicate a more specific set of</span>
-</span><span id="1-459"><span class="sd">                FOR UPDATE flags for the SELECT</span>
-</span><span id="1-460"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
-</span><span id="1-461"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
-</span><span id="1-462"><span class="sd">            auto_refresh: Refresh object from session before returning. Defaults to</span>
-</span><span id="1-463"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_refresh &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-464"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
-</span><span id="1-465"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-466"><span class="sd">            **kwargs: Identifier of the instance to be retrieved.</span>
-</span><span id="1-467">
-</span><span id="1-468"><span class="sd">        Returns:</span>
-</span><span id="1-469"><span class="sd">            Representation of created instance.</span>
-</span><span id="1-470"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-471">        <span class="n">match_fields</span> <span class="o">=</span> <span class="n">match_fields</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_fields</span>
-</span><span id="1-472">        <span class="n">validated_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="s2">&quot;create&quot;</span><span class="p">)</span>
-</span><span id="1-473">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_or_upsert</span><span class="p">(</span>
-</span><span id="1-474">            <span class="n">match_fields</span><span class="o">=</span><span class="n">match_fields</span><span class="p">,</span>
-</span><span id="1-475">            <span class="n">upsert</span><span class="o">=</span><span class="n">upsert</span><span class="p">,</span>
-</span><span id="1-476">            <span class="n">attribute_names</span><span class="o">=</span><span class="n">attribute_names</span><span class="p">,</span>
-</span><span id="1-477">            <span class="n">with_for_update</span><span class="o">=</span><span class="n">with_for_update</span><span class="p">,</span>
-</span><span id="1-478">            <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
-</span><span id="1-479">            <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">,</span>
-</span><span id="1-480">            <span class="n">auto_refresh</span><span class="o">=</span><span class="n">auto_refresh</span><span class="p">,</span>
-</span><span id="1-481">            <span class="o">**</span><span class="n">validated_model</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
-</span><span id="1-482">        <span class="p">)</span></div>
-</span><span id="1-483">
-<div class="viewcode-block" id="SQLAlchemySyncRepositoryService.delete"><a class="viewcode-back" href="../../../reference/service.html#advanced_alchemy.service.SQLAlchemySyncRepositoryService.delete">[docs]</a></span><span id="1-484">    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span>
-</span><span id="1-485">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-486">        <span class="n">item_id</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span id="1-487">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-488">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-489">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-490">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
-</span><span id="1-491"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap repository delete operation.</span>
-</span><span id="1-492">
-</span><span id="1-493"><span class="sd">        Args:</span>
-</span><span id="1-494"><span class="sd">            item_id: Identifier of instance to be deleted.</span>
-</span><span id="1-495"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
-</span><span id="1-496"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
-</span><span id="1-497"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
-</span><span id="1-498"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-499"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
-</span><span id="1-500"><span class="sd">                Defaults to `id`, but can reference any surrogate or candidate key for the table.</span>
-</span><span id="1-501">
-</span><span id="1-502">
-</span><span id="1-503"><span class="sd">        Returns:</span>
-</span><span id="1-504"><span class="sd">            Representation of the deleted instance.</span>
-</span><span id="1-505"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-506">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
-</span><span id="1-507">            <span class="n">item_id</span><span class="o">=</span><span class="n">item_id</span><span class="p">,</span>
-</span><span id="1-508">            <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
-</span><span id="1-509">            <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">,</span>
-</span><span id="1-510">            <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">,</span>
-</span><span id="1-511">        <span class="p">)</span></div>
-</span><span id="1-512">
-<div class="viewcode-block" id="SQLAlchemySyncRepositoryService.delete_many"><a class="viewcode-back" href="../../../reference/service.html#advanced_alchemy.service.SQLAlchemySyncRepositoryService.delete_many">[docs]</a></span><span id="1-513">    <span class="k">def</span> <span class="nf">delete_many</span><span class="p">(</span>
-</span><span id="1-514">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-515">        <span class="n">item_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-</span><span id="1-516">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-517">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-518">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-519">        <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-520">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
-</span><span id="1-521"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap repository bulk instance deletion.</span>
-</span><span id="1-522">
-</span><span id="1-523"><span class="sd">        Args:</span>
-</span><span id="1-524"><span class="sd">            item_ids: Identifier of instance to be deleted.</span>
-</span><span id="1-525"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
-</span><span id="1-526"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
-</span><span id="1-527"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
-</span><span id="1-528"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-529"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
-</span><span id="1-530"><span class="sd">                Defaults to `id`, but can reference any surrogate or candidate key for the table.</span>
-</span><span id="1-531"><span class="sd">            chunk_size: Allows customization of the ``insertmanyvalues_max_parameters`` setting for the driver.</span>
-</span><span id="1-532"><span class="sd">                Defaults to `950` if left unset.</span>
-</span><span id="1-533">
-</span><span id="1-534">
-</span><span id="1-535"><span class="sd">        Returns:</span>
-</span><span id="1-536"><span class="sd">            Representation of removed instances.</span>
-</span><span id="1-537"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-538">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">delete_many</span><span class="p">(</span>
-</span><span id="1-539">            <span class="n">item_ids</span><span class="o">=</span><span class="n">item_ids</span><span class="p">,</span>
-</span><span id="1-540">            <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
-</span><span id="1-541">            <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">,</span>
-</span><span id="1-542">            <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">,</span>
-</span><span id="1-543">            <span class="n">chunk_size</span><span class="o">=</span><span class="n">chunk_size</span><span class="p">,</span>
-</span><span id="1-544">        <span class="p">)</span></div></div>
+</span><span id="1-422">
+</span><span id="1-423">
+</span><span id="1-424"><span class="sd">        Returns:</span>
+</span><span id="1-425"><span class="sd">            Updated or created representation.</span>
+</span><span id="1-426"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-427">        <span class="n">data</span> <span class="o">=</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="s2">&quot;upsert&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+</span><span id="1-428">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">upsert_many</span><span class="p">(</span>
+</span><span id="1-429">            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+</span><span id="1-430">            <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">,</span>
+</span><span id="1-431">            <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
+</span><span id="1-432">            <span class="n">no_merge</span><span class="o">=</span><span class="n">no_merge</span><span class="p">,</span>
+</span><span id="1-433">        <span class="p">)</span></div>
+</span><span id="1-434">
+<div class="viewcode-block" id="SQLAlchemySyncRepositoryService.get_or_upsert"><a class="viewcode-back" href="../../../reference/service.html#advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_or_upsert">[docs]</a></span><span id="1-435">    <span class="k">def</span> <span class="nf">get_or_upsert</span><span class="p">(</span>
+</span><span id="1-436">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-437">        <span class="n">match_fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-438">        <span class="n">upsert</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="1-439">        <span class="n">attribute_names</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-440">        <span class="n">with_for_update</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-441">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-442">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-443">        <span class="n">auto_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-444">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="1-445">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+</span><span id="1-446"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap repository instance creation.</span>
+</span><span id="1-447">
+</span><span id="1-448"><span class="sd">        Args:</span>
+</span><span id="1-449"><span class="sd">            match_fields: a list of keys to use to match the existing model.  When</span>
+</span><span id="1-450"><span class="sd">                empty, all fields are matched.</span>
+</span><span id="1-451"><span class="sd">            upsert: When using match_fields and actual model values differ from</span>
+</span><span id="1-452"><span class="sd">                `kwargs`, perform an update operation on the model.</span>
+</span><span id="1-453"><span class="sd">            attribute_names: an iterable of attribute names to pass into the ``update``</span>
+</span><span id="1-454"><span class="sd">                method.</span>
+</span><span id="1-455"><span class="sd">            with_for_update: indicating FOR UPDATE should be used, or may be a</span>
+</span><span id="1-456"><span class="sd">                dictionary containing flags to indicate a more specific set of</span>
+</span><span id="1-457"><span class="sd">                FOR UPDATE flags for the SELECT</span>
+</span><span id="1-458"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
+</span><span id="1-459"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
+</span><span id="1-460"><span class="sd">            auto_refresh: Refresh object from session before returning. Defaults to</span>
+</span><span id="1-461"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_refresh &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-462"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
+</span><span id="1-463"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-464"><span class="sd">            **kwargs: Identifier of the instance to be retrieved.</span>
+</span><span id="1-465">
+</span><span id="1-466"><span class="sd">        Returns:</span>
+</span><span id="1-467"><span class="sd">            Representation of created instance.</span>
+</span><span id="1-468"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-469">        <span class="n">match_fields</span> <span class="o">=</span> <span class="n">match_fields</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_fields</span>
+</span><span id="1-470">        <span class="n">validated_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="s2">&quot;create&quot;</span><span class="p">)</span>
+</span><span id="1-471">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_or_upsert</span><span class="p">(</span>
+</span><span id="1-472">            <span class="n">match_fields</span><span class="o">=</span><span class="n">match_fields</span><span class="p">,</span>
+</span><span id="1-473">            <span class="n">upsert</span><span class="o">=</span><span class="n">upsert</span><span class="p">,</span>
+</span><span id="1-474">            <span class="n">attribute_names</span><span class="o">=</span><span class="n">attribute_names</span><span class="p">,</span>
+</span><span id="1-475">            <span class="n">with_for_update</span><span class="o">=</span><span class="n">with_for_update</span><span class="p">,</span>
+</span><span id="1-476">            <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
+</span><span id="1-477">            <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">,</span>
+</span><span id="1-478">            <span class="n">auto_refresh</span><span class="o">=</span><span class="n">auto_refresh</span><span class="p">,</span>
+</span><span id="1-479">            <span class="o">**</span><span class="n">validated_model</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
+</span><span id="1-480">        <span class="p">)</span></div>
+</span><span id="1-481">
+<div class="viewcode-block" id="SQLAlchemySyncRepositoryService.delete"><a class="viewcode-back" href="../../../reference/service.html#advanced_alchemy.service.SQLAlchemySyncRepositoryService.delete">[docs]</a></span><span id="1-482">    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span>
+</span><span id="1-483">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-484">        <span class="n">item_id</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="1-485">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-486">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-487">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-488">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
+</span><span id="1-489"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap repository delete operation.</span>
+</span><span id="1-490">
+</span><span id="1-491"><span class="sd">        Args:</span>
+</span><span id="1-492"><span class="sd">            item_id: Identifier of instance to be deleted.</span>
+</span><span id="1-493"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
+</span><span id="1-494"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
+</span><span id="1-495"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
+</span><span id="1-496"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-497"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
+</span><span id="1-498"><span class="sd">                Defaults to `id`, but can reference any surrogate or candidate key for the table.</span>
+</span><span id="1-499">
+</span><span id="1-500">
+</span><span id="1-501"><span class="sd">        Returns:</span>
+</span><span id="1-502"><span class="sd">            Representation of the deleted instance.</span>
+</span><span id="1-503"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-504">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
+</span><span id="1-505">            <span class="n">item_id</span><span class="o">=</span><span class="n">item_id</span><span class="p">,</span>
+</span><span id="1-506">            <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
+</span><span id="1-507">            <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">,</span>
+</span><span id="1-508">            <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">,</span>
+</span><span id="1-509">        <span class="p">)</span></div>
+</span><span id="1-510">
+<div class="viewcode-block" id="SQLAlchemySyncRepositoryService.delete_many"><a class="viewcode-back" href="../../../reference/service.html#advanced_alchemy.service.SQLAlchemySyncRepositoryService.delete_many">[docs]</a></span><span id="1-511">    <span class="k">def</span> <span class="nf">delete_many</span><span class="p">(</span>
+</span><span id="1-512">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-513">        <span class="n">item_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span id="1-514">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-515">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-516">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-517">        <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-518">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
+</span><span id="1-519"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap repository bulk instance deletion.</span>
+</span><span id="1-520">
+</span><span id="1-521"><span class="sd">        Args:</span>
+</span><span id="1-522"><span class="sd">            item_ids: Identifier of instance to be deleted.</span>
+</span><span id="1-523"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
+</span><span id="1-524"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
+</span><span id="1-525"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
+</span><span id="1-526"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-527"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
+</span><span id="1-528"><span class="sd">                Defaults to `id`, but can reference any surrogate or candidate key for the table.</span>
+</span><span id="1-529"><span class="sd">            chunk_size: Allows customization of the ``insertmanyvalues_max_parameters`` setting for the driver.</span>
+</span><span id="1-530"><span class="sd">                Defaults to `950` if left unset.</span>
+</span><span id="1-531">
+</span><span id="1-532">
+</span><span id="1-533"><span class="sd">        Returns:</span>
+</span><span id="1-534"><span class="sd">            Representation of removed instances.</span>
+</span><span id="1-535"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-536">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">delete_many</span><span class="p">(</span>
+</span><span id="1-537">            <span class="n">item_ids</span><span class="o">=</span><span class="n">item_ids</span><span class="p">,</span>
+</span><span id="1-538">            <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
+</span><span id="1-539">            <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">,</span>
+</span><span id="1-540">            <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">,</span>
+</span><span id="1-541">            <span class="n">chunk_size</span><span class="o">=</span><span class="n">chunk_size</span><span class="p">,</span>
+</span><span id="1-542">        <span class="p">)</span></div></div>
 </span></pre></div>
         </article>
         
