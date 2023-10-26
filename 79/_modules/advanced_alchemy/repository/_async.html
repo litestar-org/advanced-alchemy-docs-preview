@@ -246,487 +246,487 @@ html.dark {
 </span><span id="1-7">    <span class="n">Select</span><span class="p">,</span>
 </span><span id="1-8">    <span class="n">StatementLambdaElement</span><span class="p">,</span>
 </span><span id="1-9">    <span class="n">TextClause</span><span class="p">,</span>
-</span><span id="1-10">    <span class="n">and_</span><span class="p">,</span>
-</span><span id="1-11">    <span class="n">any_</span><span class="p">,</span>
-</span><span id="1-12">    <span class="n">delete</span><span class="p">,</span>
-</span><span id="1-13">    <span class="n">lambda_stmt</span><span class="p">,</span>
-</span><span id="1-14">    <span class="n">over</span><span class="p">,</span>
-</span><span id="1-15">    <span class="n">select</span><span class="p">,</span>
-</span><span id="1-16">    <span class="n">text</span><span class="p">,</span>
-</span><span id="1-17">    <span class="n">update</span><span class="p">,</span>
-</span><span id="1-18"><span class="p">)</span>
-</span><span id="1-19"><span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">func</span> <span class="k">as</span> <span class="n">sql_func</span>
-</span><span id="1-20"><span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">InstrumentedAttribute</span>
-</span><span id="1-21"><span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">ColumnElement</span><span class="p">,</span> <span class="n">ColumnExpressionArgument</span>
-</span><span id="1-22">
-</span><span id="1-23"><span class="kn">from</span> <span class="nn">advanced_alchemy.exceptions</span> <span class="kn">import</span> <span class="n">NotFoundError</span><span class="p">,</span> <span class="n">RepositoryError</span>
-</span><span id="1-24"><span class="kn">from</span> <span class="nn">advanced_alchemy.filters</span> <span class="kn">import</span> <span class="p">(</span>
-</span><span id="1-25">    <span class="n">BeforeAfter</span><span class="p">,</span>
-</span><span id="1-26">    <span class="n">CollectionFilter</span><span class="p">,</span>
-</span><span id="1-27">    <span class="n">FilterTypes</span><span class="p">,</span>
-</span><span id="1-28">    <span class="n">LimitOffset</span><span class="p">,</span>
-</span><span id="1-29">    <span class="n">NotInCollectionFilter</span><span class="p">,</span>
-</span><span id="1-30">    <span class="n">NotInSearchFilter</span><span class="p">,</span>
-</span><span id="1-31">    <span class="n">OnBeforeAfter</span><span class="p">,</span>
-</span><span id="1-32">    <span class="n">OrderBy</span><span class="p">,</span>
-</span><span id="1-33">    <span class="n">SearchFilter</span><span class="p">,</span>
-</span><span id="1-34"><span class="p">)</span>
-</span><span id="1-35"><span class="kn">from</span> <span class="nn">advanced_alchemy.operations</span> <span class="kn">import</span> <span class="n">Merge</span>
-</span><span id="1-36"><span class="kn">from</span> <span class="nn">advanced_alchemy.repository._util</span> <span class="kn">import</span> <span class="n">get_instrumented_attr</span><span class="p">,</span> <span class="n">wrap_sqlalchemy_exception</span>
-</span><span id="1-37"><span class="kn">from</span> <span class="nn">advanced_alchemy.repository.typing</span> <span class="kn">import</span> <span class="n">ModelT</span>
-</span><span id="1-38"><span class="kn">from</span> <span class="nn">advanced_alchemy.utils.deprecation</span> <span class="kn">import</span> <span class="n">deprecated</span>
-</span><span id="1-39">
-</span><span id="1-40"><span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-</span><span id="1-41">    <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">abc</span>
-</span><span id="1-42">    <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-</span><span id="1-43">
-</span><span id="1-44">    <span class="kn">from</span> <span class="nn">sqlalchemy.engine.interfaces</span> <span class="kn">import</span> <span class="n">_CoreSingleExecuteParams</span>
-</span><span id="1-45">    <span class="kn">from</span> <span class="nn">sqlalchemy.ext.asyncio</span> <span class="kn">import</span> <span class="n">AsyncSession</span>
-</span><span id="1-46">
-</span><span id="1-47"><span class="n">DEFAULT_INSERTMANYVALUES_MAX_PARAMETERS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="mi">950</span>
-</span><span id="1-48"><span class="n">POSTGRES_VERSION_SUPPORTING_MERGE</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="mi">15</span>
-</span><span id="1-49">
-</span><span id="1-50"><span class="n">WhereClauseT</span> <span class="o">=</span> <span class="n">ColumnExpressionArgument</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
+</span><span id="1-10">    <span class="n">any_</span><span class="p">,</span>
+</span><span id="1-11">    <span class="n">delete</span><span class="p">,</span>
+</span><span id="1-12">    <span class="n">lambda_stmt</span><span class="p">,</span>
+</span><span id="1-13">    <span class="n">over</span><span class="p">,</span>
+</span><span id="1-14">    <span class="n">select</span><span class="p">,</span>
+</span><span id="1-15">    <span class="n">text</span><span class="p">,</span>
+</span><span id="1-16">    <span class="n">update</span><span class="p">,</span>
+</span><span id="1-17"><span class="p">)</span>
+</span><span id="1-18"><span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">func</span> <span class="k">as</span> <span class="n">sql_func</span>
+</span><span id="1-19"><span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">InstrumentedAttribute</span>
+</span><span id="1-20"><span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">ColumnElement</span><span class="p">,</span> <span class="n">ColumnExpressionArgument</span>
+</span><span id="1-21">
+</span><span id="1-22"><span class="kn">from</span> <span class="nn">advanced_alchemy.exceptions</span> <span class="kn">import</span> <span class="n">NotFoundError</span><span class="p">,</span> <span class="n">RepositoryError</span>
+</span><span id="1-23"><span class="kn">from</span> <span class="nn">advanced_alchemy.filters</span> <span class="kn">import</span> <span class="p">(</span>
+</span><span id="1-24">    <span class="n">BeforeAfter</span><span class="p">,</span>
+</span><span id="1-25">    <span class="n">CollectionFilter</span><span class="p">,</span>
+</span><span id="1-26">    <span class="n">FilterTypes</span><span class="p">,</span>
+</span><span id="1-27">    <span class="n">LimitOffset</span><span class="p">,</span>
+</span><span id="1-28">    <span class="n">NotInCollectionFilter</span><span class="p">,</span>
+</span><span id="1-29">    <span class="n">NotInSearchFilter</span><span class="p">,</span>
+</span><span id="1-30">    <span class="n">OnBeforeAfter</span><span class="p">,</span>
+</span><span id="1-31">    <span class="n">OrderBy</span><span class="p">,</span>
+</span><span id="1-32">    <span class="n">SearchFilter</span><span class="p">,</span>
+</span><span id="1-33"><span class="p">)</span>
+</span><span id="1-34"><span class="kn">from</span> <span class="nn">advanced_alchemy.operations</span> <span class="kn">import</span> <span class="n">Merge</span>
+</span><span id="1-35"><span class="kn">from</span> <span class="nn">advanced_alchemy.repository._util</span> <span class="kn">import</span> <span class="n">get_instrumented_attr</span><span class="p">,</span> <span class="n">wrap_sqlalchemy_exception</span>
+</span><span id="1-36"><span class="kn">from</span> <span class="nn">advanced_alchemy.repository.typing</span> <span class="kn">import</span> <span class="n">ModelT</span>
+</span><span id="1-37"><span class="kn">from</span> <span class="nn">advanced_alchemy.utils.deprecation</span> <span class="kn">import</span> <span class="n">deprecated</span>
+</span><span id="1-38">
+</span><span id="1-39"><span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+</span><span id="1-40">    <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">abc</span>
+</span><span id="1-41">    <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+</span><span id="1-42">
+</span><span id="1-43">    <span class="kn">from</span> <span class="nn">sqlalchemy.engine.interfaces</span> <span class="kn">import</span> <span class="n">_CoreSingleExecuteParams</span>
+</span><span id="1-44">    <span class="kn">from</span> <span class="nn">sqlalchemy.ext.asyncio</span> <span class="kn">import</span> <span class="n">AsyncSession</span>
+</span><span id="1-45">
+</span><span id="1-46"><span class="n">DEFAULT_INSERTMANYVALUES_MAX_PARAMETERS</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="mi">950</span>
+</span><span id="1-47"><span class="n">POSTGRES_VERSION_SUPPORTING_MERGE</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="mi">15</span>
+</span><span id="1-48">
+</span><span id="1-49"><span class="n">WhereClauseT</span> <span class="o">=</span> <span class="n">ColumnExpressionArgument</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
+</span><span id="1-50">
 </span><span id="1-51">
-</span><span id="1-52">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository">[docs]</a></span><span id="1-53"><span class="k">class</span> <span class="nc">SQLAlchemyAsyncRepository</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]):</span>
-</span><span id="1-54"><span class="w">    </span><span class="sd">&quot;&quot;&quot;SQLAlchemy based implementation of the repository interface.&quot;&quot;&quot;</span>
-</span><span id="1-55">
-</span><span id="1-56">    <span class="n">model_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]</span>
-</span><span id="1-57">    <span class="n">id_attribute</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="s2">&quot;id&quot;</span>
-</span><span id="1-58">    <span class="n">match_fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="1-59">    <span class="n">_prefer_any</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="1-60">    <span class="n">prefer_any_dialects</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;postgresql&quot;</span><span class="p">,)</span>
-</span><span id="1-61"><span class="w">    </span><span class="sd">&quot;&quot;&quot;List of dialects that prefer to use ``field.id = ANY(:1)`` instead of ``field.id IN (...)``.&quot;&quot;&quot;</span>
-</span><span id="1-62">    <span class="n">_prefer_merge</span><span class="p">:</span> <span class="nb">bool</span>
-</span><span id="1-63">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.__init__"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.__init__">[docs]</a></span><span id="1-64">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-</span><span id="1-65">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-66">        <span class="o">*</span><span class="p">,</span>
-</span><span id="1-67">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-68">        <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
-</span><span id="1-69">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="1-70">        <span class="n">auto_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="1-71">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="1-72">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span id="1-73">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-74"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Repository pattern for SQLAlchemy models.</span>
-</span><span id="1-75">
-</span><span id="1-76"><span class="sd">        Args:</span>
-</span><span id="1-77"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
-</span><span id="1-78"><span class="sd">            session: Session managing the unit-of-work for the operation.</span>
-</span><span id="1-79"><span class="sd">            auto_expunge: Remove object from session before returning.</span>
-</span><span id="1-80"><span class="sd">            auto_refresh: Refresh object from session before returning.</span>
-</span><span id="1-81"><span class="sd">            auto_commit: Commit objects before returning.</span>
-</span><span id="1-82"><span class="sd">            **kwargs: Additional arguments.</span>
-</span><span id="1-83">
-</span><span id="1-84"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-85">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="1-86">        <span class="bp">self</span><span class="o">.</span><span class="n">auto_expunge</span> <span class="o">=</span> <span class="n">auto_expunge</span>
-</span><span id="1-87">        <span class="bp">self</span><span class="o">.</span><span class="n">auto_refresh</span> <span class="o">=</span> <span class="n">auto_refresh</span>
-</span><span id="1-88">        <span class="bp">self</span><span class="o">.</span><span class="n">auto_commit</span> <span class="o">=</span> <span class="n">auto_commit</span>
-</span><span id="1-89">        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
-</span><span id="1-90">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">Select</span><span class="p">):</span>
-</span><span id="1-91">            <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="o">=</span> <span class="n">lambda_stmt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">statement</span><span class="p">)</span>
-</span><span id="1-92">        <span class="k">elif</span> <span class="n">statement</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-93">            <span class="n">statement</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">)</span>
-</span><span id="1-94">            <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="o">=</span> <span class="n">lambda_stmt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">statement</span><span class="p">)</span>
-</span><span id="1-95">        <span class="k">else</span><span class="p">:</span>
-</span><span id="1-96">            <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="o">=</span> <span class="n">statement</span>
-</span><span id="1-97">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span><span class="p">:</span>
-</span><span id="1-98">            <span class="c1"># this shouldn&#39;t actually ever happen, but we include it anyway to properly</span>
-</span><span id="1-99">            <span class="c1"># narrow down the types</span>
-</span><span id="1-100">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Session improperly configure&quot;</span>
-</span><span id="1-101">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span id="1-102">        <span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span><span class="o">.</span><span class="n">dialect</span>
-</span><span id="1-103">        <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">engine_type</span> <span class="k">for</span> <span class="n">engine_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefer_any_dialects</span> <span class="ow">or</span> <span class="p">())</span></div>
-</span><span id="1-104">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.get_id_attribute_value"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.get_id_attribute_value">[docs]</a></span><span id="1-105">    <span class="nd">@classmethod</span>
-</span><span id="1-106">    <span class="k">def</span> <span class="nf">get_id_attribute_value</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">ModelT</span> <span class="o">|</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span> <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span id="1-107"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get value of attribute named as :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;` on ``item``.</span>
-</span><span id="1-108">
-</span><span id="1-109"><span class="sd">        Args:</span>
-</span><span id="1-110"><span class="sd">            item: Anything that should have an attribute named as :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;` value.</span>
-</span><span id="1-111"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
-</span><span id="1-112"><span class="sd">                Defaults to `None`, but can reference any surrogate or candidate key for the table.</span>
-</span><span id="1-113">
-</span><span id="1-114"><span class="sd">        Returns:</span>
-</span><span id="1-115"><span class="sd">            The value of attribute on ``item`` named as :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;`.</span>
-</span><span id="1-116"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-117">        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">id_attribute</span> <span class="k">if</span> <span class="n">id_attribute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">cls</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">)</span></div>
-</span><span id="1-118">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.set_id_attribute_value"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.set_id_attribute_value">[docs]</a></span><span id="1-119">    <span class="nd">@classmethod</span>
-</span><span id="1-120">    <span class="k">def</span> <span class="nf">set_id_attribute_value</span><span class="p">(</span>
-</span><span id="1-121">        <span class="bp">cls</span><span class="p">,</span>
-</span><span id="1-122">        <span class="n">item_id</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span id="1-123">        <span class="n">item</span><span class="p">:</span> <span class="n">ModelT</span><span class="p">,</span>
-</span><span id="1-124">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-125">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
-</span><span id="1-126"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the ``item`` after the ID is set to the appropriate attribute.</span>
-</span><span id="1-127">
-</span><span id="1-128"><span class="sd">        Args:</span>
-</span><span id="1-129"><span class="sd">            item_id: Value of ID to be set on instance</span>
-</span><span id="1-130"><span class="sd">            item: Anything that should have an attribute named as :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;` value.</span>
-</span><span id="1-131"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
-</span><span id="1-132"><span class="sd">                Defaults to `None`, but can reference any surrogate or candidate key for the table.</span>
-</span><span id="1-133">
-</span><span id="1-134"><span class="sd">        Returns:</span>
-</span><span id="1-135"><span class="sd">            Item with ``item_id`` set to :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;`</span>
-</span><span id="1-136"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-137">        <span class="nb">setattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">id_attribute</span> <span class="k">if</span> <span class="n">id_attribute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">cls</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">,</span> <span class="n">item_id</span><span class="p">)</span>
-</span><span id="1-138">        <span class="k">return</span> <span class="n">item</span></div>
-</span><span id="1-139">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.check_not_found"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.check_not_found">[docs]</a></span><span id="1-140">    <span class="nd">@staticmethod</span>
-</span><span id="1-141">    <span class="k">def</span> <span class="nf">check_not_found</span><span class="p">(</span><span class="n">item_or_none</span><span class="p">:</span> <span class="n">ModelT</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
-</span><span id="1-142"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Raise :exc:`advanced_alchemy.exceptions.NotFoundError` if ``item_or_none`` is ``None``.</span>
-</span><span id="1-143">
-</span><span id="1-144"><span class="sd">        Args:</span>
-</span><span id="1-145"><span class="sd">            item_or_none: Item (:class:`T &lt;T&gt;`) to be tested for existence.</span>
-</span><span id="1-146">
-</span><span id="1-147"><span class="sd">        Returns:</span>
-</span><span id="1-148"><span class="sd">            The item, if it exists.</span>
-</span><span id="1-149"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-150">        <span class="k">if</span> <span class="n">item_or_none</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-151">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No item found when one was expected&quot;</span>
-</span><span id="1-152">            <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span id="1-153">        <span class="k">return</span> <span class="n">item_or_none</span></div>
-</span><span id="1-154">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.add"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.add">[docs]</a></span><span id="1-155">    <span class="k">async</span> <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
-</span><span id="1-156">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-157">        <span class="n">data</span><span class="p">:</span> <span class="n">ModelT</span><span class="p">,</span>
-</span><span id="1-158">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-159">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-160">        <span class="n">auto_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-161">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
-</span><span id="1-162"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Add ``data`` to the collection.</span>
-</span><span id="1-163">
-</span><span id="1-164"><span class="sd">        Args:</span>
-</span><span id="1-165"><span class="sd">            data: Instance to be added to the collection.</span>
-</span><span id="1-166"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
-</span><span id="1-167"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
-</span><span id="1-168"><span class="sd">            auto_refresh: Refresh object from session before returning. Defaults to</span>
-</span><span id="1-169"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_refresh &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-170"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
-</span><span id="1-171"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-172">
-</span><span id="1-173"><span class="sd">        Returns:</span>
-</span><span id="1-174"><span class="sd">            The added instance.</span>
-</span><span id="1-175"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-176">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
-</span><span id="1-177">            <span class="n">instance</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attach_to_session</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span id="1-178">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flush_or_commit</span><span class="p">(</span><span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">)</span>
-</span><span id="1-179">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refresh</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_refresh</span><span class="o">=</span><span class="n">auto_refresh</span><span class="p">)</span>
-</span><span id="1-180">            <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
-</span><span id="1-181">            <span class="k">return</span> <span class="n">instance</span></div>
-</span><span id="1-182">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.add_many"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.add_many">[docs]</a></span><span id="1-183">    <span class="k">async</span> <span class="k">def</span> <span class="nf">add_many</span><span class="p">(</span>
-</span><span id="1-184">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-185">        <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
-</span><span id="1-186">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-187">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-188">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
-</span><span id="1-189"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Add many `data` to the collection.</span>
-</span><span id="1-190">
-</span><span id="1-191"><span class="sd">        Args:</span>
-</span><span id="1-192"><span class="sd">            data: list of Instances to be added to the collection.</span>
-</span><span id="1-193"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
-</span><span id="1-194"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
-</span><span id="1-195"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
-</span><span id="1-196"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-197">
-</span><span id="1-198"><span class="sd">        Returns:</span>
-</span><span id="1-199"><span class="sd">            The added instances.</span>
-</span><span id="1-200"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-201">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
-</span><span id="1-202">            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add_all</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span id="1-203">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flush_or_commit</span><span class="p">(</span><span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">)</span>
-</span><span id="1-204">            <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-</span><span id="1-205">                <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
-</span><span id="1-206">            <span class="k">return</span> <span class="n">data</span></div>
-</span><span id="1-207">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.delete"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.delete">[docs]</a></span><span id="1-208">    <span class="k">async</span> <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span>
-</span><span id="1-209">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-210">        <span class="n">item_id</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span id="1-211">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-212">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-213">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-214">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
-</span><span id="1-215"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete instance identified by ``item_id``.</span>
-</span><span id="1-216">
-</span><span id="1-217"><span class="sd">        Args:</span>
-</span><span id="1-218"><span class="sd">            item_id: Identifier of instance to be deleted.</span>
-</span><span id="1-219"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
-</span><span id="1-220"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
-</span><span id="1-221"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
-</span><span id="1-222"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-223"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
-</span><span id="1-224"><span class="sd">                Defaults to `id`, but can reference any surrogate or candidate key for the table.</span>
-</span><span id="1-225">
-</span><span id="1-226"><span class="sd">        Returns:</span>
-</span><span id="1-227"><span class="sd">            The deleted instance.</span>
-</span><span id="1-228">
-</span><span id="1-229"><span class="sd">        Raises:</span>
-</span><span id="1-230"><span class="sd">            NotFoundError: If no instance found identified by ``item_id``.</span>
-</span><span id="1-231"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-232">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
-</span><span id="1-233">            <span class="n">instance</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item_id</span><span class="p">,</span> <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">)</span>
-</span><span id="1-234">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
-</span><span id="1-235">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flush_or_commit</span><span class="p">(</span><span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">)</span>
-</span><span id="1-236">            <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
-</span><span id="1-237">            <span class="k">return</span> <span class="n">instance</span></div>
-</span><span id="1-238">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.delete_many"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.delete_many">[docs]</a></span><span id="1-239">    <span class="k">async</span> <span class="k">def</span> <span class="nf">delete_many</span><span class="p">(</span>
-</span><span id="1-240">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-241">        <span class="n">item_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-</span><span id="1-242">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-243">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-244">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-245">        <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-246">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
-</span><span id="1-247"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete instance identified by `item_id`.</span>
-</span><span id="1-248">
-</span><span id="1-249"><span class="sd">        Args:</span>
-</span><span id="1-250"><span class="sd">            item_ids: Identifier of instance to be deleted.</span>
-</span><span id="1-251"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
-</span><span id="1-252"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
-</span><span id="1-253"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
-</span><span id="1-254"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-255"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
-</span><span id="1-256"><span class="sd">                Defaults to `id`, but can reference any surrogate or candidate key for the table.</span>
-</span><span id="1-257"><span class="sd">            chunk_size: Allows customization of the ``insertmanyvalues_max_parameters`` setting for the driver.</span>
-</span><span id="1-258"><span class="sd">                Defaults to `950` if left unset.</span>
-</span><span id="1-259">
-</span><span id="1-260"><span class="sd">        Returns:</span>
-</span><span id="1-261"><span class="sd">            The deleted instances.</span>
-</span><span id="1-262">
-</span><span id="1-263"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-264">
-</span><span id="1-265">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
-</span><span id="1-266">            <span class="n">id_attribute</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span>
-</span><span id="1-267">                <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span>
-</span><span id="1-268">                <span class="n">id_attribute</span> <span class="k">if</span> <span class="n">id_attribute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">,</span>
-</span><span id="1-269">            <span class="p">)</span>
-</span><span id="1-270">            <span class="n">instances</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="1-271">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span><span class="p">:</span>
-</span><span id="1-272">                <span class="n">chunk_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">item_ids</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-</span><span id="1-273">            <span class="n">chunk_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_insertmanyvalues_max_parameters</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">)</span>
-</span><span id="1-274">            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">item_ids</span><span class="p">),</span> <span class="n">chunk_size</span><span class="p">):</span>
-</span><span id="1-275">                <span class="n">chunk</span> <span class="o">=</span> <span class="n">item_ids</span><span class="p">[</span><span class="n">idx</span> <span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">idx</span> <span class="o">+</span> <span class="n">chunk_size</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">item_ids</span><span class="p">))]</span>
-</span><span id="1-276">                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span><span class="o">.</span><span class="n">delete_executemany_returning</span><span class="p">:</span>
-</span><span id="1-277">                    <span class="n">instances</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-</span><span id="1-278">                        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
-</span><span id="1-279">                            <span class="bp">self</span><span class="o">.</span><span class="n">_get_delete_many_statement</span><span class="p">(</span>
-</span><span id="1-280">                                <span class="n">statement_type</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
-</span><span id="1-281">                                <span class="n">model_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span>
-</span><span id="1-282">                                <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">,</span>
-</span><span id="1-283">                                <span class="n">id_chunk</span><span class="o">=</span><span class="n">chunk</span><span class="p">,</span>
-</span><span id="1-284">                                <span class="n">supports_returning</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span><span class="o">.</span><span class="n">delete_executemany_returning</span><span class="p">,</span>
-</span><span id="1-285">                            <span class="p">),</span>
-</span><span id="1-286">                        <span class="p">),</span>
-</span><span id="1-287">                    <span class="p">)</span>
-</span><span id="1-288">                <span class="k">else</span><span class="p">:</span>
-</span><span id="1-289">                    <span class="n">instances</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-</span><span id="1-290">                        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
-</span><span id="1-291">                            <span class="bp">self</span><span class="o">.</span><span class="n">_get_delete_many_statement</span><span class="p">(</span>
-</span><span id="1-292">                                <span class="n">statement_type</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="p">,</span>
-</span><span id="1-293">                                <span class="n">model_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span>
-</span><span id="1-294">                                <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">,</span>
-</span><span id="1-295">                                <span class="n">id_chunk</span><span class="o">=</span><span class="n">chunk</span><span class="p">,</span>
-</span><span id="1-296">                                <span class="n">supports_returning</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span><span class="o">.</span><span class="n">delete_executemany_returning</span><span class="p">,</span>
-</span><span id="1-297">                            <span class="p">),</span>
-</span><span id="1-298">                        <span class="p">),</span>
-</span><span id="1-299">                    <span class="p">)</span>
-</span><span id="1-300">                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-</span><span id="1-301">                        <span class="bp">self</span><span class="o">.</span><span class="n">_get_delete_many_statement</span><span class="p">(</span>
-</span><span id="1-302">                            <span class="n">statement_type</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
-</span><span id="1-303">                            <span class="n">model_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span>
-</span><span id="1-304">                            <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">,</span>
-</span><span id="1-305">                            <span class="n">id_chunk</span><span class="o">=</span><span class="n">chunk</span><span class="p">,</span>
-</span><span id="1-306">                            <span class="n">supports_returning</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span><span class="o">.</span><span class="n">delete_executemany_returning</span><span class="p">,</span>
-</span><span id="1-307">                        <span class="p">),</span>
-</span><span id="1-308">                    <span class="p">)</span>
-</span><span id="1-309">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flush_or_commit</span><span class="p">(</span><span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">)</span>
-</span><span id="1-310">            <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
-</span><span id="1-311">                <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
-</span><span id="1-312">            <span class="k">return</span> <span class="n">instances</span></div>
-</span><span id="1-313">
-</span><span id="1-314">    <span class="k">def</span> <span class="nf">_get_insertmanyvalues_max_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="1-315">        <span class="k">return</span> <span class="n">chunk_size</span> <span class="k">if</span> <span class="n">chunk_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">DEFAULT_INSERTMANYVALUES_MAX_PARAMETERS</span>
-</span><span id="1-316">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.exists"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.exists">[docs]</a></span><span id="1-317">    <span class="k">async</span> <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span>
-</span><span id="1-318">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-319">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">FilterTypes</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
-</span><span id="1-320">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span id="1-321">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="1-322"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return true if the object specified by ``kwargs`` exists.</span>
-</span><span id="1-323">
-</span><span id="1-324"><span class="sd">        Args:</span>
-</span><span id="1-325"><span class="sd">            *filters: Types for specific filtering operations.</span>
-</span><span id="1-326"><span class="sd">            **kwargs: Identifier of the instance to be retrieved.</span>
-</span><span id="1-327">
-</span><span id="1-328"><span class="sd">        Returns:</span>
-</span><span id="1-329"><span class="sd">            True if the instance was found.  False if not found..</span>
-</span><span id="1-330">
-</span><span id="1-331"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-332">        <span class="n">existing</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="o">*</span><span class="n">filters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="1-333">        <span class="k">return</span> <span class="n">existing</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
-</span><span id="1-334">
-</span><span id="1-335">    <span class="k">def</span> <span class="nf">_get_base_stmt</span><span class="p">(</span>
-</span><span id="1-336">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-337">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-338">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span id="1-339">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">Select</span><span class="p">):</span>
-</span><span id="1-340">            <span class="k">return</span> <span class="n">lambda_stmt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">statement</span><span class="p">)</span>
-</span><span id="1-341">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="k">if</span> <span class="n">statement</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">statement</span>
-</span><span id="1-342">
-</span><span id="1-343">    <span class="k">def</span> <span class="nf">_get_delete_many_statement</span><span class="p">(</span>
-</span><span id="1-344">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-345">        <span class="n">model_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
-</span><span id="1-346">        <span class="n">id_attribute</span><span class="p">:</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
-</span><span id="1-347">        <span class="n">id_chunk</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-</span><span id="1-348">        <span class="n">supports_returning</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-</span><span id="1-349">        <span class="n">statement_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span> <span class="s2">&quot;select&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;delete&quot;</span><span class="p">,</span>
-</span><span id="1-350">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span id="1-351">        <span class="k">if</span> <span class="n">statement_type</span> <span class="o">==</span> <span class="s2">&quot;delete&quot;</span><span class="p">:</span>
-</span><span id="1-352">            <span class="n">statement</span> <span class="o">=</span> <span class="n">lambda_stmt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">delete</span><span class="p">(</span><span class="n">model_type</span><span class="p">))</span>
-</span><span id="1-353">        <span class="k">elif</span> <span class="n">statement_type</span> <span class="o">==</span> <span class="s2">&quot;select&quot;</span><span class="p">:</span>
-</span><span id="1-354">            <span class="n">statement</span> <span class="o">=</span> <span class="n">lambda_stmt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">select</span><span class="p">(</span><span class="n">model_type</span><span class="p">))</span>
-</span><span id="1-355">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span><span class="p">:</span>
-</span><span id="1-356">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="n">id_chunk</span><span class="p">)</span> <span class="o">==</span> <span class="n">id_attribute</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
-</span><span id="1-357">        <span class="k">else</span><span class="p">:</span>
-</span><span id="1-358">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">id_attribute</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">id_chunk</span><span class="p">))</span>
-</span><span id="1-359">        <span class="k">if</span> <span class="n">supports_returning</span> <span class="ow">and</span> <span class="n">statement_type</span> <span class="o">!=</span> <span class="s2">&quot;select&quot;</span><span class="p">:</span>
-</span><span id="1-360">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="n">model_type</span><span class="p">)</span>
-</span><span id="1-361">        <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-362">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.get"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.get">[docs]</a></span><span id="1-363">    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
-</span><span id="1-364">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-365">        <span class="n">item_id</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span id="1-366">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-367">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-368">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-369">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
-</span><span id="1-370"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get instance identified by `item_id`.</span>
-</span><span id="1-371">
-</span><span id="1-372"><span class="sd">        Args:</span>
-</span><span id="1-373"><span class="sd">            item_id: Identifier of the instance to be retrieved.</span>
-</span><span id="1-374"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
-</span><span id="1-375"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-376"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
-</span><span id="1-377"><span class="sd">                Defaults to :class:`SQLAlchemyAsyncRepository.statement &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-378"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
-</span><span id="1-379"><span class="sd">                Defaults to `id`, but can reference any surrogate or candidate key for the table.</span>
-</span><span id="1-380">
-</span><span id="1-381"><span class="sd">        Returns:</span>
-</span><span id="1-382"><span class="sd">            The retrieved instance.</span>
-</span><span id="1-383">
-</span><span id="1-384"><span class="sd">        Raises:</span>
-</span><span id="1-385"><span class="sd">            NotFoundError: If no instance found identified by `item_id`.</span>
-</span><span id="1-386"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-387">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
-</span><span id="1-388">            <span class="n">id_attribute</span> <span class="o">=</span> <span class="n">id_attribute</span> <span class="k">if</span> <span class="n">id_attribute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span>
-</span><span id="1-389">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base_stmt</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
-</span><span id="1-390">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_select_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="p">[(</span><span class="n">id_attribute</span><span class="p">,</span> <span class="n">item_id</span><span class="p">)])</span>
-</span><span id="1-391">            <span class="n">instance</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">statement</span><span class="p">))</span><span class="o">.</span><span class="n">scalar_one_or_none</span><span class="p">()</span>
-</span><span id="1-392">            <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_not_found</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
-</span><span id="1-393">            <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
-</span><span id="1-394">            <span class="k">return</span> <span class="n">instance</span></div>
-</span><span id="1-395">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.get_one"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.get_one">[docs]</a></span><span id="1-396">    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_one</span><span class="p">(</span>
-</span><span id="1-397">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-398">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-399">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-400">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span id="1-401">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
-</span><span id="1-402"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get instance identified by ``kwargs``.</span>
-</span><span id="1-403">
-</span><span id="1-404"><span class="sd">        Args:</span>
-</span><span id="1-405"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
-</span><span id="1-406"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-407"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
-</span><span id="1-408"><span class="sd">                Defaults to :class:`SQLAlchemyAsyncRepository.statement &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-409"><span class="sd">            **kwargs: Identifier of the instance to be retrieved.</span>
-</span><span id="1-410">
-</span><span id="1-411"><span class="sd">        Returns:</span>
-</span><span id="1-412"><span class="sd">            The retrieved instance.</span>
-</span><span id="1-413">
-</span><span id="1-414"><span class="sd">        Raises:</span>
-</span><span id="1-415"><span class="sd">            NotFoundError: If no instance found identified by `item_id`.</span>
-</span><span id="1-416"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-417">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
-</span><span id="1-418">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base_stmt</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
-</span><span id="1-419">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_select_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-</span><span id="1-420">            <span class="n">instance</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">statement</span><span class="p">))</span><span class="o">.</span><span class="n">scalar_one_or_none</span><span class="p">()</span>
-</span><span id="1-421">            <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_not_found</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
-</span><span id="1-422">            <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
-</span><span id="1-423">            <span class="k">return</span> <span class="n">instance</span></div>
-</span><span id="1-424">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.get_one_or_none"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.get_one_or_none">[docs]</a></span><span id="1-425">    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_one_or_none</span><span class="p">(</span>
-</span><span id="1-426">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-427">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-428">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-429">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span id="1-430">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-431"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get instance identified by ``kwargs`` or None if not found.</span>
-</span><span id="1-432">
-</span><span id="1-433"><span class="sd">        Args:</span>
-</span><span id="1-434"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
-</span><span id="1-435"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-436"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
-</span><span id="1-437"><span class="sd">                Defaults to :class:`SQLAlchemyAsyncRepository.statement &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-438"><span class="sd">            **kwargs: Identifier of the instance to be retrieved.</span>
-</span><span id="1-439">
-</span><span id="1-440"><span class="sd">        Returns:</span>
-</span><span id="1-441"><span class="sd">            The retrieved instance or None</span>
-</span><span id="1-442"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-443">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
-</span><span id="1-444">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base_stmt</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
-</span><span id="1-445">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_select_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-</span><span id="1-446">            <span class="n">instance</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;Result[tuple[ModelT]]&quot;</span><span class="p">,</span> <span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)))</span><span class="o">.</span><span class="n">scalar_one_or_none</span><span class="p">()</span>
-</span><span id="1-447">            <span class="k">if</span> <span class="n">instance</span><span class="p">:</span>
-</span><span id="1-448">                <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
-</span><span id="1-449">            <span class="k">return</span> <span class="n">instance</span></div>
-</span><span id="1-450">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.get_or_create"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.get_or_create">[docs]</a></span><span id="1-451">    <span class="nd">@deprecated</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.3.5&quot;</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s2">&quot;SQLAlchemyAsyncRepository.get_or_upsert&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;method&quot;</span><span class="p">)</span>
-</span><span id="1-452">    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_or_create</span><span class="p">(</span>
-</span><span id="1-453">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-454">        <span class="n">match_fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-455">        <span class="n">upsert</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="1-456">        <span class="n">attribute_names</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-457">        <span class="n">with_for_update</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-458">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-459">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-460">        <span class="n">auto_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-461">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span id="1-462">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
-</span><span id="1-463"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get instance identified by ``kwargs`` or create if it doesn&#39;t exist.</span>
-</span><span id="1-464">
-</span><span id="1-465"><span class="sd">        Args:</span>
-</span><span id="1-466"><span class="sd">            match_fields: a list of keys to use to match the existing model.  When</span>
-</span><span id="1-467"><span class="sd">                empty, all fields are matched.</span>
-</span><span id="1-468"><span class="sd">            upsert: When using match_fields and actual model values differ from</span>
-</span><span id="1-469"><span class="sd">                `kwargs`, perform an update operation on the model.</span>
-</span><span id="1-470"><span class="sd">            attribute_names: an iterable of attribute names to pass into the ``update``</span>
-</span><span id="1-471"><span class="sd">                method.</span>
-</span><span id="1-472"><span class="sd">            with_for_update: indicating FOR UPDATE should be used, or may be a</span>
-</span><span id="1-473"><span class="sd">                dictionary containing flags to indicate a more specific set of</span>
-</span><span id="1-474"><span class="sd">                FOR UPDATE flags for the SELECT</span>
-</span><span id="1-475"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
-</span><span id="1-476"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
-</span><span id="1-477"><span class="sd">            auto_refresh: Refresh object from session before returning. Defaults to</span>
-</span><span id="1-478"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_refresh &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-479"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
-</span><span id="1-480"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-481"><span class="sd">            **kwargs: Identifier of the instance to be retrieved.</span>
-</span><span id="1-482">
-</span><span id="1-483"><span class="sd">        Returns:</span>
-</span><span id="1-484"><span class="sd">            a tuple that includes the instance and whether it needed to be created.</span>
-</span><span id="1-485"><span class="sd">            When using match_fields and actual model values differ from ``kwargs``, the</span>
-</span><span id="1-486"><span class="sd">            model value will be updated.</span>
-</span><span id="1-487"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-488">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_or_upsert</span><span class="p">(</span>
-</span><span id="1-489">            <span class="n">match_fields</span><span class="o">=</span><span class="n">match_fields</span><span class="p">,</span>
-</span><span id="1-490">            <span class="n">upsert</span><span class="o">=</span><span class="n">upsert</span><span class="p">,</span>
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository">[docs]</a></span><span id="1-52"><span class="k">class</span> <span class="nc">SQLAlchemyAsyncRepository</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]):</span>
+</span><span id="1-53"><span class="w">    </span><span class="sd">&quot;&quot;&quot;SQLAlchemy based implementation of the repository interface.&quot;&quot;&quot;</span>
+</span><span id="1-54">
+</span><span id="1-55">    <span class="n">model_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]</span>
+</span><span id="1-56">    <span class="n">id_attribute</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="s2">&quot;id&quot;</span>
+</span><span id="1-57">    <span class="n">match_fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="1-58">    <span class="n">_prefer_any</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="1-59">    <span class="n">prefer_any_dialects</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;postgresql&quot;</span><span class="p">,)</span>
+</span><span id="1-60"><span class="w">    </span><span class="sd">&quot;&quot;&quot;List of dialects that prefer to use ``field.id = ANY(:1)`` instead of ``field.id IN (...)``.&quot;&quot;&quot;</span>
+</span><span id="1-61">    <span class="n">_prefer_merge</span><span class="p">:</span> <span class="nb">bool</span>
+</span><span id="1-62">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.__init__"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.__init__">[docs]</a></span><span id="1-63">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="1-64">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-65">        <span class="o">*</span><span class="p">,</span>
+</span><span id="1-66">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-67">        <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
+</span><span id="1-68">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="1-69">        <span class="n">auto_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="1-70">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="1-71">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="1-72">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-73"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Repository pattern for SQLAlchemy models.</span>
+</span><span id="1-74">
+</span><span id="1-75"><span class="sd">        Args:</span>
+</span><span id="1-76"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
+</span><span id="1-77"><span class="sd">            session: Session managing the unit-of-work for the operation.</span>
+</span><span id="1-78"><span class="sd">            auto_expunge: Remove object from session before returning.</span>
+</span><span id="1-79"><span class="sd">            auto_refresh: Refresh object from session before returning.</span>
+</span><span id="1-80"><span class="sd">            auto_commit: Commit objects before returning.</span>
+</span><span id="1-81"><span class="sd">            **kwargs: Additional arguments.</span>
+</span><span id="1-82">
+</span><span id="1-83"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-84">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="1-85">        <span class="bp">self</span><span class="o">.</span><span class="n">auto_expunge</span> <span class="o">=</span> <span class="n">auto_expunge</span>
+</span><span id="1-86">        <span class="bp">self</span><span class="o">.</span><span class="n">auto_refresh</span> <span class="o">=</span> <span class="n">auto_refresh</span>
+</span><span id="1-87">        <span class="bp">self</span><span class="o">.</span><span class="n">auto_commit</span> <span class="o">=</span> <span class="n">auto_commit</span>
+</span><span id="1-88">        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
+</span><span id="1-89">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">Select</span><span class="p">):</span>
+</span><span id="1-90">            <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="o">=</span> <span class="n">lambda_stmt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">statement</span><span class="p">)</span>
+</span><span id="1-91">        <span class="k">elif</span> <span class="n">statement</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-92">            <span class="n">statement</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">)</span>
+</span><span id="1-93">            <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="o">=</span> <span class="n">lambda_stmt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">statement</span><span class="p">)</span>
+</span><span id="1-94">        <span class="k">else</span><span class="p">:</span>
+</span><span id="1-95">            <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="o">=</span> <span class="n">statement</span>
+</span><span id="1-96">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span><span class="p">:</span>
+</span><span id="1-97">            <span class="c1"># this shouldn&#39;t actually ever happen, but we include it anyway to properly</span>
+</span><span id="1-98">            <span class="c1"># narrow down the types</span>
+</span><span id="1-99">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Session improperly configure&quot;</span>
+</span><span id="1-100">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span id="1-101">        <span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span><span class="o">.</span><span class="n">dialect</span>
+</span><span id="1-102">        <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">engine_type</span> <span class="k">for</span> <span class="n">engine_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefer_any_dialects</span> <span class="ow">or</span> <span class="p">())</span></div>
+</span><span id="1-103">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.get_id_attribute_value"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.get_id_attribute_value">[docs]</a></span><span id="1-104">    <span class="nd">@classmethod</span>
+</span><span id="1-105">    <span class="k">def</span> <span class="nf">get_id_attribute_value</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">ModelT</span> <span class="o">|</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span> <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span id="1-106"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get value of attribute named as :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;` on ``item``.</span>
+</span><span id="1-107">
+</span><span id="1-108"><span class="sd">        Args:</span>
+</span><span id="1-109"><span class="sd">            item: Anything that should have an attribute named as :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;` value.</span>
+</span><span id="1-110"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
+</span><span id="1-111"><span class="sd">                Defaults to `None`, but can reference any surrogate or candidate key for the table.</span>
+</span><span id="1-112">
+</span><span id="1-113"><span class="sd">        Returns:</span>
+</span><span id="1-114"><span class="sd">            The value of attribute on ``item`` named as :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;`.</span>
+</span><span id="1-115"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-116">        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">id_attribute</span> <span class="k">if</span> <span class="n">id_attribute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">cls</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">)</span></div>
+</span><span id="1-117">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.set_id_attribute_value"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.set_id_attribute_value">[docs]</a></span><span id="1-118">    <span class="nd">@classmethod</span>
+</span><span id="1-119">    <span class="k">def</span> <span class="nf">set_id_attribute_value</span><span class="p">(</span>
+</span><span id="1-120">        <span class="bp">cls</span><span class="p">,</span>
+</span><span id="1-121">        <span class="n">item_id</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="1-122">        <span class="n">item</span><span class="p">:</span> <span class="n">ModelT</span><span class="p">,</span>
+</span><span id="1-123">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-124">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
+</span><span id="1-125"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the ``item`` after the ID is set to the appropriate attribute.</span>
+</span><span id="1-126">
+</span><span id="1-127"><span class="sd">        Args:</span>
+</span><span id="1-128"><span class="sd">            item_id: Value of ID to be set on instance</span>
+</span><span id="1-129"><span class="sd">            item: Anything that should have an attribute named as :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;` value.</span>
+</span><span id="1-130"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
+</span><span id="1-131"><span class="sd">                Defaults to `None`, but can reference any surrogate or candidate key for the table.</span>
+</span><span id="1-132">
+</span><span id="1-133"><span class="sd">        Returns:</span>
+</span><span id="1-134"><span class="sd">            Item with ``item_id`` set to :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;`</span>
+</span><span id="1-135"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-136">        <span class="nb">setattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">id_attribute</span> <span class="k">if</span> <span class="n">id_attribute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">cls</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">,</span> <span class="n">item_id</span><span class="p">)</span>
+</span><span id="1-137">        <span class="k">return</span> <span class="n">item</span></div>
+</span><span id="1-138">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.check_not_found"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.check_not_found">[docs]</a></span><span id="1-139">    <span class="nd">@staticmethod</span>
+</span><span id="1-140">    <span class="k">def</span> <span class="nf">check_not_found</span><span class="p">(</span><span class="n">item_or_none</span><span class="p">:</span> <span class="n">ModelT</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
+</span><span id="1-141"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Raise :exc:`advanced_alchemy.exceptions.NotFoundError` if ``item_or_none`` is ``None``.</span>
+</span><span id="1-142">
+</span><span id="1-143"><span class="sd">        Args:</span>
+</span><span id="1-144"><span class="sd">            item_or_none: Item (:class:`T &lt;T&gt;`) to be tested for existence.</span>
+</span><span id="1-145">
+</span><span id="1-146"><span class="sd">        Returns:</span>
+</span><span id="1-147"><span class="sd">            The item, if it exists.</span>
+</span><span id="1-148"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-149">        <span class="k">if</span> <span class="n">item_or_none</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-150">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No item found when one was expected&quot;</span>
+</span><span id="1-151">            <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span id="1-152">        <span class="k">return</span> <span class="n">item_or_none</span></div>
+</span><span id="1-153">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.add"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.add">[docs]</a></span><span id="1-154">    <span class="k">async</span> <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+</span><span id="1-155">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-156">        <span class="n">data</span><span class="p">:</span> <span class="n">ModelT</span><span class="p">,</span>
+</span><span id="1-157">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-158">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-159">        <span class="n">auto_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-160">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
+</span><span id="1-161"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Add ``data`` to the collection.</span>
+</span><span id="1-162">
+</span><span id="1-163"><span class="sd">        Args:</span>
+</span><span id="1-164"><span class="sd">            data: Instance to be added to the collection.</span>
+</span><span id="1-165"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
+</span><span id="1-166"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
+</span><span id="1-167"><span class="sd">            auto_refresh: Refresh object from session before returning. Defaults to</span>
+</span><span id="1-168"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_refresh &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-169"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
+</span><span id="1-170"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-171">
+</span><span id="1-172"><span class="sd">        Returns:</span>
+</span><span id="1-173"><span class="sd">            The added instance.</span>
+</span><span id="1-174"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-175">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
+</span><span id="1-176">            <span class="n">instance</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attach_to_session</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="1-177">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flush_or_commit</span><span class="p">(</span><span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">)</span>
+</span><span id="1-178">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refresh</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_refresh</span><span class="o">=</span><span class="n">auto_refresh</span><span class="p">)</span>
+</span><span id="1-179">            <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
+</span><span id="1-180">            <span class="k">return</span> <span class="n">instance</span></div>
+</span><span id="1-181">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.add_many"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.add_many">[docs]</a></span><span id="1-182">    <span class="k">async</span> <span class="k">def</span> <span class="nf">add_many</span><span class="p">(</span>
+</span><span id="1-183">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-184">        <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
+</span><span id="1-185">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-186">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-187">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
+</span><span id="1-188"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Add many `data` to the collection.</span>
+</span><span id="1-189">
+</span><span id="1-190"><span class="sd">        Args:</span>
+</span><span id="1-191"><span class="sd">            data: list of Instances to be added to the collection.</span>
+</span><span id="1-192"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
+</span><span id="1-193"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
+</span><span id="1-194"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
+</span><span id="1-195"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-196">
+</span><span id="1-197"><span class="sd">        Returns:</span>
+</span><span id="1-198"><span class="sd">            The added instances.</span>
+</span><span id="1-199"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-200">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
+</span><span id="1-201">            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add_all</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="1-202">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flush_or_commit</span><span class="p">(</span><span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">)</span>
+</span><span id="1-203">            <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+</span><span id="1-204">                <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
+</span><span id="1-205">            <span class="k">return</span> <span class="n">data</span></div>
+</span><span id="1-206">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.delete"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.delete">[docs]</a></span><span id="1-207">    <span class="k">async</span> <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span>
+</span><span id="1-208">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-209">        <span class="n">item_id</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="1-210">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-211">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-212">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-213">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
+</span><span id="1-214"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete instance identified by ``item_id``.</span>
+</span><span id="1-215">
+</span><span id="1-216"><span class="sd">        Args:</span>
+</span><span id="1-217"><span class="sd">            item_id: Identifier of instance to be deleted.</span>
+</span><span id="1-218"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
+</span><span id="1-219"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
+</span><span id="1-220"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
+</span><span id="1-221"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-222"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
+</span><span id="1-223"><span class="sd">                Defaults to `id`, but can reference any surrogate or candidate key for the table.</span>
+</span><span id="1-224">
+</span><span id="1-225"><span class="sd">        Returns:</span>
+</span><span id="1-226"><span class="sd">            The deleted instance.</span>
+</span><span id="1-227">
+</span><span id="1-228"><span class="sd">        Raises:</span>
+</span><span id="1-229"><span class="sd">            NotFoundError: If no instance found identified by ``item_id``.</span>
+</span><span id="1-230"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-231">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
+</span><span id="1-232">            <span class="n">instance</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item_id</span><span class="p">,</span> <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">)</span>
+</span><span id="1-233">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+</span><span id="1-234">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flush_or_commit</span><span class="p">(</span><span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">)</span>
+</span><span id="1-235">            <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
+</span><span id="1-236">            <span class="k">return</span> <span class="n">instance</span></div>
+</span><span id="1-237">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.delete_many"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.delete_many">[docs]</a></span><span id="1-238">    <span class="k">async</span> <span class="k">def</span> <span class="nf">delete_many</span><span class="p">(</span>
+</span><span id="1-239">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-240">        <span class="n">item_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span id="1-241">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-242">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-243">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-244">        <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-245">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
+</span><span id="1-246"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete instance identified by `item_id`.</span>
+</span><span id="1-247">
+</span><span id="1-248"><span class="sd">        Args:</span>
+</span><span id="1-249"><span class="sd">            item_ids: Identifier of instance to be deleted.</span>
+</span><span id="1-250"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
+</span><span id="1-251"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
+</span><span id="1-252"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
+</span><span id="1-253"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-254"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
+</span><span id="1-255"><span class="sd">                Defaults to `id`, but can reference any surrogate or candidate key for the table.</span>
+</span><span id="1-256"><span class="sd">            chunk_size: Allows customization of the ``insertmanyvalues_max_parameters`` setting for the driver.</span>
+</span><span id="1-257"><span class="sd">                Defaults to `950` if left unset.</span>
+</span><span id="1-258">
+</span><span id="1-259"><span class="sd">        Returns:</span>
+</span><span id="1-260"><span class="sd">            The deleted instances.</span>
+</span><span id="1-261">
+</span><span id="1-262"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-263">
+</span><span id="1-264">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
+</span><span id="1-265">            <span class="n">id_attribute</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span>
+</span><span id="1-266">                <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span>
+</span><span id="1-267">                <span class="n">id_attribute</span> <span class="k">if</span> <span class="n">id_attribute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">,</span>
+</span><span id="1-268">            <span class="p">)</span>
+</span><span id="1-269">            <span class="n">instances</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="1-270">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span><span class="p">:</span>
+</span><span id="1-271">                <span class="n">chunk_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">item_ids</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span id="1-272">            <span class="n">chunk_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_insertmanyvalues_max_parameters</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">)</span>
+</span><span id="1-273">            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">item_ids</span><span class="p">),</span> <span class="n">chunk_size</span><span class="p">):</span>
+</span><span id="1-274">                <span class="n">chunk</span> <span class="o">=</span> <span class="n">item_ids</span><span class="p">[</span><span class="n">idx</span> <span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">idx</span> <span class="o">+</span> <span class="n">chunk_size</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">item_ids</span><span class="p">))]</span>
+</span><span id="1-275">                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span><span class="o">.</span><span class="n">delete_executemany_returning</span><span class="p">:</span>
+</span><span id="1-276">                    <span class="n">instances</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+</span><span id="1-277">                        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+</span><span id="1-278">                            <span class="bp">self</span><span class="o">.</span><span class="n">_get_delete_many_statement</span><span class="p">(</span>
+</span><span id="1-279">                                <span class="n">statement_type</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+</span><span id="1-280">                                <span class="n">model_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span>
+</span><span id="1-281">                                <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">,</span>
+</span><span id="1-282">                                <span class="n">id_chunk</span><span class="o">=</span><span class="n">chunk</span><span class="p">,</span>
+</span><span id="1-283">                                <span class="n">supports_returning</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span><span class="o">.</span><span class="n">delete_executemany_returning</span><span class="p">,</span>
+</span><span id="1-284">                            <span class="p">),</span>
+</span><span id="1-285">                        <span class="p">),</span>
+</span><span id="1-286">                    <span class="p">)</span>
+</span><span id="1-287">                <span class="k">else</span><span class="p">:</span>
+</span><span id="1-288">                    <span class="n">instances</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+</span><span id="1-289">                        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">scalars</span><span class="p">(</span>
+</span><span id="1-290">                            <span class="bp">self</span><span class="o">.</span><span class="n">_get_delete_many_statement</span><span class="p">(</span>
+</span><span id="1-291">                                <span class="n">statement_type</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="p">,</span>
+</span><span id="1-292">                                <span class="n">model_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span>
+</span><span id="1-293">                                <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">,</span>
+</span><span id="1-294">                                <span class="n">id_chunk</span><span class="o">=</span><span class="n">chunk</span><span class="p">,</span>
+</span><span id="1-295">                                <span class="n">supports_returning</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span><span class="o">.</span><span class="n">delete_executemany_returning</span><span class="p">,</span>
+</span><span id="1-296">                            <span class="p">),</span>
+</span><span id="1-297">                        <span class="p">),</span>
+</span><span id="1-298">                    <span class="p">)</span>
+</span><span id="1-299">                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+</span><span id="1-300">                        <span class="bp">self</span><span class="o">.</span><span class="n">_get_delete_many_statement</span><span class="p">(</span>
+</span><span id="1-301">                            <span class="n">statement_type</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+</span><span id="1-302">                            <span class="n">model_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span>
+</span><span id="1-303">                            <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">,</span>
+</span><span id="1-304">                            <span class="n">id_chunk</span><span class="o">=</span><span class="n">chunk</span><span class="p">,</span>
+</span><span id="1-305">                            <span class="n">supports_returning</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span><span class="o">.</span><span class="n">delete_executemany_returning</span><span class="p">,</span>
+</span><span id="1-306">                        <span class="p">),</span>
+</span><span id="1-307">                    <span class="p">)</span>
+</span><span id="1-308">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flush_or_commit</span><span class="p">(</span><span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">)</span>
+</span><span id="1-309">            <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
+</span><span id="1-310">                <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
+</span><span id="1-311">            <span class="k">return</span> <span class="n">instances</span></div>
+</span><span id="1-312">
+</span><span id="1-313">    <span class="k">def</span> <span class="nf">_get_insertmanyvalues_max_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="1-314">        <span class="k">return</span> <span class="n">chunk_size</span> <span class="k">if</span> <span class="n">chunk_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">DEFAULT_INSERTMANYVALUES_MAX_PARAMETERS</span>
+</span><span id="1-315">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.exists"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.exists">[docs]</a></span><span id="1-316">    <span class="k">async</span> <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span>
+</span><span id="1-317">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-318">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">FilterTypes</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
+</span><span id="1-319">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="1-320">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="1-321"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return true if the object specified by ``kwargs`` exists.</span>
+</span><span id="1-322">
+</span><span id="1-323"><span class="sd">        Args:</span>
+</span><span id="1-324"><span class="sd">            *filters: Types for specific filtering operations.</span>
+</span><span id="1-325"><span class="sd">            **kwargs: Identifier of the instance to be retrieved.</span>
+</span><span id="1-326">
+</span><span id="1-327"><span class="sd">        Returns:</span>
+</span><span id="1-328"><span class="sd">            True if the instance was found.  False if not found..</span>
+</span><span id="1-329">
+</span><span id="1-330"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-331">        <span class="n">existing</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="o">*</span><span class="n">filters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="1-332">        <span class="k">return</span> <span class="n">existing</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+</span><span id="1-333">
+</span><span id="1-334">    <span class="k">def</span> <span class="nf">_get_base_stmt</span><span class="p">(</span>
+</span><span id="1-335">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-336">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-337">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span id="1-338">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">Select</span><span class="p">):</span>
+</span><span id="1-339">            <span class="k">return</span> <span class="n">lambda_stmt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">statement</span><span class="p">)</span>
+</span><span id="1-340">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="k">if</span> <span class="n">statement</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">statement</span>
+</span><span id="1-341">
+</span><span id="1-342">    <span class="k">def</span> <span class="nf">_get_delete_many_statement</span><span class="p">(</span>
+</span><span id="1-343">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-344">        <span class="n">model_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
+</span><span id="1-345">        <span class="n">id_attribute</span><span class="p">:</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
+</span><span id="1-346">        <span class="n">id_chunk</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span id="1-347">        <span class="n">supports_returning</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+</span><span id="1-348">        <span class="n">statement_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span> <span class="s2">&quot;select&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+</span><span id="1-349">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span id="1-350">        <span class="k">if</span> <span class="n">statement_type</span> <span class="o">==</span> <span class="s2">&quot;delete&quot;</span><span class="p">:</span>
+</span><span id="1-351">            <span class="n">statement</span> <span class="o">=</span> <span class="n">lambda_stmt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">delete</span><span class="p">(</span><span class="n">model_type</span><span class="p">))</span>
+</span><span id="1-352">        <span class="k">elif</span> <span class="n">statement_type</span> <span class="o">==</span> <span class="s2">&quot;select&quot;</span><span class="p">:</span>
+</span><span id="1-353">            <span class="n">statement</span> <span class="o">=</span> <span class="n">lambda_stmt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">select</span><span class="p">(</span><span class="n">model_type</span><span class="p">))</span>
+</span><span id="1-354">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span><span class="p">:</span>
+</span><span id="1-355">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="n">id_chunk</span><span class="p">)</span> <span class="o">==</span> <span class="n">id_attribute</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
+</span><span id="1-356">        <span class="k">else</span><span class="p">:</span>
+</span><span id="1-357">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">id_attribute</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">id_chunk</span><span class="p">))</span>
+</span><span id="1-358">        <span class="k">if</span> <span class="n">supports_returning</span> <span class="ow">and</span> <span class="n">statement_type</span> <span class="o">!=</span> <span class="s2">&quot;select&quot;</span><span class="p">:</span>
+</span><span id="1-359">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="n">model_type</span><span class="p">)</span>
+</span><span id="1-360">        <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-361">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.get"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.get">[docs]</a></span><span id="1-362">    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
+</span><span id="1-363">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-364">        <span class="n">item_id</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="1-365">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-366">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-367">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-368">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
+</span><span id="1-369"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get instance identified by `item_id`.</span>
+</span><span id="1-370">
+</span><span id="1-371"><span class="sd">        Args:</span>
+</span><span id="1-372"><span class="sd">            item_id: Identifier of the instance to be retrieved.</span>
+</span><span id="1-373"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
+</span><span id="1-374"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-375"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
+</span><span id="1-376"><span class="sd">                Defaults to :class:`SQLAlchemyAsyncRepository.statement &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-377"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
+</span><span id="1-378"><span class="sd">                Defaults to `id`, but can reference any surrogate or candidate key for the table.</span>
+</span><span id="1-379">
+</span><span id="1-380"><span class="sd">        Returns:</span>
+</span><span id="1-381"><span class="sd">            The retrieved instance.</span>
+</span><span id="1-382">
+</span><span id="1-383"><span class="sd">        Raises:</span>
+</span><span id="1-384"><span class="sd">            NotFoundError: If no instance found identified by `item_id`.</span>
+</span><span id="1-385"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-386">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
+</span><span id="1-387">            <span class="n">id_attribute</span> <span class="o">=</span> <span class="n">id_attribute</span> <span class="k">if</span> <span class="n">id_attribute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span>
+</span><span id="1-388">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base_stmt</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
+</span><span id="1-389">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_select_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="p">[(</span><span class="n">id_attribute</span><span class="p">,</span> <span class="n">item_id</span><span class="p">)])</span>
+</span><span id="1-390">            <span class="n">instance</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">statement</span><span class="p">))</span><span class="o">.</span><span class="n">scalar_one_or_none</span><span class="p">()</span>
+</span><span id="1-391">            <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_not_found</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+</span><span id="1-392">            <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
+</span><span id="1-393">            <span class="k">return</span> <span class="n">instance</span></div>
+</span><span id="1-394">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.get_one"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.get_one">[docs]</a></span><span id="1-395">    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_one</span><span class="p">(</span>
+</span><span id="1-396">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-397">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-398">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-399">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="1-400">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
+</span><span id="1-401"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get instance identified by ``kwargs``.</span>
+</span><span id="1-402">
+</span><span id="1-403"><span class="sd">        Args:</span>
+</span><span id="1-404"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
+</span><span id="1-405"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-406"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
+</span><span id="1-407"><span class="sd">                Defaults to :class:`SQLAlchemyAsyncRepository.statement &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-408"><span class="sd">            **kwargs: Identifier of the instance to be retrieved.</span>
+</span><span id="1-409">
+</span><span id="1-410"><span class="sd">        Returns:</span>
+</span><span id="1-411"><span class="sd">            The retrieved instance.</span>
+</span><span id="1-412">
+</span><span id="1-413"><span class="sd">        Raises:</span>
+</span><span id="1-414"><span class="sd">            NotFoundError: If no instance found identified by `item_id`.</span>
+</span><span id="1-415"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-416">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
+</span><span id="1-417">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base_stmt</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
+</span><span id="1-418">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_select_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+</span><span id="1-419">            <span class="n">instance</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">statement</span><span class="p">))</span><span class="o">.</span><span class="n">scalar_one_or_none</span><span class="p">()</span>
+</span><span id="1-420">            <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_not_found</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+</span><span id="1-421">            <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
+</span><span id="1-422">            <span class="k">return</span> <span class="n">instance</span></div>
+</span><span id="1-423">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.get_one_or_none"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.get_one_or_none">[docs]</a></span><span id="1-424">    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_one_or_none</span><span class="p">(</span>
+</span><span id="1-425">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-426">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-427">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-428">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="1-429">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-430"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get instance identified by ``kwargs`` or None if not found.</span>
+</span><span id="1-431">
+</span><span id="1-432"><span class="sd">        Args:</span>
+</span><span id="1-433"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
+</span><span id="1-434"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-435"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
+</span><span id="1-436"><span class="sd">                Defaults to :class:`SQLAlchemyAsyncRepository.statement &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-437"><span class="sd">            **kwargs: Identifier of the instance to be retrieved.</span>
+</span><span id="1-438">
+</span><span id="1-439"><span class="sd">        Returns:</span>
+</span><span id="1-440"><span class="sd">            The retrieved instance or None</span>
+</span><span id="1-441"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-442">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
+</span><span id="1-443">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base_stmt</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
+</span><span id="1-444">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_select_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+</span><span id="1-445">            <span class="n">instance</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;Result[tuple[ModelT]]&quot;</span><span class="p">,</span> <span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)))</span><span class="o">.</span><span class="n">scalar_one_or_none</span><span class="p">()</span>
+</span><span id="1-446">            <span class="k">if</span> <span class="n">instance</span><span class="p">:</span>
+</span><span id="1-447">                <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
+</span><span id="1-448">            <span class="k">return</span> <span class="n">instance</span></div>
+</span><span id="1-449">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.get_or_create"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.get_or_create">[docs]</a></span><span id="1-450">    <span class="nd">@deprecated</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.3.5&quot;</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s2">&quot;SQLAlchemyAsyncRepository.get_or_upsert&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;method&quot;</span><span class="p">)</span>
+</span><span id="1-451">    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_or_create</span><span class="p">(</span>
+</span><span id="1-452">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-453">        <span class="n">match_fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-454">        <span class="n">upsert</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="1-455">        <span class="n">attribute_names</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-456">        <span class="n">with_for_update</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-457">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-458">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-459">        <span class="n">auto_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-460">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="1-461">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+</span><span id="1-462"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get instance identified by ``kwargs`` or create if it doesn&#39;t exist.</span>
+</span><span id="1-463">
+</span><span id="1-464"><span class="sd">        Args:</span>
+</span><span id="1-465"><span class="sd">            match_fields: a list of keys to use to match the existing model.  When</span>
+</span><span id="1-466"><span class="sd">                empty, all fields are matched.</span>
+</span><span id="1-467"><span class="sd">            upsert: When using match_fields and actual model values differ from</span>
+</span><span id="1-468"><span class="sd">                `kwargs`, perform an update operation on the model.</span>
+</span><span id="1-469"><span class="sd">            attribute_names: an iterable of attribute names to pass into the ``update``</span>
+</span><span id="1-470"><span class="sd">                method.</span>
+</span><span id="1-471"><span class="sd">            with_for_update: indicating FOR UPDATE should be used, or may be a</span>
+</span><span id="1-472"><span class="sd">                dictionary containing flags to indicate a more specific set of</span>
+</span><span id="1-473"><span class="sd">                FOR UPDATE flags for the SELECT</span>
+</span><span id="1-474"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
+</span><span id="1-475"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
+</span><span id="1-476"><span class="sd">            auto_refresh: Refresh object from session before returning. Defaults to</span>
+</span><span id="1-477"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_refresh &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-478"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
+</span><span id="1-479"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-480"><span class="sd">            **kwargs: Identifier of the instance to be retrieved.</span>
+</span><span id="1-481">
+</span><span id="1-482"><span class="sd">        Returns:</span>
+</span><span id="1-483"><span class="sd">            a tuple that includes the instance and whether it needed to be created.</span>
+</span><span id="1-484"><span class="sd">            When using match_fields and actual model values differ from ``kwargs``, the</span>
+</span><span id="1-485"><span class="sd">            model value will be updated.</span>
+</span><span id="1-486"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-487">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_or_upsert</span><span class="p">(</span>
+</span><span id="1-488">            <span class="n">match_fields</span><span class="o">=</span><span class="n">match_fields</span><span class="p">,</span>
+</span><span id="1-489">            <span class="n">update</span><span class="o">=</span><span class="n">upsert</span><span class="p">,</span>
+</span><span id="1-490">            <span class="n">create</span><span class="o">=</span><span class="n">upsert</span><span class="p">,</span>
 </span><span id="1-491">            <span class="n">attribute_names</span><span class="o">=</span><span class="n">attribute_names</span><span class="p">,</span>
 </span><span id="1-492">            <span class="n">with_for_update</span><span class="o">=</span><span class="n">with_for_update</span><span class="p">,</span>
 </span><span id="1-493">            <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
@@ -738,7 +738,7 @@ html.dark {
 <div class="viewcode-block" id="SQLAlchemyAsyncRepository.get_or_upsert"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.get_or_upsert">[docs]</a></span><span id="1-499">    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_or_upsert</span><span class="p">(</span>
 </span><span id="1-500">        <span class="bp">self</span><span class="p">,</span>
 </span><span id="1-501">        <span class="n">match_fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-502">        <span class="n">upsert</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="1-502">        <span class="n">update</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 </span><span id="1-503">        <span class="n">create</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 </span><span id="1-504">        <span class="n">attribute_names</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="1-505">        <span class="n">with_for_update</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -752,7 +752,7 @@ html.dark {
 </span><span id="1-513"><span class="sd">        Args:</span>
 </span><span id="1-514"><span class="sd">            match_fields: a list of keys to use to match the existing model.  When</span>
 </span><span id="1-515"><span class="sd">                empty, all fields are matched.</span>
-</span><span id="1-516"><span class="sd">            upsert: When using match_fields and actual model values differ from</span>
+</span><span id="1-516"><span class="sd">            update: When using match_fields and actual model values differ from</span>
 </span><span id="1-517"><span class="sd">                `kwargs`, perform an update operation on the model.</span>
 </span><span id="1-518"><span class="sd">            create: Should a model be created.  If no model is found, an exception is raised.</span>
 </span><span id="1-519"><span class="sd">            attribute_names: an iterable of attribute names to pass into the ``update``</span>
@@ -789,7 +789,7 @@ html.dark {
 </span><span id="1-550">            <span class="bp">self</span><span class="o">.</span><span class="n">check_not_found</span><span class="p">(</span><span class="n">existing</span><span class="p">)</span>
 </span><span id="1-551">        <span class="k">if</span> <span class="ow">not</span> <span class="n">existing</span><span class="p">:</span>
 </span><span id="1-552">            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)),</span> <span class="kc">True</span>  <span class="c1"># pyright: ignore[reportGeneralTypeIssues]</span>
-</span><span id="1-553">        <span class="k">if</span> <span class="n">upsert</span><span class="p">:</span>
+</span><span id="1-553">        <span class="k">if</span> <span class="n">update</span><span class="p">:</span>
 </span><span id="1-554">            <span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">new_field_value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 </span><span id="1-555">                <span class="n">field</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">existing</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 </span><span id="1-556">                <span class="k">if</span> <span class="n">field</span> <span class="ow">and</span> <span class="n">field</span> <span class="o">!=</span> <span class="n">new_field_value</span><span class="p">:</span>
@@ -1194,7 +1194,7 @@ html.dark {
 </span><span id="1-955">        <span class="n">match_filter</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilterTypes</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
 </span><span id="1-956">            <span class="n">CollectionFilter</span><span class="p">(</span>
 </span><span id="1-957">                <span class="n">field_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">,</span>
-</span><span id="1-958">                <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span> <span class="k">if</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-958">                <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">if</span> <span class="n">datum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span> <span class="k">if</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="1-959">            <span class="p">),</span>
 </span><span id="1-960">        <span class="p">]</span>
 </span><span id="1-961">        <span class="k">if</span> <span class="n">match_fields</span><span class="p">:</span>
@@ -1202,15 +1202,15 @@ html.dark {
 </span><span id="1-963">                <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
 </span><span id="1-964">                <span class="n">matched_values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">if</span> <span class="n">datum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 </span><span id="1-965">                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span><span class="p">:</span>
-</span><span id="1-966">                    <span class="n">match_filter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">and_</span><span class="p">(</span><span class="nb">any</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">matched_values</span> <span class="ow">or</span> <span class="p">[]])</span> <span class="o">==</span> <span class="n">field</span><span class="p">))</span>  <span class="c1"># type: ignore[arg-type]</span>
+</span><span id="1-966">                    <span class="n">match_filter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="n">matched_values</span><span class="p">)</span> <span class="o">==</span> <span class="n">field</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
 </span><span id="1-967">                <span class="k">else</span><span class="p">:</span>
-</span><span id="1-968">                    <span class="n">match_filter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">and_</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">matched_values</span><span class="p">)))</span>
+</span><span id="1-968">                    <span class="n">match_filter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">matched_values</span><span class="p">))</span>
 </span><span id="1-969">
 </span><span id="1-970">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
 </span><span id="1-971">            <span class="n">existing_objs</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="o">*</span><span class="n">match_filter</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="1-972">            <span class="n">existing_ids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">existing_objs</span><span class="p">]</span>
+</span><span id="1-972">            <span class="n">existing_ids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">existing_objs</span> <span class="k">if</span> <span class="n">datum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 </span><span id="1-973">            <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-</span><span id="1-974">                <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">)</span> <span class="ow">in</span> <span class="n">existing_ids</span><span class="p">:</span>
+</span><span id="1-974">                <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">existing_ids</span><span class="p">:</span>
 </span><span id="1-975">                    <span class="n">data_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datum</span><span class="p">)</span>
 </span><span id="1-976">                <span class="k">else</span><span class="p">:</span>
 </span><span id="1-977">                    <span class="n">data_to_insert</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datum</span><span class="p">)</span>
