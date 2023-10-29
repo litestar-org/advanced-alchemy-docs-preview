@@ -249,14 +249,14 @@ html.dark {
 </span><span id="1-10">    <span class="n">GenericSessionConfig</span><span class="p">,</span>
 </span><span id="1-11">    <span class="n">GenericSQLAlchemyConfig</span><span class="p">,</span>
 </span><span id="1-12"><span class="p">)</span>
-</span><span id="1-13"><span class="kn">from</span> <span class="nn">advanced_alchemy.config.types</span> <span class="kn">import</span> <span class="n">Empty</span>
+</span><span id="1-13"><span class="kn">from</span> <span class="nn">advanced_alchemy.utils.dataclass</span> <span class="kn">import</span> <span class="n">Empty</span>
 </span><span id="1-14">
 </span><span id="1-15"><span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
 </span><span id="1-16">    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
 </span><span id="1-17">
 </span><span id="1-18">    <span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">Session</span>
 </span><span id="1-19">
-</span><span id="1-20">    <span class="kn">from</span> <span class="nn">advanced_alchemy.config.types</span> <span class="kn">import</span> <span class="n">EmptyType</span>
+</span><span id="1-20">    <span class="kn">from</span> <span class="nn">advanced_alchemy.utils.dataclass</span> <span class="kn">import</span> <span class="n">EmptyType</span>
 </span><span id="1-21">
 </span><span id="1-22"><span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
 </span><span id="1-23">    <span class="s2">&quot;SQLAlchemyAsyncConfig&quot;</span><span class="p">,</span>
@@ -301,7 +301,12 @@ html.dark {
 </span><span id="1-62"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the SQLAlchemy Alembic migrations.</span>
 </span><span id="1-63">
 </span><span id="1-64"><span class="sd">    The configuration options are documented in the Alembic documentation.</span>
-</span><span id="1-65"><span class="sd">    &quot;&quot;&quot;</span></div>
+</span><span id="1-65"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="1-66">
+</span><span id="1-67">    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-68">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
+</span><span id="1-69">            <span class="bp">self</span><span class="o">.</span><span class="n">alembic_config</span><span class="o">.</span><span class="n">target_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span>
+</span><span id="1-70">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span></div>
 </span></pre></div>
         </article>
         
