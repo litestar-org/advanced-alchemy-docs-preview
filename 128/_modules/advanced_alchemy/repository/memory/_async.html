@@ -238,7 +238,7 @@
 </span><span id="1-8"><span class="kn">from</span> <span class="nn">sqlalchemy.ext.asyncio</span> <span class="kn">import</span> <span class="n">AsyncEngine</span><span class="p">,</span> <span class="n">AsyncSession</span>
 </span><span id="1-9"><span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">InstrumentedAttribute</span>
 </span><span id="1-10">
-</span><span id="1-11"><span class="kn">from</span> <span class="nn">advanced_alchemy.exceptions</span> <span class="kn">import</span> <span class="n">ConflictError</span><span class="p">,</span> <span class="n">NotFoundError</span><span class="p">,</span> <span class="n">RepositoryError</span>
+</span><span id="1-11"><span class="kn">from</span> <span class="nn">advanced_alchemy.exceptions</span> <span class="kn">import</span> <span class="n">IntegrityError</span><span class="p">,</span> <span class="n">NotFoundError</span><span class="p">,</span> <span class="n">RepositoryError</span>
 </span><span id="1-12"><span class="kn">from</span> <span class="nn">advanced_alchemy.filters</span> <span class="kn">import</span> <span class="p">(</span>
 </span><span id="1-13">    <span class="n">BeforeAfter</span><span class="p">,</span>
 </span><span id="1-14">    <span class="n">CollectionFilter</span><span class="p">,</span>
@@ -524,13 +524,13 @@
 </span><span id="1-294">    <span class="k">def</span> <span class="nf">_find_or_raise_not_found</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
 </span><span id="1-295">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_not_found</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__collection__</span><span class="p">()</span><span class="o">.</span><span class="n">get_or_none</span><span class="p">(</span><span class="n">id_</span><span class="p">))</span>
 </span><span id="1-296">
-</span><span id="1-297">    <span class="k">def</span> <span class="nf">_find_one_or_raise_conflict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
+</span><span id="1-297">    <span class="k">def</span> <span class="nf">_find_one_or_raise_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
 </span><span id="1-298">        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
 </span><span id="1-299">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No item found when one was expected&quot;</span>
-</span><span id="1-300">            <span class="k">raise</span> <span class="n">ConflictError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span id="1-300">            <span class="k">raise</span> <span class="n">IntegrityError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 </span><span id="1-301">        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
 </span><span id="1-302">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Multiple objects when one was expected&quot;</span>
-</span><span id="1-303">            <span class="k">raise</span> <span class="n">ConflictError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span id="1-303">            <span class="k">raise</span> <span class="n">IntegrityError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 </span><span id="1-304">        <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </span><span id="1-305">
 </span><span id="1-306">    <span class="nd">@classmethod</span>
@@ -547,7 +547,7 @@
 </span><span id="1-317">        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_result_by_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__collection__</span><span class="p">()</span><span class="o">.</span><span class="n">list</span><span class="p">(),</span> <span class="n">kwargs</span><span class="p">)</span>
 </span><span id="1-318">        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
 </span><span id="1-319">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Multiple objects when one was expected&quot;</span>
-</span><span id="1-320">            <span class="k">raise</span> <span class="n">ConflictError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span id="1-320">            <span class="k">raise</span> <span class="n">IntegrityError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 </span><span id="1-321">        <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">result</span> <span class="k">else</span> <span class="kc">None</span>
 </span><span id="1-322">
 </span><span id="1-323">    <span class="nd">@deprecated</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.3.5&quot;</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s2">&quot;SQLAlchemyAsyncRepository.get_or_upsert&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;method&quot;</span><span class="p">)</span>
@@ -620,7 +620,7 @@
 </span><span id="1-390">            <span class="bp">self</span><span class="o">.</span><span class="n">__database__</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 </span><span id="1-391">        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
 </span><span id="1-392">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Item already exist in collection&quot;</span>
-</span><span id="1-393">            <span class="k">raise</span> <span class="n">ConflictError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+</span><span id="1-393">            <span class="k">raise</span> <span class="n">IntegrityError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
 </span><span id="1-394">        <span class="k">return</span> <span class="n">data</span>
 </span><span id="1-395">
 </span><span id="1-396">    <span class="k">async</span> <span class="k">def</span> <span class="nf">add_many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span> <span class="o">**</span><span class="n">_</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
