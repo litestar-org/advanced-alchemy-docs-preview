@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>filters - Docs</title>
+    <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="operations" href="operations.html" /><link rel="prev" title="exceptions" href="exceptions.html" />
+  <script>
+    const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const sessionTheme = sessionStorage['_theme']
+    if (sessionTheme) {
+      document.documentElement.classList.add(sessionTheme)
+    } else if (isDarkTheme) {
+      document.documentElement.classList.add('dark')
+    }
+  </script><link rel="shortcut icon" href="../_static/logo.png"/><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=aecf457f" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=28c32440" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=ee381b95" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=bf5addad" />
+    <style>
+:root {
+  --sy-f-sys:-apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Droid Sans, Helvetica Neue;--sy-f-cjk:PingFang SC, Hiragino Sans GB, Droid Sans Fallback, Microsoft YaHei;--sy-f-heading:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-text:var(--sy-f-sys), var(--sy-f-cjk), sans-serif;--sy-f-mono:Menlo, Monaco, Consolas, "Courier New", monospace;--sy-c-divider:rgba(var(--sy-rc-text), 0.1);--sy-c-divider-weak:rgba(var(--sy-rc-text), 0.05);--sy-c-border:rgba(var(--sy-rc-text), 0.14);--sy-s-banner-height:0rem;--sy-s-navbar-height:56px;--sy-s-offset-top:calc(var(--sy-s-navbar-height) + var(--sy-s-banner-height));--sy-c-link:rgb(var(--sy-rc-theme));--sy-c-link-weak:rgba(var(--sy-rc-theme), 0.86);
+  --sy-rc-theme:245, 0, 87;--sy-rc-bg:255, 255, 255;--sy-rc-invert:245, 0, 87;--sy-rc-text:245, 0, 87;--sy-c-bg:#fff;--sy-c-bg-weak:0, 0, 0;--sy-c-text:#000000;--sy-c-text-weak:#f50057;--sy-c-heading:#f50057;--sy-c-bold:#f50057;--sy-c-foot-text:#000000;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f50057;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --sy-rc-theme:245, 0, 87;--sy-rc-bg:255, 255, 255;--sy-rc-invert:245, 0, 87;--sy-rc-text:245, 0, 87;--sy-c-bg:#fff;--sy-c-bg-weak:0, 0, 0;--sy-c-text:#000000;--sy-c-text-weak:#f50057;--sy-c-heading:#f50057;--sy-c-bold:#f50057;--sy-c-foot-text:#000000;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f50057;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sy-rc-theme:245, 0, 87;--sy-rc-bg:0, 0, 0;--sy-rc-invert:245, 0, 87;--sy-rc-text:245, 0, 87;--sy-c-bg:#f50057;--sy-c-bg-weak:#000000;--sy-c-text:#ebdddd;--sy-c-text-weak:#f50057;--sy-c-heading:#f50057;--sy-c-bold:#f50057;--sy-c-foot-text:#ebdddd;--sy-c-foot-bg:#000000;--sy-c-foot-divider:#f50057;
+  }
+}
+html.light {
+  --sy-rc-theme:245, 0, 87;--sy-rc-bg:255, 255, 255;--sy-rc-invert:245, 0, 87;--sy-rc-text:245, 0, 87;--sy-c-bg:#fff;--sy-c-bg-weak:0, 0, 0;--sy-c-text:#000000;--sy-c-text-weak:#f50057;--sy-c-heading:#f50057;--sy-c-bold:#f50057;--sy-c-foot-text:#000000;--sy-c-foot-bg:#fafafa;--sy-c-foot-divider:#f50057;
+}
+html.dark {
+  --sy-rc-theme:245, 0, 87;--sy-rc-bg:0, 0, 0;--sy-rc-invert:245, 0, 87;--sy-rc-text:245, 0, 87;--sy-c-bg:#f50057;--sy-c-bg-weak:#000000;--sy-c-text:#ebdddd;--sy-c-text-weak:#f50057;--sy-c-heading:#f50057;--sy-c-bold:#f50057;--sy-c-foot-text:#ebdddd;--sy-c-foot-bg:#000000;--sy-c-foot-divider:#f50057;
+}
+</style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-heading: Inter, var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="filters"/>
+<meta name="twitter:card" content="summary"/></head>
+<body><div class="document"><div class="announcement">
+    <div class="announcement-inner">
+      <p>This documentation is currently under development.</p>
+      <button class="announcement-close" aria-label="Close announcement">
+        <i class="i-icon close"></i>
+      </button>
+    </div>
+  </div><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand mr-4" href="/">
+      <img class="light-logo" src="../_static/logo.png" alt="advanced_alchemy" height="28" />
+      <img class="dark-logo" src="../_static/logo.png" alt="advanced_alchemy" height="28" />
+      <strong>advanced_alchemy</strong>
+    </a>
+    <div class="sy-head-links" id="NavLinks">
+      <nav class="sy-head-nav">
+
+<ul><li class="link">
+          <a href="https://advanced-alchemy.jolt.rs"><span>Home</span><i class="i-icon external-link"></i></a>
+        </li><li class="link">
+          <a href="https://docs.advanced-alchemy.jolt.rs"><span>Docs</span><i class="i-icon external-link"></i></a>
+        </li><li class="link">
+          <a href="https://github.com/jolt-org/advanced-alchemy"><span>Code</span><i class="i-icon external-link"></i></a>
+        </li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form>
+        
+        
+        <div class="sy-head-social flex items-center">
+            <a class="flex items-center" href="https://github.com/jolt-org/advanced-alchemy" aria-label="GitHub">
+              <i class="i-icon github"></i>
+            </a>
+        </div>
+      </div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden">
+      <button class="js-theme theme-switch flex items-center" data-aria-light="Switch to dark mode" data-aria-dark="Switch to light mode">
+        <i class="i-icon theme-icon"></i>
+      </button>
+      <button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="NavLinks" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2 -translate-x-2"></span>
+          <span class="hamburger_3 -translate-x-1"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading"><span class="caption-text">Advanced Alchemy Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../usage/index.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../usage/placeholder.html">Placeholder</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base.html">base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exceptions.html">exceptions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations.html">operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repository.html">repositories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html">types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service.html">services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alembic/index.html">alembic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="alembic/commands.html">commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="alembic/templates/asyncio/index.html">asyncio</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="alembic/templates/asyncio/alembic-ini.html">alembic.ini</a></li>
+<li class="toctree-l4"><a class="reference internal" href="alembic/templates/asyncio/env.html">env</a></li>
+<li class="toctree-l4"><a class="reference internal" href="alembic/templates/asyncio/script-py.html">script.py</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="alembic/templates/sync/index.html">sync</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="alembic/templates/sync/alembic-ini.html">alembic.ini</a></li>
+<li class="toctree-l4"><a class="reference internal" href="alembic/templates/sync/env.html">env</a></li>
+<li class="toctree-l4"><a class="reference internal" href="alembic/templates/sync/script-py.html">script.py</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="config/index.html">config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="config/asyncio.html">asyncio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config/common.html">common</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config/engine.html">engine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config/sync.html">sync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config/types.html">types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extensions/index.html">extensions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/index.html">litestar</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="extensions/litestar/alembic.html">alembic</a></li>
+<li class="toctree-l4"><a class="reference internal" href="extensions/litestar/cli.html">cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="extensions/litestar/dto.html">dto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="extensions/litestar/plugins/index.html">plugins</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="extensions/litestar/plugins/serialization.html">serialization</a></li>
+<li class="toctree-l5"><a class="reference internal" href="extensions/litestar/plugins/init/plugin.html">plugin</a></li>
+<li class="toctree-l5"><a class="reference internal" href="extensions/litestar/plugins/init/config/asyncio.html">asyncio</a></li>
+<li class="toctree-l5"><a class="reference internal" href="extensions/litestar/plugins/init/config/common.html">common</a></li>
+<li class="toctree-l5"><a class="reference internal" href="extensions/litestar/plugins/init/config/engine.html">engine</a></li>
+<li class="toctree-l5"><a class="reference internal" href="extensions/litestar/plugins/init/config/sync.html">sync</a></li>
+<li class="toctree-l5"><a class="reference internal" href="extensions/litestar/plugins/init/config/types.html">types</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/sanic.html">sanic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/starlette.html">starlette</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribution-guide.html">Contribution guide</a></li>
+</ul>
+
+        </div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-icon close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
+  <div class="localtoc">
+    <h3>On this page</h3>
+    <ul>
+<li><a class="reference internal" href="#advanced_alchemy.filters.BeforeAfter"><code class="docutils literal notranslate"><span class="pre">BeforeAfter</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.filters.BeforeAfter.field_name"><code class="docutils literal notranslate"><span class="pre">BeforeAfter.field_name</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.BeforeAfter.before"><code class="docutils literal notranslate"><span class="pre">BeforeAfter.before</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.BeforeAfter.after"><code class="docutils literal notranslate"><span class="pre">BeforeAfter.after</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.BeforeAfter.__init__"><code class="docutils literal notranslate"><span class="pre">BeforeAfter.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.CollectionFilter"><code class="docutils literal notranslate"><span class="pre">CollectionFilter</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.filters.CollectionFilter.field_name"><code class="docutils literal notranslate"><span class="pre">CollectionFilter.field_name</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.CollectionFilter.values"><code class="docutils literal notranslate"><span class="pre">CollectionFilter.values</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.CollectionFilter.__init__"><code class="docutils literal notranslate"><span class="pre">CollectionFilter.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.FilterTypes"><code class="docutils literal notranslate"><span class="pre">FilterTypes</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.LimitOffset"><code class="docutils literal notranslate"><span class="pre">LimitOffset</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.filters.LimitOffset.limit"><code class="docutils literal notranslate"><span class="pre">LimitOffset.limit</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.LimitOffset.__init__"><code class="docutils literal notranslate"><span class="pre">LimitOffset.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.LimitOffset.offset"><code class="docutils literal notranslate"><span class="pre">LimitOffset.offset</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.OrderBy"><code class="docutils literal notranslate"><span class="pre">OrderBy</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.filters.OrderBy.__init__"><code class="docutils literal notranslate"><span class="pre">OrderBy.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.OrderBy.field_name"><code class="docutils literal notranslate"><span class="pre">OrderBy.field_name</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.OrderBy.sort_order"><code class="docutils literal notranslate"><span class="pre">OrderBy.sort_order</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.SearchFilter"><code class="docutils literal notranslate"><span class="pre">SearchFilter</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.filters.SearchFilter.__init__"><code class="docutils literal notranslate"><span class="pre">SearchFilter.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.SearchFilter.field_name"><code class="docutils literal notranslate"><span class="pre">SearchFilter.field_name</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.SearchFilter.value"><code class="docutils literal notranslate"><span class="pre">SearchFilter.value</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.SearchFilter.ignore_case"><code class="docutils literal notranslate"><span class="pre">SearchFilter.ignore_case</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.NotInCollectionFilter"><code class="docutils literal notranslate"><span class="pre">NotInCollectionFilter</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.filters.NotInCollectionFilter.field_name"><code class="docutils literal notranslate"><span class="pre">NotInCollectionFilter.field_name</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.NotInCollectionFilter.values"><code class="docutils literal notranslate"><span class="pre">NotInCollectionFilter.values</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.NotInCollectionFilter.__init__"><code class="docutils literal notranslate"><span class="pre">NotInCollectionFilter.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.OnBeforeAfter"><code class="docutils literal notranslate"><span class="pre">OnBeforeAfter</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.filters.OnBeforeAfter.field_name"><code class="docutils literal notranslate"><span class="pre">OnBeforeAfter.field_name</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.OnBeforeAfter.on_or_before"><code class="docutils literal notranslate"><span class="pre">OnBeforeAfter.on_or_before</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.OnBeforeAfter.on_or_after"><code class="docutils literal notranslate"><span class="pre">OnBeforeAfter.on_or_after</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.OnBeforeAfter.__init__"><code class="docutils literal notranslate"><span class="pre">OnBeforeAfter.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.NotInSearchFilter"><code class="docutils literal notranslate"><span class="pre">NotInSearchFilter</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.filters.NotInSearchFilter.__init__"><code class="docutils literal notranslate"><span class="pre">NotInSearchFilter.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.NotInSearchFilter.field_name"><code class="docutils literal notranslate"><span class="pre">NotInSearchFilter.field_name</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.NotInSearchFilter.value"><code class="docutils literal notranslate"><span class="pre">NotInSearchFilter.value</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.NotInSearchFilter.ignore_case"><code class="docutils literal notranslate"><span class="pre">NotInSearchFilter.ignore_case</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/jolt-org/advanced-alchemy"
+  data-type="github" data-user="jolt-org" data-repo="advanced-alchemy">
+  <span class="w-8 flex items-center justify-around shrink-0 text-2xl">
+    <i class="i-icon github"></i>
+  </span>
+  <span class="flex-grow px-2">
+    <span>jolt-org/advanced-alchemy</span>
+    <span class="flex text-sm repo-stats-count">
+      <span class="flex items-center pr-3">
+        <i class="i-icon star"></i>
+        <strong class="js-repo-stars ml-1">0</strong>
+      </span>
+      <span class="flex items-center">
+        <i class="i-icon git-fork"></i>
+        <strong class="js-repo-forks ml-1">0</strong>
+      </span>
+    </span>
+  </span>
+</a><div class="edit-this-page">
+  <a href="https://github.com/jolt-org/advanced-alchemy/blob/master/docs/reference/filters.rst">Edit this page</a>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div>
+    </div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+    <div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-icon menu"></i>
+      </button>
+    </div>
+    <ul class="flex-1">
+      
+      
+      <li><a href="../index.html">advanced_alchemy</a><span>/</span></li>
+      
+      <li><a href="index.html">API Reference</a><span>/</span></li>
+      
+      <li><strong>filters</strong></li>
+      
+      
+    </ul>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-icon outdent"></i>
+      </button>
+    </div>
+  </div>
+</div>
+    <div class="flex flex-col break-words justify-between">
+      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+        <article class="yue" role="main">
+          <section id="module-advanced_alchemy.filters">
+<span id="filters"></span><h1>filters<a class="headerlink" href="#module-advanced_alchemy.filters" title="Permalink to this heading">¶</a></h1>
+<p>Collection filter datastructures.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.BeforeAfter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">BeforeAfter</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#BeforeAfter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.BeforeAfter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Data required to filter a query on a <code class="docutils literal notranslate"><span class="pre">datetime</span></code> column.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.BeforeAfter.field_name">
+<span class="sig-name descname"><span class="pre">field_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.BeforeAfter.field_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the model attribute to filter on.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.BeforeAfter.before">
+<span class="sig-name descname"><span class="pre">before</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.BeforeAfter.before" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter results where field earlier than this.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.BeforeAfter.after">
+<span class="sig-name descname"><span class="pre">after</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.BeforeAfter.after" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter results where field later than this.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.BeforeAfter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">before</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#advanced_alchemy.filters.BeforeAfter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.CollectionFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">CollectionFilter</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#CollectionFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.CollectionFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code>]</p>
+<p>Data required to construct a <code class="docutils literal notranslate"><span class="pre">WHERE</span> <span class="pre">...</span> <span class="pre">IN</span> <span class="pre">(...)</span></code> clause.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.CollectionFilter.field_name">
+<span class="sig-name descname"><span class="pre">field_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.CollectionFilter.field_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the model attribute to filter on.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.CollectionFilter.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.12)"><span class="pre">Collection</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.CollectionFilter.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Values for <code class="docutils literal notranslate"><span class="pre">IN</span></code> clause.</p>
+<p>An empty list will return an empty result set, however, if <code class="docutils literal notranslate"><span class="pre">None</span></code>, the filter is not applied to the query, and all rows are returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.CollectionFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.12)"><span class="pre">Collection</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#advanced_alchemy.filters.CollectionFilter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.FilterTypes">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">FilterTypes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">TypeAlias</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'BeforeAfter</span> <span class="pre">|</span> <span class="pre">OnBeforeAfter</span> <span class="pre">|</span> <span class="pre">CollectionFilter[Any]</span> <span class="pre">|</span> <span class="pre">LimitOffset</span> <span class="pre">|</span> <span class="pre">OrderBy</span> <span class="pre">|</span> <span class="pre">SearchFilter</span> <span class="pre">|</span> <span class="pre">NotInCollectionFilter[Any]</span> <span class="pre">|</span> <span class="pre">NotInSearchFilter'</span></em><a class="headerlink" href="#advanced_alchemy.filters.FilterTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Aggregate type alias of the types supported for collection filtering.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.LimitOffset">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">LimitOffset</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#LimitOffset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.LimitOffset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Data required to add limit/offset filtering to a query.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.LimitOffset.limit">
+<span class="sig-name descname"><span class="pre">limit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.LimitOffset.limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Value for <code class="docutils literal notranslate"><span class="pre">LIMIT</span></code> clause of query.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.LimitOffset.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#advanced_alchemy.filters.LimitOffset.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.LimitOffset.offset">
+<span class="sig-name descname"><span class="pre">offset</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.LimitOffset.offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Value for <code class="docutils literal notranslate"><span class="pre">OFFSET</span></code> clause of query.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.OrderBy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">OrderBy</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#OrderBy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.OrderBy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Data required to construct a <code class="docutils literal notranslate"><span class="pre">ORDER</span> <span class="pre">BY</span> <span class="pre">...</span></code> clause.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.OrderBy.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'asc'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'desc'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'asc'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#advanced_alchemy.filters.OrderBy.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.OrderBy.field_name">
+<span class="sig-name descname"><span class="pre">field_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.OrderBy.field_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the model attribute to sort on.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.OrderBy.sort_order">
+<span class="sig-name descname"><span class="pre">sort_order</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.12)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'asc'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'desc'</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'asc'</span></em><a class="headerlink" href="#advanced_alchemy.filters.OrderBy.sort_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort ascending or descending</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.SearchFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">SearchFilter</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#SearchFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.SearchFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Data required to construct a <code class="docutils literal notranslate"><span class="pre">WHERE</span> <span class="pre">field_name</span> <span class="pre">LIKE</span> <span class="pre">'%'</span> <span class="pre">||</span> <span class="pre">:value</span> <span class="pre">||</span> <span class="pre">'%'</span></code> clause.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.SearchFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#advanced_alchemy.filters.SearchFilter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.SearchFilter.field_name">
+<span class="sig-name descname"><span class="pre">field_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.SearchFilter.field_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the model attribute to sort on.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.SearchFilter.value">
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.SearchFilter.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Values for <code class="docutils literal notranslate"><span class="pre">LIKE</span></code> clause.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.SearchFilter.ignore_case">
+<span class="sig-name descname"><span class="pre">ignore_case</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#advanced_alchemy.filters.SearchFilter.ignore_case" title="Permalink to this definition">¶</a></dt>
+<dd><p>Should the search be case insensitive.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.NotInCollectionFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">NotInCollectionFilter</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#NotInCollectionFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.NotInCollectionFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code>]</p>
+<p>Data required to construct a <code class="docutils literal notranslate"><span class="pre">WHERE</span> <span class="pre">...</span> <span class="pre">NOT</span> <span class="pre">IN</span> <span class="pre">(...)</span></code> clause.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.NotInCollectionFilter.field_name">
+<span class="sig-name descname"><span class="pre">field_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.NotInCollectionFilter.field_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the model attribute to filter on.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.NotInCollectionFilter.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.12)"><span class="pre">Collection</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.NotInCollectionFilter.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Values for <code class="docutils literal notranslate"><span class="pre">NOT</span> <span class="pre">IN</span></code> clause.</p>
+<p>An empty list or <code class="docutils literal notranslate"><span class="pre">None</span></code> will return all rows.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.NotInCollectionFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.12)"><span class="pre">Collection</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#advanced_alchemy.filters.NotInCollectionFilter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.OnBeforeAfter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">OnBeforeAfter</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#OnBeforeAfter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.OnBeforeAfter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Data required to filter a query on a <code class="docutils literal notranslate"><span class="pre">datetime</span></code> column.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.OnBeforeAfter.field_name">
+<span class="sig-name descname"><span class="pre">field_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.OnBeforeAfter.field_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the model attribute to filter on.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.OnBeforeAfter.on_or_before">
+<span class="sig-name descname"><span class="pre">on_or_before</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.OnBeforeAfter.on_or_before" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter results where field is on or earlier than this.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.OnBeforeAfter.on_or_after">
+<span class="sig-name descname"><span class="pre">on_or_after</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.OnBeforeAfter.on_or_after" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter results where field on or later than this.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.OnBeforeAfter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_or_before</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_or_after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#advanced_alchemy.filters.OnBeforeAfter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.NotInSearchFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">NotInSearchFilter</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#NotInSearchFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.NotInSearchFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Data required to construct a <code class="docutils literal notranslate"><span class="pre">WHERE</span> <span class="pre">field_name</span> <span class="pre">NOT</span> <span class="pre">LIKE</span> <span class="pre">'%'</span> <span class="pre">||</span> <span class="pre">:value</span> <span class="pre">||</span> <span class="pre">'%'</span></code> clause.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.NotInSearchFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#advanced_alchemy.filters.NotInSearchFilter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.NotInSearchFilter.field_name">
+<span class="sig-name descname"><span class="pre">field_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.NotInSearchFilter.field_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the model attribute to search on.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.NotInSearchFilter.value">
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#advanced_alchemy.filters.NotInSearchFilter.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Values for <code class="docutils literal notranslate"><span class="pre">NOT</span> <span class="pre">LIKE</span></code> clause.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.NotInSearchFilter.ignore_case">
+<span class="sig-name descname"><span class="pre">ignore_case</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#advanced_alchemy.filters.NotInSearchFilter.ignore_case" title="Permalink to this definition">¶</a></dt>
+<dd><p>Should the search be case insensitive.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+        </article>
+        
+        <div class="navigation flex print:hidden">
+  <div class="navigation-prev">
+    <a href="exceptions.html">
+      <i class="i-icon chevron"></i>
+      <div class="page-info">
+        <span>Previous</span>
+        
+        <div class="title">exceptions</div>
+        
+      </div>
+    </a>
+  </div>
+  <div class="navigation-next">
+    <a href="operations.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">operations</div>
+      </div>
+      <i class="i-icon chevron"></i>
+    </a>
+  </div>
+</div>
+        
+      </div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2023, Jolt Org</p>
+        
+        <p>
+          Made with
+          
+          <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+          
+          <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+        </p>
+      </div>
+      <div class="sy-foot-socials">
+          <a href="https://github.com/jolt-org/advanced-alchemy" aria-label="GitHub"><i class="i-icon github"></i></a>
+      </div>
+    </div>
+  </div>
+</footer></div>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=e43216b9"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=36754332"></script>
+      <script src="../_static/shibuya.js?v=3e5c8598"></script>
+    
+</body>
+</html>
