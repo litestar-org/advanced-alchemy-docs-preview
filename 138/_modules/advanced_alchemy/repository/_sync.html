@@ -1247,443 +1247,446 @@ html.dark {
 </span><span id="1-1007"><span class="sd">        Update instances with the attribute values present on `data`, or create a new instance if</span>
 </span><span id="1-1008"><span class="sd">        one doesn&#39;t exist.</span>
 </span><span id="1-1009">
-</span><span id="1-1010"><span class="sd">        Args:</span>
-</span><span id="1-1011"><span class="sd">            data: Instance to update existing, or be created. Identifier used to determine if an</span>
-</span><span id="1-1012"><span class="sd">                existing instance exists is the value of an attribute on ``data`` named as value of</span>
-</span><span id="1-1013"><span class="sd">                :attr:`~advanced_alchemy.repository.AbstractAsyncRepository.id_attribute`.</span>
-</span><span id="1-1014"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
-</span><span id="1-1015"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
-</span><span id="1-1016"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
-</span><span id="1-1017"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-1018"><span class="sd">            no_merge: Skip the usage of optimized Merge statements</span>
-</span><span id="1-1019"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-1020"><span class="sd">            match_fields: a list of keys to use to match the existing model.  When</span>
-</span><span id="1-1021"><span class="sd">                empty, all fields are matched.</span>
-</span><span id="1-1022">
-</span><span id="1-1023"><span class="sd">        Returns:</span>
-</span><span id="1-1024"><span class="sd">            The updated or created instance.</span>
+</span><span id="1-1010"><span class="sd">        !!! tip</span>
+</span><span id="1-1011"><span class="sd">            In most cases, you will want to set `match_fields` to the combination of attributes, excluded the primary key, that define uniqueness for a row.</span>
+</span><span id="1-1012">
+</span><span id="1-1013"><span class="sd">        Args:</span>
+</span><span id="1-1014"><span class="sd">            data: Instance to update existing, or be created. Identifier used to determine if an</span>
+</span><span id="1-1015"><span class="sd">                existing instance exists is the value of an attribute on ``data`` named as value of</span>
+</span><span id="1-1016"><span class="sd">                :attr:`~advanced_alchemy.repository.AbstractAsyncRepository.id_attribute`.</span>
+</span><span id="1-1017"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
+</span><span id="1-1018"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`.</span>
+</span><span id="1-1019"><span class="sd">            auto_commit: Commit objects before returning. Defaults to</span>
+</span><span id="1-1020"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-1021"><span class="sd">            no_merge: Skip the usage of optimized Merge statements</span>
+</span><span id="1-1022"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_commit &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-1023"><span class="sd">            match_fields: a list of keys to use to match the existing model.  When</span>
+</span><span id="1-1024"><span class="sd">                empty, automatically uses ``self.id_attribute`` (`id` by default) to match .</span>
 </span><span id="1-1025">
-</span><span id="1-1026"><span class="sd">        Raises:</span>
-</span><span id="1-1027"><span class="sd">            NotFoundError: If no instance found with same identifier as ``data``.</span>
-</span><span id="1-1028"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-1029">        <span class="n">instances</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="1-1030">        <span class="n">data_to_update</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="1-1031">        <span class="n">data_to_insert</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="1-1032">        <span class="n">match_fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_match_fields</span><span class="p">(</span><span class="n">match_fields</span><span class="o">=</span><span class="n">match_fields</span><span class="p">)</span>
-</span><span id="1-1033">        <span class="k">if</span> <span class="n">match_fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-1034">            <span class="n">match_fields</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">]</span>
-</span><span id="1-1035">        <span class="n">match_filter</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilterTypes</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="1-1036">        <span class="k">if</span> <span class="n">match_fields</span><span class="p">:</span>
-</span><span id="1-1037">            <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">match_fields</span><span class="p">:</span>
-</span><span id="1-1038">                <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
-</span><span id="1-1039">                <span class="n">matched_values</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="1-1040">                    <span class="n">field_data</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">if</span> <span class="p">(</span><span class="n">field_data</span> <span class="o">:=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="n">field_name</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="1-1041">                <span class="p">]</span>
-</span><span id="1-1042">                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span><span class="p">:</span>
-</span><span id="1-1043">                    <span class="n">match_filter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="n">matched_values</span><span class="p">)</span> <span class="o">==</span> <span class="n">field</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
-</span><span id="1-1044">                <span class="k">else</span><span class="p">:</span>
-</span><span id="1-1045">                    <span class="n">match_filter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">matched_values</span><span class="p">))</span>
-</span><span id="1-1046">
-</span><span id="1-1047">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
-</span><span id="1-1048">            <span class="n">existing_objs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
-</span><span id="1-1049">                <span class="o">*</span><span class="n">match_filter</span><span class="p">,</span>
-</span><span id="1-1050">                <span class="n">auto_expunge</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span id="1-1051">            <span class="p">)</span>
-</span><span id="1-1052">            <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">match_fields</span><span class="p">:</span>
-</span><span id="1-1053">                <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
-</span><span id="1-1054">                <span class="n">matched_values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">existing_objs</span> <span class="k">if</span> <span class="n">datum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
-</span><span id="1-1055">                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span><span class="p">:</span>
-</span><span id="1-1056">                    <span class="n">match_filter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="n">matched_values</span><span class="p">)</span> <span class="o">==</span> <span class="n">field</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
-</span><span id="1-1057">                <span class="k">else</span><span class="p">:</span>
-</span><span id="1-1058">                    <span class="n">match_filter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">matched_values</span><span class="p">))</span>
-</span><span id="1-1059">            <span class="n">existing_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object_ids</span><span class="p">(</span><span class="n">existing_objs</span><span class="o">=</span><span class="n">existing_objs</span><span class="p">)</span>
-</span><span id="1-1060">            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_merge_on_match_fields</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">existing_objs</span><span class="p">,</span> <span class="n">match_fields</span><span class="p">)</span>
-</span><span id="1-1061">            <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-</span><span id="1-1062">                <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">in</span> <span class="n">existing_ids</span><span class="p">:</span>
-</span><span id="1-1063">                    <span class="n">data_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datum</span><span class="p">)</span>
-</span><span id="1-1064">                <span class="k">else</span><span class="p">:</span>
-</span><span id="1-1065">                    <span class="n">data_to_insert</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datum</span><span class="p">)</span>
-</span><span id="1-1066">            <span class="k">if</span> <span class="n">data_to_insert</span><span class="p">:</span>
-</span><span id="1-1067">                <span class="n">instances</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-</span><span id="1-1068">                    <span class="bp">self</span><span class="o">.</span><span class="n">add_many</span><span class="p">(</span><span class="n">data_to_insert</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-</span><span id="1-1069">                <span class="p">)</span>
-</span><span id="1-1070">            <span class="k">if</span> <span class="n">data_to_update</span><span class="p">:</span>
-</span><span id="1-1071">                <span class="n">instances</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-</span><span id="1-1072">                    <span class="bp">self</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span><span class="n">data_to_update</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-</span><span id="1-1073">                <span class="p">)</span>
-</span><span id="1-1074">            <span class="bp">self</span><span class="o">.</span><span class="n">_flush_or_commit</span><span class="p">(</span><span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">)</span>
-</span><span id="1-1075">            <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
-</span><span id="1-1076">                <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
-</span><span id="1-1077">        <span class="k">return</span> <span class="n">instances</span></div>
-</span><span id="1-1078">
-</span><span id="1-1079">    <span class="k">def</span> <span class="nf">_get_object_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">existing_objs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
-</span><span id="1-1080">        <span class="k">return</span> <span class="p">[</span><span class="n">obj_id</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">existing_objs</span> <span class="k">if</span> <span class="p">(</span><span class="n">obj_id</span> <span class="o">:=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+</span><span id="1-1026"><span class="sd">        Returns:</span>
+</span><span id="1-1027"><span class="sd">            The updated or created instance.</span>
+</span><span id="1-1028">
+</span><span id="1-1029"><span class="sd">        Raises:</span>
+</span><span id="1-1030"><span class="sd">            NotFoundError: If no instance found with same identifier as ``data``.</span>
+</span><span id="1-1031"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-1032">        <span class="n">instances</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="1-1033">        <span class="n">data_to_update</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="1-1034">        <span class="n">data_to_insert</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="1-1035">        <span class="n">match_fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_match_fields</span><span class="p">(</span><span class="n">match_fields</span><span class="o">=</span><span class="n">match_fields</span><span class="p">)</span>
+</span><span id="1-1036">        <span class="k">if</span> <span class="n">match_fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-1037">            <span class="n">match_fields</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">]</span>
+</span><span id="1-1038">        <span class="n">match_filter</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilterTypes</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="1-1039">        <span class="k">if</span> <span class="n">match_fields</span><span class="p">:</span>
+</span><span id="1-1040">            <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">match_fields</span><span class="p">:</span>
+</span><span id="1-1041">                <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+</span><span id="1-1042">                <span class="n">matched_values</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="1-1043">                    <span class="n">field_data</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">if</span> <span class="p">(</span><span class="n">field_data</span> <span class="o">:=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="n">field_name</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="1-1044">                <span class="p">]</span>
+</span><span id="1-1045">                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span><span class="p">:</span>
+</span><span id="1-1046">                    <span class="n">match_filter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="n">matched_values</span><span class="p">)</span> <span class="o">==</span> <span class="n">field</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
+</span><span id="1-1047">                <span class="k">else</span><span class="p">:</span>
+</span><span id="1-1048">                    <span class="n">match_filter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">matched_values</span><span class="p">))</span>
+</span><span id="1-1049">
+</span><span id="1-1050">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
+</span><span id="1-1051">            <span class="n">existing_objs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
+</span><span id="1-1052">                <span class="o">*</span><span class="n">match_filter</span><span class="p">,</span>
+</span><span id="1-1053">                <span class="n">auto_expunge</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="1-1054">            <span class="p">)</span>
+</span><span id="1-1055">            <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">match_fields</span><span class="p">:</span>
+</span><span id="1-1056">                <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+</span><span id="1-1057">                <span class="n">matched_values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">existing_objs</span> <span class="k">if</span> <span class="n">datum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+</span><span id="1-1058">                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span><span class="p">:</span>
+</span><span id="1-1059">                    <span class="n">match_filter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="n">matched_values</span><span class="p">)</span> <span class="o">==</span> <span class="n">field</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
+</span><span id="1-1060">                <span class="k">else</span><span class="p">:</span>
+</span><span id="1-1061">                    <span class="n">match_filter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">matched_values</span><span class="p">))</span>
+</span><span id="1-1062">            <span class="n">existing_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object_ids</span><span class="p">(</span><span class="n">existing_objs</span><span class="o">=</span><span class="n">existing_objs</span><span class="p">)</span>
+</span><span id="1-1063">            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_merge_on_match_fields</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">existing_objs</span><span class="p">,</span> <span class="n">match_fields</span><span class="p">)</span>
+</span><span id="1-1064">            <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+</span><span id="1-1065">                <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">in</span> <span class="n">existing_ids</span><span class="p">:</span>
+</span><span id="1-1066">                    <span class="n">data_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datum</span><span class="p">)</span>
+</span><span id="1-1067">                <span class="k">else</span><span class="p">:</span>
+</span><span id="1-1068">                    <span class="n">data_to_insert</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datum</span><span class="p">)</span>
+</span><span id="1-1069">            <span class="k">if</span> <span class="n">data_to_insert</span><span class="p">:</span>
+</span><span id="1-1070">                <span class="n">instances</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+</span><span id="1-1071">                    <span class="bp">self</span><span class="o">.</span><span class="n">add_many</span><span class="p">(</span><span class="n">data_to_insert</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+</span><span id="1-1072">                <span class="p">)</span>
+</span><span id="1-1073">            <span class="k">if</span> <span class="n">data_to_update</span><span class="p">:</span>
+</span><span id="1-1074">                <span class="n">instances</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+</span><span id="1-1075">                    <span class="bp">self</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span><span class="n">data_to_update</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+</span><span id="1-1076">                <span class="p">)</span>
+</span><span id="1-1077">            <span class="bp">self</span><span class="o">.</span><span class="n">_flush_or_commit</span><span class="p">(</span><span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">)</span>
+</span><span id="1-1078">            <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
+</span><span id="1-1079">                <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
+</span><span id="1-1080">        <span class="k">return</span> <span class="n">instances</span></div>
 </span><span id="1-1081">
-</span><span id="1-1082">    <span class="k">def</span> <span class="nf">_get_match_fields</span><span class="p">(</span>
-</span><span id="1-1083">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1084">        <span class="n">match_fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-1085">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-1086">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-1087">        <span class="n">id_attribute</span> <span class="o">=</span> <span class="n">id_attribute</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span>
-</span><span id="1-1088">        <span class="n">match_fields</span> <span class="o">=</span> <span class="n">match_fields</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_fields</span>
-</span><span id="1-1089">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">match_fields</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-</span><span id="1-1090">            <span class="n">match_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">match_fields</span><span class="p">]</span>
-</span><span id="1-1091">        <span class="k">return</span> <span class="n">match_fields</span>
-</span><span id="1-1092">
-</span><span id="1-1093">    <span class="k">def</span> <span class="nf">_merge_on_match_fields</span><span class="p">(</span>
-</span><span id="1-1094">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1095">        <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
-</span><span id="1-1096">        <span class="n">existing_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
-</span><span id="1-1097">        <span class="n">match_fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-1098">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
-</span><span id="1-1099">        <span class="n">match_fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_match_fields</span><span class="p">(</span><span class="n">match_fields</span><span class="o">=</span><span class="n">match_fields</span><span class="p">)</span>
-</span><span id="1-1100">        <span class="k">if</span> <span class="n">match_fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-1101">            <span class="n">match_fields</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">]</span>
-</span><span id="1-1102">        <span class="k">for</span> <span class="n">existing_datum</span> <span class="ow">in</span> <span class="n">existing_data</span><span class="p">:</span>
-</span><span id="1-1103">            <span class="k">for</span> <span class="n">row_id</span><span class="p">,</span> <span class="n">datum</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-</span><span id="1-1104">                <span class="n">match</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span>
-</span><span id="1-1105">                    <span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span> <span class="o">==</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">existing_datum</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">match_fields</span>
-</span><span id="1-1106">                <span class="p">)</span>
-</span><span id="1-1107">                <span class="k">if</span> <span class="n">match</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">existing_datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-1108">                    <span class="nb">setattr</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">row_id</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">existing_datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">))</span>
-</span><span id="1-1109">        <span class="k">return</span> <span class="n">data</span>
-</span><span id="1-1110">
-<div class="viewcode-block" id="SQLAlchemySyncRepository.list"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemySyncRepository.list">[docs]</a></span><span id="1-1111">    <span class="k">def</span> <span class="nf">list</span><span class="p">(</span>
-</span><span id="1-1112">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1113">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">FilterTypes</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
-</span><span id="1-1114">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-1115">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-1116">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span id="1-1117">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
-</span><span id="1-1118"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a list of instances, optionally filtered.</span>
-</span><span id="1-1119">
-</span><span id="1-1120"><span class="sd">        Args:</span>
-</span><span id="1-1121"><span class="sd">            *filters: Types for specific filtering operations.</span>
-</span><span id="1-1122"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
-</span><span id="1-1123"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-1124"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
-</span><span id="1-1125"><span class="sd">                Defaults to :class:`SQLAlchemyAsyncRepository.statement &lt;SQLAlchemyAsyncRepository&gt;`</span>
-</span><span id="1-1126"><span class="sd">            **kwargs: Instance attribute value filters.</span>
-</span><span id="1-1127">
-</span><span id="1-1128"><span class="sd">        Returns:</span>
-</span><span id="1-1129"><span class="sd">            The list of instances, after filtering applied.</span>
-</span><span id="1-1130"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-1131">        <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base_stmt</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
-</span><span id="1-1132">        <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_filters</span><span class="p">(</span><span class="o">*</span><span class="n">filters</span><span class="p">,</span> <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">)</span>
-</span><span id="1-1133">        <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_select_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-</span><span id="1-1134">
-</span><span id="1-1135">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
-</span><span id="1-1136">            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
-</span><span id="1-1137">            <span class="n">instances</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">scalars</span><span class="p">())</span>
-</span><span id="1-1138">            <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
-</span><span id="1-1139">                <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
-</span><span id="1-1140">            <span class="k">return</span> <span class="n">instances</span></div>
-</span><span id="1-1141">
-<div class="viewcode-block" id="SQLAlchemySyncRepository.filter_collection_by_kwargs"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemySyncRepository.filter_collection_by_kwargs">[docs]</a></span><span id="1-1142">    <span class="k">def</span> <span class="nf">filter_collection_by_kwargs</span><span class="p">(</span>
-</span><span id="1-1143">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1144">        <span class="n">collection</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span id="1-1145">        <span class="o">/</span><span class="p">,</span>
-</span><span id="1-1146">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span id="1-1147">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span id="1-1148"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter the collection by kwargs.</span>
-</span><span id="1-1149">
-</span><span id="1-1150"><span class="sd">        Args:</span>
-</span><span id="1-1151"><span class="sd">            collection: statement to filter</span>
-</span><span id="1-1152"><span class="sd">            **kwargs: key/value pairs such that objects remaining in the collection after filtering</span>
-</span><span id="1-1153"><span class="sd">                have the property that their attribute named `key` has value equal to `value`.</span>
-</span><span id="1-1154"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-1155">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
-</span><span id="1-1156">            <span class="n">collection</span> <span class="o">=</span> <span class="n">lambda_stmt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collection</span><span class="p">)</span>
-</span><span id="1-1157">            <span class="n">collection</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="1-1158">            <span class="k">return</span> <span class="n">collection</span></div>
-</span><span id="1-1159">
-<div class="viewcode-block" id="SQLAlchemySyncRepository.check_health"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemySyncRepository.check_health">[docs]</a></span><span id="1-1160">    <span class="nd">@classmethod</span>
-</span><span id="1-1161">    <span class="k">def</span> <span class="nf">check_health</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">Session</span> <span class="o">|</span> <span class="n">scoped_session</span><span class="p">[</span><span class="n">Session</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="1-1162"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform a health check on the database.</span>
-</span><span id="1-1163">
-</span><span id="1-1164"><span class="sd">        Args:</span>
-</span><span id="1-1165"><span class="sd">            session: through which we run a check statement</span>
+</span><span id="1-1082">    <span class="k">def</span> <span class="nf">_get_object_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">existing_objs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+</span><span id="1-1083">        <span class="k">return</span> <span class="p">[</span><span class="n">obj_id</span> <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">existing_objs</span> <span class="k">if</span> <span class="p">(</span><span class="n">obj_id</span> <span class="o">:=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+</span><span id="1-1084">
+</span><span id="1-1085">    <span class="k">def</span> <span class="nf">_get_match_fields</span><span class="p">(</span>
+</span><span id="1-1086">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1087">        <span class="n">match_fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-1088">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-1089">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-1090">        <span class="n">id_attribute</span> <span class="o">=</span> <span class="n">id_attribute</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span>
+</span><span id="1-1091">        <span class="n">match_fields</span> <span class="o">=</span> <span class="n">match_fields</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_fields</span>
+</span><span id="1-1092">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">match_fields</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="1-1093">            <span class="n">match_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">match_fields</span><span class="p">]</span>
+</span><span id="1-1094">        <span class="k">return</span> <span class="n">match_fields</span>
+</span><span id="1-1095">
+</span><span id="1-1096">    <span class="k">def</span> <span class="nf">_merge_on_match_fields</span><span class="p">(</span>
+</span><span id="1-1097">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1098">        <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
+</span><span id="1-1099">        <span class="n">existing_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
+</span><span id="1-1100">        <span class="n">match_fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-1101">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
+</span><span id="1-1102">        <span class="n">match_fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_match_fields</span><span class="p">(</span><span class="n">match_fields</span><span class="o">=</span><span class="n">match_fields</span><span class="p">)</span>
+</span><span id="1-1103">        <span class="k">if</span> <span class="n">match_fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-1104">            <span class="n">match_fields</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">]</span>
+</span><span id="1-1105">        <span class="k">for</span> <span class="n">existing_datum</span> <span class="ow">in</span> <span class="n">existing_data</span><span class="p">:</span>
+</span><span id="1-1106">            <span class="k">for</span> <span class="n">row_id</span><span class="p">,</span> <span class="n">datum</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span id="1-1107">                <span class="n">match</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span>
+</span><span id="1-1108">                    <span class="nb">getattr</span><span class="p">(</span><span class="n">datum</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span> <span class="o">==</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">existing_datum</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">match_fields</span>
+</span><span id="1-1109">                <span class="p">)</span>
+</span><span id="1-1110">                <span class="k">if</span> <span class="n">match</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">existing_datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-1111">                    <span class="nb">setattr</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">row_id</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">existing_datum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">))</span>
+</span><span id="1-1112">        <span class="k">return</span> <span class="n">data</span>
+</span><span id="1-1113">
+<div class="viewcode-block" id="SQLAlchemySyncRepository.list"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemySyncRepository.list">[docs]</a></span><span id="1-1114">    <span class="k">def</span> <span class="nf">list</span><span class="p">(</span>
+</span><span id="1-1115">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1116">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">FilterTypes</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
+</span><span id="1-1117">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-1118">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-1119">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="1-1120">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
+</span><span id="1-1121"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a list of instances, optionally filtered.</span>
+</span><span id="1-1122">
+</span><span id="1-1123"><span class="sd">        Args:</span>
+</span><span id="1-1124"><span class="sd">            *filters: Types for specific filtering operations.</span>
+</span><span id="1-1125"><span class="sd">            auto_expunge: Remove object from session before returning. Defaults to</span>
+</span><span id="1-1126"><span class="sd">                :class:`SQLAlchemyAsyncRepository.auto_expunge &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-1127"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
+</span><span id="1-1128"><span class="sd">                Defaults to :class:`SQLAlchemyAsyncRepository.statement &lt;SQLAlchemyAsyncRepository&gt;`</span>
+</span><span id="1-1129"><span class="sd">            **kwargs: Instance attribute value filters.</span>
+</span><span id="1-1130">
+</span><span id="1-1131"><span class="sd">        Returns:</span>
+</span><span id="1-1132"><span class="sd">            The list of instances, after filtering applied.</span>
+</span><span id="1-1133"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-1134">        <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base_stmt</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
+</span><span id="1-1135">        <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_filters</span><span class="p">(</span><span class="o">*</span><span class="n">filters</span><span class="p">,</span> <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">)</span>
+</span><span id="1-1136">        <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_select_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+</span><span id="1-1137">
+</span><span id="1-1138">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
+</span><span id="1-1139">            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
+</span><span id="1-1140">            <span class="n">instances</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">scalars</span><span class="p">())</span>
+</span><span id="1-1141">            <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
+</span><span id="1-1142">                <span class="bp">self</span><span class="o">.</span><span class="n">_expunge</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">)</span>
+</span><span id="1-1143">            <span class="k">return</span> <span class="n">instances</span></div>
+</span><span id="1-1144">
+<div class="viewcode-block" id="SQLAlchemySyncRepository.filter_collection_by_kwargs"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemySyncRepository.filter_collection_by_kwargs">[docs]</a></span><span id="1-1145">    <span class="k">def</span> <span class="nf">filter_collection_by_kwargs</span><span class="p">(</span>
+</span><span id="1-1146">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1147">        <span class="n">collection</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span id="1-1148">        <span class="o">/</span><span class="p">,</span>
+</span><span id="1-1149">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="1-1150">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span id="1-1151"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter the collection by kwargs.</span>
+</span><span id="1-1152">
+</span><span id="1-1153"><span class="sd">        Args:</span>
+</span><span id="1-1154"><span class="sd">            collection: statement to filter</span>
+</span><span id="1-1155"><span class="sd">            **kwargs: key/value pairs such that objects remaining in the collection after filtering</span>
+</span><span id="1-1156"><span class="sd">                have the property that their attribute named `key` has value equal to `value`.</span>
+</span><span id="1-1157"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-1158">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
+</span><span id="1-1159">            <span class="n">collection</span> <span class="o">=</span> <span class="n">lambda_stmt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collection</span><span class="p">)</span>
+</span><span id="1-1160">            <span class="n">collection</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="1-1161">            <span class="k">return</span> <span class="n">collection</span></div>
+</span><span id="1-1162">
+<div class="viewcode-block" id="SQLAlchemySyncRepository.check_health"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemySyncRepository.check_health">[docs]</a></span><span id="1-1163">    <span class="nd">@classmethod</span>
+</span><span id="1-1164">    <span class="k">def</span> <span class="nf">check_health</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">Session</span> <span class="o">|</span> <span class="n">scoped_session</span><span class="p">[</span><span class="n">Session</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="1-1165"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform a health check on the database.</span>
 </span><span id="1-1166">
-</span><span id="1-1167"><span class="sd">        Returns:</span>
-</span><span id="1-1168"><span class="sd">            ``True`` if healthy.</span>
-</span><span id="1-1169"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-1170">
-</span><span id="1-1171">        <span class="k">return</span> <span class="p">(</span>  <span class="c1"># type: ignore[no-any-return]</span>
-</span><span id="1-1172">            <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_get_health_check_statement</span><span class="p">(</span><span class="n">session</span><span class="p">))</span>
-</span><span id="1-1173">        <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span></div>
-</span><span id="1-1174">
-</span><span id="1-1175">    <span class="nd">@staticmethod</span>
-</span><span id="1-1176">    <span class="k">def</span> <span class="nf">_get_health_check_statement</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Session</span> <span class="o">|</span> <span class="n">scoped_session</span><span class="p">[</span><span class="n">Session</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TextClause</span><span class="p">:</span>
-</span><span id="1-1177">        <span class="k">if</span> <span class="n">session</span><span class="o">.</span><span class="n">bind</span> <span class="ow">and</span> <span class="n">session</span><span class="o">.</span><span class="n">bind</span><span class="o">.</span><span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;oracle&quot;</span><span class="p">:</span>
-</span><span id="1-1178">            <span class="k">return</span> <span class="n">text</span><span class="p">(</span><span class="s2">&quot;SELECT 1 FROM DUAL&quot;</span><span class="p">)</span>
-</span><span id="1-1179">        <span class="k">return</span> <span class="n">text</span><span class="p">(</span><span class="s2">&quot;SELECT 1&quot;</span><span class="p">)</span>
-</span><span id="1-1180">
-</span><span id="1-1181">    <span class="k">def</span> <span class="nf">_attach_to_session</span><span class="p">(</span>
-</span><span id="1-1182">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1183">        <span class="n">model</span><span class="p">:</span> <span class="n">ModelT</span><span class="p">,</span>
-</span><span id="1-1184">        <span class="n">strategy</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="s2">&quot;merge&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span>
-</span><span id="1-1185">        <span class="n">load</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="1-1186">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
-</span><span id="1-1187"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Attach detached instance to the session.</span>
-</span><span id="1-1188">
-</span><span id="1-1189"><span class="sd">        Args:</span>
-</span><span id="1-1190"><span class="sd">            model: The instance to be attached to the session.</span>
-</span><span id="1-1191"><span class="sd">            strategy: How the instance should be attached.</span>
-</span><span id="1-1192"><span class="sd">                - &quot;add&quot;: New instance added to session</span>
-</span><span id="1-1193"><span class="sd">                - &quot;merge&quot;: Instance merged with existing, or new one added.</span>
-</span><span id="1-1194"><span class="sd">            load: Boolean, when False, merge switches into</span>
-</span><span id="1-1195"><span class="sd">                a &quot;high performance&quot; mode which causes it to forego emitting history</span>
-</span><span id="1-1196"><span class="sd">                events as well as all database access.  This flag is used for</span>
-</span><span id="1-1197"><span class="sd">                cases such as transferring graphs of objects into a session</span>
-</span><span id="1-1198"><span class="sd">                from a second level cache, or to transfer just-loaded objects</span>
-</span><span id="1-1199"><span class="sd">                into the session owned by a worker thread or process</span>
-</span><span id="1-1200"><span class="sd">                without re-querying the database.</span>
-</span><span id="1-1201">
-</span><span id="1-1202"><span class="sd">        Returns:</span>
-</span><span id="1-1203"><span class="sd">            Instance attached to the session - if `&quot;merge&quot;` strategy, may not be same instance</span>
-</span><span id="1-1204"><span class="sd">            that was provided.</span>
-</span><span id="1-1205"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-1206">        <span class="k">if</span> <span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;add&quot;</span><span class="p">:</span>
-</span><span id="1-1207">            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
-</span><span id="1-1208">            <span class="k">return</span> <span class="n">model</span>
-</span><span id="1-1209">        <span class="k">if</span> <span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;merge&quot;</span><span class="p">:</span>
-</span><span id="1-1210">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">load</span><span class="o">=</span><span class="n">load</span><span class="p">)</span>
-</span><span id="1-1211">        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Unexpected value for `strategy`, must be `&#39;add&#39;` or `&#39;merge&#39;`&quot;</span>  <span class="c1"># type: ignore[unreachable]</span>
-</span><span id="1-1212">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span id="1-1213">
-</span><span id="1-1214">    <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
-</span><span id="1-1215">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
+</span><span id="1-1167"><span class="sd">        Args:</span>
+</span><span id="1-1168"><span class="sd">            session: through which we run a check statement</span>
+</span><span id="1-1169">
+</span><span id="1-1170"><span class="sd">        Returns:</span>
+</span><span id="1-1171"><span class="sd">            ``True`` if healthy.</span>
+</span><span id="1-1172"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-1173">
+</span><span id="1-1174">        <span class="k">return</span> <span class="p">(</span>  <span class="c1"># type: ignore[no-any-return]</span>
+</span><span id="1-1175">            <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_get_health_check_statement</span><span class="p">(</span><span class="n">session</span><span class="p">))</span>
+</span><span id="1-1176">        <span class="p">)</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span></div>
+</span><span id="1-1177">
+</span><span id="1-1178">    <span class="nd">@staticmethod</span>
+</span><span id="1-1179">    <span class="k">def</span> <span class="nf">_get_health_check_statement</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Session</span> <span class="o">|</span> <span class="n">scoped_session</span><span class="p">[</span><span class="n">Session</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TextClause</span><span class="p">:</span>
+</span><span id="1-1180">        <span class="k">if</span> <span class="n">session</span><span class="o">.</span><span class="n">bind</span> <span class="ow">and</span> <span class="n">session</span><span class="o">.</span><span class="n">bind</span><span class="o">.</span><span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;oracle&quot;</span><span class="p">:</span>
+</span><span id="1-1181">            <span class="k">return</span> <span class="n">text</span><span class="p">(</span><span class="s2">&quot;SELECT 1 FROM DUAL&quot;</span><span class="p">)</span>
+</span><span id="1-1182">        <span class="k">return</span> <span class="n">text</span><span class="p">(</span><span class="s2">&quot;SELECT 1&quot;</span><span class="p">)</span>
+</span><span id="1-1183">
+</span><span id="1-1184">    <span class="k">def</span> <span class="nf">_attach_to_session</span><span class="p">(</span>
+</span><span id="1-1185">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1186">        <span class="n">model</span><span class="p">:</span> <span class="n">ModelT</span><span class="p">,</span>
+</span><span id="1-1187">        <span class="n">strategy</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="s2">&quot;merge&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span>
+</span><span id="1-1188">        <span class="n">load</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="1-1189">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
+</span><span id="1-1190"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Attach detached instance to the session.</span>
+</span><span id="1-1191">
+</span><span id="1-1192"><span class="sd">        Args:</span>
+</span><span id="1-1193"><span class="sd">            model: The instance to be attached to the session.</span>
+</span><span id="1-1194"><span class="sd">            strategy: How the instance should be attached.</span>
+</span><span id="1-1195"><span class="sd">                - &quot;add&quot;: New instance added to session</span>
+</span><span id="1-1196"><span class="sd">                - &quot;merge&quot;: Instance merged with existing, or new one added.</span>
+</span><span id="1-1197"><span class="sd">            load: Boolean, when False, merge switches into</span>
+</span><span id="1-1198"><span class="sd">                a &quot;high performance&quot; mode which causes it to forego emitting history</span>
+</span><span id="1-1199"><span class="sd">                events as well as all database access.  This flag is used for</span>
+</span><span id="1-1200"><span class="sd">                cases such as transferring graphs of objects into a session</span>
+</span><span id="1-1201"><span class="sd">                from a second level cache, or to transfer just-loaded objects</span>
+</span><span id="1-1202"><span class="sd">                into the session owned by a worker thread or process</span>
+</span><span id="1-1203"><span class="sd">                without re-querying the database.</span>
+</span><span id="1-1204">
+</span><span id="1-1205"><span class="sd">        Returns:</span>
+</span><span id="1-1206"><span class="sd">            Instance attached to the session - if `&quot;merge&quot;` strategy, may not be same instance</span>
+</span><span id="1-1207"><span class="sd">            that was provided.</span>
+</span><span id="1-1208"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-1209">        <span class="k">if</span> <span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;add&quot;</span><span class="p">:</span>
+</span><span id="1-1210">            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</span><span id="1-1211">            <span class="k">return</span> <span class="n">model</span>
+</span><span id="1-1212">        <span class="k">if</span> <span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;merge&quot;</span><span class="p">:</span>
+</span><span id="1-1213">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">load</span><span class="o">=</span><span class="n">load</span><span class="p">)</span>
+</span><span id="1-1214">        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Unexpected value for `strategy`, must be `&#39;add&#39;` or `&#39;merge&#39;`&quot;</span>  <span class="c1"># type: ignore[unreachable]</span>
+</span><span id="1-1215">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 </span><span id="1-1216">
-</span><span id="1-1217">    <span class="k">def</span> <span class="nf">_apply_limit_offset_pagination</span><span class="p">(</span>
-</span><span id="1-1218">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1219">        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-</span><span id="1-1220">        <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-</span><span id="1-1221">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span id="1-1222">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span id="1-1223">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
-</span><span id="1-1224">        <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-1225">
-</span><span id="1-1226">    <span class="k">def</span> <span class="nf">_apply_filters</span><span class="p">(</span>
-</span><span id="1-1227">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1228">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">FilterTypes</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
-</span><span id="1-1229">        <span class="n">apply_pagination</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="1-1230">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span id="1-1231">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span id="1-1232"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply filters to a select statement.</span>
-</span><span id="1-1233">
-</span><span id="1-1234"><span class="sd">        Args:</span>
-</span><span id="1-1235"><span class="sd">            *filters: filter types to apply to the query</span>
-</span><span id="1-1236"><span class="sd">            apply_pagination: applies pagination filters if true</span>
-</span><span id="1-1237"><span class="sd">            statement: select statement to apply filters</span>
-</span><span id="1-1238">
-</span><span id="1-1239"><span class="sd">        Keyword Args:</span>
-</span><span id="1-1240"><span class="sd">            select: select to apply filters against</span>
+</span><span id="1-1217">    <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+</span><span id="1-1218">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
+</span><span id="1-1219">
+</span><span id="1-1220">    <span class="k">def</span> <span class="nf">_apply_limit_offset_pagination</span><span class="p">(</span>
+</span><span id="1-1221">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1222">        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="1-1223">        <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="1-1224">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span id="1-1225">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span id="1-1226">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+</span><span id="1-1227">        <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-1228">
+</span><span id="1-1229">    <span class="k">def</span> <span class="nf">_apply_filters</span><span class="p">(</span>
+</span><span id="1-1230">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1231">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">FilterTypes</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
+</span><span id="1-1232">        <span class="n">apply_pagination</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="1-1233">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span id="1-1234">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span id="1-1235"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply filters to a select statement.</span>
+</span><span id="1-1236">
+</span><span id="1-1237"><span class="sd">        Args:</span>
+</span><span id="1-1238"><span class="sd">            *filters: filter types to apply to the query</span>
+</span><span id="1-1239"><span class="sd">            apply_pagination: applies pagination filters if true</span>
+</span><span id="1-1240"><span class="sd">            statement: select statement to apply filters</span>
 </span><span id="1-1241">
-</span><span id="1-1242"><span class="sd">        Returns:</span>
-</span><span id="1-1243"><span class="sd">            The select with filters applied.</span>
-</span><span id="1-1244"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="1-1245">        <span class="k">for</span> <span class="n">filter_</span> <span class="ow">in</span> <span class="n">filters</span><span class="p">:</span>
-</span><span id="1-1246">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">LimitOffset</span><span class="p">,)):</span>
-</span><span id="1-1247">                <span class="k">if</span> <span class="n">apply_pagination</span><span class="p">:</span>
-</span><span id="1-1248">                    <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_limit_offset_pagination</span><span class="p">(</span><span class="n">filter_</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span> <span class="n">filter_</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">)</span>
-</span><span id="1-1249">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">BeforeAfter</span><span class="p">,)):</span>
-</span><span id="1-1250">                <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_on_datetime_field</span><span class="p">(</span>
-</span><span id="1-1251">                    <span class="n">field_name</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span>
-</span><span id="1-1252">                    <span class="n">before</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">before</span><span class="p">,</span>
-</span><span id="1-1253">                    <span class="n">after</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">after</span><span class="p">,</span>
-</span><span id="1-1254">                    <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">,</span>
-</span><span id="1-1255">                <span class="p">)</span>
-</span><span id="1-1256">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">OnBeforeAfter</span><span class="p">,)):</span>
-</span><span id="1-1257">                <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_on_datetime_field</span><span class="p">(</span>
-</span><span id="1-1258">                    <span class="n">field_name</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span>
-</span><span id="1-1259">                    <span class="n">on_or_before</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">on_or_before</span><span class="p">,</span>
-</span><span id="1-1260">                    <span class="n">on_or_after</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">on_or_after</span><span class="p">,</span>
-</span><span id="1-1261">                    <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">,</span>
-</span><span id="1-1262">                <span class="p">)</span>
-</span><span id="1-1263">
-</span><span id="1-1264">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">NotInCollectionFilter</span><span class="p">,)):</span>
-</span><span id="1-1265">                <span class="k">if</span> <span class="n">filter_</span><span class="o">.</span><span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-1266">                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span><span class="p">:</span>
-</span><span id="1-1267">                        <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_not_any_collection</span><span class="p">(</span>
-</span><span id="1-1268">                            <span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span>
-</span><span id="1-1269">                            <span class="n">filter_</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-</span><span id="1-1270">                            <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">,</span>
-</span><span id="1-1271">                        <span class="p">)</span>
-</span><span id="1-1272">                    <span class="k">else</span><span class="p">:</span>
-</span><span id="1-1273">                        <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_not_in_collection</span><span class="p">(</span>
-</span><span id="1-1274">                            <span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span>
-</span><span id="1-1275">                            <span class="n">filter_</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-</span><span id="1-1276">                            <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">,</span>
-</span><span id="1-1277">                        <span class="p">)</span>
-</span><span id="1-1278">
-</span><span id="1-1279">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">CollectionFilter</span><span class="p">,)):</span>
-</span><span id="1-1280">                <span class="k">if</span> <span class="n">filter_</span><span class="o">.</span><span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-1281">                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span><span class="p">:</span>
-</span><span id="1-1282">                        <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_any_collection</span><span class="p">(</span><span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="n">filter_</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">)</span>
-</span><span id="1-1283">                    <span class="k">else</span><span class="p">:</span>
-</span><span id="1-1284">                        <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_in_collection</span><span class="p">(</span><span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="n">filter_</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">)</span>
-</span><span id="1-1285">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">OrderBy</span><span class="p">,)):</span>
-</span><span id="1-1286">                <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order_by</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="n">sort_desc</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">sort_order</span> <span class="o">==</span> <span class="s2">&quot;desc&quot;</span><span class="p">)</span>
-</span><span id="1-1287">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">SearchFilter</span><span class="p">,)):</span>
-</span><span id="1-1288">                <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_by_like</span><span class="p">(</span>
-</span><span id="1-1289">                    <span class="n">statement</span><span class="p">,</span>
-</span><span id="1-1290">                    <span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span>
-</span><span id="1-1291">                    <span class="n">value</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-</span><span id="1-1292">                    <span class="n">ignore_case</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">filter_</span><span class="o">.</span><span class="n">ignore_case</span><span class="p">),</span>
-</span><span id="1-1293">                <span class="p">)</span>
-</span><span id="1-1294">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">NotInSearchFilter</span><span class="p">,)):</span>
-</span><span id="1-1295">                <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_by_not_like</span><span class="p">(</span>
-</span><span id="1-1296">                    <span class="n">statement</span><span class="p">,</span>
-</span><span id="1-1297">                    <span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span>
-</span><span id="1-1298">                    <span class="n">value</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-</span><span id="1-1299">                    <span class="n">ignore_case</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">filter_</span><span class="o">.</span><span class="n">ignore_case</span><span class="p">),</span>
-</span><span id="1-1300">                <span class="p">)</span>
-</span><span id="1-1301">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="n">ColumnElement</span><span class="p">):</span>
-</span><span id="1-1302">                <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_by_expression</span><span class="p">(</span><span class="n">expression</span><span class="o">=</span><span class="n">filter_</span><span class="p">,</span> <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">)</span>
-</span><span id="1-1303">            <span class="k">else</span><span class="p">:</span>
-</span><span id="1-1304">                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Unexpected filter: </span><span class="si">{</span><span class="n">filter_</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># type: ignore[unreachable]</span>
-</span><span id="1-1305">                <span class="k">raise</span> <span class="n">RepositoryError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span id="1-1306">        <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-1307">
-</span><span id="1-1308">    <span class="k">def</span> <span class="nf">_filter_in_collection</span><span class="p">(</span>
-</span><span id="1-1309">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1310">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
-</span><span id="1-1311">        <span class="n">values</span><span class="p">:</span> <span class="n">abc</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-</span><span id="1-1312">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span id="1-1313">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span id="1-1314">        <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
-</span><span id="1-1315">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;1=-1&quot;</span><span class="p">))</span>
-</span><span id="1-1316">            <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-1317">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
-</span><span id="1-1318">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
-</span><span id="1-1319">        <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-1320">
-</span><span id="1-1321">    <span class="k">def</span> <span class="nf">_filter_not_in_collection</span><span class="p">(</span>
-</span><span id="1-1322">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1323">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
-</span><span id="1-1324">        <span class="n">values</span><span class="p">:</span> <span class="n">abc</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-</span><span id="1-1325">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span id="1-1326">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span id="1-1327">        <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
-</span><span id="1-1328">            <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-1329">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
-</span><span id="1-1330">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">notin_</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
-</span><span id="1-1331">        <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-1332">
-</span><span id="1-1333">    <span class="k">def</span> <span class="nf">_filter_any_collection</span><span class="p">(</span>
-</span><span id="1-1334">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1335">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
-</span><span id="1-1336">        <span class="n">values</span><span class="p">:</span> <span class="n">abc</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-</span><span id="1-1337">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span id="1-1338">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span id="1-1339">        <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
-</span><span id="1-1340">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;1=-1&quot;</span><span class="p">))</span>
-</span><span id="1-1341">            <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-1342">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
-</span><span id="1-1343">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="n">field</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
-</span><span id="1-1344">        <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-1345">
-</span><span id="1-1346">    <span class="k">def</span> <span class="nf">_filter_not_any_collection</span><span class="p">(</span>
-</span><span id="1-1347">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1348">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
-</span><span id="1-1349">        <span class="n">values</span><span class="p">:</span> <span class="n">abc</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-</span><span id="1-1350">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span id="1-1351">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span id="1-1352">        <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
-</span><span id="1-1353">            <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-1354">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
-</span><span id="1-1355">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="n">field</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
-</span><span id="1-1356">        <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-1357">
-</span><span id="1-1358">    <span class="k">def</span> <span class="nf">_filter_on_datetime_field</span><span class="p">(</span>
-</span><span id="1-1359">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1360">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
-</span><span id="1-1361">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span id="1-1362">        <span class="n">before</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-1363">        <span class="n">after</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-1364">        <span class="n">on_or_before</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-1365">        <span class="n">on_or_after</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="1-1366">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span id="1-1367">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
-</span><span id="1-1368">        <span class="k">if</span> <span class="n">before</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-1369">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&lt;</span> <span class="n">before</span><span class="p">)</span>
-</span><span id="1-1370">        <span class="k">if</span> <span class="n">after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-1371">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&gt;</span> <span class="n">after</span><span class="p">)</span>
-</span><span id="1-1372">        <span class="k">if</span> <span class="n">on_or_before</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-1373">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&lt;=</span> <span class="n">on_or_before</span><span class="p">)</span>
-</span><span id="1-1374">        <span class="k">if</span> <span class="n">on_or_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="1-1375">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&gt;=</span> <span class="n">on_or_after</span><span class="p">)</span>
-</span><span id="1-1376">        <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-1377">
-</span><span id="1-1378">    <span class="k">def</span> <span class="nf">_filter_select_by_kwargs</span><span class="p">(</span>
-</span><span id="1-1379">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1380">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span id="1-1381">        <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
-</span><span id="1-1382">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span id="1-1383">        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">:</span>
-</span><span id="1-1384">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_by_where</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportGeneralTypeIssues]</span>
-</span><span id="1-1385">        <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-1386">
-</span><span id="1-1387">    <span class="k">def</span> <span class="nf">_filter_by_expression</span><span class="p">(</span>
-</span><span id="1-1388">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1389">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span id="1-1390">        <span class="n">expression</span><span class="p">:</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
-</span><span id="1-1391">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span id="1-1392">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
-</span><span id="1-1393">        <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-1394">
-</span><span id="1-1395">    <span class="k">def</span> <span class="nf">_filter_by_where</span><span class="p">(</span>
-</span><span id="1-1396">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1397">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span id="1-1398">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
-</span><span id="1-1399">        <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span id="1-1400">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span id="1-1401">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
-</span><span id="1-1402">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span>
-</span><span id="1-1403">        <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-1404">
-</span><span id="1-1405">    <span class="k">def</span> <span class="nf">_filter_by_like</span><span class="p">(</span>
-</span><span id="1-1406">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1407">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span id="1-1408">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
-</span><span id="1-1409">        <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="1-1410">        <span class="n">ignore_case</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-</span><span id="1-1411">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span id="1-1412">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
-</span><span id="1-1413">        <span class="n">search_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;%</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">%&quot;</span>
-</span><span id="1-1414">        <span class="k">if</span> <span class="n">ignore_case</span><span class="p">:</span>
-</span><span id="1-1415">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">ilike</span><span class="p">(</span><span class="n">search_text</span><span class="p">))</span>
-</span><span id="1-1416">        <span class="k">else</span><span class="p">:</span>
-</span><span id="1-1417">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">like</span><span class="p">(</span><span class="n">search_text</span><span class="p">))</span>
-</span><span id="1-1418">        <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-1419">
-</span><span id="1-1420">    <span class="k">def</span> <span class="nf">_filter_by_not_like</span><span class="p">(</span>
-</span><span id="1-1421">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1422">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span id="1-1423">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
-</span><span id="1-1424">        <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="1-1425">        <span class="n">ignore_case</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-</span><span id="1-1426">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span id="1-1427">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
-</span><span id="1-1428">        <span class="n">search_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;%</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">%&quot;</span>
-</span><span id="1-1429">        <span class="k">if</span> <span class="n">ignore_case</span><span class="p">:</span>
-</span><span id="1-1430">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">not_ilike</span><span class="p">(</span><span class="n">search_text</span><span class="p">))</span>
-</span><span id="1-1431">        <span class="k">else</span><span class="p">:</span>
-</span><span id="1-1432">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">not_like</span><span class="p">(</span><span class="n">search_text</span><span class="p">))</span>
-</span><span id="1-1433">        <span class="k">return</span> <span class="n">statement</span>
-</span><span id="1-1434">
-</span><span id="1-1435">    <span class="k">def</span> <span class="nf">_order_by</span><span class="p">(</span>
-</span><span id="1-1436">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="1-1437">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span id="1-1438">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
-</span><span id="1-1439">        <span class="n">sort_desc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="1-1440">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span id="1-1441">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
-</span><span id="1-1442">        <span class="k">if</span> <span class="n">sort_desc</span><span class="p">:</span>
-</span><span id="1-1443">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
-</span><span id="1-1444">        <span class="k">else</span><span class="p">:</span>
-</span><span id="1-1445">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span>
-</span><span id="1-1446">        <span class="k">return</span> <span class="n">statement</span></div>
+</span><span id="1-1242"><span class="sd">        Keyword Args:</span>
+</span><span id="1-1243"><span class="sd">            select: select to apply filters against</span>
+</span><span id="1-1244">
+</span><span id="1-1245"><span class="sd">        Returns:</span>
+</span><span id="1-1246"><span class="sd">            The select with filters applied.</span>
+</span><span id="1-1247"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="1-1248">        <span class="k">for</span> <span class="n">filter_</span> <span class="ow">in</span> <span class="n">filters</span><span class="p">:</span>
+</span><span id="1-1249">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">LimitOffset</span><span class="p">,)):</span>
+</span><span id="1-1250">                <span class="k">if</span> <span class="n">apply_pagination</span><span class="p">:</span>
+</span><span id="1-1251">                    <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_limit_offset_pagination</span><span class="p">(</span><span class="n">filter_</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span> <span class="n">filter_</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">)</span>
+</span><span id="1-1252">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">BeforeAfter</span><span class="p">,)):</span>
+</span><span id="1-1253">                <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_on_datetime_field</span><span class="p">(</span>
+</span><span id="1-1254">                    <span class="n">field_name</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span>
+</span><span id="1-1255">                    <span class="n">before</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">before</span><span class="p">,</span>
+</span><span id="1-1256">                    <span class="n">after</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">after</span><span class="p">,</span>
+</span><span id="1-1257">                    <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">,</span>
+</span><span id="1-1258">                <span class="p">)</span>
+</span><span id="1-1259">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">OnBeforeAfter</span><span class="p">,)):</span>
+</span><span id="1-1260">                <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_on_datetime_field</span><span class="p">(</span>
+</span><span id="1-1261">                    <span class="n">field_name</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span>
+</span><span id="1-1262">                    <span class="n">on_or_before</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">on_or_before</span><span class="p">,</span>
+</span><span id="1-1263">                    <span class="n">on_or_after</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">on_or_after</span><span class="p">,</span>
+</span><span id="1-1264">                    <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">,</span>
+</span><span id="1-1265">                <span class="p">)</span>
+</span><span id="1-1266">
+</span><span id="1-1267">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">NotInCollectionFilter</span><span class="p">,)):</span>
+</span><span id="1-1268">                <span class="k">if</span> <span class="n">filter_</span><span class="o">.</span><span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-1269">                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span><span class="p">:</span>
+</span><span id="1-1270">                        <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_not_any_collection</span><span class="p">(</span>
+</span><span id="1-1271">                            <span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span>
+</span><span id="1-1272">                            <span class="n">filter_</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+</span><span id="1-1273">                            <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">,</span>
+</span><span id="1-1274">                        <span class="p">)</span>
+</span><span id="1-1275">                    <span class="k">else</span><span class="p">:</span>
+</span><span id="1-1276">                        <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_not_in_collection</span><span class="p">(</span>
+</span><span id="1-1277">                            <span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span>
+</span><span id="1-1278">                            <span class="n">filter_</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+</span><span id="1-1279">                            <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">,</span>
+</span><span id="1-1280">                        <span class="p">)</span>
+</span><span id="1-1281">
+</span><span id="1-1282">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">CollectionFilter</span><span class="p">,)):</span>
+</span><span id="1-1283">                <span class="k">if</span> <span class="n">filter_</span><span class="o">.</span><span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-1284">                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span><span class="p">:</span>
+</span><span id="1-1285">                        <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_any_collection</span><span class="p">(</span><span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="n">filter_</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">)</span>
+</span><span id="1-1286">                    <span class="k">else</span><span class="p">:</span>
+</span><span id="1-1287">                        <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_in_collection</span><span class="p">(</span><span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="n">filter_</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">)</span>
+</span><span id="1-1288">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">OrderBy</span><span class="p">,)):</span>
+</span><span id="1-1289">                <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order_by</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="n">sort_desc</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">sort_order</span> <span class="o">==</span> <span class="s2">&quot;desc&quot;</span><span class="p">)</span>
+</span><span id="1-1290">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">SearchFilter</span><span class="p">,)):</span>
+</span><span id="1-1291">                <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_by_like</span><span class="p">(</span>
+</span><span id="1-1292">                    <span class="n">statement</span><span class="p">,</span>
+</span><span id="1-1293">                    <span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span>
+</span><span id="1-1294">                    <span class="n">value</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+</span><span id="1-1295">                    <span class="n">ignore_case</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">filter_</span><span class="o">.</span><span class="n">ignore_case</span><span class="p">),</span>
+</span><span id="1-1296">                <span class="p">)</span>
+</span><span id="1-1297">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">NotInSearchFilter</span><span class="p">,)):</span>
+</span><span id="1-1298">                <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_by_not_like</span><span class="p">(</span>
+</span><span id="1-1299">                    <span class="n">statement</span><span class="p">,</span>
+</span><span id="1-1300">                    <span class="n">filter_</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span>
+</span><span id="1-1301">                    <span class="n">value</span><span class="o">=</span><span class="n">filter_</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+</span><span id="1-1302">                    <span class="n">ignore_case</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">filter_</span><span class="o">.</span><span class="n">ignore_case</span><span class="p">),</span>
+</span><span id="1-1303">                <span class="p">)</span>
+</span><span id="1-1304">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="n">ColumnElement</span><span class="p">):</span>
+</span><span id="1-1305">                <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_by_expression</span><span class="p">(</span><span class="n">expression</span><span class="o">=</span><span class="n">filter_</span><span class="p">,</span> <span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">)</span>
+</span><span id="1-1306">            <span class="k">else</span><span class="p">:</span>
+</span><span id="1-1307">                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Unexpected filter: </span><span class="si">{</span><span class="n">filter_</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># type: ignore[unreachable]</span>
+</span><span id="1-1308">                <span class="k">raise</span> <span class="n">RepositoryError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span id="1-1309">        <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-1310">
+</span><span id="1-1311">    <span class="k">def</span> <span class="nf">_filter_in_collection</span><span class="p">(</span>
+</span><span id="1-1312">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1313">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
+</span><span id="1-1314">        <span class="n">values</span><span class="p">:</span> <span class="n">abc</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span id="1-1315">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span id="1-1316">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span id="1-1317">        <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
+</span><span id="1-1318">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;1=-1&quot;</span><span class="p">))</span>
+</span><span id="1-1319">            <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-1320">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+</span><span id="1-1321">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+</span><span id="1-1322">        <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-1323">
+</span><span id="1-1324">    <span class="k">def</span> <span class="nf">_filter_not_in_collection</span><span class="p">(</span>
+</span><span id="1-1325">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1326">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
+</span><span id="1-1327">        <span class="n">values</span><span class="p">:</span> <span class="n">abc</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span id="1-1328">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span id="1-1329">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span id="1-1330">        <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
+</span><span id="1-1331">            <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-1332">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+</span><span id="1-1333">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">notin_</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+</span><span id="1-1334">        <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-1335">
+</span><span id="1-1336">    <span class="k">def</span> <span class="nf">_filter_any_collection</span><span class="p">(</span>
+</span><span id="1-1337">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1338">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
+</span><span id="1-1339">        <span class="n">values</span><span class="p">:</span> <span class="n">abc</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span id="1-1340">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span id="1-1341">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span id="1-1342">        <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
+</span><span id="1-1343">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;1=-1&quot;</span><span class="p">))</span>
+</span><span id="1-1344">            <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-1345">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+</span><span id="1-1346">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="n">field</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
+</span><span id="1-1347">        <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-1348">
+</span><span id="1-1349">    <span class="k">def</span> <span class="nf">_filter_not_any_collection</span><span class="p">(</span>
+</span><span id="1-1350">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1351">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
+</span><span id="1-1352">        <span class="n">values</span><span class="p">:</span> <span class="n">abc</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span id="1-1353">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span id="1-1354">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span id="1-1355">        <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
+</span><span id="1-1356">            <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-1357">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+</span><span id="1-1358">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="n">field</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
+</span><span id="1-1359">        <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-1360">
+</span><span id="1-1361">    <span class="k">def</span> <span class="nf">_filter_on_datetime_field</span><span class="p">(</span>
+</span><span id="1-1362">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1363">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
+</span><span id="1-1364">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span id="1-1365">        <span class="n">before</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-1366">        <span class="n">after</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-1367">        <span class="n">on_or_before</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-1368">        <span class="n">on_or_after</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="1-1369">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span id="1-1370">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+</span><span id="1-1371">        <span class="k">if</span> <span class="n">before</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-1372">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&lt;</span> <span class="n">before</span><span class="p">)</span>
+</span><span id="1-1373">        <span class="k">if</span> <span class="n">after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-1374">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&gt;</span> <span class="n">after</span><span class="p">)</span>
+</span><span id="1-1375">        <span class="k">if</span> <span class="n">on_or_before</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-1376">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&lt;=</span> <span class="n">on_or_before</span><span class="p">)</span>
+</span><span id="1-1377">        <span class="k">if</span> <span class="n">on_or_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="1-1378">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&gt;=</span> <span class="n">on_or_after</span><span class="p">)</span>
+</span><span id="1-1379">        <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-1380">
+</span><span id="1-1381">    <span class="k">def</span> <span class="nf">_filter_select_by_kwargs</span><span class="p">(</span>
+</span><span id="1-1382">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1383">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span id="1-1384">        <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+</span><span id="1-1385">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span id="1-1386">        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">:</span>
+</span><span id="1-1387">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_by_where</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportGeneralTypeIssues]</span>
+</span><span id="1-1388">        <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-1389">
+</span><span id="1-1390">    <span class="k">def</span> <span class="nf">_filter_by_expression</span><span class="p">(</span>
+</span><span id="1-1391">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1392">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span id="1-1393">        <span class="n">expression</span><span class="p">:</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
+</span><span id="1-1394">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span id="1-1395">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
+</span><span id="1-1396">        <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-1397">
+</span><span id="1-1398">    <span class="k">def</span> <span class="nf">_filter_by_where</span><span class="p">(</span>
+</span><span id="1-1399">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1400">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span id="1-1401">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
+</span><span id="1-1402">        <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span id="1-1403">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span id="1-1404">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+</span><span id="1-1405">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span>
+</span><span id="1-1406">        <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-1407">
+</span><span id="1-1408">    <span class="k">def</span> <span class="nf">_filter_by_like</span><span class="p">(</span>
+</span><span id="1-1409">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1410">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span id="1-1411">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
+</span><span id="1-1412">        <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="1-1413">        <span class="n">ignore_case</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+</span><span id="1-1414">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span id="1-1415">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+</span><span id="1-1416">        <span class="n">search_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;%</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">%&quot;</span>
+</span><span id="1-1417">        <span class="k">if</span> <span class="n">ignore_case</span><span class="p">:</span>
+</span><span id="1-1418">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">ilike</span><span class="p">(</span><span class="n">search_text</span><span class="p">))</span>
+</span><span id="1-1419">        <span class="k">else</span><span class="p">:</span>
+</span><span id="1-1420">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">like</span><span class="p">(</span><span class="n">search_text</span><span class="p">))</span>
+</span><span id="1-1421">        <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-1422">
+</span><span id="1-1423">    <span class="k">def</span> <span class="nf">_filter_by_not_like</span><span class="p">(</span>
+</span><span id="1-1424">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1425">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span id="1-1426">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
+</span><span id="1-1427">        <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="1-1428">        <span class="n">ignore_case</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+</span><span id="1-1429">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span id="1-1430">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+</span><span id="1-1431">        <span class="n">search_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;%</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">%&quot;</span>
+</span><span id="1-1432">        <span class="k">if</span> <span class="n">ignore_case</span><span class="p">:</span>
+</span><span id="1-1433">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">not_ilike</span><span class="p">(</span><span class="n">search_text</span><span class="p">))</span>
+</span><span id="1-1434">        <span class="k">else</span><span class="p">:</span>
+</span><span id="1-1435">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">not_like</span><span class="p">(</span><span class="n">search_text</span><span class="p">))</span>
+</span><span id="1-1436">        <span class="k">return</span> <span class="n">statement</span>
+</span><span id="1-1437">
+</span><span id="1-1438">    <span class="k">def</span> <span class="nf">_order_by</span><span class="p">(</span>
+</span><span id="1-1439">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="1-1440">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span id="1-1441">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">,</span>
+</span><span id="1-1442">        <span class="n">sort_desc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="1-1443">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span id="1-1444">        <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+</span><span id="1-1445">        <span class="k">if</span> <span class="n">sort_desc</span><span class="p">:</span>
+</span><span id="1-1446">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+</span><span id="1-1447">        <span class="k">else</span><span class="p">:</span>
+</span><span id="1-1448">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span>
+</span><span id="1-1449">        <span class="k">return</span> <span class="n">statement</span></div>
 </span></pre></div>
         </article>
         
