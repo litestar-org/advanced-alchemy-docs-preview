@@ -121,6 +121,7 @@ html.dark {
 <li class="toctree-l2 current"><a class="current reference internal" href="#">repositories</a></li>
 <li class="toctree-l2"><a class="reference internal" href="types.html">types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="service.html">services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="alembic/index.html">alembic</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="alembic/commands.html">commands</a></li>
 <li class="toctree-l3"><a class="reference internal" href="alembic/templates/asyncio/index.html">asyncio</a><ul>
@@ -221,6 +222,16 @@ html.dark {
 <li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepository.check_health"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepository.check_health()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepository"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncSlugRepository</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepository.get_by_slug"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncSlugRepository.get_by_slug()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepository.get_available_slug"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncSlugRepository.get_available_slug()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncSlugRepository"><code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncSlugRepository</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncSlugRepository.get_by_slug"><code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncSlugRepository.get_by_slug()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncSlugRepository.get_available_slug"><code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncSlugRepository.get_available_slug()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncRepository"><code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncRepository</span></code></a><ul>
 <li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncRepository.prefer_any_dialects"><code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncRepository.prefer_any_dialects</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncRepository.__init__"><code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncRepository.__init__()</span></code></a></li>
@@ -247,18 +258,6 @@ html.dark {
 <li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncRepository.list"><code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncRepository.list()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncRepository.filter_collection_by_kwargs"><code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncRepository.filter_collection_by_kwargs()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncRepository.check_health"><code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncRepository.check_health()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncMockRepository"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncMockRepository</span></code></a><ul>
-<li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncMockRepository.__init__"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncMockRepository.__init__()</span></code></a></li>
-<li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncMockRepository.get_id_attribute_value"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncMockRepository.get_id_attribute_value()</span></code></a></li>
-<li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncMockRepository.set_id_attribute_value"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncMockRepository.set_id_attribute_value()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncMockRepository"><code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncMockRepository</span></code></a><ul>
-<li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncMockRepository.__init__"><code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncMockRepository.__init__()</span></code></a></li>
-<li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncMockRepository.get_id_attribute_value"><code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncMockRepository.get_id_attribute_value()</span></code></a></li>
-<li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncMockRepository.set_id_attribute_value"><code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncMockRepository.set_id_attribute_value()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#advanced_alchemy.repository.model_from_dict"><code class="docutils literal notranslate"><span class="pre">model_from_dict()</span></code></a></li>
@@ -900,6 +899,76 @@ have the property that their attribute named <cite>key</cite> has value equal to
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncSlugRepository">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemyAsyncSlugRepository</span></span><a class="reference internal" href="../_modules/advanced_alchemy/repository/_async.html#SQLAlchemyAsyncSlugRepository"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepository" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepository" title="advanced_alchemy.repository._async.SQLAlchemyAsyncRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepository</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code>]</p>
+<p>Extends the repository to include slug model features..</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncSlugRepository.get_by_slug">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_by_slug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ModelT</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/advanced_alchemy/repository/_async.html#SQLAlchemyAsyncSlugRepository.get_by_slug"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepository.get_by_slug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select record by slug value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncSlugRepository.get_available_slug">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_available_slug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value_to_slugify</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/advanced_alchemy/repository/_async.html#SQLAlchemyAsyncSlugRepository.get_available_slug"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepository.get_available_slug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a unique slug for the supplied value.</p>
+<p>If the value is found to exist, a random 4 digit character is appended to the end.</p>
+<p>Override this method to change the default behavior</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value_to_slugify</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – A string that should be converted to a unique slug.</p></li>
+<li><p><strong>**kwargs</strong> – stuff</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a unique slug for the supplied value.  This is safe for URLs and other unique identifiers.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncSlugRepository">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemySyncSlugRepository</span></span><a class="reference internal" href="../_modules/advanced_alchemy/repository/_sync.html#SQLAlchemySyncSlugRepository"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncSlugRepository" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncRepository" title="advanced_alchemy.repository._sync.SQLAlchemySyncRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemySyncRepository</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code>]</p>
+<p>Extends the repository to include slug model features..</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncSlugRepository.get_by_slug">
+<span class="sig-name descname"><span class="pre">get_by_slug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ModelT</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/advanced_alchemy/repository/_sync.html#SQLAlchemySyncSlugRepository.get_by_slug"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncSlugRepository.get_by_slug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select record by slug value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncSlugRepository.get_available_slug">
+<span class="sig-name descname"><span class="pre">get_available_slug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value_to_slugify</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/advanced_alchemy/repository/_sync.html#SQLAlchemySyncSlugRepository.get_available_slug"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncSlugRepository.get_available_slug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a unique slug for the supplied value.</p>
+<p>If the value is found to exist, a random 4 digit character is appended to the end.</p>
+<p>Override this method to change the default behavior</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value_to_slugify</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – A string that should be converted to a unique slug.</p></li>
+<li><p><strong>**kwargs</strong> – stuff</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a unique slug for the supplied value.  This is safe for URLs and other unique identifiers.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncRepository">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemySyncRepository</span></span><a class="reference internal" href="../_modules/advanced_alchemy/repository/_sync.html#SQLAlchemySyncRepository"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncRepository" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code>]</p>
@@ -1472,104 +1541,6 @@ have the property that their attribute named <cite>key</cite> has value equal to
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if healthy.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncMockRepository">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemyAsyncMockRepository</span></span><a class="reference internal" href="../_modules/advanced_alchemy/repository/memory/_async.html#SQLAlchemyAsyncMockRepository"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncMockRepository" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code>]</p>
-<p>In memory repository.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncMockRepository.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/advanced_alchemy/repository/memory/_async.html#SQLAlchemyAsyncMockRepository.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncMockRepository.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncMockRepository.get_id_attribute_value">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_id_attribute_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ModelT</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ModelT</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/internals.html#sqlalchemy.orm.InstrumentedAttribute" title="(in SQLAlchemy v2.0)"><span class="pre">InstrumentedAttribute</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/advanced_alchemy/repository/memory/_async.html#SQLAlchemyAsyncMockRepository.get_id_attribute_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncMockRepository.get_id_attribute_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get value of attribute named as <code class="xref py py-attr docutils literal notranslate"><span class="pre">id_attribute</span></code> on <code class="docutils literal notranslate"><span class="pre">item</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>item</strong> – Anything that should have an attribute named as <code class="xref py py-attr docutils literal notranslate"><span class="pre">id_attribute</span></code> value.</p></li>
-<li><p><strong>id_attribute</strong> – Allows customization of the unique identifier to use for model fetching.
-Defaults to <cite>None</cite>, but can reference any surrogate or candidate key for the table.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The value of attribute on <code class="docutils literal notranslate"><span class="pre">item</span></code> named as <code class="xref py py-attr docutils literal notranslate"><span class="pre">id_attribute</span></code>.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncMockRepository.set_id_attribute_value">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_id_attribute_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ModelT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/internals.html#sqlalchemy.orm.InstrumentedAttribute" title="(in SQLAlchemy v2.0)"><span class="pre">InstrumentedAttribute</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ModelT</span></span></span><a class="reference internal" href="../_modules/advanced_alchemy/repository/memory/_async.html#SQLAlchemyAsyncMockRepository.set_id_attribute_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncMockRepository.set_id_attribute_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the <code class="docutils literal notranslate"><span class="pre">item</span></code> after the ID is set to the appropriate attribute.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>item_id</strong> – Value of ID to be set on instance</p></li>
-<li><p><strong>item</strong> – Anything that should have an attribute named as <code class="xref py py-attr docutils literal notranslate"><span class="pre">id_attribute</span></code> value.</p></li>
-<li><p><strong>id_attribute</strong> – Allows customization of the unique identifier to use for model fetching.
-Defaults to <cite>None</cite>, but can reference any surrogate or candidate key for the table.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Item with <code class="docutils literal notranslate"><span class="pre">item_id</span></code> set to <code class="xref py py-attr docutils literal notranslate"><span class="pre">id_attribute</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncMockRepository">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemySyncMockRepository</span></span><a class="reference internal" href="../_modules/advanced_alchemy/repository/memory/_sync.html#SQLAlchemySyncMockRepository"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncMockRepository" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code>]</p>
-<p>In memory repository.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncMockRepository.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/advanced_alchemy/repository/memory/_sync.html#SQLAlchemySyncMockRepository.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncMockRepository.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncMockRepository.get_id_attribute_value">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_id_attribute_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ModelT</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ModelT</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/internals.html#sqlalchemy.orm.InstrumentedAttribute" title="(in SQLAlchemy v2.0)"><span class="pre">InstrumentedAttribute</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/advanced_alchemy/repository/memory/_sync.html#SQLAlchemySyncMockRepository.get_id_attribute_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncMockRepository.get_id_attribute_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get value of attribute named as <code class="xref py py-attr docutils literal notranslate"><span class="pre">id_attribute</span></code> on <code class="docutils literal notranslate"><span class="pre">item</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>item</strong> – Anything that should have an attribute named as <code class="xref py py-attr docutils literal notranslate"><span class="pre">id_attribute</span></code> value.</p></li>
-<li><p><strong>id_attribute</strong> – Allows customization of the unique identifier to use for model fetching.
-Defaults to <cite>None</cite>, but can reference any surrogate or candidate key for the table.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The value of attribute on <code class="docutils literal notranslate"><span class="pre">item</span></code> named as <code class="xref py py-attr docutils literal notranslate"><span class="pre">id_attribute</span></code>.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncMockRepository.set_id_attribute_value">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_id_attribute_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ModelT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/internals.html#sqlalchemy.orm.InstrumentedAttribute" title="(in SQLAlchemy v2.0)"><span class="pre">InstrumentedAttribute</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ModelT</span></span></span><a class="reference internal" href="../_modules/advanced_alchemy/repository/memory/_sync.html#SQLAlchemySyncMockRepository.set_id_attribute_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncMockRepository.set_id_attribute_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the <code class="docutils literal notranslate"><span class="pre">item</span></code> after the ID is set to the appropriate attribute.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>item_id</strong> – Value of ID to be set on instance</p></li>
-<li><p><strong>item</strong> – Anything that should have an attribute named as <code class="xref py py-attr docutils literal notranslate"><span class="pre">id_attribute</span></code> value.</p></li>
-<li><p><strong>id_attribute</strong> – Allows customization of the unique identifier to use for model fetching.
-Defaults to <cite>None</cite>, but can reference any surrogate or candidate key for the table.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Item with <code class="docutils literal notranslate"><span class="pre">item_id</span></code> set to <code class="xref py py-attr docutils literal notranslate"><span class="pre">id_attribute</span></code></p>
 </dd>
 </dl>
 </dd></dl>
