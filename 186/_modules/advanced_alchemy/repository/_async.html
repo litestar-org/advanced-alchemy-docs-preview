@@ -382,7 +382,7 @@
 </span><span data-line="62">    <span class="n">_prefer_any</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 </span><span data-line="63">    <span class="n">prefer_any_dialects</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;postgresql&quot;</span><span class="p">,)</span>
 </span><span data-line="64"><span class="w">    </span><span class="sd">&quot;&quot;&quot;List of dialects that prefer to use ``field.id = ANY(:1)`` instead of ``field.id IN (...)``.&quot;&quot;&quot;</span>
-</span><span data-line="65">    <span class="n">uniquify_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="65">    <span class="n">_uniquify_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 </span><span data-line="66"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Optionally apply the ``unique()`` method to results before returning.</span>
 </span><span data-line="67">
 </span><span data-line="68"><span class="sd">    This is useful for certain SQLAlchemy uses cases such as applying ``contains_eager`` to a query containing a one-to-many relationship</span>
@@ -1547,7 +1547,7 @@
 </span><span data-line="1227">
 </span><span data-line="1228">    <span class="k">async</span> <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
 </span><span data-line="1229">        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
-</span><span data-line="1230">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uniquify_results</span><span class="p">:</span>
+</span><span data-line="1230">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uniquify_results</span><span class="p">:</span>
 </span><span data-line="1231">            <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
 </span><span data-line="1232">        <span class="k">return</span> <span class="n">result</span>
 </span><span data-line="1233">
