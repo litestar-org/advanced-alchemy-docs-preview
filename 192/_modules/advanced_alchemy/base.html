@@ -405,8 +405,8 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="82">
 </span><span data-line="83">
 <div class="viewcode-block" id="merge_table_arguments"><a class="viewcode-back" href="../../reference/base.html#advanced_alchemy.base.merge_table_arguments">[docs]</a></span><span data-line="84"><span class="k">def</span> <span class="nf">merge_table_arguments</span><span class="p">(</span>
-</span><span data-line="85">    <span class="bp">cls</span><span class="p">:</span> <span class="n">DeclarativeBase</span><span class="p">,</span>
-</span><span data-line="86">    <span class="o">*</span><span class="n">mixins</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="85">    <span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">DeclarativeBase</span><span class="p">],</span>
+</span><span data-line="86">    <span class="o">*</span><span class="n">mixins</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
 </span><span data-line="87">    <span class="n">table_args</span><span class="p">:</span> <span class="n">TableArgsType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span data-line="88"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TableArgsType</span><span class="p">:</span>
 </span><span data-line="89"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge Table Arguments.</span>
@@ -428,17 +428,17 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="105">
 </span><span data-line="106">    <span class="n">mixin_table_args</span> <span class="o">=</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="nb">super</span><span class="p">(</span><span class="n">base_cls</span><span class="p">,</span> <span class="bp">cls</span><span class="p">),</span> <span class="s2">&quot;__table_args__&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">base_cls</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">mixins</span><span class="p">))</span>  <span class="c1"># pyright: ignore[reportArgumentType,reportUnknownArgumentType]</span>
 </span><span data-line="107">
-</span><span data-line="108">    <span class="k">for</span> <span class="n">arg_to_merge</span> <span class="ow">in</span> <span class="p">(</span><span class="o">*</span><span class="n">mixin_table_args</span><span class="p">,</span> <span class="n">table_args</span><span class="p">):</span>  <span class="c1"># pyright: ignore[reportUnknownVariableType]</span>
+</span><span data-line="108">    <span class="k">for</span> <span class="n">arg_to_merge</span> <span class="ow">in</span> <span class="p">(</span><span class="o">*</span><span class="n">mixin_table_args</span><span class="p">,</span> <span class="n">table_args</span><span class="p">):</span>
 </span><span data-line="109">        <span class="k">if</span> <span class="n">arg_to_merge</span><span class="p">:</span>
 </span><span data-line="110">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_to_merge</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-</span><span data-line="111">                <span class="n">last_positional_arg</span> <span class="o">=</span> <span class="n">arg_to_merge</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># pyright: ignore[reportUnknownVariableType]</span>
-</span><span data-line="112">                <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">arg_to_merge</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># pyright: ignore[reportUnknownArgumentType]</span>
+</span><span data-line="111">                <span class="n">last_positional_arg</span> <span class="o">=</span> <span class="n">arg_to_merge</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="112">                <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">arg_to_merge</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 </span><span data-line="113">                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">last_positional_arg</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
 </span><span data-line="114">                    <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">last_positional_arg</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownArgumentType]</span>
 </span><span data-line="115">                <span class="k">else</span><span class="p">:</span>
 </span><span data-line="116">                    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">last_positional_arg</span><span class="p">)</span>
-</span><span data-line="117">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_to_merge</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-</span><span data-line="118">                <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">arg_to_merge</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownArgumentType]</span>
+</span><span data-line="117">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="118">                <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">arg_to_merge</span><span class="p">)</span>
 </span><span data-line="119">
 </span><span data-line="120">    <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
 </span><span data-line="121">        <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
