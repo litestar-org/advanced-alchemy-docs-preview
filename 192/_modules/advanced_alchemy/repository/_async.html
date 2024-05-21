@@ -380,122 +380,122 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="57">
 </span><span data-line="58"><span class="sd">    This is useful for certain SQLAlchemy uses cases such as applying ``contains_eager`` to a query containing a one-to-many relationship</span>
 </span><span data-line="59"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="60">    <span class="n">default_options</span><span class="p">:</span> <span class="n">LoadSpec</span>
-</span><span data-line="61">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.__init__"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.__init__">[docs]</a></span><span data-line="62">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-</span><span data-line="63">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="64">        <span class="o">*</span><span class="p">,</span>
-</span><span data-line="65">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="66">        <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span> <span class="o">|</span> <span class="n">async_scoped_session</span><span class="p">[</span><span class="n">AsyncSession</span><span class="p">],</span>
-</span><span data-line="67">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span data-line="68">        <span class="n">auto_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span data-line="69">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span data-line="70">        <span class="n">load</span><span class="p">:</span> <span class="n">LoadSpec</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="71">        <span class="n">execution_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="72">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="73">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="74"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Repository pattern for SQLAlchemy models.</span>
-</span><span data-line="75">
-</span><span data-line="76"><span class="sd">        Args:</span>
-</span><span data-line="77"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
-</span><span data-line="78"><span class="sd">            session: Session managing the unit-of-work for the operation.</span>
-</span><span data-line="79"><span class="sd">            auto_expunge: Remove object from session before returning.</span>
-</span><span data-line="80"><span class="sd">            auto_refresh: Refresh object from session before returning.</span>
-</span><span data-line="81"><span class="sd">            auto_commit: Commit objects before returning.</span>
-</span><span data-line="82"><span class="sd">            load: Set default relationships to be loaded</span>
-</span><span data-line="83"><span class="sd">            execution_options: Set default execution options</span>
-</span><span data-line="84"><span class="sd">            **kwargs: Additional arguments.</span>
-</span><span data-line="85">
-</span><span data-line="86"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="87">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span data-line="88">        <span class="bp">self</span><span class="o">.</span><span class="n">auto_expunge</span> <span class="o">=</span> <span class="n">auto_expunge</span>
-</span><span data-line="89">        <span class="bp">self</span><span class="o">.</span><span class="n">auto_refresh</span> <span class="o">=</span> <span class="n">auto_refresh</span>
-</span><span data-line="90">        <span class="bp">self</span><span class="o">.</span><span class="n">auto_commit</span> <span class="o">=</span> <span class="n">auto_commit</span>
-</span><span data-line="91">        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
-</span><span data-line="92">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">Select</span><span class="p">):</span>
-</span><span data-line="93">            <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="o">=</span> <span class="n">lambda_stmt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">statement</span><span class="p">)</span>
-</span><span data-line="94">        <span class="k">elif</span> <span class="n">statement</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="95">            <span class="n">statement</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">)</span>
-</span><span data-line="96">            <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="o">=</span> <span class="n">lambda_stmt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">statement</span><span class="p">)</span>
-</span><span data-line="97">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="98">            <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="o">=</span> <span class="n">statement</span>
-</span><span data-line="99">        <span class="bp">self</span><span class="o">.</span><span class="n">_default_loader_options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loader_options_have_wildcards</span> <span class="o">=</span> <span class="n">get_abstract_loader_options</span><span class="p">(</span>
-</span><span data-line="100">            <span class="n">loader_options</span><span class="o">=</span><span class="n">load</span><span class="p">,</span>
-</span><span data-line="101">        <span class="p">)</span>
-</span><span data-line="102">        <span class="bp">self</span><span class="o">.</span><span class="n">_default_execution_options</span> <span class="o">=</span> <span class="n">execution_options</span> <span class="ow">or</span> <span class="p">{}</span>
-</span><span data-line="103">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_loader_options</span><span class="p">:</span>
-</span><span data-line="104">            <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">statement</span><span class="o">.</span><span class="n">add_criteria</span><span class="p">(</span>
-</span><span data-line="105">                <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_loader_options</span><span class="p">),</span>
-</span><span data-line="106">                <span class="n">track_closure_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span data-line="107">            <span class="p">)</span>
-</span><span data-line="108">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_execution_options</span><span class="p">:</span>
-</span><span data-line="109">            <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">statement</span><span class="o">.</span><span class="n">add_criteria</span><span class="p">(</span>
-</span><span data-line="110">                <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">execution_options</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_execution_options</span><span class="p">),</span>
-</span><span data-line="111">                <span class="n">track_closure_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span data-line="112">            <span class="p">)</span>
-</span><span data-line="113">        <span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span><span class="o">.</span><span class="n">dialect</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">dialect</span>
-</span><span data-line="114">        <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">engine_type</span> <span class="k">for</span> <span class="n">engine_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefer_any_dialects</span> <span class="ow">or</span> <span class="p">())</span></div>
-</span><span data-line="115">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.get_id_attribute_value"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.get_id_attribute_value">[docs]</a></span><span data-line="116">    <span class="nd">@classmethod</span>
-</span><span data-line="117">    <span class="k">def</span> <span class="nf">get_id_attribute_value</span><span class="p">(</span>
-</span><span data-line="118">        <span class="bp">cls</span><span class="p">,</span>
-</span><span data-line="119">        <span class="n">item</span><span class="p">:</span> <span class="n">ModelT</span> <span class="o">|</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
-</span><span data-line="120">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="121">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span data-line="122"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get value of attribute named as :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;` on ``item``.</span>
-</span><span data-line="123">
-</span><span data-line="124"><span class="sd">        Args:</span>
-</span><span data-line="125"><span class="sd">            item: Anything that should have an attribute named as :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;` value.</span>
-</span><span data-line="126"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
-</span><span data-line="127"><span class="sd">                Defaults to `None`, but can reference any surrogate or candidate key for the table.</span>
-</span><span data-line="128">
-</span><span data-line="129"><span class="sd">        Returns:</span>
-</span><span data-line="130"><span class="sd">            The value of attribute on ``item`` named as :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;`.</span>
-</span><span data-line="131"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="132">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">id_attribute</span><span class="p">,</span> <span class="n">InstrumentedAttribute</span><span class="p">):</span>
-</span><span data-line="133">            <span class="n">id_attribute</span> <span class="o">=</span> <span class="n">id_attribute</span><span class="o">.</span><span class="n">key</span>
-</span><span data-line="134">        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">id_attribute</span> <span class="k">if</span> <span class="n">id_attribute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">cls</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">)</span></div>
-</span><span data-line="135">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.set_id_attribute_value"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.set_id_attribute_value">[docs]</a></span><span data-line="136">    <span class="nd">@classmethod</span>
-</span><span data-line="137">    <span class="k">def</span> <span class="nf">set_id_attribute_value</span><span class="p">(</span>
-</span><span data-line="138">        <span class="bp">cls</span><span class="p">,</span>
-</span><span data-line="139">        <span class="n">item_id</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="140">        <span class="n">item</span><span class="p">:</span> <span class="n">ModelT</span><span class="p">,</span>
-</span><span data-line="141">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="142">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
-</span><span data-line="143"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the ``item`` after the ID is set to the appropriate attribute.</span>
-</span><span data-line="144">
-</span><span data-line="145"><span class="sd">        Args:</span>
-</span><span data-line="146"><span class="sd">            item_id: Value of ID to be set on instance</span>
-</span><span data-line="147"><span class="sd">            item: Anything that should have an attribute named as :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;` value.</span>
-</span><span data-line="148"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
-</span><span data-line="149"><span class="sd">                Defaults to `None`, but can reference any surrogate or candidate key for the table.</span>
-</span><span data-line="150">
-</span><span data-line="151"><span class="sd">        Returns:</span>
-</span><span data-line="152"><span class="sd">            Item with ``item_id`` set to :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;`</span>
-</span><span data-line="153"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="154">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">id_attribute</span><span class="p">,</span> <span class="n">InstrumentedAttribute</span><span class="p">):</span>
-</span><span data-line="155">            <span class="n">id_attribute</span> <span class="o">=</span> <span class="n">id_attribute</span><span class="o">.</span><span class="n">key</span>
-</span><span data-line="156">        <span class="nb">setattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">id_attribute</span> <span class="k">if</span> <span class="n">id_attribute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">cls</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">,</span> <span class="n">item_id</span><span class="p">)</span>
-</span><span data-line="157">        <span class="k">return</span> <span class="n">item</span></div>
-</span><span data-line="158">
-<div class="viewcode-block" id="SQLAlchemyAsyncRepository.check_not_found"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.check_not_found">[docs]</a></span><span data-line="159">    <span class="nd">@staticmethod</span>
-</span><span data-line="160">    <span class="k">def</span> <span class="nf">check_not_found</span><span class="p">(</span><span class="n">item_or_none</span><span class="p">:</span> <span class="n">ModelT</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
-</span><span data-line="161"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Raise :exc:`advanced_alchemy.exceptions.NotFoundError` if ``item_or_none`` is ``None``.</span>
-</span><span data-line="162">
-</span><span data-line="163"><span class="sd">        Args:</span>
-</span><span data-line="164"><span class="sd">            item_or_none: Item (:class:`T &lt;T&gt;`) to be tested for existence.</span>
-</span><span data-line="165">
-</span><span data-line="166"><span class="sd">        Returns:</span>
-</span><span data-line="167"><span class="sd">            The item, if it exists.</span>
-</span><span data-line="168"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="169">        <span class="k">if</span> <span class="n">item_or_none</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="170">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No item found when one was expected&quot;</span>
-</span><span data-line="171">            <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span data-line="172">        <span class="k">return</span> <span class="n">item_or_none</span></div>
-</span><span data-line="173">
-</span><span data-line="174">    <span class="k">def</span> <span class="nf">_get_loader_options</span><span class="p">(</span>
-</span><span data-line="175">        <span class="bp">self</span><span class="p">,</span> <span class="n">loader_options</span><span class="p">:</span> <span class="n">LoadSpec</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="60">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.__init__"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.__init__">[docs]</a></span><span data-line="61">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="62">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="63">        <span class="o">*</span><span class="p">,</span>
+</span><span data-line="64">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">StatementLambdaElement</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="65">        <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span> <span class="o">|</span> <span class="n">async_scoped_session</span><span class="p">[</span><span class="n">AsyncSession</span><span class="p">],</span>
+</span><span data-line="66">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="67">        <span class="n">auto_refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="68">        <span class="n">auto_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="69">        <span class="n">load</span><span class="p">:</span> <span class="n">LoadSpec</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="70">        <span class="n">execution_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="71">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="72">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="73"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Repository pattern for SQLAlchemy models.</span>
+</span><span data-line="74">
+</span><span data-line="75"><span class="sd">        Args:</span>
+</span><span data-line="76"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
+</span><span data-line="77"><span class="sd">            session: Session managing the unit-of-work for the operation.</span>
+</span><span data-line="78"><span class="sd">            auto_expunge: Remove object from session before returning.</span>
+</span><span data-line="79"><span class="sd">            auto_refresh: Refresh object from session before returning.</span>
+</span><span data-line="80"><span class="sd">            auto_commit: Commit objects before returning.</span>
+</span><span data-line="81"><span class="sd">            load: Set default relationships to be loaded</span>
+</span><span data-line="82"><span class="sd">            execution_options: Set default execution options</span>
+</span><span data-line="83"><span class="sd">            **kwargs: Additional arguments.</span>
+</span><span data-line="84">
+</span><span data-line="85"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="86">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="87">        <span class="bp">self</span><span class="o">.</span><span class="n">auto_expunge</span> <span class="o">=</span> <span class="n">auto_expunge</span>
+</span><span data-line="88">        <span class="bp">self</span><span class="o">.</span><span class="n">auto_refresh</span> <span class="o">=</span> <span class="n">auto_refresh</span>
+</span><span data-line="89">        <span class="bp">self</span><span class="o">.</span><span class="n">auto_commit</span> <span class="o">=</span> <span class="n">auto_commit</span>
+</span><span data-line="90">        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
+</span><span data-line="91">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">Select</span><span class="p">):</span>
+</span><span data-line="92">            <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="o">=</span> <span class="n">lambda_stmt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">statement</span><span class="p">)</span>
+</span><span data-line="93">        <span class="k">elif</span> <span class="n">statement</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="94">            <span class="n">statement</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">)</span>
+</span><span data-line="95">            <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="o">=</span> <span class="n">lambda_stmt</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">statement</span><span class="p">)</span>
+</span><span data-line="96">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="97">            <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="o">=</span> <span class="n">statement</span>
+</span><span data-line="98">        <span class="bp">self</span><span class="o">.</span><span class="n">_default_loader_options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loader_options_have_wildcards</span> <span class="o">=</span> <span class="n">get_abstract_loader_options</span><span class="p">(</span>
+</span><span data-line="99">            <span class="n">loader_options</span><span class="o">=</span><span class="n">load</span><span class="p">,</span>
+</span><span data-line="100">        <span class="p">)</span>
+</span><span data-line="101">        <span class="bp">self</span><span class="o">.</span><span class="n">_default_execution_options</span> <span class="o">=</span> <span class="n">execution_options</span> <span class="ow">or</span> <span class="p">{}</span>
+</span><span data-line="102">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_loader_options</span><span class="p">:</span>
+</span><span data-line="103">            <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">statement</span><span class="o">.</span><span class="n">add_criteria</span><span class="p">(</span>
+</span><span data-line="104">                <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_loader_options</span><span class="p">),</span>
+</span><span data-line="105">                <span class="n">track_closure_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="106">            <span class="p">)</span>
+</span><span data-line="107">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_execution_options</span><span class="p">:</span>
+</span><span data-line="108">            <span class="bp">self</span><span class="o">.</span><span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">statement</span><span class="o">.</span><span class="n">add_criteria</span><span class="p">(</span>
+</span><span data-line="109">                <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">execution_options</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_execution_options</span><span class="p">),</span>
+</span><span data-line="110">                <span class="n">track_closure_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="111">            <span class="p">)</span>
+</span><span data-line="112">        <span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span><span class="o">.</span><span class="n">dialect</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">dialect</span>
+</span><span data-line="113">        <span class="bp">self</span><span class="o">.</span><span class="n">_prefer_any</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">engine_type</span> <span class="k">for</span> <span class="n">engine_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefer_any_dialects</span> <span class="ow">or</span> <span class="p">())</span></div>
+</span><span data-line="114">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.get_id_attribute_value"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.get_id_attribute_value">[docs]</a></span><span data-line="115">    <span class="nd">@classmethod</span>
+</span><span data-line="116">    <span class="k">def</span> <span class="nf">get_id_attribute_value</span><span class="p">(</span>
+</span><span data-line="117">        <span class="bp">cls</span><span class="p">,</span>
+</span><span data-line="118">        <span class="n">item</span><span class="p">:</span> <span class="n">ModelT</span> <span class="o">|</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
+</span><span data-line="119">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="120">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="121"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get value of attribute named as :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;` on ``item``.</span>
+</span><span data-line="122">
+</span><span data-line="123"><span class="sd">        Args:</span>
+</span><span data-line="124"><span class="sd">            item: Anything that should have an attribute named as :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;` value.</span>
+</span><span data-line="125"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
+</span><span data-line="126"><span class="sd">                Defaults to `None`, but can reference any surrogate or candidate key for the table.</span>
+</span><span data-line="127">
+</span><span data-line="128"><span class="sd">        Returns:</span>
+</span><span data-line="129"><span class="sd">            The value of attribute on ``item`` named as :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;`.</span>
+</span><span data-line="130"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="131">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">id_attribute</span><span class="p">,</span> <span class="n">InstrumentedAttribute</span><span class="p">):</span>
+</span><span data-line="132">            <span class="n">id_attribute</span> <span class="o">=</span> <span class="n">id_attribute</span><span class="o">.</span><span class="n">key</span>
+</span><span data-line="133">        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">id_attribute</span> <span class="k">if</span> <span class="n">id_attribute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">cls</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">)</span></div>
+</span><span data-line="134">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.set_id_attribute_value"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.set_id_attribute_value">[docs]</a></span><span data-line="135">    <span class="nd">@classmethod</span>
+</span><span data-line="136">    <span class="k">def</span> <span class="nf">set_id_attribute_value</span><span class="p">(</span>
+</span><span data-line="137">        <span class="bp">cls</span><span class="p">,</span>
+</span><span data-line="138">        <span class="n">item_id</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="139">        <span class="n">item</span><span class="p">:</span> <span class="n">ModelT</span><span class="p">,</span>
+</span><span data-line="140">        <span class="n">id_attribute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="141">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
+</span><span data-line="142"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the ``item`` after the ID is set to the appropriate attribute.</span>
+</span><span data-line="143">
+</span><span data-line="144"><span class="sd">        Args:</span>
+</span><span data-line="145"><span class="sd">            item_id: Value of ID to be set on instance</span>
+</span><span data-line="146"><span class="sd">            item: Anything that should have an attribute named as :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;` value.</span>
+</span><span data-line="147"><span class="sd">            id_attribute: Allows customization of the unique identifier to use for model fetching.</span>
+</span><span data-line="148"><span class="sd">                Defaults to `None`, but can reference any surrogate or candidate key for the table.</span>
+</span><span data-line="149">
+</span><span data-line="150"><span class="sd">        Returns:</span>
+</span><span data-line="151"><span class="sd">            Item with ``item_id`` set to :attr:`id_attribute &lt;AbstractAsyncRepository.id_attribute&gt;`</span>
+</span><span data-line="152"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="153">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">id_attribute</span><span class="p">,</span> <span class="n">InstrumentedAttribute</span><span class="p">):</span>
+</span><span data-line="154">            <span class="n">id_attribute</span> <span class="o">=</span> <span class="n">id_attribute</span><span class="o">.</span><span class="n">key</span>
+</span><span data-line="155">        <span class="nb">setattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">id_attribute</span> <span class="k">if</span> <span class="n">id_attribute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">cls</span><span class="o">.</span><span class="n">id_attribute</span><span class="p">,</span> <span class="n">item_id</span><span class="p">)</span>
+</span><span data-line="156">        <span class="k">return</span> <span class="n">item</span></div>
+</span><span data-line="157">
+<div class="viewcode-block" id="SQLAlchemyAsyncRepository.check_not_found"><a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.check_not_found">[docs]</a></span><span data-line="158">    <span class="nd">@staticmethod</span>
+</span><span data-line="159">    <span class="k">def</span> <span class="nf">check_not_found</span><span class="p">(</span><span class="n">item_or_none</span><span class="p">:</span> <span class="n">ModelT</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelT</span><span class="p">:</span>
+</span><span data-line="160"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Raise :exc:`advanced_alchemy.exceptions.NotFoundError` if ``item_or_none`` is ``None``.</span>
+</span><span data-line="161">
+</span><span data-line="162"><span class="sd">        Args:</span>
+</span><span data-line="163"><span class="sd">            item_or_none: Item (:class:`T &lt;T&gt;`) to be tested for existence.</span>
+</span><span data-line="164">
+</span><span data-line="165"><span class="sd">        Returns:</span>
+</span><span data-line="166"><span class="sd">            The item, if it exists.</span>
+</span><span data-line="167"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="168">        <span class="k">if</span> <span class="n">item_or_none</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="169">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No item found when one was expected&quot;</span>
+</span><span data-line="170">            <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span data-line="171">        <span class="k">return</span> <span class="n">item_or_none</span></div>
+</span><span data-line="172">
+</span><span data-line="173">    <span class="k">def</span> <span class="nf">_get_loader_options</span><span class="p">(</span>
+</span><span data-line="174">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="175">        <span class="n">loader_options</span><span class="p">:</span> <span class="n">LoadSpec</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
 </span><span data-line="176">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">_AbstractLoad</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
 </span><span data-line="177">        <span class="k">if</span> <span class="n">loader_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span data-line="178">            <span class="c1"># no need to return them here; We are using the default_options, which have</span>
