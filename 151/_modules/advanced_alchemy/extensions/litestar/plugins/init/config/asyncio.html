@@ -483,63 +483,64 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="200">                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_all_metadata</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 </span><span data-line="201">            <span class="k">yield</span>
 </span><span data-line="202">        <span class="k">finally</span><span class="p">:</span>
-</span><span data-line="203">            <span class="k">await</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;AsyncEngine&quot;</span><span class="p">,</span> <span class="n">deps</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">engine_dependency_key</span><span class="p">])</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span>
-</span><span data-line="204">
-<div class="viewcode-block" id="SQLAlchemyAsyncConfig.provide_engine"><a class="viewcode-back" href="../../../../../../../reference/extensions/litestar/plugins/init/config/asyncio.html#advanced_alchemy.extensions.litestar.plugins.init.config.asyncio.SQLAlchemyAsyncConfig.provide_engine">[docs]</a></span><span data-line="205">    <span class="k">def</span> <span class="nf">provide_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncEngine</span><span class="p">:</span>
-</span><span data-line="206"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an engine instance.</span>
-</span><span data-line="207">
-</span><span data-line="208"><span class="sd">        Args:</span>
-</span><span data-line="209"><span class="sd">            state: The ``Litestar.state`` instance.</span>
-</span><span data-line="210">
-</span><span data-line="211"><span class="sd">        Returns:</span>
-</span><span data-line="212"><span class="sd">            An engine instance.</span>
-</span><span data-line="213"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="214">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;AsyncEngine&quot;</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">engine_app_state_key</span><span class="p">))</span></div>
-</span><span data-line="215">
-<div class="viewcode-block" id="SQLAlchemyAsyncConfig.provide_session"><a class="viewcode-back" href="../../../../../../../reference/extensions/litestar/plugins/init/config/asyncio.html#advanced_alchemy.extensions.litestar.plugins.init.config.asyncio.SQLAlchemyAsyncConfig.provide_session">[docs]</a></span><span data-line="216">    <span class="k">def</span> <span class="nf">provide_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">scope</span><span class="p">:</span> <span class="n">Scope</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncSession</span><span class="p">:</span>
-</span><span data-line="217"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a session instance.</span>
-</span><span data-line="218">
-</span><span data-line="219"><span class="sd">        Args:</span>
-</span><span data-line="220"><span class="sd">            state: The ``Litestar.state`` instance.</span>
-</span><span data-line="221"><span class="sd">            scope: The current connection&#39;s scope.</span>
-</span><span data-line="222">
-</span><span data-line="223"><span class="sd">        Returns:</span>
-</span><span data-line="224"><span class="sd">            A session instance.</span>
-</span><span data-line="225"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="226">        <span class="n">session</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;AsyncSession | None&quot;</span><span class="p">,</span> <span class="n">get_aa_scope_state</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_scope_key</span><span class="p">))</span>
-</span><span data-line="227">        <span class="k">if</span> <span class="n">session</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="228">            <span class="n">session_maker</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;Callable[[], AsyncSession]&quot;</span><span class="p">,</span> <span class="n">state</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">session_maker_app_state_key</span><span class="p">])</span>
-</span><span data-line="229">            <span class="n">session</span> <span class="o">=</span> <span class="n">session_maker</span><span class="p">()</span>
-</span><span data-line="230">            <span class="n">set_aa_scope_state</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_scope_key</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
-</span><span data-line="231">        <span class="k">return</span> <span class="n">session</span></div>
-</span><span data-line="232">
-</span><span data-line="233">    <span class="nd">@property</span>
-</span><span data-line="234">    <span class="k">def</span> <span class="nf">signature_namespace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-</span><span data-line="235"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the plugin&#39;s signature namespace.</span>
-</span><span data-line="236">
-</span><span data-line="237"><span class="sd">        Returns:</span>
-</span><span data-line="238"><span class="sd">            A string keyed dict of names to be added to the namespace for signature forward reference resolution.</span>
-</span><span data-line="239"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="240">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;AsyncEngine&quot;</span><span class="p">:</span> <span class="n">AsyncEngine</span><span class="p">,</span> <span class="s2">&quot;AsyncSession&quot;</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">}</span>
-</span><span data-line="241">
-<div class="viewcode-block" id="SQLAlchemyAsyncConfig.create_all_metadata"><a class="viewcode-back" href="../../../../../../../reference/extensions/litestar/plugins/init/config/asyncio.html#advanced_alchemy.extensions.litestar.plugins.init.config.asyncio.SQLAlchemyAsyncConfig.create_all_metadata">[docs]</a></span><span data-line="242">    <span class="k">async</span> <span class="k">def</span> <span class="nf">create_all_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">:</span> <span class="n">Litestar</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="243"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create all metadata</span>
-</span><span data-line="244">
-</span><span data-line="245"><span class="sd">        Args:</span>
-</span><span data-line="246"><span class="sd">            app (Litestar): The ``Litestar`` instance</span>
-</span><span data-line="247"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="248">        <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
-</span><span data-line="249">            <span class="k">try</span><span class="p">:</span>
-</span><span data-line="250">                <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">run_sync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alembic_config</span><span class="o">.</span><span class="n">target_metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">)</span>
-</span><span data-line="251">            <span class="k">except</span> <span class="n">OperationalError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-</span><span data-line="252">                <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[bold red] * Could not create target metadata.  Reason: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-</span><span data-line="253">
-<div class="viewcode-block" id="SQLAlchemyAsyncConfig.create_app_state_items"><a class="viewcode-back" href="../../../../../../../reference/extensions/litestar/plugins/init/config/asyncio.html#advanced_alchemy.extensions.litestar.plugins.init.config.asyncio.SQLAlchemyAsyncConfig.create_app_state_items">[docs]</a></span><span data-line="254">    <span class="k">def</span> <span class="nf">create_app_state_items</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-</span><span data-line="255"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Key/value pairs to be stored in application state.&quot;&quot;&quot;</span>
-</span><span data-line="256">        <span class="k">return</span> <span class="p">{</span>
-</span><span data-line="257">            <span class="bp">self</span><span class="o">.</span><span class="n">engine_app_state_key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_engine</span><span class="p">(),</span>
-</span><span data-line="258">            <span class="bp">self</span><span class="o">.</span><span class="n">session_maker_app_state_key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_session_maker</span><span class="p">(),</span>
-</span><span data-line="259">        <span class="p">}</span></div></div>
+</span><span data-line="203">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine_dependency_key</span> <span class="ow">in</span> <span class="n">deps</span><span class="p">:</span>
+</span><span data-line="204">                <span class="k">await</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;AsyncEngine&quot;</span><span class="p">,</span> <span class="n">deps</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">engine_dependency_key</span><span class="p">])</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span>
+</span><span data-line="205">
+<div class="viewcode-block" id="SQLAlchemyAsyncConfig.provide_engine"><a class="viewcode-back" href="../../../../../../../reference/extensions/litestar/plugins/init/config/asyncio.html#advanced_alchemy.extensions.litestar.plugins.init.config.asyncio.SQLAlchemyAsyncConfig.provide_engine">[docs]</a></span><span data-line="206">    <span class="k">def</span> <span class="nf">provide_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncEngine</span><span class="p">:</span>
+</span><span data-line="207"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an engine instance.</span>
+</span><span data-line="208">
+</span><span data-line="209"><span class="sd">        Args:</span>
+</span><span data-line="210"><span class="sd">            state: The ``Litestar.state`` instance.</span>
+</span><span data-line="211">
+</span><span data-line="212"><span class="sd">        Returns:</span>
+</span><span data-line="213"><span class="sd">            An engine instance.</span>
+</span><span data-line="214"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="215">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;AsyncEngine&quot;</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">engine_app_state_key</span><span class="p">))</span></div>
+</span><span data-line="216">
+<div class="viewcode-block" id="SQLAlchemyAsyncConfig.provide_session"><a class="viewcode-back" href="../../../../../../../reference/extensions/litestar/plugins/init/config/asyncio.html#advanced_alchemy.extensions.litestar.plugins.init.config.asyncio.SQLAlchemyAsyncConfig.provide_session">[docs]</a></span><span data-line="217">    <span class="k">def</span> <span class="nf">provide_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">scope</span><span class="p">:</span> <span class="n">Scope</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncSession</span><span class="p">:</span>
+</span><span data-line="218"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a session instance.</span>
+</span><span data-line="219">
+</span><span data-line="220"><span class="sd">        Args:</span>
+</span><span data-line="221"><span class="sd">            state: The ``Litestar.state`` instance.</span>
+</span><span data-line="222"><span class="sd">            scope: The current connection&#39;s scope.</span>
+</span><span data-line="223">
+</span><span data-line="224"><span class="sd">        Returns:</span>
+</span><span data-line="225"><span class="sd">            A session instance.</span>
+</span><span data-line="226"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="227">        <span class="n">session</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;AsyncSession | None&quot;</span><span class="p">,</span> <span class="n">get_aa_scope_state</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_scope_key</span><span class="p">))</span>
+</span><span data-line="228">        <span class="k">if</span> <span class="n">session</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="229">            <span class="n">session_maker</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;Callable[[], AsyncSession]&quot;</span><span class="p">,</span> <span class="n">state</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">session_maker_app_state_key</span><span class="p">])</span>
+</span><span data-line="230">            <span class="n">session</span> <span class="o">=</span> <span class="n">session_maker</span><span class="p">()</span>
+</span><span data-line="231">            <span class="n">set_aa_scope_state</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_scope_key</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
+</span><span data-line="232">        <span class="k">return</span> <span class="n">session</span></div>
+</span><span data-line="233">
+</span><span data-line="234">    <span class="nd">@property</span>
+</span><span data-line="235">    <span class="k">def</span> <span class="nf">signature_namespace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+</span><span data-line="236"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the plugin&#39;s signature namespace.</span>
+</span><span data-line="237">
+</span><span data-line="238"><span class="sd">        Returns:</span>
+</span><span data-line="239"><span class="sd">            A string keyed dict of names to be added to the namespace for signature forward reference resolution.</span>
+</span><span data-line="240"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="241">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;AsyncEngine&quot;</span><span class="p">:</span> <span class="n">AsyncEngine</span><span class="p">,</span> <span class="s2">&quot;AsyncSession&quot;</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">}</span>
+</span><span data-line="242">
+<div class="viewcode-block" id="SQLAlchemyAsyncConfig.create_all_metadata"><a class="viewcode-back" href="../../../../../../../reference/extensions/litestar/plugins/init/config/asyncio.html#advanced_alchemy.extensions.litestar.plugins.init.config.asyncio.SQLAlchemyAsyncConfig.create_all_metadata">[docs]</a></span><span data-line="243">    <span class="k">async</span> <span class="k">def</span> <span class="nf">create_all_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">:</span> <span class="n">Litestar</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="244"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create all metadata</span>
+</span><span data-line="245">
+</span><span data-line="246"><span class="sd">        Args:</span>
+</span><span data-line="247"><span class="sd">            app (Litestar): The ``Litestar`` instance</span>
+</span><span data-line="248"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="249">        <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+</span><span data-line="250">            <span class="k">try</span><span class="p">:</span>
+</span><span data-line="251">                <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">run_sync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alembic_config</span><span class="o">.</span><span class="n">target_metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">)</span>
+</span><span data-line="252">            <span class="k">except</span> <span class="n">OperationalError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+</span><span data-line="253">                <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[bold red] * Could not create target metadata.  Reason: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</span><span data-line="254">
+<div class="viewcode-block" id="SQLAlchemyAsyncConfig.create_app_state_items"><a class="viewcode-back" href="../../../../../../../reference/extensions/litestar/plugins/init/config/asyncio.html#advanced_alchemy.extensions.litestar.plugins.init.config.asyncio.SQLAlchemyAsyncConfig.create_app_state_items">[docs]</a></span><span data-line="255">    <span class="k">def</span> <span class="nf">create_app_state_items</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+</span><span data-line="256"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Key/value pairs to be stored in application state.&quot;&quot;&quot;</span>
+</span><span data-line="257">        <span class="k">return</span> <span class="p">{</span>
+</span><span data-line="258">            <span class="bp">self</span><span class="o">.</span><span class="n">engine_app_state_key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_engine</span><span class="p">(),</span>
+</span><span data-line="259">            <span class="bp">self</span><span class="o">.</span><span class="n">session_maker_app_state_key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_session_maker</span><span class="p">(),</span>
+</span><span data-line="260">        <span class="p">}</span></div></div>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
