@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=397bb51e" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=5117e564" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=36d120a7" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
@@ -103,13 +103,13 @@
     <div class="nav-versions-choices"><ul><li><a href="/latest">latest</a></li><li><a href="/main">development</a></li></ul></div>
   </div><div class="sy-head-socials">
   <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
-    <i class="i-simpleicons github"></i>
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
   </a>
 <a href="https://twitter.com/LitestarAPI" aria-label="X (Twitter)">
-  <i class="i-simpleicons x-twitter"></i>
+  <iconify-icon icon="prime:twitter"></iconify-icon>
 </a>
   <a href="https://discord.gg/litestar" aria-label="Discord">
-    <i class="i-simpleicons discord"></i>
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
   </a></div></div>
     </div>
     <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
@@ -232,17 +232,17 @@ data-aria-dark="Switch to auto color mode">
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
   data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
   <span class="w-8 flex items-center justify-around shrink-0 text-3xl">
-    <i class="i-simpleicons github"></i>
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
   </span>
   <span class="flex-grow px-2 break-all">
     <span>litestar-org/advanced-alchemy</span>
     <span class="flex text-sm repo-stats-count">
       <span class="flex items-center pr-3">
-        <i class="i-lucide star"></i>
+        <iconify-icon icon="lucide:star"></iconify-icon>
         <strong class="js-repo-stars ml-1">0</strong>
       </span>
       <span class="flex items-center">
-        <i class="i-lucide git-fork"></i>
+        <iconify-icon icon="lucide:git-fork"></iconify-icon>
         <strong class="js-repo-forks ml-1">0</strong>
       </span>
     </span>
@@ -297,87 +297,88 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="15">    <span class="kn">from</span> <span class="nn">sqlalchemy.engine</span> <span class="kn">import</span> <span class="n">Dialect</span>
 </span><span data-line="16">
 </span><span data-line="17"><span class="n">UUID_UTILS_INSTALLED</span> <span class="o">=</span> <span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;uuid_utils&quot;</span><span class="p">)</span>
-</span><span data-line="18">
+</span><span data-line="18"><span class="n">NANOID_INSTALLED</span> <span class="o">=</span> <span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;fastnanoid&quot;</span><span class="p">)</span>
 </span><span data-line="19">
-<div class="viewcode-block" id="GUID"><a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.GUID">[docs]</a></span><span data-line="20"><span class="k">class</span> <span class="nc">GUID</span><span class="p">(</span><span class="n">TypeDecorator</span><span class="p">[</span><span class="n">UUID</span><span class="p">]):</span>
-</span><span data-line="21"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Platform-independent GUID type.</span>
-</span><span data-line="22">
-</span><span data-line="23"><span class="sd">    Uses PostgreSQL&#39;s UUID type (Postgres, DuckDB, Cockroach),</span>
-</span><span data-line="24"><span class="sd">    MSSQL&#39;s UNIQUEIDENTIFIER type, Oracle&#39;s RAW(16) type,</span>
-</span><span data-line="25"><span class="sd">    otherwise uses BINARY(16) or CHAR(32),</span>
-</span><span data-line="26"><span class="sd">    storing as stringified hex values.</span>
-</span><span data-line="27">
-</span><span data-line="28"><span class="sd">    Will accept stringified UUIDs as a hexstring or an actual UUID</span>
-</span><span data-line="29">
-</span><span data-line="30"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="31">
-</span><span data-line="32">    <span class="n">impl</span> <span class="o">=</span> <span class="n">BINARY</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
-</span><span data-line="33">    <span class="n">cache_ok</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span data-line="34">
-</span><span data-line="35">    <span class="nd">@property</span>
-</span><span data-line="36">    <span class="k">def</span> <span class="nf">python_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">[</span><span class="n">UUID</span><span class="p">]:</span>
-</span><span data-line="37">        <span class="k">return</span> <span class="n">UUID</span>
-</span><span data-line="38">
-<div class="viewcode-block" id="GUID.__init__"><a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.GUID.__init__">[docs]</a></span><span data-line="39">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">binary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="40">        <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">binary</span></div>
-</span><span data-line="41">
-<div class="viewcode-block" id="GUID.load_dialect_impl"><a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.GUID.load_dialect_impl">[docs]</a></span><span data-line="42">    <span class="k">def</span> <span class="nf">load_dialect_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span data-line="43">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;postgresql&quot;</span><span class="p">,</span> <span class="s2">&quot;duckdb&quot;</span><span class="p">,</span> <span class="s2">&quot;cockroachdb&quot;</span><span class="p">}:</span>
-</span><span data-line="44">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">PG_UUID</span><span class="p">())</span>
-</span><span data-line="45">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;oracle&quot;</span><span class="p">:</span>
-</span><span data-line="46">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">ORA_RAW</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
-</span><span data-line="47">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;mssql&quot;</span><span class="p">:</span>
-</span><span data-line="48">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">MSSQL_UNIQUEIDENTIFIER</span><span class="p">())</span>
-</span><span data-line="49">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="p">:</span>
-</span><span data-line="50">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">BINARY</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
-</span><span data-line="51">        <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">32</span><span class="p">))</span></div>
-</span><span data-line="52">
-<div class="viewcode-block" id="GUID.process_bind_param"><a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.GUID.process_bind_param">[docs]</a></span><span data-line="53">    <span class="k">def</span> <span class="nf">process_bind_param</span><span class="p">(</span>
-</span><span data-line="54">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="55">        <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="56">        <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">,</span>
-</span><span data-line="57">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="58">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="59">            <span class="k">return</span> <span class="n">value</span>
-</span><span data-line="60">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;postgresql&quot;</span><span class="p">,</span> <span class="s2">&quot;duckdb&quot;</span><span class="p">,</span> <span class="s2">&quot;cockroachdb&quot;</span><span class="p">,</span> <span class="s2">&quot;mssql&quot;</span><span class="p">}:</span>
-</span><span data-line="61">            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-</span><span data-line="62">        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_uuid</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-</span><span data-line="63">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="64">            <span class="k">return</span> <span class="n">value</span>
-</span><span data-line="65">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;oracle&quot;</span><span class="p">,</span> <span class="s2">&quot;spanner+spanner&quot;</span><span class="p">}:</span>
-</span><span data-line="66">            <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">bytes</span>
-</span><span data-line="67">        <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">bytes</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="k">else</span> <span class="n">value</span><span class="o">.</span><span class="n">hex</span></div>
-</span><span data-line="68">
-<div class="viewcode-block" id="GUID.process_result_value"><a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.GUID.process_result_value">[docs]</a></span><span data-line="69">    <span class="k">def</span> <span class="nf">process_result_value</span><span class="p">(</span>
-</span><span data-line="70">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="71">        <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="72">        <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">,</span>
-</span><span data-line="73">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="74">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="75">            <span class="k">return</span> <span class="n">value</span>
-</span><span data-line="76">        <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;UUID&quot;</span><span class="p">:</span>
-</span><span data-line="77">            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;UUID&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-</span><span data-line="78">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;spanner+spanner&quot;</span><span class="p">:</span>
-</span><span data-line="79">            <span class="k">return</span> <span class="n">UUID</span><span class="p">(</span><span class="nb">bytes</span><span class="o">=</span><span class="n">b64decode</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;str | Buffer&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)))</span>
-</span><span data-line="80">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="p">:</span>
-</span><span data-line="81">            <span class="k">return</span> <span class="n">UUID</span><span class="p">(</span><span class="nb">bytes</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;bytes&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
-</span><span data-line="82">        <span class="k">return</span> <span class="n">UUID</span><span class="p">(</span><span class="nb">hex</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
-</span><span data-line="83">
-</span><span data-line="84">    <span class="nd">@staticmethod</span>
-</span><span data-line="85">    <span class="k">def</span> <span class="nf">to_uuid</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="86">        <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;UUID&quot;</span> <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="87">            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;UUID | None&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-</span><span data-line="88">        <span class="k">try</span><span class="p">:</span>
-</span><span data-line="89">            <span class="n">value</span> <span class="o">=</span> <span class="n">UUID</span><span class="p">(</span><span class="nb">hex</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
-</span><span data-line="90">        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
-</span><span data-line="91">            <span class="n">value</span> <span class="o">=</span> <span class="n">UUID</span><span class="p">(</span><span class="nb">bytes</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
-</span><span data-line="92">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;UUID | None&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-</span><span data-line="93">
-<div class="viewcode-block" id="GUID.compare_values"><a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.GUID.compare_values">[docs]</a></span><span data-line="94">    <span class="k">def</span> <span class="nf">compare_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span data-line="95"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare two values for equality.&quot;&quot;&quot;</span>
-</span><span data-line="96">        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;UUID&quot;</span> <span class="ow">and</span> <span class="n">y</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;UUID&quot;</span><span class="p">:</span>
-</span><span data-line="97">            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">bytes</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">bytes</span><span class="p">)</span>
-</span><span data-line="98">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span></div></div>
+</span><span data-line="20">
+<div class="viewcode-block" id="GUID"><a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.GUID">[docs]</a></span><span data-line="21"><span class="k">class</span> <span class="nc">GUID</span><span class="p">(</span><span class="n">TypeDecorator</span><span class="p">[</span><span class="n">UUID</span><span class="p">]):</span>
+</span><span data-line="22"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Platform-independent GUID type.</span>
+</span><span data-line="23">
+</span><span data-line="24"><span class="sd">    Uses PostgreSQL&#39;s UUID type (Postgres, DuckDB, Cockroach),</span>
+</span><span data-line="25"><span class="sd">    MSSQL&#39;s UNIQUEIDENTIFIER type, Oracle&#39;s RAW(16) type,</span>
+</span><span data-line="26"><span class="sd">    otherwise uses BINARY(16) or CHAR(32),</span>
+</span><span data-line="27"><span class="sd">    storing as stringified hex values.</span>
+</span><span data-line="28">
+</span><span data-line="29"><span class="sd">    Will accept stringified UUIDs as a hexstring or an actual UUID</span>
+</span><span data-line="30">
+</span><span data-line="31"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="32">
+</span><span data-line="33">    <span class="n">impl</span> <span class="o">=</span> <span class="n">BINARY</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+</span><span data-line="34">    <span class="n">cache_ok</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="35">
+</span><span data-line="36">    <span class="nd">@property</span>
+</span><span data-line="37">    <span class="k">def</span> <span class="nf">python_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">[</span><span class="n">UUID</span><span class="p">]:</span>
+</span><span data-line="38">        <span class="k">return</span> <span class="n">UUID</span>
+</span><span data-line="39">
+<div class="viewcode-block" id="GUID.__init__"><a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.GUID.__init__">[docs]</a></span><span data-line="40">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">binary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="41">        <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">binary</span></div>
+</span><span data-line="42">
+<div class="viewcode-block" id="GUID.load_dialect_impl"><a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.GUID.load_dialect_impl">[docs]</a></span><span data-line="43">    <span class="k">def</span> <span class="nf">load_dialect_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="44">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;postgresql&quot;</span><span class="p">,</span> <span class="s2">&quot;duckdb&quot;</span><span class="p">,</span> <span class="s2">&quot;cockroachdb&quot;</span><span class="p">}:</span>
+</span><span data-line="45">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">PG_UUID</span><span class="p">())</span>
+</span><span data-line="46">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;oracle&quot;</span><span class="p">:</span>
+</span><span data-line="47">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">ORA_RAW</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
+</span><span data-line="48">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;mssql&quot;</span><span class="p">:</span>
+</span><span data-line="49">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">MSSQL_UNIQUEIDENTIFIER</span><span class="p">())</span>
+</span><span data-line="50">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="p">:</span>
+</span><span data-line="51">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">BINARY</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
+</span><span data-line="52">        <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">32</span><span class="p">))</span></div>
+</span><span data-line="53">
+<div class="viewcode-block" id="GUID.process_bind_param"><a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.GUID.process_bind_param">[docs]</a></span><span data-line="54">    <span class="k">def</span> <span class="nf">process_bind_param</span><span class="p">(</span>
+</span><span data-line="55">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="56">        <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="57">        <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">,</span>
+</span><span data-line="58">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="59">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="60">            <span class="k">return</span> <span class="n">value</span>
+</span><span data-line="61">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;postgresql&quot;</span><span class="p">,</span> <span class="s2">&quot;duckdb&quot;</span><span class="p">,</span> <span class="s2">&quot;cockroachdb&quot;</span><span class="p">,</span> <span class="s2">&quot;mssql&quot;</span><span class="p">}:</span>
+</span><span data-line="62">            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="63">        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_uuid</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="64">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="65">            <span class="k">return</span> <span class="n">value</span>
+</span><span data-line="66">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;oracle&quot;</span><span class="p">,</span> <span class="s2">&quot;spanner+spanner&quot;</span><span class="p">}:</span>
+</span><span data-line="67">            <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">bytes</span>
+</span><span data-line="68">        <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">bytes</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="k">else</span> <span class="n">value</span><span class="o">.</span><span class="n">hex</span></div>
+</span><span data-line="69">
+<div class="viewcode-block" id="GUID.process_result_value"><a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.GUID.process_result_value">[docs]</a></span><span data-line="70">    <span class="k">def</span> <span class="nf">process_result_value</span><span class="p">(</span>
+</span><span data-line="71">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="72">        <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="73">        <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">,</span>
+</span><span data-line="74">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="75">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="76">            <span class="k">return</span> <span class="n">value</span>
+</span><span data-line="77">        <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;UUID&quot;</span><span class="p">:</span>
+</span><span data-line="78">            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;UUID&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span data-line="79">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;spanner+spanner&quot;</span><span class="p">:</span>
+</span><span data-line="80">            <span class="k">return</span> <span class="n">UUID</span><span class="p">(</span><span class="nb">bytes</span><span class="o">=</span><span class="n">b64decode</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;str | Buffer&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)))</span>
+</span><span data-line="81">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="p">:</span>
+</span><span data-line="82">            <span class="k">return</span> <span class="n">UUID</span><span class="p">(</span><span class="nb">bytes</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;bytes&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+</span><span data-line="83">        <span class="k">return</span> <span class="n">UUID</span><span class="p">(</span><span class="nb">hex</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
+</span><span data-line="84">
+</span><span data-line="85">    <span class="nd">@staticmethod</span>
+</span><span data-line="86">    <span class="k">def</span> <span class="nf">to_uuid</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="87">        <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;UUID&quot;</span> <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="88">            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;UUID | None&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span data-line="89">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="90">            <span class="n">value</span> <span class="o">=</span> <span class="n">UUID</span><span class="p">(</span><span class="nb">hex</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="91">        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+</span><span data-line="92">            <span class="n">value</span> <span class="o">=</span> <span class="n">UUID</span><span class="p">(</span><span class="nb">bytes</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="93">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;UUID | None&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span data-line="94">
+<div class="viewcode-block" id="GUID.compare_values"><a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.GUID.compare_values">[docs]</a></span><span data-line="95">    <span class="k">def</span> <span class="nf">compare_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span data-line="96"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Compare two values for equality.&quot;&quot;&quot;</span>
+</span><span data-line="97">        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;UUID&quot;</span> <span class="ow">and</span> <span class="n">y</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;UUID&quot;</span><span class="p">:</span>
+</span><span data-line="98">            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">bytes</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">bytes</span><span class="p">)</span>
+</span><span data-line="99">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span></div></div>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -402,10 +403,18 @@ data-aria-dark="Switch to auto color mode">
   </p>
 </div>
       <div class="sy-foot-socials">
-<a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub"><i class="i-simpleicons github"></i></a>
-<a href="https://twitter.com/LitestarAPI" aria-label="X (Twitter)"><i class="i-simpleicons x-twitter"></i></a>
-<a href="https://discord.gg/litestar" aria-label="Discord"><i class="i-simpleicons discord"></i></a>
-<a href="https://www.reddit.com/r/LitestarAPI" aria-label="Reddit"><i class="i-simpleicons reddit"></i></a></div>
+<a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a>
+<a href="https://twitter.com/LitestarAPI" aria-label="X (Twitter)">
+  <iconify-icon icon="prime:twitter"></iconify-icon>
+</a>
+<a href="https://discord.gg/litestar" aria-label="Discord">
+  <iconify-icon icon="simple-icons:discord"></iconify-icon>
+</a>
+<a href="https://www.reddit.com/r/LitestarAPI" aria-label="Reddit">
+  <iconify-icon icon="simple-icons:reddit"></iconify-icon>
+</a></div>
     </div>
   </div>
 </footer>
@@ -421,6 +430,6 @@ data-aria-dark="Switch to auto color mode">
       <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
       <script src="../../../_static/design-tabs.js?v=36754332"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-      <script src="../../../_static/shibuya.js?v=3cc430e2"></script>
+      <script src="../../../_static/shibuya.js?v=c5fc9e80"></script>
       <script src="../../../_static/versioning.js"></script></body>
 </html>
