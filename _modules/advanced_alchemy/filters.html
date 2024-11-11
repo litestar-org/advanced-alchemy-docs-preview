@@ -371,321 +371,367 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="94">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
 </span><span data-line="95">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">before</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 </span><span data-line="96">            <span class="n">before</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">before</span>
-</span><span data-line="97">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&lt;</span> <span class="n">before</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]</span>
-</span><span data-line="98">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="99">            <span class="n">after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">after</span>
-</span><span data-line="100">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&gt;</span> <span class="n">after</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]</span>
-</span><span data-line="101">        <span class="k">return</span> <span class="n">statement</span></div>
+</span><span data-line="97">            <span class="n">statement</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">add_criteria</span><span class="p">(</span>
+</span><span data-line="98">                <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&lt;</span> <span class="n">before</span><span class="p">),</span>
+</span><span data-line="99">                <span class="n">track_bound_values</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="100">                <span class="n">track_closure_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="101">                <span class="n">track_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">before</span><span class="p">],</span>
+</span><span data-line="102">            <span class="p">)</span>
+</span><span data-line="103">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="104">            <span class="n">after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">after</span>
+</span><span data-line="105">            <span class="n">statement</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">add_criteria</span><span class="p">(</span>
+</span><span data-line="106">                <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&gt;</span> <span class="n">after</span><span class="p">),</span>
+</span><span data-line="107">                <span class="n">track_bound_values</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="108">                <span class="n">track_closure_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="109">                <span class="n">track_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">after</span><span class="p">],</span>
+</span><span data-line="110">            <span class="p">)</span>
+</span><span data-line="111">        <span class="k">return</span> <span class="n">statement</span></div>
 </div>
 
-</span><span data-line="102">
-</span><span data-line="103">
+</span><span data-line="112">
+</span><span data-line="113">
 <div class="viewcode-block" id="OnBeforeAfter">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.OnBeforeAfter">[docs]</a>
-</span><span data-line="104"><span class="nd">@dataclass</span>
-</span><span data-line="105"><span class="k">class</span> <span class="nc">OnBeforeAfter</span><span class="p">(</span><span class="n">StatementFilter</span><span class="p">):</span>
-</span><span data-line="106"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data required to filter a query on a ``datetime`` column.&quot;&quot;&quot;</span>
-</span><span data-line="107">
-</span><span data-line="108">    <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span>
-</span><span data-line="109"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Name of the model attribute to filter on.&quot;&quot;&quot;</span>
-</span><span data-line="110">    <span class="n">on_or_before</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span>
-</span><span data-line="111"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter results where field is on or earlier than this.&quot;&quot;&quot;</span>
-</span><span data-line="112">    <span class="n">on_or_after</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span>
-</span><span data-line="113"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter results where field on or later than this.&quot;&quot;&quot;</span>
-</span><span data-line="114">
+</span><span data-line="114"><span class="nd">@dataclass</span>
+</span><span data-line="115"><span class="k">class</span> <span class="nc">OnBeforeAfter</span><span class="p">(</span><span class="n">StatementFilter</span><span class="p">):</span>
+</span><span data-line="116"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data required to filter a query on a ``datetime`` column.&quot;&quot;&quot;</span>
+</span><span data-line="117">
+</span><span data-line="118">    <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="119"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Name of the model attribute to filter on.&quot;&quot;&quot;</span>
+</span><span data-line="120">    <span class="n">on_or_before</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span>
+</span><span data-line="121"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter results where field is on or earlier than this.&quot;&quot;&quot;</span>
+</span><span data-line="122">    <span class="n">on_or_after</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span>
+</span><span data-line="123"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter results where field on or later than this.&quot;&quot;&quot;</span>
+</span><span data-line="124">
 <div class="viewcode-block" id="OnBeforeAfter.append_to_statement">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.OnBeforeAfter.append_to_statement">[docs]</a>
-</span><span data-line="115">    <span class="k">def</span> <span class="nf">append_to_statement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]],</span> <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]:</span>
-</span><span data-line="116">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
-</span><span data-line="117">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_before</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="118">            <span class="n">statement</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_before</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]</span>
-</span><span data-line="119">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="120">            <span class="n">statement</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_after</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]</span>
-</span><span data-line="121">        <span class="k">return</span> <span class="n">statement</span></div>
+</span><span data-line="125">    <span class="k">def</span> <span class="nf">append_to_statement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]],</span> <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]:</span>
+</span><span data-line="126">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
+</span><span data-line="127">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_before</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="128">            <span class="n">statement</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_before</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]</span>
+</span><span data-line="129">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="130">            <span class="n">statement</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_after</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]</span>
+</span><span data-line="131">        <span class="k">return</span> <span class="n">statement</span></div>
 
-</span><span data-line="122">
+</span><span data-line="132">
 <div class="viewcode-block" id="OnBeforeAfter.append_to_lambda_statement">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.OnBeforeAfter.append_to_lambda_statement">[docs]</a>
-</span><span data-line="123">    <span class="k">def</span> <span class="nf">append_to_lambda_statement</span><span class="p">(</span>
-</span><span data-line="124">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="125">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span data-line="126">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
-</span><span data-line="127">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span data-line="128">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
-</span><span data-line="129">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_before</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="130">            <span class="n">on_or_before</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_before</span>
-</span><span data-line="131">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&lt;=</span> <span class="n">on_or_before</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]</span>
-</span><span data-line="132">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="133">            <span class="n">on_or_after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_after</span>
-</span><span data-line="134">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&gt;=</span> <span class="n">on_or_after</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]</span>
-</span><span data-line="135">        <span class="k">return</span> <span class="n">statement</span></div>
+</span><span data-line="133">    <span class="k">def</span> <span class="nf">append_to_lambda_statement</span><span class="p">(</span>
+</span><span data-line="134">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="135">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span data-line="136">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
+</span><span data-line="137">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span data-line="138">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
+</span><span data-line="139">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_before</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="140">            <span class="n">on_or_before</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_before</span>
+</span><span data-line="141">            <span class="n">statement</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">add_criteria</span><span class="p">(</span>
+</span><span data-line="142">                <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&lt;=</span> <span class="n">on_or_before</span><span class="p">),</span>
+</span><span data-line="143">                <span class="n">track_bound_values</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="144">                <span class="n">track_closure_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="145">                <span class="n">track_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_before</span><span class="p">],</span>
+</span><span data-line="146">            <span class="p">)</span>
+</span><span data-line="147">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="148">            <span class="n">on_or_after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_after</span>
+</span><span data-line="149">            <span class="n">statement</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">add_criteria</span><span class="p">(</span>
+</span><span data-line="150">                <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">&gt;=</span> <span class="n">on_or_after</span><span class="p">),</span>
+</span><span data-line="151">                <span class="n">track_bound_values</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="152">                <span class="n">track_closure_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="153">                <span class="n">track_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_or_after</span><span class="p">],</span>
+</span><span data-line="154">            <span class="p">)</span>
+</span><span data-line="155">        <span class="k">return</span> <span class="n">statement</span></div>
 </div>
 
-</span><span data-line="136">
-</span><span data-line="137">
+</span><span data-line="156">
+</span><span data-line="157">
 <div class="viewcode-block" id="InAnyFilter">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.InAnyFilter">[docs]</a>
-</span><span data-line="138"><span class="k">class</span> <span class="nc">InAnyFilter</span><span class="p">(</span><span class="n">StatementFilter</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
-</span><span data-line="139"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Subclass for methods that have a `prefer_any` attribute.&quot;&quot;&quot;</span></div>
+</span><span data-line="158"><span class="k">class</span> <span class="nc">InAnyFilter</span><span class="p">(</span><span class="n">StatementFilter</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+</span><span data-line="159"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Subclass for methods that have a `prefer_any` attribute.&quot;&quot;&quot;</span></div>
 
-</span><span data-line="140">
-</span><span data-line="141">
+</span><span data-line="160">
+</span><span data-line="161">
 <div class="viewcode-block" id="CollectionFilter">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.CollectionFilter">[docs]</a>
-</span><span data-line="142"><span class="nd">@dataclass</span>
-</span><span data-line="143"><span class="k">class</span> <span class="nc">CollectionFilter</span><span class="p">(</span><span class="n">InAnyFilter</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
-</span><span data-line="144"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data required to construct a ``WHERE ... IN (...)`` clause.&quot;&quot;&quot;</span>
-</span><span data-line="145">
-</span><span data-line="146">    <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span>
-</span><span data-line="147"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Name of the model attribute to filter on.&quot;&quot;&quot;</span>
-</span><span data-line="148">    <span class="n">values</span><span class="p">:</span> <span class="n">abc</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
-</span><span data-line="149"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Values for ``IN`` clause.</span>
-</span><span data-line="150">
-</span><span data-line="151"><span class="sd">    An empty list will return an empty result set, however, if ``None``, the filter is not applied to the query, and all rows are returned. &quot;&quot;&quot;</span>
-</span><span data-line="152">
+</span><span data-line="162"><span class="nd">@dataclass</span>
+</span><span data-line="163"><span class="k">class</span> <span class="nc">CollectionFilter</span><span class="p">(</span><span class="n">InAnyFilter</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+</span><span data-line="164"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data required to construct a ``WHERE ... IN (...)`` clause.&quot;&quot;&quot;</span>
+</span><span data-line="165">
+</span><span data-line="166">    <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="167"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Name of the model attribute to filter on.&quot;&quot;&quot;</span>
+</span><span data-line="168">    <span class="n">values</span><span class="p">:</span> <span class="n">abc</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
+</span><span data-line="169"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Values for ``IN`` clause.</span>
+</span><span data-line="170">
+</span><span data-line="171"><span class="sd">    An empty list will return an empty result set, however, if ``None``, the filter is not applied to the query, and all rows are returned. &quot;&quot;&quot;</span>
+</span><span data-line="172">
 <div class="viewcode-block" id="CollectionFilter.append_to_statement">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.CollectionFilter.append_to_statement">[docs]</a>
-</span><span data-line="153">    <span class="k">def</span> <span class="nf">append_to_statement</span><span class="p">(</span>
-</span><span data-line="154">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="155">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]],</span>
-</span><span data-line="156">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
-</span><span data-line="157">        <span class="n">prefer_any</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span data-line="158">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]:</span>
-</span><span data-line="159">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
-</span><span data-line="160">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="161">            <span class="k">return</span> <span class="n">statement</span>
-</span><span data-line="162">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
-</span><span data-line="163">            <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;1=-1&quot;</span><span class="p">))</span>
-</span><span data-line="164">        <span class="k">if</span> <span class="n">prefer_any</span><span class="p">:</span>
-</span><span data-line="165">            <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="n">field</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
-</span><span data-line="166">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">))</span></div>
-
-</span><span data-line="167">
-<div class="viewcode-block" id="CollectionFilter.append_to_lambda_statement">
-<a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.CollectionFilter.append_to_lambda_statement">[docs]</a>
-</span><span data-line="168">    <span class="k">def</span> <span class="nf">append_to_lambda_statement</span><span class="p">(</span>
-</span><span data-line="169">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="170">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span data-line="171">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
-</span><span data-line="172">        <span class="n">prefer_any</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span data-line="173">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span data-line="174">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
-</span><span data-line="175">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="176">            <span class="k">return</span> <span class="n">statement</span>
-</span><span data-line="177">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
-</span><span data-line="178">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;1=-1&quot;</span><span class="p">))</span>  <span class="c1"># pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]</span>
-</span><span data-line="179">            <span class="k">return</span> <span class="n">statement</span>
-</span><span data-line="180">        <span class="k">if</span> <span class="n">prefer_any</span><span class="p">:</span>
-</span><span data-line="181">            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
-</span><span data-line="182">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="n">field</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
-</span><span data-line="183">            <span class="k">return</span> <span class="n">statement</span>
-</span><span data-line="184">        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
-</span><span data-line="185">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>  <span class="c1"># pyright: ignore[reportUnknownLambdaType,reportArgumentType,reportUnknownMemberType]</span>
-</span><span data-line="186">        <span class="k">return</span> <span class="n">statement</span></div>
-</div>
+</span><span data-line="173">    <span class="k">def</span> <span class="nf">append_to_statement</span><span class="p">(</span>
+</span><span data-line="174">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="175">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]],</span>
+</span><span data-line="176">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
+</span><span data-line="177">        <span class="n">prefer_any</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="178">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]:</span>
+</span><span data-line="179">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
+</span><span data-line="180">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="181">            <span class="k">return</span> <span class="n">statement</span>
+</span><span data-line="182">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+</span><span data-line="183">            <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;1=-1&quot;</span><span class="p">))</span>
+</span><span data-line="184">        <span class="k">if</span> <span class="n">prefer_any</span><span class="p">:</span>
+</span><span data-line="185">            <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="n">field</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
+</span><span data-line="186">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">))</span></div>
 
 </span><span data-line="187">
-</span><span data-line="188">
+<div class="viewcode-block" id="CollectionFilter.append_to_lambda_statement">
+<a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.CollectionFilter.append_to_lambda_statement">[docs]</a>
+</span><span data-line="188">    <span class="k">def</span> <span class="nf">append_to_lambda_statement</span><span class="p">(</span>
+</span><span data-line="189">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="190">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span data-line="191">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
+</span><span data-line="192">        <span class="n">prefer_any</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="193">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span data-line="194">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
+</span><span data-line="195">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="196">            <span class="k">return</span> <span class="n">statement</span>
+</span><span data-line="197">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+</span><span data-line="198">            <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">add_criteria</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;1=-1&quot;</span><span class="p">)),</span> <span class="n">enable_tracking</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="199">        <span class="k">if</span> <span class="n">prefer_any</span><span class="p">:</span>
+</span><span data-line="200">            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
+</span><span data-line="201">            <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">add_criteria</span><span class="p">(</span>
+</span><span data-line="202">                <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="n">field</span><span class="p">),</span>  <span class="c1"># type: ignore[arg-type]</span>
+</span><span data-line="203">                <span class="n">track_bound_values</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="204">                <span class="n">track_closure_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="205">                <span class="n">track_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="n">model</span><span class="p">],</span>
+</span><span data-line="206">            <span class="p">)</span>
+</span><span data-line="207">        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
+</span><span data-line="208">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">add_criteria</span><span class="p">(</span>
+</span><span data-line="209">            <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span>
+</span><span data-line="210">            <span class="n">track_bound_values</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="211">            <span class="n">track_closure_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="212">            <span class="n">track_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="n">model</span><span class="p">],</span>
+</span><span data-line="213">        <span class="p">)</span></div>
+</div>
+
+</span><span data-line="214">
+</span><span data-line="215">
 <div class="viewcode-block" id="NotInCollectionFilter">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.NotInCollectionFilter">[docs]</a>
-</span><span data-line="189"><span class="nd">@dataclass</span>
-</span><span data-line="190"><span class="k">class</span> <span class="nc">NotInCollectionFilter</span><span class="p">(</span><span class="n">InAnyFilter</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
-</span><span data-line="191"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data required to construct a ``WHERE ... NOT IN (...)`` clause.&quot;&quot;&quot;</span>
-</span><span data-line="192">
-</span><span data-line="193">    <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span>
-</span><span data-line="194"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Name of the model attribute to filter on.&quot;&quot;&quot;</span>
-</span><span data-line="195">    <span class="n">values</span><span class="p">:</span> <span class="n">abc</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
-</span><span data-line="196"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Values for ``NOT IN`` clause.</span>
-</span><span data-line="197">
-</span><span data-line="198"><span class="sd">    An empty list or ``None`` will return all rows.&quot;&quot;&quot;</span>
-</span><span data-line="199">
+</span><span data-line="216"><span class="nd">@dataclass</span>
+</span><span data-line="217"><span class="k">class</span> <span class="nc">NotInCollectionFilter</span><span class="p">(</span><span class="n">InAnyFilter</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+</span><span data-line="218"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data required to construct a ``WHERE ... NOT IN (...)`` clause.&quot;&quot;&quot;</span>
+</span><span data-line="219">
+</span><span data-line="220">    <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="221"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Name of the model attribute to filter on.&quot;&quot;&quot;</span>
+</span><span data-line="222">    <span class="n">values</span><span class="p">:</span> <span class="n">abc</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
+</span><span data-line="223"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Values for ``NOT IN`` clause.</span>
+</span><span data-line="224">
+</span><span data-line="225"><span class="sd">    An empty list or ``None`` will return all rows.&quot;&quot;&quot;</span>
+</span><span data-line="226">
 <div class="viewcode-block" id="NotInCollectionFilter.append_to_statement">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.NotInCollectionFilter.append_to_statement">[docs]</a>
-</span><span data-line="200">    <span class="k">def</span> <span class="nf">append_to_statement</span><span class="p">(</span>
-</span><span data-line="201">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="202">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]],</span>
-</span><span data-line="203">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
-</span><span data-line="204">        <span class="n">prefer_any</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span data-line="205">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]:</span>
-</span><span data-line="206">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
-</span><span data-line="207">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
-</span><span data-line="208">            <span class="k">return</span> <span class="n">statement</span>
-</span><span data-line="209">        <span class="k">if</span> <span class="n">prefer_any</span><span class="p">:</span>
-</span><span data-line="210">            <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="n">field</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
-</span><span data-line="211">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">))</span></div>
+</span><span data-line="227">    <span class="k">def</span> <span class="nf">append_to_statement</span><span class="p">(</span>
+</span><span data-line="228">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="229">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]],</span>
+</span><span data-line="230">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
+</span><span data-line="231">        <span class="n">prefer_any</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="232">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]:</span>
+</span><span data-line="233">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
+</span><span data-line="234">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+</span><span data-line="235">            <span class="k">return</span> <span class="n">statement</span>
+</span><span data-line="236">        <span class="k">if</span> <span class="n">prefer_any</span><span class="p">:</span>
+</span><span data-line="237">            <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="n">field</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
+</span><span data-line="238">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">))</span></div>
 
-</span><span data-line="212">
+</span><span data-line="239">
 <div class="viewcode-block" id="NotInCollectionFilter.append_to_lambda_statement">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.NotInCollectionFilter.append_to_lambda_statement">[docs]</a>
-</span><span data-line="213">    <span class="k">def</span> <span class="nf">append_to_lambda_statement</span><span class="p">(</span>
-</span><span data-line="214">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="215">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span data-line="216">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
-</span><span data-line="217">        <span class="n">prefer_any</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span data-line="218">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span data-line="219">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
-</span><span data-line="220">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
-</span><span data-line="221">            <span class="k">return</span> <span class="n">statement</span>
-</span><span data-line="222">        <span class="k">if</span> <span class="n">prefer_any</span><span class="p">:</span>
-</span><span data-line="223">            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
-</span><span data-line="224">            <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="n">field</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
-</span><span data-line="225">            <span class="k">return</span> <span class="n">statement</span>
-</span><span data-line="226">        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
-</span><span data-line="227">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">notin_</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>  <span class="c1"># pyright: ignore[reportUnknownLambdaType,reportArgumentType,reportUnknownMemberType]</span>
-</span><span data-line="228">        <span class="k">return</span> <span class="n">statement</span></div>
+</span><span data-line="240">    <span class="k">def</span> <span class="nf">append_to_lambda_statement</span><span class="p">(</span>
+</span><span data-line="241">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="242">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span data-line="243">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
+</span><span data-line="244">        <span class="n">prefer_any</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="245">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span data-line="246">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
+</span><span data-line="247">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+</span><span data-line="248">            <span class="k">return</span> <span class="n">statement</span>
+</span><span data-line="249">        <span class="k">if</span> <span class="n">prefer_any</span><span class="p">:</span>
+</span><span data-line="250">            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
+</span><span data-line="251">            <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">add_criteria</span><span class="p">(</span>
+</span><span data-line="252">                <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">any_</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="n">field</span><span class="p">),</span>  <span class="c1"># type: ignore[arg-type]</span>
+</span><span data-line="253">                <span class="n">track_bound_values</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="254">                <span class="n">track_closure_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="255">                <span class="n">track_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="n">model</span><span class="p">],</span>
+</span><span data-line="256">            <span class="p">)</span>
+</span><span data-line="257">        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
+</span><span data-line="258">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">add_criteria</span><span class="p">(</span>
+</span><span data-line="259">            <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">notin_</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span>
+</span><span data-line="260">            <span class="n">track_bound_values</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="261">            <span class="n">track_closure_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="262">            <span class="n">track_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="n">model</span><span class="p">],</span>
+</span><span data-line="263">        <span class="p">)</span></div>
 </div>
 
-</span><span data-line="229">
-</span><span data-line="230">
+</span><span data-line="264">
+</span><span data-line="265">
 <div class="viewcode-block" id="PaginationFilter">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.PaginationFilter">[docs]</a>
-</span><span data-line="231"><span class="k">class</span> <span class="nc">PaginationFilter</span><span class="p">(</span><span class="n">StatementFilter</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
-</span><span data-line="232"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Subclass for methods that function as a pagination type.&quot;&quot;&quot;</span></div>
+</span><span data-line="266"><span class="k">class</span> <span class="nc">PaginationFilter</span><span class="p">(</span><span class="n">StatementFilter</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+</span><span data-line="267"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Subclass for methods that function as a pagination type.&quot;&quot;&quot;</span></div>
 
-</span><span data-line="233">
-</span><span data-line="234">
+</span><span data-line="268">
+</span><span data-line="269">
 <div class="viewcode-block" id="LimitOffset">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.LimitOffset">[docs]</a>
-</span><span data-line="235"><span class="nd">@dataclass</span>
-</span><span data-line="236"><span class="k">class</span> <span class="nc">LimitOffset</span><span class="p">(</span><span class="n">PaginationFilter</span><span class="p">):</span>
-</span><span data-line="237"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data required to add limit/offset filtering to a query.&quot;&quot;&quot;</span>
-</span><span data-line="238">
-</span><span data-line="239">    <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span>
-</span><span data-line="240"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Value for ``LIMIT`` clause of query.&quot;&quot;&quot;</span>
-</span><span data-line="241">    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span>
-</span><span data-line="242"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Value for ``OFFSET`` clause of query.&quot;&quot;&quot;</span>
-</span><span data-line="243">
+</span><span data-line="270"><span class="nd">@dataclass</span>
+</span><span data-line="271"><span class="k">class</span> <span class="nc">LimitOffset</span><span class="p">(</span><span class="n">PaginationFilter</span><span class="p">):</span>
+</span><span data-line="272"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data required to add limit/offset filtering to a query.&quot;&quot;&quot;</span>
+</span><span data-line="273">
+</span><span data-line="274">    <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span>
+</span><span data-line="275"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Value for ``LIMIT`` clause of query.&quot;&quot;&quot;</span>
+</span><span data-line="276">    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span>
+</span><span data-line="277"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Value for ``OFFSET`` clause of query.&quot;&quot;&quot;</span>
+</span><span data-line="278">
 <div class="viewcode-block" id="LimitOffset.append_to_statement">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.LimitOffset.append_to_statement">[docs]</a>
-</span><span data-line="244">    <span class="k">def</span> <span class="nf">append_to_statement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]],</span> <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]:</span>
-</span><span data-line="245">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">)</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span></div>
+</span><span data-line="279">    <span class="k">def</span> <span class="nf">append_to_statement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]],</span> <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]:</span>
+</span><span data-line="280">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">)</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span></div>
 
-</span><span data-line="246">
+</span><span data-line="281">
 <div class="viewcode-block" id="LimitOffset.append_to_lambda_statement">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.LimitOffset.append_to_lambda_statement">[docs]</a>
-</span><span data-line="247">    <span class="k">def</span> <span class="nf">append_to_lambda_statement</span><span class="p">(</span>
-</span><span data-line="248">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="249">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span data-line="250">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
-</span><span data-line="251">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span data-line="252">        <span class="n">limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span>
-</span><span data-line="253">        <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span>
-</span><span data-line="254">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]</span>
-</span><span data-line="255">        <span class="k">return</span> <span class="n">statement</span></div>
+</span><span data-line="282">    <span class="k">def</span> <span class="nf">append_to_lambda_statement</span><span class="p">(</span>
+</span><span data-line="283">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="284">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span data-line="285">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
+</span><span data-line="286">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span data-line="287">        <span class="n">limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span>
+</span><span data-line="288">        <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span>
+</span><span data-line="289">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">add_criteria</span><span class="p">(</span>
+</span><span data-line="290">            <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">offset</span><span class="p">),</span>
+</span><span data-line="291">            <span class="n">track_bound_values</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="292">            <span class="n">track_closure_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="293">            <span class="n">track_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">model</span><span class="p">],</span>
+</span><span data-line="294">        <span class="p">)</span></div>
 </div>
 
-</span><span data-line="256">
-</span><span data-line="257">
+</span><span data-line="295">
+</span><span data-line="296">
 <div class="viewcode-block" id="OrderBy">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.OrderBy">[docs]</a>
-</span><span data-line="258"><span class="nd">@dataclass</span>
-</span><span data-line="259"><span class="k">class</span> <span class="nc">OrderBy</span><span class="p">(</span><span class="n">StatementFilter</span><span class="p">):</span>
-</span><span data-line="260"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data required to construct a ``ORDER BY ...`` clause.&quot;&quot;&quot;</span>
-</span><span data-line="261">
-</span><span data-line="262">    <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span>
-</span><span data-line="263"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Name of the model attribute to sort on.&quot;&quot;&quot;</span>
-</span><span data-line="264">    <span class="n">sort_order</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;asc&quot;</span><span class="p">,</span> <span class="s2">&quot;desc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;asc&quot;</span>
-</span><span data-line="265"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Sort ascending or descending&quot;&quot;&quot;</span>
-</span><span data-line="266">
+</span><span data-line="297"><span class="nd">@dataclass</span>
+</span><span data-line="298"><span class="k">class</span> <span class="nc">OrderBy</span><span class="p">(</span><span class="n">StatementFilter</span><span class="p">):</span>
+</span><span data-line="299"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data required to construct a ``ORDER BY ...`` clause.&quot;&quot;&quot;</span>
+</span><span data-line="300">
+</span><span data-line="301">    <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="302"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Name of the model attribute to sort on.&quot;&quot;&quot;</span>
+</span><span data-line="303">    <span class="n">sort_order</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;asc&quot;</span><span class="p">,</span> <span class="s2">&quot;desc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;asc&quot;</span>
+</span><span data-line="304"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Sort ascending or descending&quot;&quot;&quot;</span>
+</span><span data-line="305">
 <div class="viewcode-block" id="OrderBy.append_to_statement">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.OrderBy.append_to_statement">[docs]</a>
-</span><span data-line="267">    <span class="k">def</span> <span class="nf">append_to_statement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]],</span> <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]:</span>
-</span><span data-line="268">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
-</span><span data-line="269">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_order</span> <span class="o">==</span> <span class="s2">&quot;desc&quot;</span><span class="p">:</span>
-</span><span data-line="270">            <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
-</span><span data-line="271">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span></div>
+</span><span data-line="306">    <span class="k">def</span> <span class="nf">append_to_statement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]],</span> <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]:</span>
+</span><span data-line="307">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
+</span><span data-line="308">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_order</span> <span class="o">==</span> <span class="s2">&quot;desc&quot;</span><span class="p">:</span>
+</span><span data-line="309">            <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+</span><span data-line="310">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span></div>
 
-</span><span data-line="272">
+</span><span data-line="311">
 <div class="viewcode-block" id="OrderBy.append_to_lambda_statement">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.OrderBy.append_to_lambda_statement">[docs]</a>
-</span><span data-line="273">    <span class="k">def</span> <span class="nf">append_to_lambda_statement</span><span class="p">(</span>
-</span><span data-line="274">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="275">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span data-line="276">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
-</span><span data-line="277">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span data-line="278">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
-</span><span data-line="279">        <span class="n">fragment</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">desc</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_order</span> <span class="o">==</span> <span class="s2">&quot;desc&quot;</span> <span class="k">else</span> <span class="n">field</span><span class="o">.</span><span class="n">asc</span><span class="p">()</span>
-</span><span data-line="280">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">fragment</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]</span>
-</span><span data-line="281">
-</span><span data-line="282">        <span class="k">return</span> <span class="n">statement</span></div>
+</span><span data-line="312">    <span class="k">def</span> <span class="nf">append_to_lambda_statement</span><span class="p">(</span>
+</span><span data-line="313">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="314">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span data-line="315">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
+</span><span data-line="316">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span data-line="317">        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">)</span>
+</span><span data-line="318">        <span class="n">fragment</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">desc</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_order</span> <span class="o">==</span> <span class="s2">&quot;desc&quot;</span> <span class="k">else</span> <span class="n">field</span><span class="o">.</span><span class="n">asc</span><span class="p">()</span>
+</span><span data-line="319">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">add_criteria</span><span class="p">(</span>
+</span><span data-line="320">            <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">fragment</span><span class="p">),</span>
+</span><span data-line="321">            <span class="n">track_bound_values</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="322">            <span class="n">track_closure_variables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="323">            <span class="n">track_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_order</span><span class="p">],</span>
+</span><span data-line="324">        <span class="p">)</span></div>
 </div>
 
-</span><span data-line="283">
-</span><span data-line="284">
+</span><span data-line="325">
+</span><span data-line="326">
 <div class="viewcode-block" id="SearchFilter">
 <a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.SearchFilter">[docs]</a>
-</span><span data-line="285"><span class="nd">@dataclass</span>
-</span><span data-line="286"><span class="k">class</span> <span class="nc">SearchFilter</span><span class="p">(</span><span class="n">StatementFilter</span><span class="p">):</span>
-</span><span data-line="287"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data required to construct a ``WHERE field_name LIKE &#39;%&#39; || :value || &#39;%&#39;`` clause.&quot;&quot;&quot;</span>
-</span><span data-line="288">
-</span><span data-line="289">    <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-</span><span data-line="290"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Name of the model attribute to search on.&quot;&quot;&quot;</span>
-</span><span data-line="291">    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span>
-</span><span data-line="292"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Search value.&quot;&quot;&quot;</span>
-</span><span data-line="293">    <span class="n">ignore_case</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span data-line="294"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Should the search be case insensitive.&quot;&quot;&quot;</span>
-</span><span data-line="295">
-</span><span data-line="296">    <span class="nd">@property</span>
-</span><span data-line="297">    <span class="k">def</span> <span class="nf">_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]:</span>
-</span><span data-line="298">        <span class="k">return</span> <span class="n">or_</span>
-</span><span data-line="299">
-</span><span data-line="300">    <span class="nd">@property</span>
-</span><span data-line="301">    <span class="k">def</span> <span class="nf">_func</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">attrgetter</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">BinaryExpression</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]]:</span>
-</span><span data-line="302">        <span class="k">return</span> <span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;ilike&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_case</span> <span class="k">else</span> <span class="s2">&quot;like&quot;</span><span class="p">)</span>
-</span><span data-line="303">
-</span><span data-line="304">    <span class="nd">@property</span>
-</span><span data-line="305">    <span class="k">def</span> <span class="nf">normalized_field_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-</span><span data-line="306">        <span class="k">return</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">}</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span>
-</span><span data-line="307">
-<div class="viewcode-block" id="SearchFilter.get_search_clauses">
-<a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.SearchFilter.get_search_clauses">[docs]</a>
-</span><span data-line="308">    <span class="k">def</span> <span class="nf">get_search_clauses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BinaryExpression</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]:</span>
-</span><span data-line="309">        <span class="n">search_clause</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BinaryExpression</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="310">        <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalized_field_names</span><span class="p">:</span>
-</span><span data-line="311">            <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
-</span><span data-line="312">            <span class="n">search_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;%</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">%&quot;</span>
-</span><span data-line="313">            <span class="n">search_clause</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">(</span><span class="n">field</span><span class="p">)(</span><span class="n">search_text</span><span class="p">))</span>
-</span><span data-line="314">        <span class="k">return</span> <span class="n">search_clause</span></div>
-
-</span><span data-line="315">
-<div class="viewcode-block" id="SearchFilter.append_to_statement">
-<a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.SearchFilter.append_to_statement">[docs]</a>
-</span><span data-line="316">    <span class="k">def</span> <span class="nf">append_to_statement</span><span class="p">(</span>
-</span><span data-line="317">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="318">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]],</span>
-</span><span data-line="319">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
-</span><span data-line="320">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]:</span>
-</span><span data-line="321">        <span class="n">where_clause</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operator</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">get_search_clauses</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
-</span><span data-line="322">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">where_clause</span><span class="p">)</span></div>
-
-</span><span data-line="323">
-<div class="viewcode-block" id="SearchFilter.append_to_lambda_statement">
-<a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.SearchFilter.append_to_lambda_statement">[docs]</a>
-</span><span data-line="324">    <span class="k">def</span> <span class="nf">append_to_lambda_statement</span><span class="p">(</span>
-</span><span data-line="325">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="326">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
-</span><span data-line="327">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
-</span><span data-line="328">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
-</span><span data-line="329">        <span class="n">where_clause</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operator</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">get_search_clauses</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
-</span><span data-line="330">        <span class="n">statement</span> <span class="o">+=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">where_clause</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownLambdaType,reportUnknownMemberType]</span>
-</span><span data-line="331">        <span class="k">return</span> <span class="n">statement</span></div>
-</div>
-
-</span><span data-line="332">
-</span><span data-line="333">
-<div class="viewcode-block" id="NotInSearchFilter">
-<a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.NotInSearchFilter">[docs]</a>
-</span><span data-line="334"><span class="nd">@dataclass</span>
-</span><span data-line="335"><span class="k">class</span> <span class="nc">NotInSearchFilter</span><span class="p">(</span><span class="n">SearchFilter</span><span class="p">):</span>
-</span><span data-line="336"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data required to construct a ``WHERE field_name NOT LIKE &#39;%&#39; || :value || &#39;%&#39;`` clause.&quot;&quot;&quot;</span>
+</span><span data-line="327"><span class="nd">@dataclass</span>
+</span><span data-line="328"><span class="k">class</span> <span class="nc">SearchFilter</span><span class="p">(</span><span class="n">StatementFilter</span><span class="p">):</span>
+</span><span data-line="329"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data required to construct a ``WHERE field_name LIKE &#39;%&#39; || :value || &#39;%&#39;`` clause.&quot;&quot;&quot;</span>
+</span><span data-line="330">
+</span><span data-line="331">    <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span data-line="332"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Name of the model attribute to search on.&quot;&quot;&quot;</span>
+</span><span data-line="333">    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="334"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Search value.&quot;&quot;&quot;</span>
+</span><span data-line="335">    <span class="n">ignore_case</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="336"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Should the search be case insensitive.&quot;&quot;&quot;</span>
 </span><span data-line="337">
 </span><span data-line="338">    <span class="nd">@property</span>
 </span><span data-line="339">    <span class="k">def</span> <span class="nf">_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]:</span>
-</span><span data-line="340">        <span class="k">return</span> <span class="n">and_</span>
+</span><span data-line="340">        <span class="k">return</span> <span class="n">or_</span>
 </span><span data-line="341">
 </span><span data-line="342">    <span class="nd">@property</span>
 </span><span data-line="343">    <span class="k">def</span> <span class="nf">_func</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">attrgetter</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">BinaryExpression</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]]:</span>
-</span><span data-line="344">        <span class="k">return</span> <span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;not_ilike&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_case</span> <span class="k">else</span> <span class="s2">&quot;not_like&quot;</span><span class="p">)</span></div>
+</span><span data-line="344">        <span class="k">return</span> <span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;ilike&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_case</span> <span class="k">else</span> <span class="s2">&quot;like&quot;</span><span class="p">)</span>
+</span><span data-line="345">
+</span><span data-line="346">    <span class="nd">@property</span>
+</span><span data-line="347">    <span class="k">def</span> <span class="nf">normalized_field_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span data-line="348">        <span class="k">return</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">}</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span>
+</span><span data-line="349">
+<div class="viewcode-block" id="SearchFilter.get_search_clauses">
+<a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.SearchFilter.get_search_clauses">[docs]</a>
+</span><span data-line="350">    <span class="k">def</span> <span class="nf">get_search_clauses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BinaryExpression</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]:</span>
+</span><span data-line="351">        <span class="n">search_clause</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BinaryExpression</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="352">        <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalized_field_names</span><span class="p">:</span>
+</span><span data-line="353">            <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instrumented_attr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+</span><span data-line="354">            <span class="n">search_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;%</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">%&quot;</span>
+</span><span data-line="355">            <span class="n">search_clause</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">(</span><span class="n">field</span><span class="p">)(</span><span class="n">search_text</span><span class="p">))</span>
+</span><span data-line="356">        <span class="k">return</span> <span class="n">search_clause</span></div>
+
+</span><span data-line="357">
+<div class="viewcode-block" id="SearchFilter.append_to_statement">
+<a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.SearchFilter.append_to_statement">[docs]</a>
+</span><span data-line="358">    <span class="k">def</span> <span class="nf">append_to_statement</span><span class="p">(</span>
+</span><span data-line="359">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="360">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]],</span>
+</span><span data-line="361">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
+</span><span data-line="362">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]:</span>
+</span><span data-line="363">        <span class="n">where_clause</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operator</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">get_search_clauses</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
+</span><span data-line="364">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">where_clause</span><span class="p">)</span></div>
+
+</span><span data-line="365">
+<div class="viewcode-block" id="SearchFilter.append_to_lambda_statement">
+<a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.SearchFilter.append_to_lambda_statement">[docs]</a>
+</span><span data-line="366">    <span class="k">def</span> <span class="nf">append_to_lambda_statement</span><span class="p">(</span>
+</span><span data-line="367">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="368">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementLambdaElement</span><span class="p">,</span>
+</span><span data-line="369">        <span class="n">model</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">],</span>
+</span><span data-line="370">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementLambdaElement</span><span class="p">:</span>
+</span><span data-line="371">        <span class="n">where_clause</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operator</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">get_search_clauses</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
+</span><span data-line="372">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">add_criteria</span><span class="p">(</span>
+</span><span data-line="373">            <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">where_clause</span><span class="p">),</span>
+</span><span data-line="374">            <span class="n">track_bound_values</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="375">            <span class="n">track_closure_variables</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="376">            <span class="n">track_on</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normalized_field_names</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_case</span><span class="p">],</span>
+</span><span data-line="377">        <span class="p">)</span></div>
+</div>
+
+</span><span data-line="378">
+</span><span data-line="379">
+<div class="viewcode-block" id="NotInSearchFilter">
+<a class="viewcode-back" href="../../reference/filters.html#advanced_alchemy.filters.NotInSearchFilter">[docs]</a>
+</span><span data-line="380"><span class="nd">@dataclass</span>
+</span><span data-line="381"><span class="k">class</span> <span class="nc">NotInSearchFilter</span><span class="p">(</span><span class="n">SearchFilter</span><span class="p">):</span>
+</span><span data-line="382"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data required to construct a ``WHERE field_name NOT LIKE &#39;%&#39; || :value || &#39;%&#39;`` clause.&quot;&quot;&quot;</span>
+</span><span data-line="383">
+</span><span data-line="384">    <span class="nd">@property</span>
+</span><span data-line="385">    <span class="k">def</span> <span class="nf">_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]:</span>
+</span><span data-line="386">        <span class="k">return</span> <span class="n">and_</span>
+</span><span data-line="387">
+</span><span data-line="388">    <span class="nd">@property</span>
+</span><span data-line="389">    <span class="k">def</span> <span class="nf">_func</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">attrgetter</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">BinaryExpression</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]]:</span>
+</span><span data-line="390">        <span class="k">return</span> <span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;not_ilike&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_case</span> <span class="k">else</span> <span class="s2">&quot;not_like&quot;</span><span class="p">)</span></div>
 
 </span></pre></div>
         </article><button class="back-to-top" type="button">
