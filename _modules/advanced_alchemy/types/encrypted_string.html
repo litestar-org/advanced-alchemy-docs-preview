@@ -527,146 +527,165 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="222"><span class="sd">    Args:</span>
 </span><span data-line="223"><span class="sd">        key (str | bytes | Callable[[], str | bytes] | None): The encryption key. Can be a string, bytes, or callable returning either. Defaults to os.urandom(32).</span>
 </span><span data-line="224"><span class="sd">        backend (Type[EncryptionBackend] | None): The encryption backend class to use. Defaults to FernetBackend.</span>
-</span><span data-line="225"><span class="sd">        **kwargs (Any | None): Additional arguments passed to the underlying String type.</span>
-</span><span data-line="226">
-</span><span data-line="227"><span class="sd">    Attributes:</span>
-</span><span data-line="228"><span class="sd">        key (str | bytes | Callable[[], str | bytes]): The encryption key.</span>
-</span><span data-line="229"><span class="sd">        backend (EncryptionBackend): The encryption backend instance.</span>
-</span><span data-line="230"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="231">
-</span><span data-line="232">    <span class="n">impl</span> <span class="o">=</span> <span class="n">String</span>
-</span><span data-line="233">    <span class="n">cache_ok</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span data-line="234">
+</span><span data-line="225"><span class="sd">        length (int | None): The length of the unencrypted string. This is used for documentation and validation purposes only, as encrypted strings will be longer.</span>
+</span><span data-line="226"><span class="sd">        **kwargs (Any | None): Additional arguments passed to the underlying String type.</span>
+</span><span data-line="227">
+</span><span data-line="228"><span class="sd">    Attributes:</span>
+</span><span data-line="229"><span class="sd">        key (str | bytes | Callable[[], str | bytes]): The encryption key.</span>
+</span><span data-line="230"><span class="sd">        backend (EncryptionBackend): The encryption backend instance.</span>
+</span><span data-line="231"><span class="sd">        length (int | None): The unencrypted string length.</span>
+</span><span data-line="232"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="233">
+</span><span data-line="234">    <span class="n">impl</span> <span class="o">=</span> <span class="n">String</span>
+</span><span data-line="235">    <span class="n">cache_ok</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="236">
 <div class="viewcode-block" id="EncryptedString.__init__">
 <a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.EncryptedString.__init__">[docs]</a>
-</span><span data-line="235">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-</span><span data-line="236">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="237">        <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span>
-</span><span data-line="238">        <span class="n">backend</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">EncryptionBackend</span><span class="p">]</span> <span class="o">=</span> <span class="n">FernetBackend</span><span class="p">,</span>
-</span><span data-line="239">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="240">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="241"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the EncryptedString TypeDecorator.</span>
-</span><span data-line="242">
-</span><span data-line="243"><span class="sd">        Args:</span>
-</span><span data-line="244"><span class="sd">            key (str | bytes | Callable[[], str | bytes] | None): The encryption key. Can be a string, bytes, or callable returning either. Defaults to os.urandom(32).</span>
-</span><span data-line="245"><span class="sd">            backend (Type[EncryptionBackend] | None): The encryption backend class to use. Defaults to FernetBackend.</span>
-</span><span data-line="246"><span class="sd">            **kwargs (Any | None): Additional arguments passed to the underlying String type.</span>
-</span><span data-line="247"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="248">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span data-line="249">        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
-</span><span data-line="250">        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span><span class="p">()</span></div>
+</span><span data-line="237">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="238">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="239">        <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span>
+</span><span data-line="240">        <span class="n">backend</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">EncryptionBackend</span><span class="p">]</span> <span class="o">=</span> <span class="n">FernetBackend</span><span class="p">,</span>
+</span><span data-line="241">        <span class="n">length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="242">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="243">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="244"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the EncryptedString TypeDecorator.</span>
+</span><span data-line="245">
+</span><span data-line="246"><span class="sd">        Args:</span>
+</span><span data-line="247"><span class="sd">            key (str | bytes | Callable[[], str | bytes] | None): The encryption key. Can be a string, bytes, or callable returning either. Defaults to os.urandom(32).</span>
+</span><span data-line="248"><span class="sd">            backend (Type[EncryptionBackend] | None): The encryption backend class to use. Defaults to FernetBackend.</span>
+</span><span data-line="249"><span class="sd">            length (int | None): The length of the unencrypted string. This is used for documentation and validation purposes only.</span>
+</span><span data-line="250"><span class="sd">            **kwargs (Any | None): Additional arguments passed to the underlying String type.</span>
+</span><span data-line="251"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="252">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span data-line="253">        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
+</span><span data-line="254">        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span><span class="p">()</span>
+</span><span data-line="255">        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">length</span></div>
 
-</span><span data-line="251">
-</span><span data-line="252">    <span class="nd">@property</span>
-</span><span data-line="253">    <span class="k">def</span> <span class="nf">python_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-</span><span data-line="254"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the Python type for this type decorator.</span>
-</span><span data-line="255">
-</span><span data-line="256"><span class="sd">        Returns:</span>
-</span><span data-line="257"><span class="sd">            Type[str]: The Python string type.</span>
-</span><span data-line="258"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="259">        <span class="k">return</span> <span class="nb">str</span>
+</span><span data-line="256">
+</span><span data-line="257">    <span class="nd">@property</span>
+</span><span data-line="258">    <span class="k">def</span> <span class="nf">python_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span data-line="259"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the Python type for this type decorator.</span>
 </span><span data-line="260">
+</span><span data-line="261"><span class="sd">        Returns:</span>
+</span><span data-line="262"><span class="sd">            Type[str]: The Python string type.</span>
+</span><span data-line="263"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="264">        <span class="k">return</span> <span class="nb">str</span>
+</span><span data-line="265">
 <div class="viewcode-block" id="EncryptedString.load_dialect_impl">
 <a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.EncryptedString.load_dialect_impl">[docs]</a>
-</span><span data-line="261">    <span class="k">def</span> <span class="nf">load_dialect_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span data-line="262"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Loads the appropriate dialect implementation based on the database dialect.</span>
-</span><span data-line="263">
-</span><span data-line="264"><span class="sd">        Args:</span>
-</span><span data-line="265"><span class="sd">            dialect (Dialect): The SQLAlchemy dialect.</span>
-</span><span data-line="266">
-</span><span data-line="267"><span class="sd">        Returns:</span>
-</span><span data-line="268"><span class="sd">            Any: The dialect-specific type descriptor.</span>
-</span><span data-line="269"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="270">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;mysql&quot;</span><span class="p">,</span> <span class="s2">&quot;mariadb&quot;</span><span class="p">}:</span>
-</span><span data-line="271">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">Text</span><span class="p">())</span>
-</span><span data-line="272">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;oracle&quot;</span><span class="p">:</span>
-</span><span data-line="273">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">4000</span><span class="p">))</span>
-</span><span data-line="274">        <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">String</span><span class="p">())</span></div>
+</span><span data-line="266">    <span class="k">def</span> <span class="nf">load_dialect_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="267"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Loads the appropriate dialect implementation based on the database dialect.</span>
+</span><span data-line="268">
+</span><span data-line="269"><span class="sd">        Note: The actual column length will be larger than the specified length due to encryption overhead.</span>
+</span><span data-line="270"><span class="sd">        For most encryption methods, the encrypted string will be approximately 1.35x longer than the original.</span>
+</span><span data-line="271">
+</span><span data-line="272"><span class="sd">        Args:</span>
+</span><span data-line="273"><span class="sd">            dialect (Dialect): The SQLAlchemy dialect.</span>
+</span><span data-line="274">
+</span><span data-line="275"><span class="sd">        Returns:</span>
+</span><span data-line="276"><span class="sd">            Any: The dialect-specific type descriptor.</span>
+</span><span data-line="277"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="278">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;mysql&quot;</span><span class="p">,</span> <span class="s2">&quot;mariadb&quot;</span><span class="p">}:</span>
+</span><span data-line="279">            <span class="c1"># For MySQL/MariaDB, always use Text to avoid length limitations</span>
+</span><span data-line="280">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">Text</span><span class="p">())</span>
+</span><span data-line="281">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;oracle&quot;</span><span class="p">:</span>
+</span><span data-line="282">            <span class="c1"># Oracle has a 4000-byte limit for VARCHAR2 (by default)</span>
+</span><span data-line="283">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">4000</span><span class="p">))</span>
+</span><span data-line="284">        <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">String</span><span class="p">())</span></div>
 
-</span><span data-line="275">
+</span><span data-line="285">
 <div class="viewcode-block" id="EncryptedString.process_bind_param">
 <a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.EncryptedString.process_bind_param">[docs]</a>
-</span><span data-line="276">    <span class="k">def</span> <span class="nf">process_bind_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="277"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Processes the value before binding it to the SQL statement.</span>
-</span><span data-line="278">
-</span><span data-line="279"><span class="sd">        This method encrypts the value using the specified backend.</span>
-</span><span data-line="280">
-</span><span data-line="281"><span class="sd">        Args:</span>
-</span><span data-line="282"><span class="sd">            value (Any): The value to process.</span>
-</span><span data-line="283"><span class="sd">            dialect (Dialect): The SQLAlchemy dialect.</span>
-</span><span data-line="284">
-</span><span data-line="285"><span class="sd">        Returns:</span>
-</span><span data-line="286"><span class="sd">            str | None: The encrypted value or None if the input is None.</span>
-</span><span data-line="287"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="288">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="289">            <span class="k">return</span> <span class="n">value</span>
-</span><span data-line="290">        <span class="bp">self</span><span class="o">.</span><span class="n">mount_vault</span><span class="p">()</span>
-</span><span data-line="291">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+</span><span data-line="286">    <span class="k">def</span> <span class="nf">process_bind_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="287"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Processes the value before binding it to the SQL statement.</span>
+</span><span data-line="288">
+</span><span data-line="289"><span class="sd">        This method encrypts the value using the specified backend and validates length if specified.</span>
+</span><span data-line="290">
+</span><span data-line="291"><span class="sd">        Args:</span>
+</span><span data-line="292"><span class="sd">            value (Any): The value to process.</span>
+</span><span data-line="293"><span class="sd">            dialect (Dialect): The SQLAlchemy dialect.</span>
+</span><span data-line="294">
+</span><span data-line="295"><span class="sd">        Returns:</span>
+</span><span data-line="296"><span class="sd">            str | None: The encrypted value or None if the input is None.</span>
+</span><span data-line="297">
+</span><span data-line="298"><span class="sd">        Raises:</span>
+</span><span data-line="299"><span class="sd">            ValueError: If the value exceeds the specified length.</span>
+</span><span data-line="300"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="301">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="302">            <span class="k">return</span> <span class="n">value</span>
+</span><span data-line="303">
+</span><span data-line="304">        <span class="c1"># Validate length if specified</span>
+</span><span data-line="305">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">:</span>
+</span><span data-line="306">            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Value length </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span><span class="si">}</span><span class="s2"> exceeds maximum unencrypted length </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="307">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span data-line="308">
+</span><span data-line="309">        <span class="bp">self</span><span class="o">.</span><span class="n">mount_vault</span><span class="p">()</span>
+</span><span data-line="310">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 
-</span><span data-line="292">
+</span><span data-line="311">
 <div class="viewcode-block" id="EncryptedString.process_result_value">
 <a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.EncryptedString.process_result_value">[docs]</a>
-</span><span data-line="293">    <span class="k">def</span> <span class="nf">process_result_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="294"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Processes the value after retrieving it from the database.</span>
-</span><span data-line="295">
-</span><span data-line="296"><span class="sd">        This method decrypts the value using the specified backend.</span>
-</span><span data-line="297">
-</span><span data-line="298"><span class="sd">        Args:</span>
-</span><span data-line="299"><span class="sd">            value (Any): The value to process.</span>
-</span><span data-line="300"><span class="sd">            dialect (Dialect): The SQLAlchemy dialect.</span>
-</span><span data-line="301">
-</span><span data-line="302"><span class="sd">        Returns:</span>
-</span><span data-line="303"><span class="sd">            str | None: The decrypted value or None if the input is None.</span>
-</span><span data-line="304"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="305">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="306">            <span class="k">return</span> <span class="n">value</span>
-</span><span data-line="307">        <span class="bp">self</span><span class="o">.</span><span class="n">mount_vault</span><span class="p">()</span>
-</span><span data-line="308">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+</span><span data-line="312">    <span class="k">def</span> <span class="nf">process_result_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="313"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Processes the value after retrieving it from the database.</span>
+</span><span data-line="314">
+</span><span data-line="315"><span class="sd">        This method decrypts the value using the specified backend.</span>
+</span><span data-line="316">
+</span><span data-line="317"><span class="sd">        Args:</span>
+</span><span data-line="318"><span class="sd">            value (Any): The value to process.</span>
+</span><span data-line="319"><span class="sd">            dialect (Dialect): The SQLAlchemy dialect.</span>
+</span><span data-line="320">
+</span><span data-line="321"><span class="sd">        Returns:</span>
+</span><span data-line="322"><span class="sd">            str | None: The decrypted value or None if the input is None.</span>
+</span><span data-line="323"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="324">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="325">            <span class="k">return</span> <span class="n">value</span>
+</span><span data-line="326">        <span class="bp">self</span><span class="o">.</span><span class="n">mount_vault</span><span class="p">()</span>
+</span><span data-line="327">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 
-</span><span data-line="309">
+</span><span data-line="328">
 <div class="viewcode-block" id="EncryptedString.mount_vault">
 <a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.EncryptedString.mount_vault">[docs]</a>
-</span><span data-line="310">    <span class="k">def</span> <span class="nf">mount_vault</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="311"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Mounts the vault with the encryption key.</span>
-</span><span data-line="312">
-</span><span data-line="313"><span class="sd">        If the key is callable, it is called to retrieve the key. Otherwise, the key is used directly.</span>
-</span><span data-line="314"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="315">        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">()</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span>
-</span><span data-line="316">        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">mount_vault</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+</span><span data-line="329">    <span class="k">def</span> <span class="nf">mount_vault</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="330"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Mounts the vault with the encryption key.</span>
+</span><span data-line="331">
+</span><span data-line="332"><span class="sd">        If the key is callable, it is called to retrieve the key. Otherwise, the key is used directly.</span>
+</span><span data-line="333"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="334">        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">()</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span>
+</span><span data-line="335">        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">mount_vault</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
 </div>
 
-</span><span data-line="317">
-</span><span data-line="318">
+</span><span data-line="336">
+</span><span data-line="337">
 <div class="viewcode-block" id="EncryptedText">
 <a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.EncryptedText">[docs]</a>
-</span><span data-line="319"><span class="k">class</span> <span class="nc">EncryptedText</span><span class="p">(</span><span class="n">EncryptedString</span><span class="p">):</span>
-</span><span data-line="320"><span class="w">    </span><span class="sd">&quot;&quot;&quot;SQLAlchemy TypeDecorator for storing encrypted text/CLOB values in a database.</span>
-</span><span data-line="321">
-</span><span data-line="322"><span class="sd">    This type provides transparent encryption/decryption of text values using the specified backend.</span>
-</span><span data-line="323"><span class="sd">    It extends :class:`EncryptedString` and implements Text as its underlying type.</span>
-</span><span data-line="324"><span class="sd">    This is suitable for storing larger encrypted text content compared to EncryptedString.</span>
-</span><span data-line="325">
-</span><span data-line="326"><span class="sd">    Args:</span>
-</span><span data-line="327"><span class="sd">        key (str | bytes | Callable[[], str | bytes] | None): The encryption key. Can be a string, bytes, or callable returning either. Defaults to os.urandom(32).</span>
-</span><span data-line="328"><span class="sd">        backend (Type[EncryptionBackend] | None): The encryption backend class to use. Defaults to FernetBackend.</span>
-</span><span data-line="329"><span class="sd">        **kwargs (Any | None): Additional arguments passed to the underlying String type.</span>
-</span><span data-line="330"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="331">
-</span><span data-line="332">    <span class="n">impl</span> <span class="o">=</span> <span class="n">Text</span>
-</span><span data-line="333">    <span class="n">cache_ok</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span data-line="334">
+</span><span data-line="338"><span class="k">class</span> <span class="nc">EncryptedText</span><span class="p">(</span><span class="n">EncryptedString</span><span class="p">):</span>
+</span><span data-line="339"><span class="w">    </span><span class="sd">&quot;&quot;&quot;SQLAlchemy TypeDecorator for storing encrypted text/CLOB values in a database.</span>
+</span><span data-line="340">
+</span><span data-line="341"><span class="sd">    This type provides transparent encryption/decryption of text values using the specified backend.</span>
+</span><span data-line="342"><span class="sd">    It extends :class:`EncryptedString` and implements Text as its underlying type.</span>
+</span><span data-line="343"><span class="sd">    This is suitable for storing larger encrypted text content compared to EncryptedString.</span>
+</span><span data-line="344">
+</span><span data-line="345"><span class="sd">    Args:</span>
+</span><span data-line="346"><span class="sd">        key (str | bytes | Callable[[], str | bytes] | None): The encryption key. Can be a string, bytes, or callable returning either. Defaults to os.urandom(32).</span>
+</span><span data-line="347"><span class="sd">        backend (Type[EncryptionBackend] | None): The encryption backend class to use. Defaults to FernetBackend.</span>
+</span><span data-line="348"><span class="sd">        **kwargs (Any | None): Additional arguments passed to the underlying String type.</span>
+</span><span data-line="349"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="350">
+</span><span data-line="351">    <span class="n">impl</span> <span class="o">=</span> <span class="n">Text</span>
+</span><span data-line="352">    <span class="n">cache_ok</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="353">
 <div class="viewcode-block" id="EncryptedText.load_dialect_impl">
 <a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.EncryptedText.load_dialect_impl">[docs]</a>
-</span><span data-line="335">    <span class="k">def</span> <span class="nf">load_dialect_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span data-line="336"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Loads the appropriate dialect implementation for Text type.</span>
-</span><span data-line="337">
-</span><span data-line="338"><span class="sd">        Args:</span>
-</span><span data-line="339"><span class="sd">            dialect (Dialect): The SQLAlchemy dialect.</span>
-</span><span data-line="340">
-</span><span data-line="341"><span class="sd">        Returns:</span>
-</span><span data-line="342"><span class="sd">            Any: The dialect-specific Text type descriptor.</span>
-</span><span data-line="343"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="344">        <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">Text</span><span class="p">())</span></div>
+</span><span data-line="354">    <span class="k">def</span> <span class="nf">load_dialect_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="355"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Loads the appropriate dialect implementation for Text type.</span>
+</span><span data-line="356">
+</span><span data-line="357"><span class="sd">        Args:</span>
+</span><span data-line="358"><span class="sd">            dialect (Dialect): The SQLAlchemy dialect.</span>
+</span><span data-line="359">
+</span><span data-line="360"><span class="sd">        Returns:</span>
+</span><span data-line="361"><span class="sd">            Any: The dialect-specific Text type descriptor.</span>
+</span><span data-line="362"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="363">        <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">Text</span><span class="p">())</span></div>
 </div>
 
 </span></pre></div>
