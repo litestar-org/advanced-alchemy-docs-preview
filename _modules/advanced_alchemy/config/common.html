@@ -149,20 +149,18 @@ data-aria-dark="Switch to auto color mode">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../getting-started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage/index.html">Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../usage/placeholder.html">Placeholder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../usage/modeling.html">Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../usage/repositories.html">Repositories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../usage/services.html">Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../usage/utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../usage/frameworks/litestar.html">Litestar Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../usage/frameworks/fastapi.html">FastAPI Integration</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../reference/index.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/base.html">base</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../reference/exceptions.html">exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../reference/filters.html">filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../reference/operations.html">operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../reference/repository.html">repositories</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../reference/types.html">types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../reference/service.html">services</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../reference/utils.html">utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../reference/alembic/index.html">alembic</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../reference/alembic/commands.html">commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/mixins/index.html">mixins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/mixins/unique.html">unique</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/config/index.html">config</a><ul>
@@ -173,6 +171,13 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l3"><a class="reference internal" href="../../../reference/config/types.html">types</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/operations.html">operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/types.html">types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/exceptions.html">exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/utils.html">utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/repository.html">repositories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/filters.html">filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/service.html">services</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/extensions/index.html">extensions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../reference/extensions/litestar/index.html">litestar</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../reference/extensions/litestar/alembic.html">alembic</a></li>
@@ -184,8 +189,8 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l3"><a class="reference internal" href="../../../reference/extensions/starlette.html">starlette</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../reference/mixins/index.html">mixins</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../reference/mixins/unique.html">unique</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/alembic/index.html">alembic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/alembic/commands.html">commands</a></li>
 </ul>
 </li>
 </ul>
@@ -298,227 +303,270 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="37"><span class="n">ALEMBIC_TEMPLATE_PATH</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="si">}</span><span class="s2">/alembic/templates&quot;</span>
 </span><span data-line="38"><span class="sd">&quot;&quot;&quot;Path to the Alembic templates.&quot;&quot;&quot;</span>
 </span><span data-line="39"><span class="n">ConnectionT</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;ConnectionT&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Union</span><span class="p">[</span><span class="s2">&quot;Connection&quot;</span><span class="p">,</span> <span class="s2">&quot;AsyncConnection&quot;</span><span class="p">])</span>
-</span><span data-line="40"><span class="sd">&quot;&quot;&quot;Type variable for SQLAlchemy connection types.&quot;&quot;&quot;</span>
-</span><span data-line="41"><span class="n">EngineT</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;EngineT&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Union</span><span class="p">[</span><span class="s2">&quot;Engine&quot;</span><span class="p">,</span> <span class="s2">&quot;AsyncEngine&quot;</span><span class="p">])</span>
-</span><span data-line="42"><span class="sd">&quot;&quot;&quot;Type variable for a SQLAlchemy engine.&quot;&quot;&quot;</span>
-</span><span data-line="43"><span class="n">SessionT</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;SessionT&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Union</span><span class="p">[</span><span class="s2">&quot;Session&quot;</span><span class="p">,</span> <span class="s2">&quot;AsyncSession&quot;</span><span class="p">])</span>
-</span><span data-line="44"><span class="sd">&quot;&quot;&quot;Type variable for a SQLAlchemy session.&quot;&quot;&quot;</span>
-</span><span data-line="45"><span class="n">SessionMakerT</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;SessionMakerT&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Union</span><span class="p">[</span><span class="s2">&quot;sessionmaker[Session]&quot;</span><span class="p">,</span> <span class="s2">&quot;async_sessionmaker[AsyncSession]&quot;</span><span class="p">])</span>
-</span><span data-line="46"><span class="sd">&quot;&quot;&quot;Type variable for a SQLAlchemy sessionmaker.&quot;&quot;&quot;</span>
-</span><span data-line="47">
+</span><span data-line="40"><span class="sd">&quot;&quot;&quot;Type variable for SQLAlchemy connection types.</span>
+</span><span data-line="41">
+</span><span data-line="42"><span class="sd">See Also:</span>
+</span><span data-line="43"><span class="sd">    :class:`sqlalchemy.Connection`</span>
+</span><span data-line="44"><span class="sd">    :class:`sqlalchemy.ext.asyncio.AsyncConnection`</span>
+</span><span data-line="45"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="46"><span class="n">EngineT</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;EngineT&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Union</span><span class="p">[</span><span class="s2">&quot;Engine&quot;</span><span class="p">,</span> <span class="s2">&quot;AsyncEngine&quot;</span><span class="p">])</span>
+</span><span data-line="47"><span class="sd">&quot;&quot;&quot;Type variable for a SQLAlchemy engine.</span>
 </span><span data-line="48">
+</span><span data-line="49"><span class="sd">See Also:</span>
+</span><span data-line="50"><span class="sd">    :class:`sqlalchemy.Engine`</span>
+</span><span data-line="51"><span class="sd">    :class:`sqlalchemy.ext.asyncio.AsyncEngine`</span>
+</span><span data-line="52"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="53"><span class="n">SessionT</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;SessionT&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Union</span><span class="p">[</span><span class="s2">&quot;Session&quot;</span><span class="p">,</span> <span class="s2">&quot;AsyncSession&quot;</span><span class="p">])</span>
+</span><span data-line="54"><span class="sd">&quot;&quot;&quot;Type variable for a SQLAlchemy session.</span>
+</span><span data-line="55">
+</span><span data-line="56"><span class="sd">See Also:</span>
+</span><span data-line="57"><span class="sd">    :class:`sqlalchemy.Session`</span>
+</span><span data-line="58"><span class="sd">    :class:`sqlalchemy.ext.asyncio.AsyncSession`</span>
+</span><span data-line="59"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="60"><span class="n">SessionMakerT</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;SessionMakerT&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Union</span><span class="p">[</span><span class="s2">&quot;sessionmaker[Session]&quot;</span><span class="p">,</span> <span class="s2">&quot;async_sessionmaker[AsyncSession]&quot;</span><span class="p">])</span>
+</span><span data-line="61"><span class="sd">&quot;&quot;&quot;Type variable for a SQLAlchemy sessionmaker.</span>
+</span><span data-line="62">
+</span><span data-line="63"><span class="sd">See Also:</span>
+</span><span data-line="64"><span class="sd">    :class:`sqlalchemy.orm.sessionmaker`</span>
+</span><span data-line="65"><span class="sd">    :class:`sqlalchemy.ext.asyncio.async_sessionmaker`</span>
+</span><span data-line="66"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="67">
+</span><span data-line="68">
 <div class="viewcode-block" id="GenericSessionConfig">
 <a class="viewcode-back" href="../../../reference/config/common.html#advanced_alchemy.config.common.GenericSessionConfig">[docs]</a>
-</span><span data-line="49"><span class="nd">@dataclass</span>
-</span><span data-line="50"><span class="k">class</span> <span class="nc">GenericSessionConfig</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">ConnectionT</span><span class="p">,</span> <span class="n">EngineT</span><span class="p">,</span> <span class="n">SessionT</span><span class="p">]):</span>
-</span><span data-line="51"><span class="w">    </span><span class="sd">&quot;&quot;&quot;SQLAlchemy async session config.&quot;&quot;&quot;</span>
-</span><span data-line="52">
-</span><span data-line="53">    <span class="n">autobegin</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>
-</span><span data-line="54"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Automatically start transactions when database access is requested by an operation.&quot;&quot;&quot;</span>
-</span><span data-line="55">    <span class="n">autoflush</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>
-</span><span data-line="56"><span class="w">    </span><span class="sd">&quot;&quot;&quot;When ``True``, all query operations will issue a flush call to this :class:`Session &lt;sqlalchemy.orm.Session&gt;`</span>
-</span><span data-line="57"><span class="sd">    before proceeding&quot;&quot;&quot;</span>
-</span><span data-line="58">    <span class="n">bind</span><span class="p">:</span> <span class="n">EngineT</span> <span class="o">|</span> <span class="n">ConnectionT</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>
-</span><span data-line="59"><span class="w">    </span><span class="sd">&quot;&quot;&quot;The :class:`Engine &lt;sqlalchemy.engine.Engine&gt;` or :class:`Connection &lt;sqlalchemy.engine.Connection&gt;` that new</span>
-</span><span data-line="60"><span class="sd">    :class:`Session &lt;sqlalchemy.orm.Session&gt;` objects will be bound to.&quot;&quot;&quot;</span>
-</span><span data-line="61">    <span class="n">binds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapper</span> <span class="o">|</span> <span class="n">TableClause</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">EngineT</span> <span class="o">|</span> <span class="n">ConnectionT</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>  <span class="c1"># pyright: ignore[reportMissingTypeArgument]</span>
-</span><span data-line="62"><span class="w">    </span><span class="sd">&quot;&quot;&quot;A dictionary which may specify any number of :class:`Engine &lt;sqlalchemy.engine.Engine&gt;` or :class:`Connection</span>
-</span><span data-line="63"><span class="sd">    &lt;sqlalchemy.engine.Connection&gt;` objects as the source of connectivity for SQL operations on a per-entity basis. The</span>
-</span><span data-line="64"><span class="sd">    keys of the dictionary consist of any series of mapped classes, arbitrary Python classes that are bases for mapped</span>
-</span><span data-line="65"><span class="sd">    classes, :class:`Table &lt;sqlalchemy.schema.Table&gt;` objects and :class:`Mapper &lt;sqlalchemy.orm.Mapper&gt;` objects. The</span>
-</span><span data-line="66"><span class="sd">    values of the dictionary are then instances of :class:`Engine &lt;sqlalchemy.engine.Engine&gt;` or less commonly</span>
-</span><span data-line="67"><span class="sd">    :class:`Connection &lt;sqlalchemy.engine.Connection&gt;` objects.&quot;&quot;&quot;</span>
-</span><span data-line="68">    <span class="n">class_</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">SessionT</span><span class="p">]</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>
-</span><span data-line="69"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to use in order to create new :class:`Session &lt;sqlalchemy.orm.Session&gt;` objects.&quot;&quot;&quot;</span>
-</span><span data-line="70">    <span class="n">expire_on_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>
-</span><span data-line="71"><span class="w">    </span><span class="sd">&quot;&quot;&quot;If ``True``, all instances will be expired after each commit.&quot;&quot;&quot;</span>
-</span><span data-line="72">    <span class="n">info</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>
-</span><span data-line="73"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Optional dictionary of information that will be available via the</span>
-</span><span data-line="74"><span class="sd">    :attr:`Session.info &lt;sqlalchemy.orm.Session.info&gt;`&quot;&quot;&quot;</span>
-</span><span data-line="75">    <span class="n">join_transaction_mode</span><span class="p">:</span> <span class="n">JoinTransactionMode</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>
-</span><span data-line="76"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes the transactional behavior to take when a given bind is a Connection that has already begun a</span>
-</span><span data-line="77"><span class="sd">    transaction outside the scope of this Session; in other words the</span>
-</span><span data-line="78"><span class="sd">    :attr:`Connection.in_transaction() &lt;sqlalchemy.Connection.in_transaction&gt;` method returns True.&quot;&quot;&quot;</span>
-</span><span data-line="79">    <span class="n">query_cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">Query</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>  <span class="c1"># pyright: ignore[reportMissingTypeArgument]</span>
-</span><span data-line="80"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Class which should be used to create new Query objects, as returned by the</span>
-</span><span data-line="81"><span class="sd">    :attr:`Session.query() &lt;sqlalchemy.orm.Session.query&gt;` method.&quot;&quot;&quot;</span>
-</span><span data-line="82">    <span class="n">twophase</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>
-</span><span data-line="83"><span class="w">    </span><span class="sd">&quot;&quot;&quot;When ``True``, all transactions will be started as a “two phase” transaction, i.e. using the “two phase”</span>
-</span><span data-line="84"><span class="sd">    semantics of the database in use along with an XID. During a :attr:`commit() &lt;sqlalchemy.orm.Session.commit&gt;`, after</span>
-</span><span data-line="85"><span class="sd">    :attr:`flush() &lt;sqlalchemy.orm.Session.flush&gt;` has been issued for all attached databases, the</span>
-</span><span data-line="86"><span class="sd">    :attr:`TwoPhaseTransaction.prepare() &lt;sqlalchemy.engine.TwoPhaseTransaction.prepare&gt;` method on each database`s</span>
-</span><span data-line="87"><span class="sd">    :class:`TwoPhaseTransaction &lt;sqlalchemy.engine.TwoPhaseTransaction&gt;` will be called. This allows each database to</span>
-</span><span data-line="88"><span class="sd">    roll back the entire transaction, before each transaction is committed.&quot;&quot;&quot;</span></div>
+</span><span data-line="69"><span class="nd">@dataclass</span>
+</span><span data-line="70"><span class="k">class</span> <span class="nc">GenericSessionConfig</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">ConnectionT</span><span class="p">,</span> <span class="n">EngineT</span><span class="p">,</span> <span class="n">SessionT</span><span class="p">]):</span>
+</span><span data-line="71"><span class="w">    </span><span class="sd">&quot;&quot;&quot;SQLAlchemy async session config.</span>
+</span><span data-line="72">
+</span><span data-line="73"><span class="sd">    Types:</span>
+</span><span data-line="74"><span class="sd">        ConnectionT: :class:`sqlalchemy.Connection` or :class:`sqlalchemy.ext.asyncio.AsyncConnection`</span>
+</span><span data-line="75"><span class="sd">        EngineT: :class:`sqlalchemy.Engine` or :class:`sqlalchemy.ext.asyncio.AsyncEngine`</span>
+</span><span data-line="76"><span class="sd">        SessionT: :class:`sqlalchemy.Session` or :class:`sqlalchemy.ext.asyncio.AsyncSession`</span>
+</span><span data-line="77"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="78">
+</span><span data-line="79">    <span class="n">autobegin</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>
+</span><span data-line="80"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Automatically start transactions when database access is requested by an operationn.</span>
+</span><span data-line="81">
+</span><span data-line="82"><span class="sd">    Bool or :class:`Empty &lt;advanced_alchemy.utils.dataclass.Empty&gt;`</span>
+</span><span data-line="83"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="84">    <span class="n">autoflush</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>
+</span><span data-line="85"><span class="w">    </span><span class="sd">&quot;&quot;&quot;When ``True``, all query operations will issue a flush call to this :class:`Session &lt;sqlalchemy.orm.Session&gt;`</span>
+</span><span data-line="86"><span class="sd">    before proceeding&quot;&quot;&quot;</span>
+</span><span data-line="87">    <span class="n">bind</span><span class="p">:</span> <span class="n">EngineT</span> <span class="o">|</span> <span class="n">ConnectionT</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>
+</span><span data-line="88"><span class="w">    </span><span class="sd">&quot;&quot;&quot;The :class:`Engine &lt;sqlalchemy.engine.Engine&gt;` or :class:`Connection &lt;sqlalchemy.engine.Connection&gt;` that new</span>
+</span><span data-line="89"><span class="sd">    :class:`Session &lt;sqlalchemy.orm.Session&gt;` objects will be bound to.&quot;&quot;&quot;</span>
+</span><span data-line="90">    <span class="n">binds</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapper</span> <span class="o">|</span> <span class="n">TableClause</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">EngineT</span> <span class="o">|</span> <span class="n">ConnectionT</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>  <span class="c1"># pyright: ignore[reportMissingTypeArgument]</span>
+</span><span data-line="91"><span class="w">    </span><span class="sd">&quot;&quot;&quot;A dictionary which may specify any number of :class:`Engine &lt;sqlalchemy.engine.Engine&gt;` or :class:`Connection</span>
+</span><span data-line="92"><span class="sd">    &lt;sqlalchemy.engine.Connection&gt;` objects as the source of connectivity for SQL operations on a per-entity basis. The</span>
+</span><span data-line="93"><span class="sd">    keys of the dictionary consist of any series of mapped classes, arbitrary Python classes that are bases for mapped</span>
+</span><span data-line="94"><span class="sd">    classes, :class:`Table &lt;sqlalchemy.schema.Table&gt;` objects and :class:`Mapper &lt;sqlalchemy.orm.Mapper&gt;` objects. The</span>
+</span><span data-line="95"><span class="sd">    values of the dictionary are then instances of :class:`Engine &lt;sqlalchemy.engine.Engine&gt;` or less commonly</span>
+</span><span data-line="96"><span class="sd">    :class:`Connection &lt;sqlalchemy.engine.Connection&gt;` objects.&quot;&quot;&quot;</span>
+</span><span data-line="97">    <span class="n">class_</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">SessionT</span><span class="p">]</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>
+</span><span data-line="98"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to use in order to create new :class:`Session &lt;sqlalchemy.orm.Session&gt;` objects.&quot;&quot;&quot;</span>
+</span><span data-line="99">    <span class="n">expire_on_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>
+</span><span data-line="100"><span class="w">    </span><span class="sd">&quot;&quot;&quot;If ``True``, all instances will be expired after each commit.&quot;&quot;&quot;</span>
+</span><span data-line="101">    <span class="n">info</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>
+</span><span data-line="102"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Optional dictionary of information that will be available via the</span>
+</span><span data-line="103"><span class="sd">    :attr:`Session.info &lt;sqlalchemy.orm.Session.info&gt;`&quot;&quot;&quot;</span>
+</span><span data-line="104">    <span class="n">join_transaction_mode</span><span class="p">:</span> <span class="n">JoinTransactionMode</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>
+</span><span data-line="105"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes the transactional behavior to take when a given bind is a Connection that has already begun a</span>
+</span><span data-line="106"><span class="sd">    transaction outside the scope of this Session; in other words the</span>
+</span><span data-line="107"><span class="sd">    :attr:`Connection.in_transaction() &lt;sqlalchemy.Connection.in_transaction&gt;` method returns True.&quot;&quot;&quot;</span>
+</span><span data-line="108">    <span class="n">query_cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">Query</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>  <span class="c1"># pyright: ignore[reportMissingTypeArgument]</span>
+</span><span data-line="109"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Class which should be used to create new Query objects, as returned by the</span>
+</span><span data-line="110"><span class="sd">    :attr:`Session.query() &lt;sqlalchemy.orm.Session.query&gt;` method.&quot;&quot;&quot;</span>
+</span><span data-line="111">    <span class="n">twophase</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">EmptyType</span> <span class="o">=</span> <span class="n">Empty</span>
+</span><span data-line="112"><span class="w">    </span><span class="sd">&quot;&quot;&quot;When ``True``, all transactions will be started as a “two phase” transaction, i.e. using the “two phase”</span>
+</span><span data-line="113"><span class="sd">    semantics of the database in use along with an XID. During a :attr:`commit() &lt;sqlalchemy.orm.Session.commit&gt;`, after</span>
+</span><span data-line="114"><span class="sd">    :attr:`flush() &lt;sqlalchemy.orm.Session.flush&gt;` has been issued for all attached databases, the</span>
+</span><span data-line="115"><span class="sd">    :attr:`TwoPhaseTransaction.prepare() &lt;sqlalchemy.engine.TwoPhaseTransaction.prepare&gt;` method on each database`s</span>
+</span><span data-line="116"><span class="sd">    :class:`TwoPhaseTransaction &lt;sqlalchemy.engine.TwoPhaseTransaction&gt;` will be called. This allows each database to</span>
+</span><span data-line="117"><span class="sd">    roll back the entire transaction, before each transaction is committed.&quot;&quot;&quot;</span></div>
 
-</span><span data-line="89">
-</span><span data-line="90">
+</span><span data-line="118">
+</span><span data-line="119">
 <div class="viewcode-block" id="GenericSQLAlchemyConfig">
 <a class="viewcode-back" href="../../../reference/config/common.html#advanced_alchemy.config.common.GenericSQLAlchemyConfig">[docs]</a>
-</span><span data-line="91"><span class="nd">@dataclass</span>
-</span><span data-line="92"><span class="k">class</span> <span class="nc">GenericSQLAlchemyConfig</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">EngineT</span><span class="p">,</span> <span class="n">SessionT</span><span class="p">,</span> <span class="n">SessionMakerT</span><span class="p">]):</span>
-</span><span data-line="93"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Common SQLAlchemy Configuration.&quot;&quot;&quot;</span>
-</span><span data-line="94">
-</span><span data-line="95">    <span class="n">create_engine_callable</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">EngineT</span><span class="p">]</span>
-</span><span data-line="96"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Callable that creates an :class:`AsyncEngine &lt;sqlalchemy.ext.asyncio.AsyncEngine&gt;` instance or instance of its</span>
-</span><span data-line="97"><span class="sd">    subclass.</span>
-</span><span data-line="98"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="99">    <span class="n">session_config</span><span class="p">:</span> <span class="n">GenericSessionConfig</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
-</span><span data-line="100"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration options for either the :class:`async_sessionmaker &lt;sqlalchemy.ext.asyncio.async_sessionmaker&gt;`</span>
-</span><span data-line="101"><span class="sd">    or :class:`sessionmaker &lt;sqlalchemy.orm.sessionmaker&gt;`.</span>
-</span><span data-line="102"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="103">    <span class="n">session_maker_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">sessionmaker</span><span class="p">[</span><span class="n">Session</span><span class="p">]</span> <span class="o">|</span> <span class="n">async_sessionmaker</span><span class="p">[</span><span class="n">AsyncSession</span><span class="p">]]</span>
-</span><span data-line="104"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Sessionmaker class to use.&quot;&quot;&quot;</span>
-</span><span data-line="105">    <span class="n">connection_string</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-</span><span data-line="106"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Database connection string in one of the formats supported by SQLAlchemy.</span>
-</span><span data-line="107">
-</span><span data-line="108"><span class="sd">    Notes:</span>
-</span><span data-line="109"><span class="sd">        - For async connections, the connection string must include the correct async prefix.</span>
-</span><span data-line="110"><span class="sd">          e.g. ``&#39;postgresql+asyncpg://...&#39;`` instead of ``&#39;postgresql://&#39;``, and for sync connections its the opposite.</span>
-</span><span data-line="111">
-</span><span data-line="112"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="113">    <span class="n">engine_config</span><span class="p">:</span> <span class="n">EngineConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">EngineConfig</span><span class="p">)</span>
-</span><span data-line="114"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the SQLAlchemy engine.</span>
-</span><span data-line="115">
-</span><span data-line="116"><span class="sd">    The configuration options are documented in the SQLAlchemy documentation.</span>
-</span><span data-line="117"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="118">    <span class="n">session_maker</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">SessionT</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="119"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Callable that returns a session.</span>
-</span><span data-line="120">
-</span><span data-line="121"><span class="sd">    If provided, the plugin will use this rather than instantiate a sessionmaker.</span>
-</span><span data-line="122"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="123">    <span class="n">engine_instance</span><span class="p">:</span> <span class="n">EngineT</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="124"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Optional engine to use.</span>
-</span><span data-line="125">
-</span><span data-line="126"><span class="sd">    If set, the plugin will use the provided instance rather than instantiate an engine.</span>
-</span><span data-line="127"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="128">    <span class="n">create_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span data-line="129"><span class="w">    </span><span class="sd">&quot;&quot;&quot;If true, all models are automatically created on engine creation.&quot;&quot;&quot;</span>
-</span><span data-line="130">
-</span><span data-line="131">    <span class="n">metadata</span><span class="p">:</span> <span class="n">MetaData</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="132"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Optional metadata to use.</span>
-</span><span data-line="133">
-</span><span data-line="134"><span class="sd">      If set, the plugin will use the provided instance rather than the default metadata.&quot;&quot;&quot;</span>
-</span><span data-line="135">    <span class="n">enable_touch_updated_timestamp_listener</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span data-line="136"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Enable Created/Updated Timestamp event listener.</span>
-</span><span data-line="137">
-</span><span data-line="138"><span class="sd">    This is a listener that will update ``created_at`` and ``updated_at`` columns on record modification.</span>
-</span><span data-line="139"><span class="sd">    Disable if you plan to bring your own update mechanism for these columns&quot;&quot;&quot;</span>
-</span><span data-line="140">    <span class="n">_SESSION_SCOPE_KEY_REGISTRY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;set[str]&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">()))</span>
-</span><span data-line="141"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Internal counter for ensuring unique identification of session scope keys in the class.&quot;&quot;&quot;</span>
-</span><span data-line="142">    <span class="n">_ENGINE_APP_STATE_KEY_REGISTRY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;set[str]&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">()))</span>
-</span><span data-line="143"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Internal counter for ensuring unique identification of engine app state keys in the class.&quot;&quot;&quot;</span>
-</span><span data-line="144">    <span class="n">_SESSIONMAKER_APP_STATE_KEY_REGISTRY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;set[str]&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">()))</span>
-</span><span data-line="145"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Internal counter for ensuring unique identification of sessionmaker state keys in the class.&quot;&quot;&quot;</span>
-</span><span data-line="146">
-</span><span data-line="147">    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="148">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection_string</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine_instance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="149">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Only one of &#39;connection_string&#39; or &#39;engine_instance&#39; can be provided.&quot;</span>
-</span><span data-line="150">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span data-line="151">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_touch_updated_timestamp_listener</span><span class="p">:</span>
-</span><span data-line="152">            <span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">event</span>
-</span><span data-line="153">            <span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">Session</span>
-</span><span data-line="154">
-</span><span data-line="155">            <span class="kn">from</span> <span class="nn">advanced_alchemy._listeners</span> <span class="kn">import</span> <span class="n">touch_updated_timestamp</span>
-</span><span data-line="156">
-</span><span data-line="157">            <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">Session</span><span class="p">,</span> <span class="s2">&quot;before_flush&quot;</span><span class="p">,</span> <span class="n">touch_updated_timestamp</span><span class="p">)</span>
-</span><span data-line="158">
-</span><span data-line="159">    <span class="nd">@property</span>
-</span><span data-line="160">    <span class="k">def</span> <span class="nf">engine_config_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-</span><span data-line="161"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the engine configuration as a dict.</span>
-</span><span data-line="162">
-</span><span data-line="163"><span class="sd">        Returns:</span>
-</span><span data-line="164"><span class="sd">            A string keyed dict of config kwargs for the SQLAlchemy :func:`get_engine &lt;sqlalchemy.get_engine&gt;`</span>
-</span><span data-line="165"><span class="sd">            function.</span>
-</span><span data-line="166"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="167">        <span class="k">return</span> <span class="n">simple_asdict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">engine_config</span><span class="p">,</span> <span class="n">exclude_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span data-line="168">
-</span><span data-line="169">    <span class="nd">@property</span>
-</span><span data-line="170">    <span class="k">def</span> <span class="nf">session_config_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-</span><span data-line="171"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the session configuration as a dict.</span>
-</span><span data-line="172">
-</span><span data-line="173"><span class="sd">        Returns:</span>
-</span><span data-line="174"><span class="sd">            A string keyed dict of config kwargs for the SQLAlchemy :class:`sessionmaker &lt;sqlalchemy.orm.sessionmaker&gt;`</span>
-</span><span data-line="175"><span class="sd">            class.</span>
-</span><span data-line="176"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="177">        <span class="k">return</span> <span class="n">simple_asdict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_config</span><span class="p">,</span> <span class="n">exclude_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span data-line="178">
+</span><span data-line="120"><span class="nd">@dataclass</span>
+</span><span data-line="121"><span class="k">class</span> <span class="nc">GenericSQLAlchemyConfig</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">EngineT</span><span class="p">,</span> <span class="n">SessionT</span><span class="p">,</span> <span class="n">SessionMakerT</span><span class="p">]):</span>
+</span><span data-line="122"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Common SQLAlchemy Configuration.</span>
+</span><span data-line="123">
+</span><span data-line="124"><span class="sd">    Types:</span>
+</span><span data-line="125"><span class="sd">        EngineT: :class:`sqlalchemy.Engine` or :class:`sqlalchemy.ext.asyncio.AsyncEngine`</span>
+</span><span data-line="126"><span class="sd">        SessionT: :class:`sqlalchemy.Session` or :class:`sqlalchemy.ext.asyncio.AsyncSession`</span>
+</span><span data-line="127"><span class="sd">        SessionMakerT: :class:`sqlalchemy.orm.sessionmaker` or :class:`sqlalchemy.ext.asyncio.async_sessionmaker`</span>
+</span><span data-line="128"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="129">
+</span><span data-line="130">    <span class="n">create_engine_callable</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">EngineT</span><span class="p">]</span>
+</span><span data-line="131"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Callable that creates an :class:`AsyncEngine &lt;sqlalchemy.ext.asyncio.AsyncEngine&gt;` instance or instance of its</span>
+</span><span data-line="132"><span class="sd">    subclass.</span>
+</span><span data-line="133"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="134">    <span class="n">session_config</span><span class="p">:</span> <span class="n">GenericSessionConfig</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+</span><span data-line="135"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration options for either the :class:`async_sessionmaker &lt;sqlalchemy.ext.asyncio.async_sessionmaker&gt;`</span>
+</span><span data-line="136"><span class="sd">    or :class:`sessionmaker &lt;sqlalchemy.orm.sessionmaker&gt;`.</span>
+</span><span data-line="137"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="138">    <span class="n">session_maker_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">sessionmaker</span><span class="p">[</span><span class="n">Session</span><span class="p">]</span> <span class="o">|</span> <span class="n">async_sessionmaker</span><span class="p">[</span><span class="n">AsyncSession</span><span class="p">]]</span>
+</span><span data-line="139"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Sessionmaker class to use.</span>
+</span><span data-line="140">
+</span><span data-line="141"><span class="sd">    See Also:</span>
+</span><span data-line="142"><span class="sd">        :class:`sqlalchemy.orm.sessionmaker`</span>
+</span><span data-line="143"><span class="sd">        :class:`sqlalchemy.ext.asyncio.async_sessionmaker`</span>
+</span><span data-line="144"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="145">    <span class="n">connection_string</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span data-line="146"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Database connection string in one of the formats supported by SQLAlchemy.</span>
+</span><span data-line="147">
+</span><span data-line="148"><span class="sd">    Notes:</span>
+</span><span data-line="149"><span class="sd">        - For async connections, the connection string must include the correct async prefix.</span>
+</span><span data-line="150"><span class="sd">          e.g. ``&#39;postgresql+asyncpg://...&#39;`` instead of ``&#39;postgresql://&#39;``, and for sync connections its the opposite.</span>
+</span><span data-line="151">
+</span><span data-line="152"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="153">    <span class="n">engine_config</span><span class="p">:</span> <span class="n">EngineConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">EngineConfig</span><span class="p">)</span>
+</span><span data-line="154"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the SQLAlchemy engine.</span>
+</span><span data-line="155">
+</span><span data-line="156"><span class="sd">    The configuration options are documented in the SQLAlchemy documentation.</span>
+</span><span data-line="157"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="158">    <span class="n">session_maker</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">SessionT</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="159"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Callable that returns a session.</span>
+</span><span data-line="160">
+</span><span data-line="161"><span class="sd">    If provided, the plugin will use this rather than instantiate a sessionmaker.</span>
+</span><span data-line="162"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="163">    <span class="n">engine_instance</span><span class="p">:</span> <span class="n">EngineT</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="164"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Optional engine to use.</span>
+</span><span data-line="165">
+</span><span data-line="166"><span class="sd">    If set, the plugin will use the provided instance rather than instantiate an engine.</span>
+</span><span data-line="167"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="168">    <span class="n">create_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="169"><span class="w">    </span><span class="sd">&quot;&quot;&quot;If true, all models are automatically created on engine creation.&quot;&quot;&quot;</span>
+</span><span data-line="170">
+</span><span data-line="171">    <span class="n">metadata</span><span class="p">:</span> <span class="n">MetaData</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="172"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Optional metadata to use.</span>
+</span><span data-line="173">
+</span><span data-line="174"><span class="sd">      If set, the plugin will use the provided instance rather than the default metadata.&quot;&quot;&quot;</span>
+</span><span data-line="175">    <span class="n">enable_touch_updated_timestamp_listener</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="176"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Enable Created/Updated Timestamp event listener.</span>
+</span><span data-line="177">
+</span><span data-line="178"><span class="sd">    This is a listener that will update ``created_at`` and ``updated_at`` columns on record modification.</span>
+</span><span data-line="179"><span class="sd">    Disable if you plan to bring your own update mechanism for these columns&quot;&quot;&quot;</span>
+</span><span data-line="180">    <span class="n">_SESSION_SCOPE_KEY_REGISTRY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;set[str]&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">()))</span>
+</span><span data-line="181"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Internal counter for ensuring unique identification of session scope keys in the class.&quot;&quot;&quot;</span>
+</span><span data-line="182">    <span class="n">_ENGINE_APP_STATE_KEY_REGISTRY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;set[str]&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">()))</span>
+</span><span data-line="183"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Internal counter for ensuring unique identification of engine app state keys in the class.&quot;&quot;&quot;</span>
+</span><span data-line="184">    <span class="n">_SESSIONMAKER_APP_STATE_KEY_REGISTRY</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;set[str]&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">()))</span>
+</span><span data-line="185"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Internal counter for ensuring unique identification of sessionmaker state keys in the class.&quot;&quot;&quot;</span>
+</span><span data-line="186">
+</span><span data-line="187">    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="188">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection_string</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine_instance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="189">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Only one of &#39;connection_string&#39; or &#39;engine_instance&#39; can be provided.&quot;</span>
+</span><span data-line="190">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span data-line="191">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_touch_updated_timestamp_listener</span><span class="p">:</span>
+</span><span data-line="192">            <span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">event</span>
+</span><span data-line="193">            <span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">Session</span>
+</span><span data-line="194">
+</span><span data-line="195">            <span class="kn">from</span> <span class="nn">advanced_alchemy._listeners</span> <span class="kn">import</span> <span class="n">touch_updated_timestamp</span>
+</span><span data-line="196">
+</span><span data-line="197">            <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">Session</span><span class="p">,</span> <span class="s2">&quot;before_flush&quot;</span><span class="p">,</span> <span class="n">touch_updated_timestamp</span><span class="p">)</span>
+</span><span data-line="198">
+</span><span data-line="199">    <span class="nd">@property</span>
+</span><span data-line="200">    <span class="k">def</span> <span class="nf">engine_config_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+</span><span data-line="201"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the engine configuration as a dict.</span>
+</span><span data-line="202">
+</span><span data-line="203"><span class="sd">        Returns:</span>
+</span><span data-line="204"><span class="sd">            A string keyed dict of config kwargs for the SQLAlchemy :func:`get_engine &lt;sqlalchemy.get_engine&gt;`</span>
+</span><span data-line="205"><span class="sd">            function.</span>
+</span><span data-line="206"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="207">        <span class="k">return</span> <span class="n">simple_asdict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">engine_config</span><span class="p">,</span> <span class="n">exclude_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="208">
+</span><span data-line="209">    <span class="nd">@property</span>
+</span><span data-line="210">    <span class="k">def</span> <span class="nf">session_config_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+</span><span data-line="211"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the session configuration as a dict.</span>
+</span><span data-line="212">
+</span><span data-line="213"><span class="sd">        Returns:</span>
+</span><span data-line="214"><span class="sd">            A string keyed dict of config kwargs for the SQLAlchemy :class:`sessionmaker &lt;sqlalchemy.orm.sessionmaker&gt;`</span>
+</span><span data-line="215"><span class="sd">            class.</span>
+</span><span data-line="216"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="217">        <span class="k">return</span> <span class="n">simple_asdict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_config</span><span class="p">,</span> <span class="n">exclude_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="218">
 <div class="viewcode-block" id="GenericSQLAlchemyConfig.get_engine">
 <a class="viewcode-back" href="../../../reference/config/common.html#advanced_alchemy.config.common.GenericSQLAlchemyConfig.get_engine">[docs]</a>
-</span><span data-line="179">    <span class="k">def</span> <span class="nf">get_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EngineT</span><span class="p">:</span>
-</span><span data-line="180"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an engine. If none exists yet, create one.</span>
-</span><span data-line="181">
-</span><span data-line="182"><span class="sd">        Returns:</span>
-</span><span data-line="183"><span class="sd">            Getter that returns the engine instance used by the plugin.</span>
-</span><span data-line="184"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="185">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine_instance</span><span class="p">:</span>
-</span><span data-line="186">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine_instance</span>
-</span><span data-line="187">
-</span><span data-line="188">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection_string</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="189">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;One of &#39;connection_string&#39; or &#39;engine_instance&#39; must be provided.&quot;</span>
-</span><span data-line="190">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span data-line="191">
-</span><span data-line="192">        <span class="n">engine_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine_config_dict</span>
-</span><span data-line="193">        <span class="k">try</span><span class="p">:</span>
-</span><span data-line="194">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_engine_callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_string</span><span class="p">,</span> <span class="o">**</span><span class="n">engine_config</span><span class="p">)</span>
-</span><span data-line="195">        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-</span><span data-line="196">            <span class="c1"># likely due to a dialect that doesn&#39;t support json type</span>
-</span><span data-line="197">            <span class="k">del</span> <span class="n">engine_config</span><span class="p">[</span><span class="s2">&quot;json_deserializer&quot;</span><span class="p">]</span>
-</span><span data-line="198">            <span class="k">del</span> <span class="n">engine_config</span><span class="p">[</span><span class="s2">&quot;json_serializer&quot;</span><span class="p">]</span>
-</span><span data-line="199">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_engine_callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_string</span><span class="p">,</span> <span class="o">**</span><span class="n">engine_config</span><span class="p">)</span></div>
+</span><span data-line="219">    <span class="k">def</span> <span class="nf">get_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EngineT</span><span class="p">:</span>
+</span><span data-line="220"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an engine. If none exists yet, create one.</span>
+</span><span data-line="221">
+</span><span data-line="222"><span class="sd">        Returns:</span>
+</span><span data-line="223"><span class="sd">            :class:`sqlalchemy.Engine` or :class:`sqlalchemy.ext.asyncio.AsyncEngine` instance used by the plugin.</span>
+</span><span data-line="224"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="225">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine_instance</span><span class="p">:</span>
+</span><span data-line="226">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine_instance</span>
+</span><span data-line="227">
+</span><span data-line="228">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection_string</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="229">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;One of &#39;connection_string&#39; or &#39;engine_instance&#39; must be provided.&quot;</span>
+</span><span data-line="230">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span data-line="231">
+</span><span data-line="232">        <span class="n">engine_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine_config_dict</span>
+</span><span data-line="233">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="234">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_engine_callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_string</span><span class="p">,</span> <span class="o">**</span><span class="n">engine_config</span><span class="p">)</span>
+</span><span data-line="235">        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+</span><span data-line="236">            <span class="c1"># likely due to a dialect that doesn&#39;t support json type</span>
+</span><span data-line="237">            <span class="k">del</span> <span class="n">engine_config</span><span class="p">[</span><span class="s2">&quot;json_deserializer&quot;</span><span class="p">]</span>
+</span><span data-line="238">            <span class="k">del</span> <span class="n">engine_config</span><span class="p">[</span><span class="s2">&quot;json_serializer&quot;</span><span class="p">]</span>
+</span><span data-line="239">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_engine_callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_string</span><span class="p">,</span> <span class="o">**</span><span class="n">engine_config</span><span class="p">)</span></div>
 
-</span><span data-line="200">
+</span><span data-line="240">
 <div class="viewcode-block" id="GenericSQLAlchemyConfig.create_session_maker">
 <a class="viewcode-back" href="../../../reference/config/common.html#advanced_alchemy.config.common.GenericSQLAlchemyConfig.create_session_maker">[docs]</a>
-</span><span data-line="201">    <span class="k">def</span> <span class="nf">create_session_maker</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">SessionT</span><span class="p">]:</span>
-</span><span data-line="202"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a session maker. If none exists yet, create one.</span>
-</span><span data-line="203">
-</span><span data-line="204"><span class="sd">        Returns:</span>
-</span><span data-line="205"><span class="sd">            Session factory used by the plugin.</span>
-</span><span data-line="206"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="207">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">:</span>
-</span><span data-line="208">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span>
-</span><span data-line="209">
-</span><span data-line="210">        <span class="n">session_kws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_config_dict</span>
-</span><span data-line="211">        <span class="k">if</span> <span class="n">session_kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bind&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="212">            <span class="n">session_kws</span><span class="p">[</span><span class="s2">&quot;bind&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span>
-</span><span data-line="213">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;Callable[[], SessionT]&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_maker_class</span><span class="p">(</span><span class="o">**</span><span class="n">session_kws</span><span class="p">))</span></div>
+</span><span data-line="241">    <span class="k">def</span> <span class="nf">create_session_maker</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">SessionT</span><span class="p">]:</span>
+</span><span data-line="242"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a session maker. If none exists yet, create one.</span>
+</span><span data-line="243">
+</span><span data-line="244"><span class="sd">        Returns:</span>
+</span><span data-line="245"><span class="sd">            :class:`sqlalchemy.orm.sessionmaker` or :class:`sqlalchemy.ext.asyncio.async_sessionmaker` factory used by the plugin.</span>
+</span><span data-line="246"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="247">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">:</span>
+</span><span data-line="248">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span>
+</span><span data-line="249">
+</span><span data-line="250">        <span class="n">session_kws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_config_dict</span>
+</span><span data-line="251">        <span class="k">if</span> <span class="n">session_kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bind&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="252">            <span class="n">session_kws</span><span class="p">[</span><span class="s2">&quot;bind&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span>
+</span><span data-line="253">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;Callable[[], SessionT]&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_maker_class</span><span class="p">(</span><span class="o">**</span><span class="n">session_kws</span><span class="p">))</span></div>
 </div>
 
-</span><span data-line="214">
-</span><span data-line="215">
+</span><span data-line="254">
+</span><span data-line="255">
 <div class="viewcode-block" id="GenericAlembicConfig">
 <a class="viewcode-back" href="../../../reference/config/common.html#advanced_alchemy.config.common.GenericAlembicConfig">[docs]</a>
-</span><span data-line="216"><span class="nd">@dataclass</span>
-</span><span data-line="217"><span class="k">class</span> <span class="nc">GenericAlembicConfig</span><span class="p">:</span>
-</span><span data-line="218"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for Alembic&#39;s :class:`Config &lt;alembic.config.Config&gt;`.</span>
-</span><span data-line="219">
-</span><span data-line="220"><span class="sd">    For details see: https://alembic.sqlalchemy.org/en/latest/api/config.html</span>
-</span><span data-line="221"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="222">
-</span><span data-line="223">    <span class="n">script_config</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;alembic.ini&quot;</span>
-</span><span data-line="224"><span class="w">    </span><span class="sd">&quot;&quot;&quot;A path to the Alembic configuration file such as ``alembic.ini``.  If left unset, the default configuration</span>
-</span><span data-line="225"><span class="sd">    will be used.</span>
-</span><span data-line="226"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="227">    <span class="n">version_table_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;alembic_versions&quot;</span>
-</span><span data-line="228"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure the name of the table used to hold the applied alembic revisions.</span>
-</span><span data-line="229"><span class="sd">    Defaults to ``alembic_versions``.</span>
-</span><span data-line="230"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="231">    <span class="n">version_table_schema</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="232"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure the schema to use for the alembic revisions revisions.</span>
-</span><span data-line="233"><span class="sd">    If unset, it defaults to connection&#39;s default schema.&quot;&quot;&quot;</span>
-</span><span data-line="234">    <span class="n">script_location</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;migrations&quot;</span>
-</span><span data-line="235"><span class="w">    </span><span class="sd">&quot;&quot;&quot;A path to save generated migrations.</span>
-</span><span data-line="236"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="237">    <span class="n">target_metadata</span><span class="p">:</span> <span class="n">MetaData</span> <span class="o">=</span> <span class="n">orm_registry</span><span class="o">.</span><span class="n">metadata</span>
-</span><span data-line="238"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Metadata to use.&quot;&quot;&quot;</span>
-</span><span data-line="239">    <span class="n">user_module_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">&quot;sa.&quot;</span>
-</span><span data-line="240"><span class="w">    </span><span class="sd">&quot;&quot;&quot;User module prefix.&quot;&quot;&quot;</span>
-</span><span data-line="241">    <span class="n">render_as_batch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span data-line="242"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Render as batch.&quot;&quot;&quot;</span>
-</span><span data-line="243">    <span class="n">compare_type</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span data-line="244"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare type.&quot;&quot;&quot;</span>
-</span><span data-line="245">    <span class="n">template_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">ALEMBIC_TEMPLATE_PATH</span>
-</span><span data-line="246"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Template path.&quot;&quot;&quot;</span></div>
+</span><span data-line="256"><span class="nd">@dataclass</span>
+</span><span data-line="257"><span class="k">class</span> <span class="nc">GenericAlembicConfig</span><span class="p">:</span>
+</span><span data-line="258"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for Alembic&#39;s :class:`Config &lt;alembic.config.Config&gt;`.</span>
+</span><span data-line="259">
+</span><span data-line="260"><span class="sd">    For details see: https://alembic.sqlalchemy.org/en/latest/api/config.html</span>
+</span><span data-line="261"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="262">
+</span><span data-line="263">    <span class="n">script_config</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;alembic.ini&quot;</span>
+</span><span data-line="264"><span class="w">    </span><span class="sd">&quot;&quot;&quot;A path to the Alembic configuration file such as ``alembic.ini``.  If left unset, the default configuration</span>
+</span><span data-line="265"><span class="sd">    will be used.</span>
+</span><span data-line="266"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="267">    <span class="n">version_table_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;alembic_versions&quot;</span>
+</span><span data-line="268"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure the name of the table used to hold the applied alembic revisions.</span>
+</span><span data-line="269"><span class="sd">    Defaults to ``alembic_versions``.</span>
+</span><span data-line="270"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="271">    <span class="n">version_table_schema</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="272"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure the schema to use for the alembic revisions revisions.</span>
+</span><span data-line="273"><span class="sd">    If unset, it defaults to connection&#39;s default schema.&quot;&quot;&quot;</span>
+</span><span data-line="274">    <span class="n">script_location</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;migrations&quot;</span>
+</span><span data-line="275"><span class="w">    </span><span class="sd">&quot;&quot;&quot;A path to save generated migrations.</span>
+</span><span data-line="276"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="277">    <span class="n">target_metadata</span><span class="p">:</span> <span class="n">MetaData</span> <span class="o">=</span> <span class="n">orm_registry</span><span class="o">.</span><span class="n">metadata</span>
+</span><span data-line="278"><span class="w">    </span><span class="sd">&quot;&quot;&quot;:class:`sqlalchemy.MetaData` to use for Alembic migrations.</span>
+</span><span data-line="279">
+</span><span data-line="280"><span class="sd">    Defaults to the metadata of the :class:`sqlalchemy.orm.registry &lt;sqlalchemy.orm.registry&gt;` used by the plugin.</span>
+</span><span data-line="281"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="282">    <span class="n">user_module_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">&quot;sa.&quot;</span>
+</span><span data-line="283"><span class="w">    </span><span class="sd">&quot;&quot;&quot;User module prefix.&quot;&quot;&quot;</span>
+</span><span data-line="284">    <span class="n">render_as_batch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="285"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Render as batch.&quot;&quot;&quot;</span>
+</span><span data-line="286">    <span class="n">compare_type</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="287"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare type.&quot;&quot;&quot;</span>
+</span><span data-line="288">    <span class="n">template_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">ALEMBIC_TEMPLATE_PATH</span>
+</span><span data-line="289"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Template path.&quot;&quot;&quot;</span></div>
 
 </span></pre></div>
         </article><button class="back-to-top" type="button">

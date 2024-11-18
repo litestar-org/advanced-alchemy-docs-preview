@@ -2,7 +2,7 @@
 <html lang="en" data-accent-color="amber" data-content_root="../../">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>starlette - Advanced Alchemy</title><link rel="shortcut icon" href="../../_static/favicon.svg"/><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="mixins" href="../mixins/index.html" /><link rel="prev" title="sanic" href="sanic.html" /><script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>starlette - Advanced Alchemy</title><link rel="shortcut icon" href="../../_static/favicon.svg"/><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="alembic" href="../alembic/index.html" /><link rel="prev" title="sanic" href="sanic.html" /><script>
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=397bb51e" />
@@ -149,20 +149,18 @@ data-aria-dark="Switch to auto color mode">
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../getting-started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage/index.html">Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../usage/placeholder.html">Placeholder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage/modeling.html">Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage/repositories.html">Repositories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage/services.html">Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage/utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage/frameworks/litestar.html">Litestar Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage/frameworks/fastapi.html">FastAPI Integration</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../base.html">base</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../exceptions.html">exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../filters.html">filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../operations.html">operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../repository.html">repositories</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../types.html">types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../service.html">services</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utils.html">utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../alembic/index.html">alembic</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../alembic/commands.html">commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mixins/index.html">mixins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../mixins/unique.html">unique</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../config/index.html">config</a><ul>
@@ -173,6 +171,13 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l3"><a class="reference internal" href="../config/types.html">types</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../operations.html">operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../types.html">types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exceptions.html">exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html">utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../repository.html">repositories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../filters.html">filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../service.html">services</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">extensions</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="litestar/index.html">litestar</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="litestar/alembic.html">alembic</a></li>
@@ -184,8 +189,8 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">starlette</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../mixins/index.html">mixins</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../mixins/unique.html">unique</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../alembic/index.html">alembic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../alembic/commands.html">commands</a></li>
 </ul>
 </li>
 </ul>
@@ -315,24 +320,24 @@ data-aria-dark="Switch to auto color mode">
 <dl class="py class">
 <dt class="sig sig-object py" id="advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.starlette.</span></span><span class="sig-name descname"><span class="pre">StarletteAdvancedAlchemy</span></span><a class="reference internal" href="../../_modules/advanced_alchemy/extensions/starlette.html#StarletteAdvancedAlchemy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code></a>[<a class="reference internal" href="../config/common.html#advanced_alchemy.config.common.EngineT" title="advanced_alchemy.config.common.EngineT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EngineT</span></code></a>, <a class="reference internal" href="../config/common.html#advanced_alchemy.config.common.SessionT" title="advanced_alchemy.config.common.SessionT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionT</span></code></a>]</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">EngineT</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionT</span></code>]</p>
 <p>AdvancedAlchemy integration for Starlette applications.</p>
 <p>This class manages SQLAlchemy sessions and engine lifecycle within a Starlette application.
 It provides middleware for handling transactions based on commit strategies.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span class="target" id="advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.params.config">¶</a> (<a class="reference internal" href="../config/asyncio.html#advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig" title="advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig"><em>advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig</em></a><em> | </em><a class="reference internal" href="../config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig" title="advanced_alchemy.config.sync.SQLAlchemySyncConfig"><em>advanced_alchemy.config.sync.SQLAlchemySyncConfig</em></a>) – The SQLAlchemy configuration.</p></li>
-<li><p><span class="target" id="advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.params.autocommit"></span><strong>autocommit</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.params.autocommit">¶</a> (<a class="reference internal" href="../config/types.html#advanced_alchemy.config.types.CommitStrategy" title="advanced_alchemy.config.types.CommitStrategy"><em>advanced_alchemy.config.types.CommitStrategy</em></a><em> | </em><em>None</em>) – The commit strategy to use. Defaults to None.</p></li>
+<li><p><span class="target" id="advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.params.config">¶</a> (<em>advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig</em><em> | </em><em>advanced_alchemy.config.sync.SQLAlchemySyncConfig</em>) – The SQLAlchemy configuration.</p></li>
+<li><p><span class="target" id="advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.params.autocommit"></span><strong>autocommit</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.params.autocommit">¶</a> (<em>advanced_alchemy.config.types.CommitStrategy</em><em> | </em><em>None</em>) – The commit strategy to use. Defaults to None.</p></li>
 <li><p><span class="target" id="advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.params.app"></span><strong>app</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.params.app">¶</a> (<em>starlette.applications.Starlette</em><em> | </em><em>None</em>) – The Starlette application instance. Defaults to None.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="litestar/plugins.html#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig" title="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig"><span class="pre">SQLAlchemyAsyncConfig</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">autocommit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../config/types.html#advanced_alchemy.config.types.CommitStrategy" title="advanced_alchemy.config.types.CommitStrategy"><span class="pre">CommitStrategy</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Starlette</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/advanced_alchemy/extensions/starlette.html#StarletteAdvancedAlchemy.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.__init__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="litestar/plugins.html#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig" title="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig"><span class="pre">SQLAlchemyAsyncConfig</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">autocommit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CommitStrategy</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Starlette</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/advanced_alchemy/extensions/starlette.html#StarletteAdvancedAlchemy.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.__init__" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig" title="advanced_alchemy.config.sync.SQLAlchemySyncConfig"><span class="pre">SQLAlchemySyncConfig</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">autocommit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../config/types.html#advanced_alchemy.config.types.CommitStrategy" title="advanced_alchemy.config.types.CommitStrategy"><span class="pre">CommitStrategy</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Starlette</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="litestar/plugins.html#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig" title="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig"><span class="pre">SQLAlchemySyncConfig</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">autocommit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CommitStrategy</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Starlette</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -385,35 +390,35 @@ It provides middleware for handling transactions based on commit strategies.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.get_engine">
-<span class="sig-name descname"><span class="pre">get_engine</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../config/common.html#advanced_alchemy.config.common.EngineT" title="advanced_alchemy.config.common.EngineT"><span class="pre">EngineT</span></a></span></span><a class="reference internal" href="../../_modules/advanced_alchemy/extensions/starlette.html#StarletteAdvancedAlchemy.get_engine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.get_engine" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_engine</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/connections.html#sqlalchemy.engine.Engine" title="(in SQLAlchemy v2.0)"><span class="pre">sqlalchemy.engine.Engine</span></a></span></span><a class="reference internal" href="../../_modules/advanced_alchemy/extensions/starlette.html#StarletteAdvancedAlchemy.get_engine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.get_engine" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves the SQLAlchemy engine from the application state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The SQLAlchemy engine instance.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../config/common.html#advanced_alchemy.config.common.EngineT" title="advanced_alchemy.config.common.EngineT">EngineT</a></p>
+<dd class="field-even"><p>EngineT</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.get_sessionmaker">
-<span class="sig-name descname"><span class="pre">get_sessionmaker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../config/common.html#advanced_alchemy.config.common.SessionT" title="advanced_alchemy.config.common.SessionT"><span class="pre">SessionT</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/advanced_alchemy/extensions/starlette.html#StarletteAdvancedAlchemy.get_sessionmaker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.get_sessionmaker" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_sessionmaker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/session_api.html#sqlalchemy.orm.Session" title="(in SQLAlchemy v2.0)"><span class="pre">sqlalchemy.orm.Session</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/advanced_alchemy/extensions/starlette.html#StarletteAdvancedAlchemy.get_sessionmaker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.get_sessionmaker" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves the sessionmaker from the application state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A callable that returns a new session instance.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Callable[[], <a class="reference internal" href="../config/common.html#advanced_alchemy.config.common.SessionT" title="advanced_alchemy.config.common.SessionT">SessionT</a>]</p>
+<dd class="field-even"><p>Callable[[], SessionT]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.get_session">
-<span class="sig-name descname"><span class="pre">get_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../config/common.html#advanced_alchemy.config.common.SessionT" title="advanced_alchemy.config.common.SessionT"><span class="pre">SessionT</span></a></span></span><a class="reference internal" href="../../_modules/advanced_alchemy/extensions/starlette.html#StarletteAdvancedAlchemy.get_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.get_session" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/session_api.html#sqlalchemy.orm.Session" title="(in SQLAlchemy v2.0)"><span class="pre">sqlalchemy.orm.Session</span></a></span></span><a class="reference internal" href="../../_modules/advanced_alchemy/extensions/starlette.html#StarletteAdvancedAlchemy.get_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.starlette.StarletteAdvancedAlchemy.get_session" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves or creates a database session for the current request.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -423,7 +428,7 @@ It provides middleware for handling transactions based on commit strategies.</p>
 <dd class="field-even"><p>The database session.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../config/common.html#advanced_alchemy.config.common.SessionT" title="advanced_alchemy.config.common.SessionT">SessionT</a></p>
+<dd class="field-odd"><p>SessionT</p>
 </dd>
 </dl>
 </dd></dl>
@@ -478,10 +483,10 @@ applies the session handler after the response is generated.</p>
         <span>Previous</span><div class="title">sanic</div></div>
     </a>
   </div><div class="navigation-next">
-    <a href="../mixins/index.html">
+    <a href="../alembic/index.html">
       <div class="page-info">
         <span>Next</span>
-        <div class="title">mixins</div>
+        <div class="title">alembic</div>
       </div>
       <i class="i-lucide chevron-right"></i>
     </a>

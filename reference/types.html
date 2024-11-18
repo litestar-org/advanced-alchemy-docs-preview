@@ -2,7 +2,7 @@
 <html lang="en" data-accent-color="amber" data-content_root="../">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>types - Advanced Alchemy</title><link rel="shortcut icon" href="../_static/favicon.svg"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="services" href="service.html" /><link rel="prev" title="repositories" href="repository.html" /><script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>types - Advanced Alchemy</title><link rel="shortcut icon" href="../_static/favicon.svg"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="exceptions" href="exceptions.html" /><link rel="prev" title="operations" href="operations.html" /><script>
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=397bb51e" />
@@ -149,20 +149,18 @@ data-aria-dark="Switch to auto color mode">
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage/index.html">Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../usage/placeholder.html">Placeholder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/modeling.html">Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/repositories.html">Repositories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/services.html">Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/frameworks/litestar.html">Litestar Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/frameworks/fastapi.html">FastAPI Integration</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="base.html">base</a></li>
-<li class="toctree-l2"><a class="reference internal" href="exceptions.html">exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="filters.html">filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="operations.html">operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="repository.html">repositories</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="service.html">services</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utils.html">utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="alembic/index.html">alembic</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="alembic/commands.html">commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mixins/index.html">mixins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mixins/unique.html">unique</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="config/index.html">config</a><ul>
@@ -173,6 +171,13 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l3"><a class="reference internal" href="config/types.html">types</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="operations.html">operations</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exceptions.html">exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repository.html">repositories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters.html">filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="service.html">services</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extensions/index.html">extensions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="extensions/litestar/index.html">litestar</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="extensions/litestar/alembic.html">alembic</a></li>
@@ -184,8 +189,8 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l3"><a class="reference internal" href="extensions/starlette.html">starlette</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="mixins/index.html">mixins</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mixins/unique.html">unique</a></li>
+<li class="toctree-l2"><a class="reference internal" href="alembic/index.html">alembic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="alembic/commands.html">commands</a></li>
 </ul>
 </li>
 </ul>
@@ -1262,7 +1267,7 @@ and <code class="xref py py-class docutils literal notranslate"><span class="pre
 
 <dl class="py method">
 <dt class="sig sig-object py" id="advanced_alchemy.types.EncryptedString.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes</span> <span class="pre">|</span> <span class="pre">~typing.Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes]</span> <span class="pre">=</span> <span class="pre">b'\xd7\xa8|\xbdC\xdb9;\x0b7\x18o\xa5R\xfa\xd5L\x97\xf9R\x89\xfe\xbf\xf8+S\xe3\xb4\x1a\x99\x1d\xe7'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend:</span> <span class="pre">type[~advanced_alchemy.types.encrypted_string.EncryptionBackend]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'advanced_alchemy.types.encrypted_string.FernetBackend'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs:</span> <span class="pre">~typing.Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/advanced_alchemy/types/encrypted_string.html#EncryptedString.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.EncryptedString.__init__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes</span> <span class="pre">|</span> <span class="pre">~typing.Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str</span> <span class="pre">|</span> <span class="pre">bytes]</span> <span class="pre">=</span> <span class="pre">b'\x97\xc5\xd1\xdc`\xd4\x90:mJ\xca}\t\xe6|\xbb\x13\x01\xcaQ\x9a\x07\xaa\x14ygvq\x0b\x8c2\x08'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend:</span> <span class="pre">type[~advanced_alchemy.types.encrypted_string.EncryptionBackend]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'advanced_alchemy.types.encrypted_string.FernetBackend'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs:</span> <span class="pre">~typing.Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/advanced_alchemy/types/encrypted_string.html#EncryptedString.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.EncryptedString.__init__" title="Link to this definition">¶</a></dt>
 <dd><p>Initializes the EncryptedString TypeDecorator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1808,16 +1813,16 @@ built-in rotation support.</p>
   </svg>
   <span>Back to top</span>
 </button><div class="navigation flex print:hidden"><div class="navigation-prev">
-    <a href="repository.html">
+    <a href="operations.html">
       <i class="i-lucide chevron-left"></i>
       <div class="page-info">
-        <span>Previous</span><div class="title">repositories</div></div>
+        <span>Previous</span><div class="title">operations</div></div>
     </a>
   </div><div class="navigation-next">
-    <a href="service.html">
+    <a href="exceptions.html">
       <div class="page-info">
         <span>Next</span>
-        <div class="title">services</div>
+        <div class="title">exceptions</div>
       </div>
       <i class="i-lucide chevron-right"></i>
     </a>
