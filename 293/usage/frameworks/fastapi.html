@@ -290,8 +290,16 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="8">    <span class="n">session_config</span><span class="o">=</span><span class="n">session_config</span><span class="p">,</span>
 </span><span data-line="9">    <span class="n">create_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 </span><span data-line="10"><span class="p">)</span>
-</span><span data-line="11"><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">on_startup</span><span class="o">=</span><span class="p">[</span><span class="n">on_startup</span><span class="p">])</span>
-</span><span data-line="12"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">StarletteAdvancedAlchemy</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">sqlalchemy_config</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">)</span>
+</span><span data-line="11">
+</span><span data-line="12"><span class="k">async</span> <span class="k">def</span> <span class="nf">on_startup</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="13"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes the database.&quot;&quot;&quot;</span>
+</span><span data-line="14">    <span class="n">metadata</span> <span class="o">=</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">or</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">alembic_config</span><span class="o">.</span><span class="n">target_metadata</span>
+</span><span data-line="15">    <span class="k">if</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">create_all</span><span class="p">:</span>
+</span><span data-line="16">        <span class="k">async</span> <span class="k">with</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+</span><span data-line="17">            <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">run_sync</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">)</span>
+</span><span data-line="18">
+</span><span data-line="19"><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">on_startup</span><span class="o">=</span><span class="p">[</span><span class="n">on_startup</span><span class="p">])</span>
+</span><span data-line="20"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">StarletteAdvancedAlchemy</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">sqlalchemy_config</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">)</span>
 </span></pre></div>
 </div>
 </section>

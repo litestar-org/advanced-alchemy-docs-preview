@@ -222,7 +222,13 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#repository-and-service-layer">Repository and Service Layer</a></li>
 <li><a class="reference internal" href="#controllers">Controllers</a></li>
 <li><a class="reference internal" href="#application-configuration">Application Configuration</a></li>
-<li><a class="reference internal" href="#database-migrations">Database Migrations</a></li>
+<li><a class="reference internal" href="#database-migrations">Database Migrations</a><ul>
+<li><a class="reference internal" href="#command-list">Command List</a></li>
+<li><a class="reference internal" href="#initializing-a-new-project">Initializing a new project</a></li>
+<li><a class="reference internal" href="#generate-new-migrations">Generate New Migrations</a></li>
+<li><a class="reference internal" href="#upgrading-a-database">Upgrading a Database</a></li>
+</ul>
+</li>
 </ul>
 </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
   data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
@@ -599,20 +605,74 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </section>
 <section id="database-migrations">
 <h2>Database Migrations<a class="headerlink" href="#database-migrations" title="Link to this heading">¶</a></h2>
-<p>Advanced Alchemy integrates with Litestar’s CLI to provide database migration tools powered by Alembic:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># Initialize migrations directory</span>
-</span><span data-line="2">litestar<span class="w"> </span>database<span class="w"> </span>init<span class="w"> </span>./migrations
-</span><span data-line="3">
-</span><span data-line="4"><span class="c1"># Create a new migration</span>
-</span><span data-line="5">litestar<span class="w"> </span>database<span class="w"> </span>make-migrations
-</span><span data-line="6">
-</span><span data-line="7"><span class="c1"># Apply migrations</span>
-</span><span data-line="8">litestar<span class="w"> </span>database<span class="w"> </span>upgrade
-</span><span data-line="9">
-</span><span data-line="10"><span class="c1"># Start the application</span>
-</span><span data-line="11">litestar<span class="w"> </span>run
+<p>Advanced Alchemy integrates with Litestar’s CLI to provide database migration tools powered by Alembic.  All alembic commands are integrated directly into the Litestar CLI.</p>
+<section id="command-list">
+<h3>Command List<a class="headerlink" href="#command-list" title="Link to this heading">¶</a></h3>
+<p>To get a listing of available commands, run the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">litestar<span class="w"> </span>database
 </span></pre></div>
 </div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">Usage:<span class="w"> </span>app<span class="w"> </span>database<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+</span><span data-line="2">
+</span><span data-line="3">Manage<span class="w"> </span>SQLAlchemy<span class="w"> </span>database<span class="w"> </span>components.
+</span><span data-line="4">
+</span><span data-line="5">╭─<span class="w"> </span>Options<span class="w"> </span>────────────────────────────────────────────────────────────────────╮
+</span><span data-line="6">│<span class="w"> </span>--help<span class="w">  </span>-h<span class="w">    </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span>exit.<span class="w">                                    </span>│
+</span><span data-line="7">╰──────────────────────────────────────────────────────────────────────────────╯
+</span><span data-line="8">╭─<span class="w"> </span>Commands<span class="w"> </span>───────────────────────────────────────────────────────────────────╮
+</span><span data-line="9">│<span class="w"> </span>downgrade<span class="w">              </span>Downgrade<span class="w"> </span>database<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span>specific<span class="w"> </span>revision.<span class="w">            </span>│
+</span><span data-line="10">│<span class="w"> </span>drop-all<span class="w">               </span>Drop<span class="w"> </span>all<span class="w"> </span>tables<span class="w"> </span>from<span class="w"> </span>the<span class="w"> </span>database.<span class="w">                    </span>│
+</span><span data-line="11">│<span class="w"> </span>dump-data<span class="w">              </span>Dump<span class="w"> </span>specified<span class="w"> </span>tables<span class="w"> </span>from<span class="w"> </span>the<span class="w"> </span>database<span class="w"> </span>to<span class="w"> </span>JSON<span class="w">       </span>│
+</span><span data-line="12">│<span class="w">                        </span>files.<span class="w">                                                </span>│
+</span><span data-line="13">│<span class="w"> </span>init<span class="w">                   </span>Initialize<span class="w"> </span>migrations<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>project.<span class="w">                </span>│
+</span><span data-line="14">│<span class="w"> </span>make-migrations<span class="w">        </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>migration<span class="w"> </span>revision.<span class="w">                      </span>│
+</span><span data-line="15">│<span class="w"> </span>merge-migrations<span class="w">       </span>Merge<span class="w"> </span>multiple<span class="w"> </span>revisions<span class="w"> </span>into<span class="w"> </span>a<span class="w"> </span>single<span class="w"> </span>new<span class="w"> </span>revision.<span class="w">  </span>│
+</span><span data-line="16">│<span class="w"> </span>show-current-revision<span class="w">  </span>Shows<span class="w"> </span>the<span class="w"> </span>current<span class="w"> </span>revision<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>database.<span class="w">          </span>│
+</span><span data-line="17">│<span class="w"> </span>stamp-migration<span class="w">        </span>Mark<span class="w"> </span><span class="o">(</span>Stamp<span class="o">)</span><span class="w"> </span>a<span class="w"> </span>specific<span class="w"> </span>revision<span class="w"> </span>as<span class="w"> </span>current<span class="w"> </span>without<span class="w">   </span>│
+</span><span data-line="18">│<span class="w">                        </span>applying<span class="w"> </span>the<span class="w"> </span>migrations.<span class="w">                              </span>│
+</span><span data-line="19">│<span class="w"> </span>upgrade<span class="w">                </span>Upgrade<span class="w"> </span>database<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span>specific<span class="w"> </span>revision.<span class="w">              </span>│
+</span><span data-line="20">╰──────────────────────────────────────────────────────────────────────────────╯
+</span></pre></div>
+</div>
+</section>
+<section id="initializing-a-new-project">
+<h3>Initializing a new project<a class="headerlink" href="#initializing-a-new-project" title="Link to this heading">¶</a></h3>
+<p>If you would like to initial set of alembic migrations, you can easily scaffold out new templates to setup a project.</p>
+<p>Assuming that you are using the default configuration for the SQLAlchemy configuration, you can run the following.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># Initialize migrations directory</span>
+</span><span data-line="2">litestar<span class="w"> </span>database<span class="w"> </span>init<span class="w"> </span>./migrations
+</span></pre></div>
+</div>
+<p>If you use a different path than <cite>./migrations</cite>, be sure to also set this in your SQLAlchemy config.  For instance, if you’d like to use <cite>./alembic</cite>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
+</span><span data-line="2">    <span class="n">alembic_config</span><span class="o">=</span><span class="n">AlembicAsyncConfig</span><span class="p">(</span>
+</span><span data-line="3">        <span class="n">script_location</span><span class="o">=</span><span class="s2">&quot;./alembic/&quot;</span><span class="p">,</span>
+</span><span data-line="4">    <span class="p">),</span>
+</span><span data-line="5"><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>And then run the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># Initialize migrations directory</span>
+</span><span data-line="2">litestar<span class="w"> </span>database<span class="w"> </span>init<span class="w"> </span>./alembic
+</span></pre></div>
+</div>
+<p>You will now be configured to use the alternate directory for migrations.</p>
+</section>
+<section id="generate-new-migrations">
+<h3>Generate New Migrations<a class="headerlink" href="#generate-new-migrations" title="Link to this heading">¶</a></h3>
+<p>Once configured, you can run the following command to auto-generate new alembic migrations:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># Create a new migration</span>
+</span><span data-line="2">litestar<span class="w"> </span>database<span class="w"> </span>make-migrations
+</span></pre></div>
+</div>
+</section>
+<section id="upgrading-a-database">
+<h3>Upgrading a Database<a class="headerlink" href="#upgrading-a-database" title="Link to this heading">¶</a></h3>
+<p>You can upgrade a database to the latest version by running the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">litestar<span class="w"> </span>database<span class="w"> </span>upgrade
+</span></pre></div>
+</div>
+</section>
 </section>
 </section>
 
