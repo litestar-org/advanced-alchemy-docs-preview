@@ -216,6 +216,7 @@ data-aria-dark="Switch to auto color mode">
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
 <li><a class="reference internal" href="#base-classes">Base Classes</a></li>
+<li><a class="reference internal" href="#mixins">Mixins</a></li>
 <li><a class="reference internal" href="#basic-model-example">Basic Model Example</a></li>
 <li><a class="reference internal" href="#many-to-many-relationships">Many-to-Many Relationships</a></li>
 <li><a class="reference internal" href="#using-the-uniquemixin">Using the UniqueMixin</a></li>
@@ -276,10 +277,10 @@ data-aria-dark="Switch to auto color mode">
           <section id="modeling">
 <h1>Modeling<a class="headerlink" href="#modeling" title="Link to this heading">¶</a></h1>
 <p>Advanced Alchemy enhances SQLAlchemy’s modeling capabilities with production-ready base classes, mixins, and specialized types.
-This guide demonstrates building a complete domain model for a blog application, showcasing key features and best practices.</p>
+This guide demonstrates building a complete blog system with posts and tags, showcasing key features and best practices.</p>
 <section id="base-classes">
 <h2>Base Classes<a class="headerlink" href="#base-classes" title="Link to this heading">¶</a></h2>
-<p>Advanced Alchemy provides several base classes optimized for different use cases:</p>
+<p>Advanced Alchemy provides several base classes optimized for different use cases.  Any model can utilize these pre-defined declarative bases from sqlchemy.  Here’s a brief overview of the included classes:</p>
 <div class="table-wrapper colwidths-given docutils container" id="id1">
 <table class="docutils align-default" id="id1">
 <caption><span class="caption-text">Base Classes and Features</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
@@ -294,80 +295,71 @@ This guide demonstrates building a complete domain model for a blog application,
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">BigIntBase</span></code></p></td>
-<td><div class="line-block">
-<div class="line">- BIGINT primary keys for tables</div>
-</div>
-</td>
+<td><p>BIGINT primary keys for tables</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">BigIntAuditBase</span></code></p></td>
-<td><div class="line-block">
-<div class="line">- BIGINT primary keys for tables</div>
-<div class="line">- Automatic created_at/updated_at timestamps</div>
-</div>
-</td>
+<td><p>BIGINT primary keys for tables, Automatic created_at/updated_at timestamps</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDBase</span></code></p></td>
-<td><div class="line-block">
-<div class="line">- UUID primary keys</div>
-</div>
-</td>
+<td><p>UUID primary keys</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDv6Base</span></code></p></td>
-<td><div class="line-block">
-<div class="line">- Time-sortable UUIDv6 primary keys</div>
-</div>
-</td>
+<td><p>UUIDv6 primary keys</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDv7Base</span></code></p></td>
-<td><div class="line-block">
-<div class="line">- Time-sortable UUIDv7 primary keys</div>
-</div>
-</td>
+<td><p>UUIDv7 primary keys</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDAuditBase</span></code></p></td>
-<td><div class="line-block">
-<div class="line">- UUID primary keys</div>
-<div class="line">- Automatic created_at/updated_at timestamps</div>
-</div>
-</td>
+<td><p>UUID primary keys, Automatic created_at/updated_at timestamps</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDv6AuditBase</span></code></p></td>
-<td><div class="line-block">
-<div class="line">- Time-sortable UUIDv6 primary keys</div>
-<div class="line">- Automatic created_at/updated_at timestamps</div>
-</div>
-</td>
+<td><p>UUIDv6 primary keys, Automatic created_at/updated_at timestamps</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDv7AuditBase</span></code></p></td>
-<td><div class="line-block">
-<div class="line">- Time-sortable UUIDv7 primary keys</div>
-<div class="line">- Automatic created_at/updated_at timestamps</div>
-</div>
-</td>
+<td><p>Time-sortable UUIDv7 primary keys, Automatic created_at/updated_at timestamps</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NanoidBase</span></code></p></td>
-<td><div class="line-block">
-<div class="line">- Nanoid primary keys</div>
-</div>
-</td>
+<td><p>URL-friendly unique identifiers, Shorter than UUIDs, collision resistant</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NanoidAuditBase</span></code></p></td>
-<td><div class="line-block">
-<div class="line">- Nanoid primary keys</div>
-<div class="line">- Automatic created_at/updated_at timestamps</div>
-</div>
-</td>
+<td><p>URL-friendly IDs with audit timestamps, Combines Nanoid benefits with audit trails</p></td>
 </tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="mixins">
+<h2>Mixins<a class="headerlink" href="#mixins" title="Link to this heading">¶</a></h2>
+<p>Additionally, Advanced Alchemy provides mixins to enhance model functionality:</p>
+<div class="table-wrapper colwidths-given docutils container" id="id2">
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Available Mixins</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mixin</p></th>
+<th class="head"><p>Features</p></th>
+</tr>
+</thead>
+<tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SlugKey</span></code></p></td>
 <td><div class="line-block">
-<div class="line">- Adds URL-friendly slug field</div>
+<div class="line">Adds URL-friendly slug field</div>
 </div>
 </td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UniqueMixin</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">AuditColumns</span></code></p></td>
 <td><div class="line-block">
-<div class="line">- Automatic unique constraint handling</div>
-<div class="line">- Duplicate record merging</div>
+<div class="line">Automatic created_at/updated_at timestamps</div>
+<div class="line">Tracks record modifications</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UniqueMixin</span></code></p></td>
+<td><div class="line-block">
+<div class="line">Automatic Select or Create for many-to-many relationships</div>
 </div>
 </td>
 </tr>
