@@ -148,7 +148,7 @@ data-aria-dark="Switch to auto color mode">
         <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../getting-started.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../try-it.html">Test Drive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../try-it.html">Try It Out</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage/index.html">Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/modeling.html">Modeling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../usage/repositories.html">Repositories</a></li>
@@ -431,82 +431,78 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="157"><span class="sd">            data: The return from one of the service calls.</span>
 </span><span data-line="158"><span class="sd">              Type: :class:`~advanced_alchemy.repository.typing.ModelOrRowMappingT`</span>
 </span><span data-line="159"><span class="sd">            total: The total number of rows in the data.</span>
-</span><span data-line="160"><span class="sd">            filters: :class:`~advanced_alchemy.filters.StatementFilter` or :class:`sqlalchemy.sql.expression.ColumnElement` Collection of route filters.</span>
+</span><span data-line="160"><span class="sd">            filters: :class:`~advanced_alchemy.filters.StatementFilter`| :class:`sqlalchemy.sql.expression.ColumnElement` Collection of route filters.</span>
 </span><span data-line="161"><span class="sd">            schema_type: :class:`~advanced_alchemy.service.typing.ModelDTOT` Optional schema type to convert the data to</span>
 </span><span data-line="162"><span class="sd">        Returns:</span>
-</span><span data-line="163"><span class="sd">            - :class:`~advanced_alchemy.base.ModelProtocol`</span>
-</span><span data-line="164"><span class="sd">            - :class:`sqlalchemy.orm.RowMapping`</span>
-</span><span data-line="165"><span class="sd">            - :class:`~advanced_alchemy.service.pagination.OffsetPagination`</span>
-</span><span data-line="166"><span class="sd">            - :class:`msgspec.Struct`</span>
-</span><span data-line="167"><span class="sd">            - :class:`pydantic.BaseModel`</span>
-</span><span data-line="168"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="169">        <span class="k">if</span> <span class="n">filters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="170">            <span class="n">filters</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="171">        <span class="k">if</span> <span class="n">schema_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="172">            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-</span><span data-line="173">                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;ModelOrRowMappingT&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-</span><span data-line="174">            <span class="n">limit_offset</span> <span class="o">=</span> <span class="n">find_filter</span><span class="p">(</span><span class="n">LimitOffset</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">)</span>
-</span><span data-line="175">            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span data-line="176">            <span class="n">limit_offset</span> <span class="o">=</span> <span class="n">limit_offset</span> <span class="k">if</span> <span class="n">limit_offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">LimitOffset</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span data-line="177">            <span class="k">return</span> <span class="n">OffsetPagination</span><span class="p">[</span><span class="n">ModelOrRowMappingT</span><span class="p">](</span>
-</span><span data-line="178">                <span class="n">items</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;Sequence[ModelOrRowMappingT]&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">),</span>
-</span><span data-line="179">                <span class="n">limit</span><span class="o">=</span><span class="n">limit_offset</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span>
-</span><span data-line="180">                <span class="n">offset</span><span class="o">=</span><span class="n">limit_offset</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span>
-</span><span data-line="181">                <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span>
-</span><span data-line="182">            <span class="p">)</span>
-</span><span data-line="183">        <span class="k">if</span> <span class="n">MSGSPEC_INSTALLED</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">schema_type</span><span class="p">,</span> <span class="n">Struct</span><span class="p">):</span>
-</span><span data-line="184">            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-</span><span data-line="185">                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>
-</span><span data-line="186">                    <span class="s2">&quot;ModelDTOT&quot;</span><span class="p">,</span>
-</span><span data-line="187">                    <span class="n">convert</span><span class="p">(</span>
-</span><span data-line="188">                        <span class="n">obj</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-</span><span data-line="189">                        <span class="nb">type</span><span class="o">=</span><span class="n">schema_type</span><span class="p">,</span>
-</span><span data-line="190">                        <span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span data-line="191">                        <span class="n">dec_hook</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span>
-</span><span data-line="192">                            <span class="n">_default_msgspec_deserializer</span><span class="p">,</span>
-</span><span data-line="193">                            <span class="n">type_decoders</span><span class="o">=</span><span class="p">[</span>
-</span><span data-line="194">                                <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">is</span> <span class="n">UUID</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">t</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">hex</span><span class="p">)),</span>
-</span><span data-line="195">                            <span class="p">],</span>
-</span><span data-line="196">                        <span class="p">),</span>
-</span><span data-line="197">                    <span class="p">),</span>
-</span><span data-line="198">                <span class="p">)</span>
-</span><span data-line="199">            <span class="n">limit_offset</span> <span class="o">=</span> <span class="n">find_filter</span><span class="p">(</span><span class="n">LimitOffset</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">)</span>
-</span><span data-line="200">            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span data-line="201">            <span class="n">limit_offset</span> <span class="o">=</span> <span class="n">limit_offset</span> <span class="k">if</span> <span class="n">limit_offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">LimitOffset</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span data-line="202">            <span class="k">return</span> <span class="n">OffsetPagination</span><span class="p">[</span><span class="n">ModelDTOT</span><span class="p">](</span>
-</span><span data-line="203">                <span class="n">items</span><span class="o">=</span><span class="n">convert</span><span class="p">(</span>
-</span><span data-line="204">                    <span class="n">obj</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-</span><span data-line="205">                    <span class="nb">type</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">schema_type</span><span class="p">],</span>  <span class="c1"># type: ignore[valid-type]</span>
-</span><span data-line="206">                    <span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span data-line="207">                    <span class="n">dec_hook</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span>
-</span><span data-line="208">                        <span class="n">_default_msgspec_deserializer</span><span class="p">,</span>
-</span><span data-line="209">                        <span class="n">type_decoders</span><span class="o">=</span><span class="p">[</span>
-</span><span data-line="210">                            <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">is</span> <span class="n">UUID</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">t</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">hex</span><span class="p">)),</span>
-</span><span data-line="211">                        <span class="p">],</span>
-</span><span data-line="212">                    <span class="p">),</span>
-</span><span data-line="213">                <span class="p">),</span>
-</span><span data-line="214">                <span class="n">limit</span><span class="o">=</span><span class="n">limit_offset</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span>
-</span><span data-line="215">                <span class="n">offset</span><span class="o">=</span><span class="n">limit_offset</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span>
-</span><span data-line="216">                <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span>
-</span><span data-line="217">            <span class="p">)</span>
-</span><span data-line="218">
-</span><span data-line="219">        <span class="k">if</span> <span class="n">PYDANTIC_INSTALLED</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">schema_type</span><span class="p">,</span> <span class="n">BaseModel</span><span class="p">):</span>
-</span><span data-line="220">            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-</span><span data-line="221">                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>
-</span><span data-line="222">                    <span class="s2">&quot;ModelDTOT&quot;</span><span class="p">,</span>
-</span><span data-line="223">                    <span class="n">get_type_adapter</span><span class="p">(</span><span class="n">schema_type</span><span class="p">)</span><span class="o">.</span><span class="n">validate_python</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-</span><span data-line="224">                <span class="p">)</span>
-</span><span data-line="225">            <span class="n">limit_offset</span> <span class="o">=</span> <span class="n">find_filter</span><span class="p">(</span><span class="n">LimitOffset</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">)</span>
-</span><span data-line="226">            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="k">if</span> <span class="n">total</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span data-line="227">            <span class="n">limit_offset</span> <span class="o">=</span> <span class="n">limit_offset</span> <span class="k">if</span> <span class="n">limit_offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">LimitOffset</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span data-line="228">            <span class="k">return</span> <span class="n">OffsetPagination</span><span class="p">[</span><span class="n">ModelDTOT</span><span class="p">](</span>
-</span><span data-line="229">                <span class="n">items</span><span class="o">=</span><span class="n">get_type_adapter</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">schema_type</span><span class="p">])</span><span class="o">.</span><span class="n">validate_python</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore[valid-type] # pyright: ignore[reportUnknownArgumentType]</span>
-</span><span data-line="230">                <span class="n">limit</span><span class="o">=</span><span class="n">limit_offset</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span>
-</span><span data-line="231">                <span class="n">offset</span><span class="o">=</span><span class="n">limit_offset</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span>
-</span><span data-line="232">                <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span>
-</span><span data-line="233">            <span class="p">)</span>
-</span><span data-line="234">        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;`schema_type` should be a valid Pydantic or Msgspec schema&quot;</span>
-</span><span data-line="235">        <span class="k">raise</span> <span class="n">AdvancedAlchemyError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+</span><span data-line="163"><span class="sd">            - :class:`~advanced_alchemy.base.ModelProtocol` | :class:`sqlalchemy.orm.RowMapping` | :class:`~advanced_alchemy.service.pagination.OffsetPagination` | :class:`msgspec.Struct` | :class:`pydantic.BaseModel`</span>
+</span><span data-line="164"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="165">        <span class="k">if</span> <span class="n">filters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="166">            <span class="n">filters</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="167">        <span class="k">if</span> <span class="n">schema_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="168">            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
+</span><span data-line="169">                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;ModelOrRowMappingT&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</span><span data-line="170">            <span class="n">limit_offset</span> <span class="o">=</span> <span class="n">find_filter</span><span class="p">(</span><span class="n">LimitOffset</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">)</span>
+</span><span data-line="171">            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="172">            <span class="n">limit_offset</span> <span class="o">=</span> <span class="n">limit_offset</span> <span class="k">if</span> <span class="n">limit_offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">LimitOffset</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span data-line="173">            <span class="k">return</span> <span class="n">OffsetPagination</span><span class="p">[</span><span class="n">ModelOrRowMappingT</span><span class="p">](</span>
+</span><span data-line="174">                <span class="n">items</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;Sequence[ModelOrRowMappingT]&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">),</span>
+</span><span data-line="175">                <span class="n">limit</span><span class="o">=</span><span class="n">limit_offset</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span>
+</span><span data-line="176">                <span class="n">offset</span><span class="o">=</span><span class="n">limit_offset</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span>
+</span><span data-line="177">                <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span>
+</span><span data-line="178">            <span class="p">)</span>
+</span><span data-line="179">        <span class="k">if</span> <span class="n">MSGSPEC_INSTALLED</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">schema_type</span><span class="p">,</span> <span class="n">Struct</span><span class="p">):</span>
+</span><span data-line="180">            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
+</span><span data-line="181">                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>
+</span><span data-line="182">                    <span class="s2">&quot;ModelDTOT&quot;</span><span class="p">,</span>
+</span><span data-line="183">                    <span class="n">convert</span><span class="p">(</span>
+</span><span data-line="184">                        <span class="n">obj</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+</span><span data-line="185">                        <span class="nb">type</span><span class="o">=</span><span class="n">schema_type</span><span class="p">,</span>
+</span><span data-line="186">                        <span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="187">                        <span class="n">dec_hook</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span>
+</span><span data-line="188">                            <span class="n">_default_msgspec_deserializer</span><span class="p">,</span>
+</span><span data-line="189">                            <span class="n">type_decoders</span><span class="o">=</span><span class="p">[</span>
+</span><span data-line="190">                                <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">is</span> <span class="n">UUID</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">t</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">hex</span><span class="p">)),</span>
+</span><span data-line="191">                            <span class="p">],</span>
+</span><span data-line="192">                        <span class="p">),</span>
+</span><span data-line="193">                    <span class="p">),</span>
+</span><span data-line="194">                <span class="p">)</span>
+</span><span data-line="195">            <span class="n">limit_offset</span> <span class="o">=</span> <span class="n">find_filter</span><span class="p">(</span><span class="n">LimitOffset</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">)</span>
+</span><span data-line="196">            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="197">            <span class="n">limit_offset</span> <span class="o">=</span> <span class="n">limit_offset</span> <span class="k">if</span> <span class="n">limit_offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">LimitOffset</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span data-line="198">            <span class="k">return</span> <span class="n">OffsetPagination</span><span class="p">[</span><span class="n">ModelDTOT</span><span class="p">](</span>
+</span><span data-line="199">                <span class="n">items</span><span class="o">=</span><span class="n">convert</span><span class="p">(</span>
+</span><span data-line="200">                    <span class="n">obj</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+</span><span data-line="201">                    <span class="nb">type</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">schema_type</span><span class="p">],</span>  <span class="c1"># type: ignore[valid-type]</span>
+</span><span data-line="202">                    <span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="203">                    <span class="n">dec_hook</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span>
+</span><span data-line="204">                        <span class="n">_default_msgspec_deserializer</span><span class="p">,</span>
+</span><span data-line="205">                        <span class="n">type_decoders</span><span class="o">=</span><span class="p">[</span>
+</span><span data-line="206">                            <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">is</span> <span class="n">UUID</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">t</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">hex</span><span class="p">)),</span>
+</span><span data-line="207">                        <span class="p">],</span>
+</span><span data-line="208">                    <span class="p">),</span>
+</span><span data-line="209">                <span class="p">),</span>
+</span><span data-line="210">                <span class="n">limit</span><span class="o">=</span><span class="n">limit_offset</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span>
+</span><span data-line="211">                <span class="n">offset</span><span class="o">=</span><span class="n">limit_offset</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span>
+</span><span data-line="212">                <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span>
+</span><span data-line="213">            <span class="p">)</span>
+</span><span data-line="214">
+</span><span data-line="215">        <span class="k">if</span> <span class="n">PYDANTIC_INSTALLED</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">schema_type</span><span class="p">,</span> <span class="n">BaseModel</span><span class="p">):</span>
+</span><span data-line="216">            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
+</span><span data-line="217">                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>
+</span><span data-line="218">                    <span class="s2">&quot;ModelDTOT&quot;</span><span class="p">,</span>
+</span><span data-line="219">                    <span class="n">get_type_adapter</span><span class="p">(</span><span class="n">schema_type</span><span class="p">)</span><span class="o">.</span><span class="n">validate_python</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+</span><span data-line="220">                <span class="p">)</span>
+</span><span data-line="221">            <span class="n">limit_offset</span> <span class="o">=</span> <span class="n">find_filter</span><span class="p">(</span><span class="n">LimitOffset</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">)</span>
+</span><span data-line="222">            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="k">if</span> <span class="n">total</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="223">            <span class="n">limit_offset</span> <span class="o">=</span> <span class="n">limit_offset</span> <span class="k">if</span> <span class="n">limit_offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">LimitOffset</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span data-line="224">            <span class="k">return</span> <span class="n">OffsetPagination</span><span class="p">[</span><span class="n">ModelDTOT</span><span class="p">](</span>
+</span><span data-line="225">                <span class="n">items</span><span class="o">=</span><span class="n">get_type_adapter</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">schema_type</span><span class="p">])</span><span class="o">.</span><span class="n">validate_python</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore[valid-type] # pyright: ignore[reportUnknownArgumentType]</span>
+</span><span data-line="226">                <span class="n">limit</span><span class="o">=</span><span class="n">limit_offset</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span>
+</span><span data-line="227">                <span class="n">offset</span><span class="o">=</span><span class="n">limit_offset</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span>
+</span><span data-line="228">                <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span>
+</span><span data-line="229">            <span class="p">)</span>
+</span><span data-line="230">        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;`schema_type` should be a valid Pydantic or Msgspec schema&quot;</span>
+</span><span data-line="231">        <span class="k">raise</span> <span class="n">AdvancedAlchemyError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
 </div>
 
 </span></pre></div>
