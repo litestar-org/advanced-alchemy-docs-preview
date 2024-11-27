@@ -148,7 +148,6 @@ data-aria-dark="Switch to auto color mode">
         <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../getting-started.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../try-it.html">Try It Out</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Usage</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../modeling.html">Modeling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../repositories.html">Repositories</a></li>
@@ -280,26 +279,67 @@ data-aria-dark="Switch to auto color mode">
 <section id="basic-setup">
 <h2>Basic Setup<a class="headerlink" href="#basic-setup" title="Link to this heading">¶</a></h2>
 <p>Configure SQLAlchemy with FastAPI:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
-</span><span data-line="2"><span class="kn">from</span> <span class="nn">advanced_alchemy.config</span> <span class="kn">import</span> <span class="n">AsyncSessionConfig</span><span class="p">,</span> <span class="n">SQLAlchemyAsyncConfig</span>
-</span><span data-line="3"><span class="kn">from</span> <span class="nn">advanced_alchemy.extensions.starlette</span> <span class="kn">import</span> <span class="n">StarletteAdvancedAlchemy</span>
-</span><span data-line="4">
-</span><span data-line="5"><span class="n">session_config</span> <span class="o">=</span> <span class="n">AsyncSessionConfig</span><span class="p">(</span><span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span data-line="6"><span class="n">sqlalchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
-</span><span data-line="7">    <span class="n">connection_string</span><span class="o">=</span><span class="s2">&quot;sqlite+aiosqlite:///test.sqlite&quot;</span><span class="p">,</span>
-</span><span data-line="8">    <span class="n">session_config</span><span class="o">=</span><span class="n">session_config</span>
-</span><span data-line="9"><span class="p">)</span>
-</span><span data-line="10">
-</span><span data-line="11"><span class="k">async</span> <span class="k">def</span> <span class="nf">on_startup</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="12"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes the database.&quot;&quot;&quot;</span>
-</span><span data-line="13">    <span class="n">metadata</span> <span class="o">=</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">or</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">alembic_config</span><span class="o">.</span><span class="n">target_metadata</span>
-</span><span data-line="14">    <span class="k">if</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">create_all</span><span class="p">:</span>
-</span><span data-line="15">        <span class="k">async</span> <span class="k">with</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
-</span><span data-line="16">            <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">run_sync</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">)</span>
-</span><span data-line="17">
-</span><span data-line="18"><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">on_startup</span><span class="o">=</span><span class="p">[</span><span class="n">on_startup</span><span class="p">])</span>
-</span><span data-line="19"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">StarletteAdvancedAlchemy</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">sqlalchemy_config</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">)</span>
+<div class="sd-tab-set docutils">
+<input id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.7" for="sd-tab-item-0">
+Python 3.7+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">asynccontextmanager</span>
+</span><span data-line="2"><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">AsyncGenerator</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
+</span><span data-line="5"><span class="kn">from</span> <span class="nn">advanced_alchemy.config</span> <span class="kn">import</span> <span class="n">AsyncSessionConfig</span><span class="p">,</span> <span class="n">SQLAlchemyAsyncConfig</span>
+</span><span data-line="6"><span class="kn">from</span> <span class="nn">advanced_alchemy.extensions.starlette</span> <span class="kn">import</span> <span class="n">StarletteAdvancedAlchemy</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="n">session_config</span> <span class="o">=</span> <span class="n">AsyncSessionConfig</span><span class="p">(</span><span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="9"><span class="n">sqlalchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
+</span><span data-line="10">    <span class="n">connection_string</span><span class="o">=</span><span class="s2">&quot;sqlite+aiosqlite:///test.sqlite&quot;</span><span class="p">,</span>
+</span><span data-line="11">    <span class="n">session_config</span><span class="o">=</span><span class="n">session_config</span>
+</span><span data-line="12"><span class="p">)</span>
+</span><span data-line="13">
+</span><span data-line="14"><span class="nd">@asynccontextmanager</span>
+</span><span data-line="15"><span class="k">async</span> <span class="k">def</span> <span class="nf">on_lifespan</span><span class="p">(</span><span class="n">app</span><span class="p">:</span> <span class="n">FastAPI</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span data-line="16"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes the database.&quot;&quot;&quot;</span>
+</span><span data-line="17">    <span class="n">metadata</span> <span class="o">=</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">or</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">alembic_config</span><span class="o">.</span><span class="n">target_metadata</span>
+</span><span data-line="18">    <span class="k">if</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">create_all</span><span class="p">:</span>
+</span><span data-line="19">        <span class="k">async</span> <span class="k">with</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+</span><span data-line="20">            <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">run_sync</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">)</span>
+</span><span data-line="21">    <span class="k">yield</span>
+</span><span data-line="22">
+</span><span data-line="23"><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">lifespan</span><span class="o">=</span><span class="n">on_lifespan</span><span class="p">)</span>
+</span><span data-line="24"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">StarletteAdvancedAlchemy</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">sqlalchemy_config</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">)</span>
 </span></pre></div>
+</div>
+</div>
+<input checked="checked" id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-1">
+Python 3.9+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">asynccontextmanager</span>
+</span><span data-line="2"><span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">AsyncGenerator</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
+</span><span data-line="5"><span class="kn">from</span> <span class="nn">advanced_alchemy.config</span> <span class="kn">import</span> <span class="n">AsyncSessionConfig</span><span class="p">,</span> <span class="n">SQLAlchemyAsyncConfig</span>
+</span><span data-line="6"><span class="kn">from</span> <span class="nn">advanced_alchemy.extensions.starlette</span> <span class="kn">import</span> <span class="n">StarletteAdvancedAlchemy</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="n">session_config</span> <span class="o">=</span> <span class="n">AsyncSessionConfig</span><span class="p">(</span><span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="9"><span class="n">sqlalchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
+</span><span data-line="10">    <span class="n">connection_string</span><span class="o">=</span><span class="s2">&quot;sqlite+aiosqlite:///test.sqlite&quot;</span><span class="p">,</span>
+</span><span data-line="11">    <span class="n">session_config</span><span class="o">=</span><span class="n">session_config</span>
+</span><span data-line="12"><span class="p">)</span>
+</span><span data-line="13">
+</span><span data-line="14"><span class="nd">@asynccontextmanager</span>
+</span><span data-line="15"><span class="k">async</span> <span class="k">def</span> <span class="nf">on_lifespan</span><span class="p">(</span><span class="n">app</span><span class="p">:</span> <span class="n">FastAPI</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span data-line="16"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes the database.&quot;&quot;&quot;</span>
+</span><span data-line="17">    <span class="n">metadata</span> <span class="o">=</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">or</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">alembic_config</span><span class="o">.</span><span class="n">target_metadata</span>
+</span><span data-line="18">    <span class="k">if</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">create_all</span><span class="p">:</span>
+</span><span data-line="19">        <span class="k">async</span> <span class="k">with</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+</span><span data-line="20">            <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">run_sync</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">)</span>
+</span><span data-line="21">    <span class="k">yield</span>
+</span><span data-line="22">
+</span><span data-line="23"><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">lifespan</span><span class="o">=</span><span class="n">on_lifespan</span><span class="p">)</span>
+</span><span data-line="24"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">StarletteAdvancedAlchemy</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">sqlalchemy_config</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
 </div>
 </section>
 <section id="models-and-schemas">
@@ -347,8 +387,8 @@ data-aria-dark="Switch to auto color mode">
 <h2>Repository and Service<a class="headerlink" href="#repository-and-service" title="Link to this heading">¶</a></h2>
 <p>Create repository and service classes:</p>
 <div class="sd-tab-set docutils">
-<input id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.7" for="sd-tab-item-0">
+<input id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.7" for="sd-tab-item-2">
 Python 3.7+</label><div class="sd-tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span> <span class="nn">sqlalchemy.ext.asyncio</span> <span class="kn">import</span> <span class="n">AsyncSession</span>
 </span><span data-line="2"><span class="kn">from</span> <span class="nn">advanced_alchemy.repository</span> <span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepository</span>
@@ -372,8 +412,8 @@ Python 3.7+</label><div class="sd-tab-content docutils">
 </span></pre></div>
 </div>
 </div>
-<input checked="checked" id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-1">
+<input checked="checked" id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-3">
 Python 3.9+</label><div class="sd-tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span> <span class="nn">sqlalchemy.ext.asyncio</span> <span class="kn">import</span> <span class="n">AsyncSession</span>
 </span><span data-line="2"><span class="kn">from</span> <span class="nn">advanced_alchemy.repository</span> <span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepository</span>
