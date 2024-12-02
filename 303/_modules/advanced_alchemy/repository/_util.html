@@ -380,238 +380,242 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="108">    <span class="n">default_options_have_wildcards</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 </span><span data-line="109">    <span class="n">merge_with_default</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 </span><span data-line="110">    <span class="n">inherit_lazy_relationships</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span data-line="111"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">_AbstractLoad</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
-</span><span data-line="112"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate SQLAlchemy loader options for eager loading relationships.</span>
-</span><span data-line="113">
-</span><span data-line="114"><span class="sd">    Args:</span>
-</span><span data-line="115"><span class="sd">        loader_options :class:`~advanced_alchemy.repository.typing.LoadSpec`|:class:`None`  Specification for how to load relationships. Can be:</span>
-</span><span data-line="116"><span class="sd">            - None: Use defaults</span>
-</span><span data-line="117"><span class="sd">            - :class:`sqlalchemy.orm.strategy_options._AbstractLoad`: Direct SQLAlchemy loader option</span>
-</span><span data-line="118"><span class="sd">            - :class:`sqlalchemy.orm.InstrumentedAttribute`: Model relationship attribute</span>
-</span><span data-line="119"><span class="sd">            - :class:`sqlalchemy.orm.RelationshipProperty`: SQLAlchemy relationship</span>
-</span><span data-line="120"><span class="sd">            - str: &quot;*&quot; for wildcard loading</span>
-</span><span data-line="121"><span class="sd">            - :class:`typing.Sequence` of the above</span>
-</span><span data-line="122"><span class="sd">        default_loader_options: :class:`typing.Sequence` of :class:`sqlalchemy.orm.strategy_options._AbstractLoad` loader options to start with.</span>
-</span><span data-line="123"><span class="sd">        default_options_have_wildcards: Whether the default options contain wildcards.</span>
-</span><span data-line="124"><span class="sd">        merge_with_default: Whether to merge the default options with the loader options.</span>
-</span><span data-line="125"><span class="sd">        inherit_lazy_relationships: Whether to inherit the ``lazy`` configuration from the model&#39;s relationships.</span>
-</span><span data-line="126">
-</span><span data-line="127"><span class="sd">    Returns:</span>
-</span><span data-line="128"><span class="sd">        tuple[:class:`list`[:class:`sqlalchemy.orm.strategy_options._AbstractLoad`], bool]: A tuple containing:</span>
-</span><span data-line="129"><span class="sd">            - :class:`list` of :class:`sqlalchemy.orm.strategy_options._AbstractLoad` SQLAlchemy loader option objects</span>
-</span><span data-line="130"><span class="sd">            - Boolean indicating if any wildcard loaders are present</span>
-</span><span data-line="131"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="132">    <span class="n">loads</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">_AbstractLoad</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="133">    <span class="k">if</span> <span class="ow">not</span> <span class="n">inherit_lazy_relationships</span><span class="p">:</span>
-</span><span data-line="134">        <span class="n">loads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">noload</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">))</span>
-</span><span data-line="135">    <span class="k">if</span> <span class="n">merge_with_default</span> <span class="ow">and</span> <span class="n">default_loader_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="136">        <span class="n">loads</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">default_loader_options</span><span class="p">)</span>
-</span><span data-line="137">    <span class="n">options_have_wildcards</span> <span class="o">=</span> <span class="n">default_options_have_wildcards</span>
-</span><span data-line="138">    <span class="k">if</span> <span class="n">loader_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="139">        <span class="k">return</span> <span class="p">(</span><span class="n">loads</span><span class="p">,</span> <span class="n">options_have_wildcards</span><span class="p">)</span>
-</span><span data-line="140">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loader_options</span><span class="p">,</span> <span class="n">_AbstractLoad</span><span class="p">):</span>
-</span><span data-line="141">        <span class="k">return</span> <span class="p">([</span><span class="n">loader_options</span><span class="p">],</span> <span class="n">options_have_wildcards</span><span class="p">)</span>
-</span><span data-line="142">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loader_options</span><span class="p">,</span> <span class="n">InstrumentedAttribute</span><span class="p">):</span>
-</span><span data-line="143">        <span class="n">loader_options</span> <span class="o">=</span> <span class="p">[</span><span class="n">loader_options</span><span class="o">.</span><span class="n">property</span><span class="p">]</span>
-</span><span data-line="144">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loader_options</span><span class="p">,</span> <span class="n">RelationshipProperty</span><span class="p">):</span>
-</span><span data-line="145">        <span class="n">class_</span> <span class="o">=</span> <span class="n">loader_options</span><span class="o">.</span><span class="n">class_attribute</span>
-</span><span data-line="146">        <span class="k">return</span> <span class="p">(</span>
-</span><span data-line="147">            <span class="p">[</span><span class="n">selectinload</span><span class="p">(</span><span class="n">class_</span><span class="p">)]</span>
-</span><span data-line="148">            <span class="k">if</span> <span class="n">loader_options</span><span class="o">.</span><span class="n">uselist</span>
-</span><span data-line="149">            <span class="k">else</span> <span class="p">[</span><span class="n">joinedload</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="n">innerjoin</span><span class="o">=</span><span class="n">loader_options</span><span class="o">.</span><span class="n">innerjoin</span><span class="p">)],</span>
-</span><span data-line="150">            <span class="n">options_have_wildcards</span> <span class="k">if</span> <span class="n">loader_options</span><span class="o">.</span><span class="n">uselist</span> <span class="k">else</span> <span class="kc">True</span><span class="p">,</span>
-</span><span data-line="151">        <span class="p">)</span>
-</span><span data-line="152">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loader_options</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">loader_options</span> <span class="o">==</span> <span class="s2">&quot;*&quot;</span><span class="p">:</span>
-</span><span data-line="153">        <span class="n">options_have_wildcards</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span data-line="154">        <span class="k">return</span> <span class="p">([</span><span class="n">joinedload</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)],</span> <span class="n">options_have_wildcards</span><span class="p">)</span>
-</span><span data-line="155">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loader_options</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-</span><span data-line="156">        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">loader_options</span><span class="p">:</span>  <span class="c1"># pyright: ignore[reportUnknownVariableType]</span>
-</span><span data-line="157">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-</span><span data-line="158">                <span class="n">load_chain</span><span class="p">,</span> <span class="n">options_have_wildcards</span> <span class="o">=</span> <span class="n">get_abstract_loader_options</span><span class="p">(</span>
-</span><span data-line="159">                    <span class="n">loader_options</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span>  <span class="c1"># pyright: ignore[reportUnknownArgumentType]</span>
-</span><span data-line="160">                    <span class="n">default_options_have_wildcards</span><span class="o">=</span><span class="n">options_have_wildcards</span><span class="p">,</span>
-</span><span data-line="161">                    <span class="n">inherit_lazy_relationships</span><span class="o">=</span><span class="n">inherit_lazy_relationships</span><span class="p">,</span>
-</span><span data-line="162">                    <span class="n">merge_with_default</span><span class="o">=</span><span class="n">merge_with_default</span><span class="p">,</span>
-</span><span data-line="163">                <span class="p">)</span>
-</span><span data-line="164">                <span class="n">loader</span> <span class="o">=</span> <span class="n">load_chain</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</span><span data-line="165">                <span class="k">for</span> <span class="n">sub_load</span> <span class="ow">in</span> <span class="n">load_chain</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-</span><span data-line="166">                    <span class="n">loader</span> <span class="o">=</span> <span class="n">sub_load</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">loader</span><span class="p">)</span>
-</span><span data-line="167">                <span class="n">loads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loader</span><span class="p">)</span>
-</span><span data-line="168">            <span class="k">else</span><span class="p">:</span>
-</span><span data-line="169">                <span class="n">load_chain</span><span class="p">,</span> <span class="n">options_have_wildcards</span> <span class="o">=</span> <span class="n">get_abstract_loader_options</span><span class="p">(</span>
-</span><span data-line="170">                    <span class="n">loader_options</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span>  <span class="c1"># pyright: ignore[reportUnknownArgumentType]</span>
-</span><span data-line="171">                    <span class="n">default_options_have_wildcards</span><span class="o">=</span><span class="n">options_have_wildcards</span><span class="p">,</span>
-</span><span data-line="172">                    <span class="n">inherit_lazy_relationships</span><span class="o">=</span><span class="n">inherit_lazy_relationships</span><span class="p">,</span>
-</span><span data-line="173">                    <span class="n">merge_with_default</span><span class="o">=</span><span class="n">merge_with_default</span><span class="p">,</span>
-</span><span data-line="174">                <span class="p">)</span>
-</span><span data-line="175">                <span class="n">loads</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">load_chain</span><span class="p">)</span>
-</span><span data-line="176">    <span class="k">return</span> <span class="p">(</span><span class="n">loads</span><span class="p">,</span> <span class="n">options_have_wildcards</span><span class="p">)</span>
-</span><span data-line="177">
-</span><span data-line="178">
+</span><span data-line="111">    <span class="n">cycle_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span data-line="112"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">_AbstractLoad</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
+</span><span data-line="113"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate SQLAlchemy loader options for eager loading relationships.</span>
+</span><span data-line="114">
+</span><span data-line="115"><span class="sd">    Args:</span>
+</span><span data-line="116"><span class="sd">        loader_options :class:`~advanced_alchemy.repository.typing.LoadSpec`|:class:`None`  Specification for how to load relationships. Can be:</span>
+</span><span data-line="117"><span class="sd">            - None: Use defaults</span>
+</span><span data-line="118"><span class="sd">            - :class:`sqlalchemy.orm.strategy_options._AbstractLoad`: Direct SQLAlchemy loader option</span>
+</span><span data-line="119"><span class="sd">            - :class:`sqlalchemy.orm.InstrumentedAttribute`: Model relationship attribute</span>
+</span><span data-line="120"><span class="sd">            - :class:`sqlalchemy.orm.RelationshipProperty`: SQLAlchemy relationship</span>
+</span><span data-line="121"><span class="sd">            - str: &quot;*&quot; for wildcard loading</span>
+</span><span data-line="122"><span class="sd">            - :class:`typing.Sequence` of the above</span>
+</span><span data-line="123"><span class="sd">        default_loader_options: :class:`typing.Sequence` of :class:`sqlalchemy.orm.strategy_options._AbstractLoad` loader options to start with.</span>
+</span><span data-line="124"><span class="sd">        default_options_have_wildcards: Whether the default options contain wildcards.</span>
+</span><span data-line="125"><span class="sd">        merge_with_default: Whether to merge the default options with the loader options.</span>
+</span><span data-line="126"><span class="sd">        inherit_lazy_relationships: Whether to inherit the ``lazy`` configuration from the model&#39;s relationships.</span>
+</span><span data-line="127"><span class="sd">        cycle_count: Number of times this function has been called recursively.</span>
+</span><span data-line="128">
+</span><span data-line="129"><span class="sd">    Returns:</span>
+</span><span data-line="130"><span class="sd">        tuple[:class:`list`[:class:`sqlalchemy.orm.strategy_options._AbstractLoad`], bool]: A tuple containing:</span>
+</span><span data-line="131"><span class="sd">            - :class:`list` of :class:`sqlalchemy.orm.strategy_options._AbstractLoad` SQLAlchemy loader option objects</span>
+</span><span data-line="132"><span class="sd">            - Boolean indicating if any wildcard loaders are present</span>
+</span><span data-line="133"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="134">    <span class="n">loads</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">_AbstractLoad</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="135">    <span class="k">if</span> <span class="n">cycle_count</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">inherit_lazy_relationships</span><span class="p">:</span>
+</span><span data-line="136">        <span class="n">loads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">noload</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">))</span>
+</span><span data-line="137">    <span class="k">if</span> <span class="n">cycle_count</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">merge_with_default</span> <span class="ow">and</span> <span class="n">default_loader_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="138">        <span class="n">loads</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">default_loader_options</span><span class="p">)</span>
+</span><span data-line="139">    <span class="n">options_have_wildcards</span> <span class="o">=</span> <span class="n">default_options_have_wildcards</span>
+</span><span data-line="140">    <span class="k">if</span> <span class="n">loader_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="141">        <span class="k">return</span> <span class="p">(</span><span class="n">loads</span><span class="p">,</span> <span class="n">options_have_wildcards</span><span class="p">)</span>
+</span><span data-line="142">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loader_options</span><span class="p">,</span> <span class="n">_AbstractLoad</span><span class="p">):</span>
+</span><span data-line="143">        <span class="k">return</span> <span class="p">([</span><span class="n">loader_options</span><span class="p">],</span> <span class="n">options_have_wildcards</span><span class="p">)</span>
+</span><span data-line="144">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loader_options</span><span class="p">,</span> <span class="n">InstrumentedAttribute</span><span class="p">):</span>
+</span><span data-line="145">        <span class="n">loader_options</span> <span class="o">=</span> <span class="p">[</span><span class="n">loader_options</span><span class="o">.</span><span class="n">property</span><span class="p">]</span>
+</span><span data-line="146">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loader_options</span><span class="p">,</span> <span class="n">RelationshipProperty</span><span class="p">):</span>
+</span><span data-line="147">        <span class="n">class_</span> <span class="o">=</span> <span class="n">loader_options</span><span class="o">.</span><span class="n">class_attribute</span>
+</span><span data-line="148">        <span class="k">return</span> <span class="p">(</span>
+</span><span data-line="149">            <span class="p">[</span><span class="n">selectinload</span><span class="p">(</span><span class="n">class_</span><span class="p">)]</span>
+</span><span data-line="150">            <span class="k">if</span> <span class="n">loader_options</span><span class="o">.</span><span class="n">uselist</span>
+</span><span data-line="151">            <span class="k">else</span> <span class="p">[</span><span class="n">joinedload</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="n">innerjoin</span><span class="o">=</span><span class="n">loader_options</span><span class="o">.</span><span class="n">innerjoin</span><span class="p">)],</span>
+</span><span data-line="152">            <span class="n">options_have_wildcards</span> <span class="k">if</span> <span class="n">loader_options</span><span class="o">.</span><span class="n">uselist</span> <span class="k">else</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="153">        <span class="p">)</span>
+</span><span data-line="154">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loader_options</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">loader_options</span> <span class="o">==</span> <span class="s2">&quot;*&quot;</span><span class="p">:</span>
+</span><span data-line="155">        <span class="n">options_have_wildcards</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="156">        <span class="k">return</span> <span class="p">([</span><span class="n">joinedload</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)],</span> <span class="n">options_have_wildcards</span><span class="p">)</span>
+</span><span data-line="157">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loader_options</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+</span><span data-line="158">        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">loader_options</span><span class="p">:</span>  <span class="c1"># pyright: ignore[reportUnknownVariableType]</span>
+</span><span data-line="159">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+</span><span data-line="160">                <span class="n">load_chain</span><span class="p">,</span> <span class="n">options_have_wildcards</span> <span class="o">=</span> <span class="n">get_abstract_loader_options</span><span class="p">(</span>
+</span><span data-line="161">                    <span class="n">loader_options</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span>  <span class="c1"># pyright: ignore[reportUnknownArgumentType]</span>
+</span><span data-line="162">                    <span class="n">default_options_have_wildcards</span><span class="o">=</span><span class="n">options_have_wildcards</span><span class="p">,</span>
+</span><span data-line="163">                    <span class="n">inherit_lazy_relationships</span><span class="o">=</span><span class="n">inherit_lazy_relationships</span><span class="p">,</span>
+</span><span data-line="164">                    <span class="n">merge_with_default</span><span class="o">=</span><span class="n">merge_with_default</span><span class="p">,</span>
+</span><span data-line="165">                    <span class="n">cycle_count</span><span class="o">=</span><span class="n">cycle_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+</span><span data-line="166">                <span class="p">)</span>
+</span><span data-line="167">                <span class="n">loader</span> <span class="o">=</span> <span class="n">load_chain</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="168">                <span class="k">for</span> <span class="n">sub_load</span> <span class="ow">in</span> <span class="n">load_chain</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+</span><span data-line="169">                    <span class="n">loader</span> <span class="o">=</span> <span class="n">sub_load</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">loader</span><span class="p">)</span>
+</span><span data-line="170">                <span class="n">loads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loader</span><span class="p">)</span>
+</span><span data-line="171">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="172">                <span class="n">load_chain</span><span class="p">,</span> <span class="n">options_have_wildcards</span> <span class="o">=</span> <span class="n">get_abstract_loader_options</span><span class="p">(</span>
+</span><span data-line="173">                    <span class="n">loader_options</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span>  <span class="c1"># pyright: ignore[reportUnknownArgumentType]</span>
+</span><span data-line="174">                    <span class="n">default_options_have_wildcards</span><span class="o">=</span><span class="n">options_have_wildcards</span><span class="p">,</span>
+</span><span data-line="175">                    <span class="n">inherit_lazy_relationships</span><span class="o">=</span><span class="n">inherit_lazy_relationships</span><span class="p">,</span>
+</span><span data-line="176">                    <span class="n">merge_with_default</span><span class="o">=</span><span class="n">merge_with_default</span><span class="p">,</span>
+</span><span data-line="177">                    <span class="n">cycle_count</span><span class="o">=</span><span class="n">cycle_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+</span><span data-line="178">                <span class="p">)</span>
+</span><span data-line="179">                <span class="n">loads</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">load_chain</span><span class="p">)</span>
+</span><span data-line="180">    <span class="k">return</span> <span class="p">(</span><span class="n">loads</span><span class="p">,</span> <span class="n">options_have_wildcards</span><span class="p">)</span>
+</span><span data-line="181">
+</span><span data-line="182">
 <div class="viewcode-block" id="FilterableRepositoryProtocol">
 <a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.FilterableRepositoryProtocol">[docs]</a>
-</span><span data-line="179"><span class="k">class</span> <span class="nc">FilterableRepositoryProtocol</span><span class="p">(</span><span class="n">Protocol</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]):</span>
-</span><span data-line="180"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol defining the interface for filterable repositories.</span>
-</span><span data-line="181">
-</span><span data-line="182"><span class="sd">    This protocol defines the required attributes and methods that any</span>
-</span><span data-line="183"><span class="sd">    filterable repository implementation must provide.</span>
-</span><span data-line="184">
-</span><span data-line="185"><span class="sd">    Type Parameters:</span>
-</span><span data-line="186"><span class="sd">        ModelT: :class:`~advanced_alchemy.base.ModelProtocol` The SQLAlchemy model type this repository handles.</span>
-</span><span data-line="187">
-</span><span data-line="188"><span class="sd">    Attributes:</span>
-</span><span data-line="189"><span class="sd">        model_type: :class:`~advanced_alchemy.base.ModelProtocol` The SQLAlchemy model class this repository manages.</span>
-</span><span data-line="190"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="183"><span class="k">class</span> <span class="nc">FilterableRepositoryProtocol</span><span class="p">(</span><span class="n">Protocol</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]):</span>
+</span><span data-line="184"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol defining the interface for filterable repositories.</span>
+</span><span data-line="185">
+</span><span data-line="186"><span class="sd">    This protocol defines the required attributes and methods that any</span>
+</span><span data-line="187"><span class="sd">    filterable repository implementation must provide.</span>
+</span><span data-line="188">
+</span><span data-line="189"><span class="sd">    Type Parameters:</span>
+</span><span data-line="190"><span class="sd">        ModelT: :class:`~advanced_alchemy.base.ModelProtocol` The SQLAlchemy model type this repository handles.</span>
 </span><span data-line="191">
-</span><span data-line="192">    <span class="n">model_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]</span></div>
+</span><span data-line="192"><span class="sd">    Attributes:</span>
+</span><span data-line="193"><span class="sd">        model_type: :class:`~advanced_alchemy.base.ModelProtocol` The SQLAlchemy model class this repository manages.</span>
+</span><span data-line="194"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="195">
+</span><span data-line="196">    <span class="n">model_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]</span></div>
 
-</span><span data-line="193">
-</span><span data-line="194">
+</span><span data-line="197">
+</span><span data-line="198">
 <div class="viewcode-block" id="FilterableRepository">
 <a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.FilterableRepository">[docs]</a>
-</span><span data-line="195"><span class="k">class</span> <span class="nc">FilterableRepository</span><span class="p">(</span><span class="n">FilterableRepositoryProtocol</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]):</span>
-</span><span data-line="196"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Default implementation of a filterable repository.</span>
-</span><span data-line="197">
-</span><span data-line="198"><span class="sd">    Provides core filtering, ordering and pagination functionality for</span>
-</span><span data-line="199"><span class="sd">    SQLAlchemy models.</span>
-</span><span data-line="200">
-</span><span data-line="201"><span class="sd">    Type Parameters:</span>
-</span><span data-line="202"><span class="sd">        ModelT: :class:`~advanced_alchemy.base.ModelProtocol` The SQLAlchemy model type this repository handles.</span>
-</span><span data-line="203"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="199"><span class="k">class</span> <span class="nc">FilterableRepository</span><span class="p">(</span><span class="n">FilterableRepositoryProtocol</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]):</span>
+</span><span data-line="200"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Default implementation of a filterable repository.</span>
+</span><span data-line="201">
+</span><span data-line="202"><span class="sd">    Provides core filtering, ordering and pagination functionality for</span>
+</span><span data-line="203"><span class="sd">    SQLAlchemy models.</span>
 </span><span data-line="204">
-</span><span data-line="205">    <span class="n">model_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]</span>
-</span><span data-line="206"><span class="w">    </span><span class="sd">&quot;&quot;&quot;The SQLAlchemy model class this repository manages.&quot;&quot;&quot;</span>
-</span><span data-line="207">    <span class="n">prefer_any_dialects</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;postgresql&quot;</span><span class="p">,)</span>
-</span><span data-line="208"><span class="w">    </span><span class="sd">&quot;&quot;&quot;List of dialects that prefer to use ``field.id = ANY(:1)`` instead of ``field.id IN (...)``.&quot;&quot;&quot;</span>
-</span><span data-line="209">    <span class="n">order_by</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">OrderingPair</span><span class="p">]</span> <span class="o">|</span> <span class="n">OrderingPair</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="210"><span class="w">    </span><span class="sd">&quot;&quot;&quot;List or single :class:`~advanced_alchemy.repository.typing.OrderingPair` to use for sorting.&quot;&quot;&quot;</span>
-</span><span data-line="211">    <span class="n">_prefer_any</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span data-line="212"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Whether to prefer ANY() over IN() in queries.&quot;&quot;&quot;</span>
-</span><span data-line="213">    <span class="n">_dialect</span><span class="p">:</span> <span class="n">Dialect</span>
-</span><span data-line="214"><span class="w">    </span><span class="sd">&quot;&quot;&quot;The SQLAlchemy :class:`sqlalchemy.dialects.Dialect` being used.&quot;&quot;&quot;</span>
-</span><span data-line="215">
-</span><span data-line="216">    <span class="nd">@overload</span>
-</span><span data-line="217">    <span class="k">def</span> <span class="nf">_apply_filters</span><span class="p">(</span>
-</span><span data-line="218">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="219">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">StatementFilter</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
-</span><span data-line="220">        <span class="n">apply_pagination</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span data-line="221">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]],</span>
-</span><span data-line="222">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]:</span> <span class="o">...</span>
-</span><span data-line="223">
-</span><span data-line="224">    <span class="nd">@overload</span>
-</span><span data-line="225">    <span class="k">def</span> <span class="nf">_apply_filters</span><span class="p">(</span>
-</span><span data-line="226">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="227">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">StatementFilter</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
-</span><span data-line="228">        <span class="n">apply_pagination</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span data-line="229">        <span class="n">statement</span><span class="p">:</span> <span class="n">Delete</span><span class="p">,</span>
-</span><span data-line="230">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Delete</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="231">
-</span><span data-line="232">    <span class="nd">@overload</span>
-</span><span data-line="233">    <span class="k">def</span> <span class="nf">_apply_filters</span><span class="p">(</span>
-</span><span data-line="234">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="235">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">StatementFilter</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
-</span><span data-line="236">        <span class="n">apply_pagination</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span data-line="237">        <span class="n">statement</span><span class="p">:</span> <span class="n">ReturningDelete</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">ReturningUpdate</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]],</span>
-</span><span data-line="238">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReturningDelete</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">ReturningUpdate</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]:</span> <span class="o">...</span>
-</span><span data-line="239">
-</span><span data-line="240">    <span class="nd">@overload</span>
-</span><span data-line="241">    <span class="k">def</span> <span class="nf">_apply_filters</span><span class="p">(</span>
-</span><span data-line="242">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="243">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">StatementFilter</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
-</span><span data-line="244">        <span class="n">apply_pagination</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span data-line="245">        <span class="n">statement</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span>
-</span><span data-line="246">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Update</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="247">
-</span><span data-line="248">    <span class="k">def</span> <span class="nf">_apply_filters</span><span class="p">(</span>
-</span><span data-line="249">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="250">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">StatementFilter</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
-</span><span data-line="251">        <span class="n">apply_pagination</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span data-line="252">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementTypeT</span><span class="p">,</span>
-</span><span data-line="253">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementTypeT</span><span class="p">:</span>
-</span><span data-line="254"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply filters to a SQL statement.</span>
-</span><span data-line="255">
-</span><span data-line="256"><span class="sd">        Args:</span>
-</span><span data-line="257"><span class="sd">            *filters: Filter conditions to apply.</span>
-</span><span data-line="258"><span class="sd">            apply_pagination: Whether to apply pagination filters.</span>
-</span><span data-line="259"><span class="sd">            statement: The base SQL statement to filter.</span>
-</span><span data-line="260">
-</span><span data-line="261"><span class="sd">        Returns:</span>
-</span><span data-line="262"><span class="sd">            StatementTypeT: The filtered SQL statement.</span>
-</span><span data-line="263"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="264">        <span class="k">for</span> <span class="n">filter_</span> <span class="ow">in</span> <span class="n">filters</span><span class="p">:</span>
-</span><span data-line="265">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">PaginationFilter</span><span class="p">,)):</span>
-</span><span data-line="266">                <span class="k">if</span> <span class="n">apply_pagination</span><span class="p">:</span>
-</span><span data-line="267">                    <span class="n">statement</span> <span class="o">=</span> <span class="n">filter_</span><span class="o">.</span><span class="n">append_to_statement</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">)</span>
-</span><span data-line="268">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">InAnyFilter</span><span class="p">,)):</span>
-</span><span data-line="269">                <span class="n">statement</span> <span class="o">=</span> <span class="n">filter_</span><span class="o">.</span><span class="n">append_to_statement</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">)</span>
-</span><span data-line="270">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="n">ColumnElement</span><span class="p">):</span>
-</span><span data-line="271">                <span class="n">statement</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;StatementTypeT&quot;</span><span class="p">,</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">filter_</span><span class="p">))</span>
-</span><span data-line="272">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="205"><span class="sd">    Type Parameters:</span>
+</span><span data-line="206"><span class="sd">        ModelT: :class:`~advanced_alchemy.base.ModelProtocol` The SQLAlchemy model type this repository handles.</span>
+</span><span data-line="207"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="208">
+</span><span data-line="209">    <span class="n">model_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]</span>
+</span><span data-line="210"><span class="w">    </span><span class="sd">&quot;&quot;&quot;The SQLAlchemy model class this repository manages.&quot;&quot;&quot;</span>
+</span><span data-line="211">    <span class="n">prefer_any_dialects</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;postgresql&quot;</span><span class="p">,)</span>
+</span><span data-line="212"><span class="w">    </span><span class="sd">&quot;&quot;&quot;List of dialects that prefer to use ``field.id = ANY(:1)`` instead of ``field.id IN (...)``.&quot;&quot;&quot;</span>
+</span><span data-line="213">    <span class="n">order_by</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">OrderingPair</span><span class="p">]</span> <span class="o">|</span> <span class="n">OrderingPair</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="214"><span class="w">    </span><span class="sd">&quot;&quot;&quot;List or single :class:`~advanced_alchemy.repository.typing.OrderingPair` to use for sorting.&quot;&quot;&quot;</span>
+</span><span data-line="215">    <span class="n">_prefer_any</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="216"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Whether to prefer ANY() over IN() in queries.&quot;&quot;&quot;</span>
+</span><span data-line="217">    <span class="n">_dialect</span><span class="p">:</span> <span class="n">Dialect</span>
+</span><span data-line="218"><span class="w">    </span><span class="sd">&quot;&quot;&quot;The SQLAlchemy :class:`sqlalchemy.dialects.Dialect` being used.&quot;&quot;&quot;</span>
+</span><span data-line="219">
+</span><span data-line="220">    <span class="nd">@overload</span>
+</span><span data-line="221">    <span class="k">def</span> <span class="nf">_apply_filters</span><span class="p">(</span>
+</span><span data-line="222">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="223">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">StatementFilter</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
+</span><span data-line="224">        <span class="n">apply_pagination</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="225">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]],</span>
+</span><span data-line="226">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]:</span> <span class="o">...</span>
+</span><span data-line="227">
+</span><span data-line="228">    <span class="nd">@overload</span>
+</span><span data-line="229">    <span class="k">def</span> <span class="nf">_apply_filters</span><span class="p">(</span>
+</span><span data-line="230">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="231">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">StatementFilter</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
+</span><span data-line="232">        <span class="n">apply_pagination</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="233">        <span class="n">statement</span><span class="p">:</span> <span class="n">Delete</span><span class="p">,</span>
+</span><span data-line="234">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Delete</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="235">
+</span><span data-line="236">    <span class="nd">@overload</span>
+</span><span data-line="237">    <span class="k">def</span> <span class="nf">_apply_filters</span><span class="p">(</span>
+</span><span data-line="238">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="239">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">StatementFilter</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
+</span><span data-line="240">        <span class="n">apply_pagination</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="241">        <span class="n">statement</span><span class="p">:</span> <span class="n">ReturningDelete</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">ReturningUpdate</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]],</span>
+</span><span data-line="242">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReturningDelete</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]</span> <span class="o">|</span> <span class="n">ReturningUpdate</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]]:</span> <span class="o">...</span>
+</span><span data-line="243">
+</span><span data-line="244">    <span class="nd">@overload</span>
+</span><span data-line="245">    <span class="k">def</span> <span class="nf">_apply_filters</span><span class="p">(</span>
+</span><span data-line="246">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="247">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">StatementFilter</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
+</span><span data-line="248">        <span class="n">apply_pagination</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="249">        <span class="n">statement</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span>
+</span><span data-line="250">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Update</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="251">
+</span><span data-line="252">    <span class="k">def</span> <span class="nf">_apply_filters</span><span class="p">(</span>
+</span><span data-line="253">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="254">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">StatementFilter</span> <span class="o">|</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
+</span><span data-line="255">        <span class="n">apply_pagination</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="256">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementTypeT</span><span class="p">,</span>
+</span><span data-line="257">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementTypeT</span><span class="p">:</span>
+</span><span data-line="258"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply filters to a SQL statement.</span>
+</span><span data-line="259">
+</span><span data-line="260"><span class="sd">        Args:</span>
+</span><span data-line="261"><span class="sd">            *filters: Filter conditions to apply.</span>
+</span><span data-line="262"><span class="sd">            apply_pagination: Whether to apply pagination filters.</span>
+</span><span data-line="263"><span class="sd">            statement: The base SQL statement to filter.</span>
+</span><span data-line="264">
+</span><span data-line="265"><span class="sd">        Returns:</span>
+</span><span data-line="266"><span class="sd">            StatementTypeT: The filtered SQL statement.</span>
+</span><span data-line="267"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="268">        <span class="k">for</span> <span class="n">filter_</span> <span class="ow">in</span> <span class="n">filters</span><span class="p">:</span>
+</span><span data-line="269">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">PaginationFilter</span><span class="p">,)):</span>
+</span><span data-line="270">                <span class="k">if</span> <span class="n">apply_pagination</span><span class="p">:</span>
+</span><span data-line="271">                    <span class="n">statement</span> <span class="o">=</span> <span class="n">filter_</span><span class="o">.</span><span class="n">append_to_statement</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">)</span>
+</span><span data-line="272">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="p">(</span><span class="n">InAnyFilter</span><span class="p">,)):</span>
 </span><span data-line="273">                <span class="n">statement</span> <span class="o">=</span> <span class="n">filter_</span><span class="o">.</span><span class="n">append_to_statement</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">)</span>
-</span><span data-line="274">        <span class="k">return</span> <span class="n">statement</span>
-</span><span data-line="275">
-</span><span data-line="276">    <span class="k">def</span> <span class="nf">_filter_select_by_kwargs</span><span class="p">(</span>
-</span><span data-line="277">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="278">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementTypeT</span><span class="p">,</span>
-</span><span data-line="279">        <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
-</span><span data-line="280">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementTypeT</span><span class="p">:</span>
-</span><span data-line="281"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter a statement using keyword arguments.</span>
-</span><span data-line="282">
-</span><span data-line="283"><span class="sd">        Args:</span>
-</span><span data-line="284"><span class="sd">            statement: :class:`sqlalchemy.sql.Select` The SQL statement to filter.</span>
-</span><span data-line="285"><span class="sd">            kwargs: Dictionary or iterable of tuples containing filter criteria.</span>
-</span><span data-line="286"><span class="sd">                Keys should be model attribute names, values are what to filter for.</span>
-</span><span data-line="287">
-</span><span data-line="288"><span class="sd">        Returns:</span>
-</span><span data-line="289"><span class="sd">            StatementTypeT: The filtered SQL statement.</span>
-</span><span data-line="290"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="291">        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-</span><span data-line="292">            <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
-</span><span data-line="293">            <span class="n">statement</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;StatementTypeT&quot;</span><span class="p">,</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">==</span> <span class="n">val</span><span class="p">))</span>
-</span><span data-line="294">        <span class="k">return</span> <span class="n">statement</span>
-</span><span data-line="295">
-</span><span data-line="296">    <span class="k">def</span> <span class="nf">_apply_order_by</span><span class="p">(</span>
-</span><span data-line="297">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="298">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementTypeT</span><span class="p">,</span>
-</span><span data-line="299">        <span class="n">order_by</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
-</span><span data-line="300">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementTypeT</span><span class="p">:</span>
-</span><span data-line="301"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply ordering to a SQL statement.</span>
-</span><span data-line="302">
-</span><span data-line="303"><span class="sd">        Args:</span>
-</span><span data-line="304"><span class="sd">            statement: The SQL statement to order.</span>
-</span><span data-line="305"><span class="sd">            order_by: Ordering specification. Either a single tuple or list of tuples where:</span>
-</span><span data-line="306"><span class="sd">                - First element is the field name or :class:`sqlalchemy.orm.InstrumentedAttribute` to order by</span>
-</span><span data-line="307"><span class="sd">                - Second element is a boolean indicating descending (True) or ascending (False)</span>
-</span><span data-line="308">
-</span><span data-line="309"><span class="sd">        Returns:</span>
-</span><span data-line="310"><span class="sd">            StatementTypeT: The ordered SQL statement.</span>
-</span><span data-line="311"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="312">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">order_by</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-</span><span data-line="313">            <span class="n">order_by</span> <span class="o">=</span> <span class="p">[</span><span class="n">order_by</span><span class="p">]</span>
-</span><span data-line="314">        <span class="k">for</span> <span class="n">order_field</span><span class="p">,</span> <span class="n">is_desc</span> <span class="ow">in</span> <span class="n">order_by</span><span class="p">:</span>
-</span><span data-line="315">            <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">order_field</span><span class="p">)</span>
-</span><span data-line="316">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order_by_attribute</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">is_desc</span><span class="p">)</span>
-</span><span data-line="317">        <span class="k">return</span> <span class="n">statement</span>
-</span><span data-line="318">
-</span><span data-line="319">    <span class="k">def</span> <span class="nf">_order_by_attribute</span><span class="p">(</span>
-</span><span data-line="320">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="321">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementTypeT</span><span class="p">,</span>
-</span><span data-line="322">        <span class="n">field</span><span class="p">:</span> <span class="n">InstrumentedAttribute</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-</span><span data-line="323">        <span class="n">is_desc</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-</span><span data-line="324">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementTypeT</span><span class="p">:</span>
-</span><span data-line="325"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply ordering by a single attribute to a SQL statement.</span>
-</span><span data-line="326">
-</span><span data-line="327"><span class="sd">        Args:</span>
-</span><span data-line="328"><span class="sd">            statement: The SQL statement to order.</span>
-</span><span data-line="329"><span class="sd">            field: The model attribute to order by.</span>
-</span><span data-line="330"><span class="sd">            is_desc: Whether to order in descending (True) or ascending (False) order.</span>
-</span><span data-line="331">
-</span><span data-line="332"><span class="sd">        Returns:</span>
-</span><span data-line="333"><span class="sd">            StatementTypeT: The ordered SQL statement.</span>
-</span><span data-line="334"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="335">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">Select</span><span class="p">):</span>
-</span><span data-line="336">            <span class="k">return</span> <span class="n">statement</span>
-</span><span data-line="337">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;StatementTypeT&quot;</span><span class="p">,</span> <span class="n">statement</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">desc</span><span class="p">()</span> <span class="k">if</span> <span class="n">is_desc</span> <span class="k">else</span> <span class="n">field</span><span class="o">.</span><span class="n">asc</span><span class="p">()))</span></div>
+</span><span data-line="274">            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_</span><span class="p">,</span> <span class="n">ColumnElement</span><span class="p">):</span>
+</span><span data-line="275">                <span class="n">statement</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;StatementTypeT&quot;</span><span class="p">,</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">filter_</span><span class="p">))</span>
+</span><span data-line="276">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="277">                <span class="n">statement</span> <span class="o">=</span> <span class="n">filter_</span><span class="o">.</span><span class="n">append_to_statement</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">)</span>
+</span><span data-line="278">        <span class="k">return</span> <span class="n">statement</span>
+</span><span data-line="279">
+</span><span data-line="280">    <span class="k">def</span> <span class="nf">_filter_select_by_kwargs</span><span class="p">(</span>
+</span><span data-line="281">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="282">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementTypeT</span><span class="p">,</span>
+</span><span data-line="283">        <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+</span><span data-line="284">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementTypeT</span><span class="p">:</span>
+</span><span data-line="285"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter a statement using keyword arguments.</span>
+</span><span data-line="286">
+</span><span data-line="287"><span class="sd">        Args:</span>
+</span><span data-line="288"><span class="sd">            statement: :class:`sqlalchemy.sql.Select` The SQL statement to filter.</span>
+</span><span data-line="289"><span class="sd">            kwargs: Dictionary or iterable of tuples containing filter criteria.</span>
+</span><span data-line="290"><span class="sd">                Keys should be model attribute names, values are what to filter for.</span>
+</span><span data-line="291">
+</span><span data-line="292"><span class="sd">        Returns:</span>
+</span><span data-line="293"><span class="sd">            StatementTypeT: The filtered SQL statement.</span>
+</span><span data-line="294"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="295">        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span data-line="296">            <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+</span><span data-line="297">            <span class="n">statement</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;StatementTypeT&quot;</span><span class="p">,</span> <span class="n">statement</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">field</span> <span class="o">==</span> <span class="n">val</span><span class="p">))</span>
+</span><span data-line="298">        <span class="k">return</span> <span class="n">statement</span>
+</span><span data-line="299">
+</span><span data-line="300">    <span class="k">def</span> <span class="nf">_apply_order_by</span><span class="p">(</span>
+</span><span data-line="301">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="302">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementTypeT</span><span class="p">,</span>
+</span><span data-line="303">        <span class="n">order_by</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">InstrumentedAttribute</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span>
+</span><span data-line="304">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementTypeT</span><span class="p">:</span>
+</span><span data-line="305"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply ordering to a SQL statement.</span>
+</span><span data-line="306">
+</span><span data-line="307"><span class="sd">        Args:</span>
+</span><span data-line="308"><span class="sd">            statement: The SQL statement to order.</span>
+</span><span data-line="309"><span class="sd">            order_by: Ordering specification. Either a single tuple or list of tuples where:</span>
+</span><span data-line="310"><span class="sd">                - First element is the field name or :class:`sqlalchemy.orm.InstrumentedAttribute` to order by</span>
+</span><span data-line="311"><span class="sd">                - Second element is a boolean indicating descending (True) or ascending (False)</span>
+</span><span data-line="312">
+</span><span data-line="313"><span class="sd">        Returns:</span>
+</span><span data-line="314"><span class="sd">            StatementTypeT: The ordered SQL statement.</span>
+</span><span data-line="315"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="316">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">order_by</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</span><span data-line="317">            <span class="n">order_by</span> <span class="o">=</span> <span class="p">[</span><span class="n">order_by</span><span class="p">]</span>
+</span><span data-line="318">        <span class="k">for</span> <span class="n">order_field</span><span class="p">,</span> <span class="n">is_desc</span> <span class="ow">in</span> <span class="n">order_by</span><span class="p">:</span>
+</span><span data-line="319">            <span class="n">field</span> <span class="o">=</span> <span class="n">get_instrumented_attr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="n">order_field</span><span class="p">)</span>
+</span><span data-line="320">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order_by_attribute</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">is_desc</span><span class="p">)</span>
+</span><span data-line="321">        <span class="k">return</span> <span class="n">statement</span>
+</span><span data-line="322">
+</span><span data-line="323">    <span class="k">def</span> <span class="nf">_order_by_attribute</span><span class="p">(</span>
+</span><span data-line="324">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="325">        <span class="n">statement</span><span class="p">:</span> <span class="n">StatementTypeT</span><span class="p">,</span>
+</span><span data-line="326">        <span class="n">field</span><span class="p">:</span> <span class="n">InstrumentedAttribute</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span data-line="327">        <span class="n">is_desc</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+</span><span data-line="328">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatementTypeT</span><span class="p">:</span>
+</span><span data-line="329"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply ordering by a single attribute to a SQL statement.</span>
+</span><span data-line="330">
+</span><span data-line="331"><span class="sd">        Args:</span>
+</span><span data-line="332"><span class="sd">            statement: The SQL statement to order.</span>
+</span><span data-line="333"><span class="sd">            field: The model attribute to order by.</span>
+</span><span data-line="334"><span class="sd">            is_desc: Whether to order in descending (True) or ascending (False) order.</span>
+</span><span data-line="335">
+</span><span data-line="336"><span class="sd">        Returns:</span>
+</span><span data-line="337"><span class="sd">            StatementTypeT: The ordered SQL statement.</span>
+</span><span data-line="338"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="339">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">Select</span><span class="p">):</span>
+</span><span data-line="340">            <span class="k">return</span> <span class="n">statement</span>
+</span><span data-line="341">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;StatementTypeT&quot;</span><span class="p">,</span> <span class="n">statement</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">desc</span><span class="p">()</span> <span class="k">if</span> <span class="n">is_desc</span> <span class="k">else</span> <span class="n">field</span><span class="o">.</span><span class="n">asc</span><span class="p">()))</span></div>
 
 </span></pre></div>
         </article><button class="back-to-top" type="button">
