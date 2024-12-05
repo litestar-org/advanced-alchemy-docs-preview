@@ -179,7 +179,6 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/service.html">services</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/extensions/index.html">extensions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../reference/extensions/litestar/index.html">litestar</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../reference/extensions/litestar/alembic.html">alembic</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../reference/extensions/litestar/dto.html">dto</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../reference/extensions/litestar/plugins.html">plugin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../reference/extensions/litestar/cli.html">cli</a></li>
@@ -191,6 +190,7 @@ data-aria-dark="Switch to auto color mode">
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../reference/alembic/index.html">alembic</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../reference/alembic/commands.html">commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/alembic/utils.html">utils</a></li>
 </ul>
 </li>
 </ul>
@@ -329,36 +329,24 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="55"><span class="sd">    The configuration options are documented in the Alembic documentation.</span>
 </span><span data-line="56"><span class="sd">    &quot;&quot;&quot;</span>
 </span><span data-line="57">
-<div class="viewcode-block" id="SQLAlchemySyncConfig.__post_init__">
-<a class="viewcode-back" href="../../../reference/config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig.__post_init__">[docs]</a>
-</span><span data-line="58">    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="59"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the configuration after dataclass initialization.</span>
-</span><span data-line="60">
-</span><span data-line="61"><span class="sd">        Sets the metadata on the alembic config if provided.</span>
-</span><span data-line="62"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="63">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
-</span><span data-line="64">            <span class="bp">self</span><span class="o">.</span><span class="n">alembic_config</span><span class="o">.</span><span class="n">target_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span>
-</span><span data-line="65">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span></div>
-
-</span><span data-line="66">
 <div class="viewcode-block" id="SQLAlchemySyncConfig.get_session">
 <a class="viewcode-back" href="../../../reference/config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig.get_session">[docs]</a>
-</span><span data-line="67">    <span class="nd">@contextmanager</span>
-</span><span data-line="68">    <span class="k">def</span> <span class="nf">get_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Session</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span data-line="69"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a session context manager.</span>
-</span><span data-line="70">
-</span><span data-line="71"><span class="sd">        Yields:</span>
-</span><span data-line="72"><span class="sd">            Generator[sqlalchemy.orm.Session, None, None]: A context manager yielding an active SQLAlchemy Session.</span>
-</span><span data-line="73">
-</span><span data-line="74"><span class="sd">        Examples:</span>
-</span><span data-line="75"><span class="sd">            Using the session context manager:</span>
-</span><span data-line="76">
-</span><span data-line="77"><span class="sd">            &gt;&gt;&gt; with config.get_session() as session:</span>
-</span><span data-line="78"><span class="sd">            ...     session.execute(...)</span>
-</span><span data-line="79"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="80">        <span class="n">session_maker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_session_maker</span><span class="p">()</span>
-</span><span data-line="81">        <span class="k">with</span> <span class="n">session_maker</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-</span><span data-line="82">            <span class="k">yield</span> <span class="n">session</span></div>
+</span><span data-line="58">    <span class="nd">@contextmanager</span>
+</span><span data-line="59">    <span class="k">def</span> <span class="nf">get_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Session</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span data-line="60"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a session context manager.</span>
+</span><span data-line="61">
+</span><span data-line="62"><span class="sd">        Yields:</span>
+</span><span data-line="63"><span class="sd">            Generator[sqlalchemy.orm.Session, None, None]: A context manager yielding an active SQLAlchemy Session.</span>
+</span><span data-line="64">
+</span><span data-line="65"><span class="sd">        Examples:</span>
+</span><span data-line="66"><span class="sd">            Using the session context manager:</span>
+</span><span data-line="67">
+</span><span data-line="68"><span class="sd">            &gt;&gt;&gt; with config.get_session() as session:</span>
+</span><span data-line="69"><span class="sd">            ...     session.execute(...)</span>
+</span><span data-line="70"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="71">        <span class="n">session_maker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_session_maker</span><span class="p">()</span>
+</span><span data-line="72">        <span class="k">with</span> <span class="n">session_maker</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span data-line="73">            <span class="k">yield</span> <span class="n">session</span></div>
 </div>
 
 </span></pre></div>
