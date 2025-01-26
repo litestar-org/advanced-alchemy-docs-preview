@@ -350,259 +350,264 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="97"><span class="sd">            None</span>
 </span><span data-line="98"><span class="sd">        &quot;&quot;&quot;</span>
 </span><span data-line="99">        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_startup</span><span class="p">()</span>
-</span><span data-line="100">        <span class="k">yield</span>
-</span><span data-line="101">        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_shutdown</span><span class="p">()</span></div>
+</span><span data-line="100">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="101">            <span class="k">yield</span>
+</span><span data-line="102">        <span class="k">finally</span><span class="p">:</span>
+</span><span data-line="103">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_shutdown</span><span class="p">()</span></div>
 
-</span><span data-line="102">
-</span><span data-line="103">    <span class="nd">@property</span>
-</span><span data-line="104">    <span class="k">def</span><span class="w"> </span><span class="nf">app</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Starlette</span><span class="p">:</span>
-</span><span data-line="105"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the Starlette application instance.</span>
-</span><span data-line="106">
-</span><span data-line="107"><span class="sd">        Raises:</span>
-</span><span data-line="108"><span class="sd">            advanced_alchemy.exceptions.ImproperConfigurationError:</span>
-</span><span data-line="109"><span class="sd">                If the application is not initialized.</span>
-</span><span data-line="110">
-</span><span data-line="111"><span class="sd">        Returns:</span>
-</span><span data-line="112"><span class="sd">            starlette.applications.Starlette: The Starlette application instance.</span>
-</span><span data-line="113"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="114">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_app</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="115">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Application not initialized. Did you forget to call init_app?&quot;</span>
-</span><span data-line="116">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span data-line="117">
-</span><span data-line="118">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_app</span>
+</span><span data-line="104">
+</span><span data-line="105">    <span class="nd">@property</span>
+</span><span data-line="106">    <span class="k">def</span><span class="w"> </span><span class="nf">app</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Starlette</span><span class="p">:</span>
+</span><span data-line="107"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the Starlette application instance.</span>
+</span><span data-line="108">
+</span><span data-line="109"><span class="sd">        Raises:</span>
+</span><span data-line="110"><span class="sd">            advanced_alchemy.exceptions.ImproperConfigurationError:</span>
+</span><span data-line="111"><span class="sd">                If the application is not initialized.</span>
+</span><span data-line="112">
+</span><span data-line="113"><span class="sd">        Returns:</span>
+</span><span data-line="114"><span class="sd">            starlette.applications.Starlette: The Starlette application instance.</span>
+</span><span data-line="115"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="116">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_app</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="117">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Application not initialized. Did you forget to call init_app?&quot;</span>
+</span><span data-line="118">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 </span><span data-line="119">
+</span><span data-line="120">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_app</span>
+</span><span data-line="121">
 <div class="viewcode-block" id="AdvancedAlchemy.on_startup">
 <a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.on_startup">[docs]</a>
-</span><span data-line="120">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_startup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="121"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the database.&quot;&quot;&quot;</span>
-</span><span data-line="122">        <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
-</span><span data-line="123">            <span class="k">await</span> <span class="n">config</span><span class="o">.</span><span class="n">on_startup</span><span class="p">()</span></div>
+</span><span data-line="122">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_startup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="123"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the database.&quot;&quot;&quot;</span>
+</span><span data-line="124">        <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
+</span><span data-line="125">            <span class="k">await</span> <span class="n">config</span><span class="o">.</span><span class="n">on_startup</span><span class="p">()</span></div>
 
-</span><span data-line="124">
+</span><span data-line="126">
 <div class="viewcode-block" id="AdvancedAlchemy.on_shutdown">
 <a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.on_shutdown">[docs]</a>
-</span><span data-line="125">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="126"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the shutdown event by disposing of the SQLAlchemy engine.</span>
-</span><span data-line="127">
-</span><span data-line="128"><span class="sd">        Ensures that all connections are properly closed during application shutdown.</span>
+</span><span data-line="127">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="128"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the shutdown event by disposing of the SQLAlchemy engine.</span>
 </span><span data-line="129">
-</span><span data-line="130"><span class="sd">        Returns:</span>
-</span><span data-line="131"><span class="sd">            None</span>
-</span><span data-line="132"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="133">        <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
-</span><span data-line="134">            <span class="k">await</span> <span class="n">config</span><span class="o">.</span><span class="n">on_shutdown</span><span class="p">()</span>
-</span><span data-line="135">        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
-</span><span data-line="136">            <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="s2">&quot;advanced_alchemy&quot;</span><span class="p">)</span></div>
+</span><span data-line="130"><span class="sd">        Ensures that all connections are properly closed during application shutdown.</span>
+</span><span data-line="131">
+</span><span data-line="132"><span class="sd">        Returns:</span>
+</span><span data-line="133"><span class="sd">            None</span>
+</span><span data-line="134"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="135">        <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
+</span><span data-line="136">            <span class="k">await</span> <span class="n">config</span><span class="o">.</span><span class="n">on_shutdown</span><span class="p">()</span>
+</span><span data-line="137">        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+</span><span data-line="138">            <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="s2">&quot;advanced_alchemy&quot;</span><span class="p">)</span></div>
 
-</span><span data-line="137">
+</span><span data-line="139">
 <div class="viewcode-block" id="AdvancedAlchemy.map_configs">
 <a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.map_configs">[docs]</a>
-</span><span data-line="138">    <span class="k">def</span><span class="w"> </span><span class="nf">map_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">SQLAlchemyAsyncConfig</span><span class="p">,</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">]]:</span>  <span class="c1"># noqa: UP007</span>
-</span><span data-line="139"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Maps the configs to the session bind keys.&quot;&quot;&quot;</span>
-</span><span data-line="140">        <span class="n">mapped_configs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">SQLAlchemyAsyncConfig</span><span class="p">,</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># noqa: UP007</span>
-</span><span data-line="141">        <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
-</span><span data-line="142">            <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">bind_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="143">                <span class="n">config</span><span class="o">.</span><span class="n">bind_key</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span>
-</span><span data-line="144">            <span class="n">mapped_configs</span><span class="p">[</span><span class="n">config</span><span class="o">.</span><span class="n">bind_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span>
-</span><span data-line="145">        <span class="k">return</span> <span class="n">mapped_configs</span></div>
+</span><span data-line="140">    <span class="k">def</span><span class="w"> </span><span class="nf">map_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">SQLAlchemyAsyncConfig</span><span class="p">,</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">]]:</span>  <span class="c1"># noqa: UP007</span>
+</span><span data-line="141"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Maps the configs to the session bind keys.&quot;&quot;&quot;</span>
+</span><span data-line="142">        <span class="n">mapped_configs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">SQLAlchemyAsyncConfig</span><span class="p">,</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># noqa: UP007</span>
+</span><span data-line="143">        <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
+</span><span data-line="144">            <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">bind_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="145">                <span class="n">config</span><span class="o">.</span><span class="n">bind_key</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span>
+</span><span data-line="146">            <span class="n">mapped_configs</span><span class="p">[</span><span class="n">config</span><span class="o">.</span><span class="n">bind_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span>
+</span><span data-line="147">        <span class="k">return</span> <span class="n">mapped_configs</span></div>
 
-</span><span data-line="146">
+</span><span data-line="148">
 <div class="viewcode-block" id="AdvancedAlchemy.get_config">
 <a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.get_config">[docs]</a>
-</span><span data-line="147">    <span class="k">def</span><span class="w"> </span><span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">SQLAlchemyAsyncConfig</span><span class="p">,</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">]:</span>  <span class="c1"># noqa: UP007</span>
-</span><span data-line="148"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the config for the given key.&quot;&quot;&quot;</span>
-</span><span data-line="149">        <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="150">            <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span>
-</span><span data-line="151">        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-</span><span data-line="152">            <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bind_key</span> <span class="ow">or</span> <span class="s2">&quot;default&quot;</span>
-</span><span data-line="153">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapped_configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</span><span data-line="154">        <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="155">            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Config with key </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> not found&quot;</span>
-</span><span data-line="156">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span data-line="157">        <span class="k">return</span> <span class="n">config</span></div>
+</span><span data-line="149">    <span class="k">def</span><span class="w"> </span><span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">SQLAlchemyAsyncConfig</span><span class="p">,</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">]:</span>  <span class="c1"># noqa: UP007</span>
+</span><span data-line="150"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the config for the given key.&quot;&quot;&quot;</span>
+</span><span data-line="151">        <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="152">            <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span>
+</span><span data-line="153">        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span><span data-line="154">            <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bind_key</span> <span class="ow">or</span> <span class="s2">&quot;default&quot;</span>
+</span><span data-line="155">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapped_configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span><span data-line="156">        <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="157">            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Config with key </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> not found&quot;</span>
+</span><span data-line="158">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span data-line="159">        <span class="k">return</span> <span class="n">config</span></div>
 
-</span><span data-line="158">
+</span><span data-line="160">
 <div class="viewcode-block" id="AdvancedAlchemy.get_async_config">
 <a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.get_async_config">[docs]</a>
-</span><span data-line="159">    <span class="k">def</span><span class="w"> </span><span class="nf">get_async_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">:</span>
-</span><span data-line="160"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the async config for the given key.&quot;&quot;&quot;</span>
-</span><span data-line="161">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</span><span data-line="162">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="163">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Expected an async config, but got a sync config&quot;</span>
-</span><span data-line="164">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span data-line="165">        <span class="k">return</span> <span class="n">config</span></div>
+</span><span data-line="161">    <span class="k">def</span><span class="w"> </span><span class="nf">get_async_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">:</span>
+</span><span data-line="162"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the async config for the given key.&quot;&quot;&quot;</span>
+</span><span data-line="163">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span><span data-line="164">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="165">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Expected an async config, but got a sync config&quot;</span>
+</span><span data-line="166">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span data-line="167">        <span class="k">return</span> <span class="n">config</span></div>
 
-</span><span data-line="166">
+</span><span data-line="168">
 <div class="viewcode-block" id="AdvancedAlchemy.get_sync_config">
 <a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.get_sync_config">[docs]</a>
-</span><span data-line="167">    <span class="k">def</span><span class="w"> </span><span class="nf">get_sync_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">:</span>
-</span><span data-line="168"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the sync config for the given key.&quot;&quot;&quot;</span>
-</span><span data-line="169">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</span><span data-line="170">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="171">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Expected a sync config, but got an async config&quot;</span>
-</span><span data-line="172">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span data-line="173">        <span class="k">return</span> <span class="n">config</span></div>
+</span><span data-line="169">    <span class="k">def</span><span class="w"> </span><span class="nf">get_sync_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">:</span>
+</span><span data-line="170"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the sync config for the given key.&quot;&quot;&quot;</span>
+</span><span data-line="171">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span><span data-line="172">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="173">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Expected a sync config, but got an async config&quot;</span>
+</span><span data-line="174">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span data-line="175">        <span class="k">return</span> <span class="n">config</span></div>
 
-</span><span data-line="174">
+</span><span data-line="176">
 <div class="viewcode-block" id="AdvancedAlchemy.with_async_session">
 <a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.with_async_session">[docs]</a>
-</span><span data-line="175">    <span class="nd">@asynccontextmanager</span>
-</span><span data-line="176">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">with_async_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="n">AsyncSession</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span data-line="177"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Context manager for getting an async session.&quot;&quot;&quot;</span>
-</span><span data-line="178">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_async_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</span><span data-line="179">        <span class="k">async</span> <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-</span><span data-line="180">            <span class="k">yield</span> <span class="n">session</span></div>
+</span><span data-line="177">    <span class="nd">@asynccontextmanager</span>
+</span><span data-line="178">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">with_async_session</span><span class="p">(</span>
+</span><span data-line="179">        <span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="180">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="n">AsyncSession</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="181"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Context manager for getting an async session.&quot;&quot;&quot;</span>
+</span><span data-line="182">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_async_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span><span data-line="183">        <span class="k">async</span> <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span data-line="184">            <span class="k">yield</span> <span class="n">session</span></div>
 
-</span><span data-line="181">
+</span><span data-line="185">
 <div class="viewcode-block" id="AdvancedAlchemy.with_sync_session">
 <a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.with_sync_session">[docs]</a>
-</span><span data-line="182">    <span class="nd">@contextmanager</span>
-</span><span data-line="183">    <span class="k">def</span><span class="w"> </span><span class="nf">with_sync_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Session</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span data-line="184"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Context manager for getting a sync session.&quot;&quot;&quot;</span>
-</span><span data-line="185">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sync_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</span><span data-line="186">        <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-</span><span data-line="187">            <span class="k">yield</span> <span class="n">session</span></div>
+</span><span data-line="186">    <span class="nd">@contextmanager</span>
+</span><span data-line="187">    <span class="k">def</span><span class="w"> </span><span class="nf">with_sync_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Session</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="188"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Context manager for getting a sync session.&quot;&quot;&quot;</span>
+</span><span data-line="189">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sync_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span><span data-line="190">        <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span data-line="191">            <span class="k">yield</span> <span class="n">session</span></div>
 
-</span><span data-line="188">
-</span><span data-line="189">    <span class="nd">@overload</span>
-</span><span data-line="190">    <span class="nd">@staticmethod</span>
-</span><span data-line="191">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_session_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncSession</span><span class="p">:</span> <span class="o">...</span>
 </span><span data-line="192">
 </span><span data-line="193">    <span class="nd">@overload</span>
 </span><span data-line="194">    <span class="nd">@staticmethod</span>
-</span><span data-line="195">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_session_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="195">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_session_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncSession</span><span class="p">:</span> <span class="o">...</span>
 </span><span data-line="196">
-</span><span data-line="197">    <span class="nd">@staticmethod</span>
-</span><span data-line="198">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_session_from_request</span><span class="p">(</span>
-</span><span data-line="199">        <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">SQLAlchemyAsyncConfig</span> <span class="o">|</span> <span class="n">SQLAlchemySyncConfig</span>
-</span><span data-line="200">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span> <span class="o">|</span> <span class="n">AsyncSession</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="201"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the session for the given key.&quot;&quot;&quot;</span>
-</span><span data-line="202">        <span class="n">session</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-</span><span data-line="203">        <span class="k">if</span> <span class="n">session</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="204">            <span class="n">session</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">create_session_maker</span><span class="p">()()</span>
-</span><span data-line="205">            <span class="nb">setattr</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
-</span><span data-line="206">        <span class="k">return</span> <span class="n">session</span>
-</span><span data-line="207">
+</span><span data-line="197">    <span class="nd">@overload</span>
+</span><span data-line="198">    <span class="nd">@staticmethod</span>
+</span><span data-line="199">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_session_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="200">
+</span><span data-line="201">    <span class="nd">@staticmethod</span>
+</span><span data-line="202">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_session_from_request</span><span class="p">(</span>
+</span><span data-line="203">        <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+</span><span data-line="204">        <span class="n">config</span><span class="p">:</span> <span class="n">SQLAlchemyAsyncConfig</span> <span class="o">|</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">,</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="205">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span> <span class="o">|</span> <span class="n">AsyncSession</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="206"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the session for the given key.&quot;&quot;&quot;</span>
+</span><span data-line="207">        <span class="n">session</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="208">        <span class="k">if</span> <span class="n">session</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="209">            <span class="n">session</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">create_session_maker</span><span class="p">()()</span>
+</span><span data-line="210">            <span class="nb">setattr</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">session_key</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
+</span><span data-line="211">        <span class="k">return</span> <span class="n">session</span>
+</span><span data-line="212">
 <div class="viewcode-block" id="AdvancedAlchemy.get_session">
 <a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.get_session">[docs]</a>
-</span><span data-line="208">    <span class="k">def</span><span class="w"> </span><span class="nf">get_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span> <span class="o">|</span> <span class="n">AsyncSession</span><span class="p">:</span>
-</span><span data-line="209"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the session for the given key.&quot;&quot;&quot;</span>
-</span><span data-line="210">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</span><span data-line="211">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_session_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span></div>
-
-</span><span data-line="212">
-<div class="viewcode-block" id="AdvancedAlchemy.get_async_session">
-<a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.get_async_session">[docs]</a>
-</span><span data-line="213">    <span class="k">def</span><span class="w"> </span><span class="nf">get_async_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncSession</span><span class="p">:</span>
-</span><span data-line="214"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the async session for the given key.&quot;&quot;&quot;</span>
-</span><span data-line="215">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_async_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span><span data-line="213">    <span class="k">def</span><span class="w"> </span><span class="nf">get_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span> <span class="o">|</span> <span class="n">AsyncSession</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="214"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the session for the given key.&quot;&quot;&quot;</span>
+</span><span data-line="215">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </span><span data-line="216">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_session_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span></div>
 
 </span><span data-line="217">
-<div class="viewcode-block" id="AdvancedAlchemy.get_sync_session">
-<a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.get_sync_session">[docs]</a>
-</span><span data-line="218">    <span class="k">def</span><span class="w"> </span><span class="nf">get_sync_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span><span class="p">:</span>
-</span><span data-line="219"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the sync session for the given key.&quot;&quot;&quot;</span>
-</span><span data-line="220">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sync_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<div class="viewcode-block" id="AdvancedAlchemy.get_async_session">
+<a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.get_async_session">[docs]</a>
+</span><span data-line="218">    <span class="k">def</span><span class="w"> </span><span class="nf">get_async_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncSession</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="219"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the async session for the given key.&quot;&quot;&quot;</span>
+</span><span data-line="220">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_async_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </span><span data-line="221">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_session_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span></div>
 
 </span><span data-line="222">
+<div class="viewcode-block" id="AdvancedAlchemy.get_sync_session">
+<a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.get_sync_session">[docs]</a>
+</span><span data-line="223">    <span class="k">def</span><span class="w"> </span><span class="nf">get_sync_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="224"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the sync session for the given key.&quot;&quot;&quot;</span>
+</span><span data-line="225">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sync_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span><span data-line="226">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_session_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span></div>
+
+</span><span data-line="227">
 <div class="viewcode-block" id="AdvancedAlchemy.provide_session">
 <a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.provide_session">[docs]</a>
-</span><span data-line="223">    <span class="k">def</span><span class="w"> </span><span class="nf">provide_session</span><span class="p">(</span>
-</span><span data-line="224">        <span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="225">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Request</span><span class="p">],</span> <span class="n">Session</span> <span class="o">|</span> <span class="n">AsyncSession</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="226"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the session for the given key.&quot;&quot;&quot;</span>
-</span><span data-line="227">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</span><span data-line="228">
-</span><span data-line="229">        <span class="k">def</span><span class="w"> </span><span class="nf">_get_session</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span> <span class="o">|</span> <span class="n">AsyncSession</span><span class="p">:</span>
-</span><span data-line="230">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_session_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
-</span><span data-line="231">
-</span><span data-line="232">        <span class="k">return</span> <span class="n">_get_session</span></div>
-
+</span><span data-line="228">    <span class="k">def</span><span class="w"> </span><span class="nf">provide_session</span><span class="p">(</span>
+</span><span data-line="229">        <span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="230">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Request</span><span class="p">],</span> <span class="n">Session</span> <span class="o">|</span> <span class="n">AsyncSession</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="231"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the session for the given key.&quot;&quot;&quot;</span>
+</span><span data-line="232">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </span><span data-line="233">
+</span><span data-line="234">        <span class="k">def</span><span class="w"> </span><span class="nf">_get_session</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span> <span class="o">|</span> <span class="n">AsyncSession</span><span class="p">:</span>
+</span><span data-line="235">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_session_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+</span><span data-line="236">
+</span><span data-line="237">        <span class="k">return</span> <span class="n">_get_session</span></div>
+
+</span><span data-line="238">
 <div class="viewcode-block" id="AdvancedAlchemy.provide_async_session">
 <a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.provide_async_session">[docs]</a>
-</span><span data-line="234">    <span class="k">def</span><span class="w"> </span><span class="nf">provide_async_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Request</span><span class="p">],</span> <span class="n">AsyncSession</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="235"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the async session for the given key.&quot;&quot;&quot;</span>
-</span><span data-line="236">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_async_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</span><span data-line="237">
-</span><span data-line="238">        <span class="k">def</span><span class="w"> </span><span class="nf">_get_session</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncSession</span><span class="p">:</span>
-</span><span data-line="239">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_session_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
-</span><span data-line="240">
-</span><span data-line="241">        <span class="k">return</span> <span class="n">_get_session</span></div>
-
+</span><span data-line="239">    <span class="k">def</span><span class="w"> </span><span class="nf">provide_async_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Request</span><span class="p">],</span> <span class="n">AsyncSession</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="240"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the async session for the given key.&quot;&quot;&quot;</span>
+</span><span data-line="241">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_async_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </span><span data-line="242">
+</span><span data-line="243">        <span class="k">def</span><span class="w"> </span><span class="nf">_get_session</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncSession</span><span class="p">:</span>
+</span><span data-line="244">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_session_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+</span><span data-line="245">
+</span><span data-line="246">        <span class="k">return</span> <span class="n">_get_session</span></div>
+
+</span><span data-line="247">
 <div class="viewcode-block" id="AdvancedAlchemy.provide_sync_session">
 <a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.provide_sync_session">[docs]</a>
-</span><span data-line="243">    <span class="k">def</span><span class="w"> </span><span class="nf">provide_sync_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Request</span><span class="p">],</span> <span class="n">Session</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="244"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the sync session for the given key.&quot;&quot;&quot;</span>
-</span><span data-line="245">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sync_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</span><span data-line="246">
-</span><span data-line="247">        <span class="k">def</span><span class="w"> </span><span class="nf">_get_session</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span><span class="p">:</span>
-</span><span data-line="248">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_session_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
-</span><span data-line="249">
-</span><span data-line="250">        <span class="k">return</span> <span class="n">_get_session</span></div>
-
+</span><span data-line="248">    <span class="k">def</span><span class="w"> </span><span class="nf">provide_sync_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Request</span><span class="p">],</span> <span class="n">Session</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="249"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the sync session for the given key.&quot;&quot;&quot;</span>
+</span><span data-line="250">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sync_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </span><span data-line="251">
-<div class="viewcode-block" id="AdvancedAlchemy.get_engine">
-<a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.get_engine">[docs]</a>
-</span><span data-line="252">    <span class="k">def</span><span class="w"> </span><span class="nf">get_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Engine</span> <span class="o">|</span> <span class="n">AsyncEngine</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="253"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the engine for the given key.&quot;&quot;&quot;</span>
-</span><span data-line="254">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</span><span data-line="255">        <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span></div>
+</span><span data-line="252">        <span class="k">def</span><span class="w"> </span><span class="nf">_get_session</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span><span class="p">:</span>
+</span><span data-line="253">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_session_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+</span><span data-line="254">
+</span><span data-line="255">        <span class="k">return</span> <span class="n">_get_session</span></div>
 
 </span><span data-line="256">
-<div class="viewcode-block" id="AdvancedAlchemy.get_async_engine">
-<a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.get_async_engine">[docs]</a>
-</span><span data-line="257">    <span class="k">def</span><span class="w"> </span><span class="nf">get_async_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncEngine</span><span class="p">:</span>
-</span><span data-line="258"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the async engine for the given key.&quot;&quot;&quot;</span>
-</span><span data-line="259">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_async_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<div class="viewcode-block" id="AdvancedAlchemy.get_engine">
+<a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.get_engine">[docs]</a>
+</span><span data-line="257">    <span class="k">def</span><span class="w"> </span><span class="nf">get_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Engine</span> <span class="o">|</span> <span class="n">AsyncEngine</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="258"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the engine for the given key.&quot;&quot;&quot;</span>
+</span><span data-line="259">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </span><span data-line="260">        <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span></div>
 
 </span><span data-line="261">
-<div class="viewcode-block" id="AdvancedAlchemy.get_sync_engine">
-<a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.get_sync_engine">[docs]</a>
-</span><span data-line="262">    <span class="k">def</span><span class="w"> </span><span class="nf">get_sync_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Engine</span><span class="p">:</span>
-</span><span data-line="263"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the sync engine for the given key.&quot;&quot;&quot;</span>
-</span><span data-line="264">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sync_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<div class="viewcode-block" id="AdvancedAlchemy.get_async_engine">
+<a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.get_async_engine">[docs]</a>
+</span><span data-line="262">    <span class="k">def</span><span class="w"> </span><span class="nf">get_async_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncEngine</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="263"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the async engine for the given key.&quot;&quot;&quot;</span>
+</span><span data-line="264">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_async_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </span><span data-line="265">        <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span></div>
 
 </span><span data-line="266">
+<div class="viewcode-block" id="AdvancedAlchemy.get_sync_engine">
+<a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.get_sync_engine">[docs]</a>
+</span><span data-line="267">    <span class="k">def</span><span class="w"> </span><span class="nf">get_sync_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Engine</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="268"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the sync engine for the given key.&quot;&quot;&quot;</span>
+</span><span data-line="269">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sync_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span><span data-line="270">        <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span></div>
+
+</span><span data-line="271">
 <div class="viewcode-block" id="AdvancedAlchemy.provide_engine">
 <a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.provide_engine">[docs]</a>
-</span><span data-line="267">    <span class="k">def</span><span class="w"> </span><span class="nf">provide_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Engine</span> <span class="o">|</span> <span class="n">AsyncEngine</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="268"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the engine for the given key.&quot;&quot;&quot;</span>
-</span><span data-line="269">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</span><span data-line="270">
-</span><span data-line="271">        <span class="k">def</span><span class="w"> </span><span class="nf">_get_engine</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Engine</span> <span class="o">|</span> <span class="n">AsyncEngine</span><span class="p">:</span>
-</span><span data-line="272">            <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span>
-</span><span data-line="273">
-</span><span data-line="274">        <span class="k">return</span> <span class="n">_get_engine</span></div>
-
+</span><span data-line="272">    <span class="k">def</span><span class="w"> </span><span class="nf">provide_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Engine</span> <span class="o">|</span> <span class="n">AsyncEngine</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="273"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the engine for the given key.&quot;&quot;&quot;</span>
+</span><span data-line="274">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </span><span data-line="275">
+</span><span data-line="276">        <span class="k">def</span><span class="w"> </span><span class="nf">_get_engine</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Engine</span> <span class="o">|</span> <span class="n">AsyncEngine</span><span class="p">:</span>
+</span><span data-line="277">            <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span>
+</span><span data-line="278">
+</span><span data-line="279">        <span class="k">return</span> <span class="n">_get_engine</span></div>
+
+</span><span data-line="280">
 <div class="viewcode-block" id="AdvancedAlchemy.provide_async_engine">
 <a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.provide_async_engine">[docs]</a>
-</span><span data-line="276">    <span class="k">def</span><span class="w"> </span><span class="nf">provide_async_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">AsyncEngine</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="277"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the async engine for the given key.&quot;&quot;&quot;</span>
-</span><span data-line="278">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_async_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</span><span data-line="279">
-</span><span data-line="280">        <span class="k">def</span><span class="w"> </span><span class="nf">_get_engine</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">AsyncEngine</span><span class="p">:</span>
-</span><span data-line="281">            <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span>
-</span><span data-line="282">
-</span><span data-line="283">        <span class="k">return</span> <span class="n">_get_engine</span></div>
-
+</span><span data-line="281">    <span class="k">def</span><span class="w"> </span><span class="nf">provide_async_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">AsyncEngine</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="282"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the async engine for the given key.&quot;&quot;&quot;</span>
+</span><span data-line="283">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_async_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </span><span data-line="284">
+</span><span data-line="285">        <span class="k">def</span><span class="w"> </span><span class="nf">_get_engine</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">AsyncEngine</span><span class="p">:</span>
+</span><span data-line="286">            <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span>
+</span><span data-line="287">
+</span><span data-line="288">        <span class="k">return</span> <span class="n">_get_engine</span></div>
+
+</span><span data-line="289">
 <div class="viewcode-block" id="AdvancedAlchemy.provide_sync_engine">
 <a class="viewcode-back" href="../../../../reference/extensions/starlette/index.html#advanced_alchemy.extensions.starlette.AdvancedAlchemy.provide_sync_engine">[docs]</a>
-</span><span data-line="285">    <span class="k">def</span><span class="w"> </span><span class="nf">provide_sync_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Engine</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="286"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the sync engine for the given key.&quot;&quot;&quot;</span>
-</span><span data-line="287">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sync_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</span><span data-line="288">
-</span><span data-line="289">        <span class="k">def</span><span class="w"> </span><span class="nf">_get_engine</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Engine</span><span class="p">:</span>
-</span><span data-line="290">            <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span>
-</span><span data-line="291">
-</span><span data-line="292">        <span class="k">return</span> <span class="n">_get_engine</span></div>
+</span><span data-line="290">    <span class="k">def</span><span class="w"> </span><span class="nf">provide_sync_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Engine</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="291"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the sync engine for the given key.&quot;&quot;&quot;</span>
+</span><span data-line="292">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sync_config</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span><span data-line="293">
+</span><span data-line="294">        <span class="k">def</span><span class="w"> </span><span class="nf">_get_engine</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Engine</span><span class="p">:</span>
+</span><span data-line="295">            <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span>
+</span><span data-line="296">
+</span><span data-line="297">        <span class="k">return</span> <span class="n">_get_engine</span></div>
 </div>
 
 </span></pre></div>
