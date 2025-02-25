@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="amber" data-content_root="../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>litestar - Advanced Alchemy</title><link rel="shortcut icon" href="../../../_static/favicon.png"/><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="dto" href="dto.html" /><link rel="prev" title="Extensions" href="../index.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=397bb51e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=2831755e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_paramlinks.css" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=0e9b682d" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="litestar"/>
+<meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="/">
+      <img class="light-logo" src="../../../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
+      <img class="dark-logo" src="../../../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
+      <strong>advanced_alchemy</strong>
+    </a>
+    <div class="sy-head-nav" id="HeadNav">
+      <nav class="sy-head-links"><ul><li class="link"><a href="../../../index.html">Home</a></li>
+      <li class="link"><button type="button">
+            <span>About</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul><li><a href="../../../changelog.html">
+                <span>Changelog</span>
+                <small>All changes for Advanced Alchemy</small>
+              </a></li><li><a href="https://litestar.dev/about/organization">
+                <span>Litestar Organization</span>
+                <small>Details about the Litestar organization, the team behind Advanced Alchemy</small>
+              </a></li><li><a href="../../../releases.html">
+                <span>Releases</span>
+                <small>Explore the release process, versioning, and deprecation policy for Advanced Alchemy</small>
+              </a></li><li><a href="../../../contribution-guide.html">
+                <span>Contributing</span>
+                <small>Learn how to contribute to the Advanced Alchemy project</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file">
+                <span>Code of Conduct</span>
+                <small>Review the etiquette for interacting with the Advanced Alchemy community</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file#security-ov-file">
+                <span>Security</span>
+                <small>Overview of Advanced Alchemy's security protocols</small>
+              </a></li><li><a href="https://github.com/sponsors/Litestar-Org">Sponsor</a></li></ul>
+      </li>
+      <li class="link"><button type="button">
+            <span>Help</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul><li><a href="https://discord.gg/dSDXd4mKhp">
+                <span>Discord Help Forum</span>
+                <small>Dedicated Discord help forum</small>
+              </a></li><li><a href="https://github.com/litestar-org/advanced-alchemy/discussions">
+                <span>GitHub Discussions</span>
+                <small>GitHub Discussions</small>
+              </a></li></ul>
+      </li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="HeadNav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2 -translate-x-2"></span>
+          <span class="hamburger_3 -translate-x-1"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6"><div class="sidebar-links">
+  <ul>
+    <li><a class="icon-link" href="https://discord.gg/dSDXd4mKhp">
+  <span class="icon">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path fill="var(--accent-9)" fill-rule="evenodd" clip-rule="evenodd" d="M11 5a6 6 0 0 0-4.687 9.746c.215.27.315.62.231.954l-.514 2.058a1 1 0 0 0 1.485 1.1l2.848-1.71c.174-.104.374-.15.576-.148H13a6 6 0 0 0 0-12h-2Z"/>
+      <circle fill="white" cx="12" cy="11" r="1"/>
+      <circle fill="white" cx="9" cy="11" r="1"/>
+      <circle fill="white" cx="15" cy="11" r="1"/>
+    </svg>
+  </span>
+  <span class="text">Discussion</span>
+</a></li>
+  </ul>
+</div>
+        <div class="globaltoc" data-expand-depth="2"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../usage/index.html">Usage</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/modeling.html">Modeling</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/repositories.html">Repositories</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/services.html">Services</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/types.html">Types</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/utilities.html">Utilities</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/cli.html">Command Line Tool</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/frameworks/litestar.html">Litestar Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/frameworks/flask.html">Flask Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/frameworks/fastapi.html">FastAPI Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../base.html">base</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../mixins/index.html">mixins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../mixins/unique.html">unique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mixins/nanoid.html">nanoid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mixins/uuid.html">uuid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mixins/sentinel.html">sentinel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mixins/bigint.html">bigint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mixins/audit.html">audit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../mixins/slug.html">slug</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../config/index.html">config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/asyncio.html">asyncio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/common.html">common</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/engine.html">engine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/sync.html">sync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/types.html">types</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../operations.html">operations</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../types.html">types</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../exceptions.html">exceptions</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../utils.html">utils</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../repository.html">repositories</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../filters.html">filters</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../service.html">services</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Extensions</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">litestar</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dto.html">dto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugins.html">plugin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cli.html">cli</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../flask/index.html">flask</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sanic/index.html">sanic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../starlette/index.html">starlette</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../fastapi/index.html">fastapi</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../alembic/index.html">alembic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../alembic/commands.html">commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../alembic/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../changelog.html">0.x Changelog</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../contribution-guide.html">Contribution guide</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/search?q=user%3Alitestar-org+state%3Aopen+label%3A%22good+first+issue%22+++no%3Aassignee+repo%3A%22advanced-alchemy%22&amp;type=issues">Available Issues</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/litestar-org/.github?tab=coc-ov-file#readme">Code of Conduct</a></li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.AlembicAsyncConfig"><code class="docutils literal notranslate"><span class="pre">AlembicAsyncConfig</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.AlembicAsyncConfig.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.AlembicSyncConfig"><code class="docutils literal notranslate"><span class="pre">AlembicSyncConfig</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.AlembicSyncConfig.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.AsyncSessionConfig"><code class="docutils literal notranslate"><span class="pre">AsyncSessionConfig</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.AsyncSessionConfig.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.AsyncSessionConfig.sync_session_class"><code class="docutils literal notranslate">sync_session_class</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.EngineConfig"><code class="docutils literal notranslate"><span class="pre">EngineConfig</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.EngineConfig.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.EngineConfig.json_deserializer"><code class="docutils literal notranslate">json_deserializer()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.EngineConfig.json_serializer"><code class="docutils literal notranslate">json_serializer()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncConfig</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.before_send_handler"><code class="docutils literal notranslate">before_send_handler</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.create_all_metadata"><code class="docutils literal notranslate">create_all_metadata()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.create_app_state_items"><code class="docutils literal notranslate">create_app_state_items()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.create_session_maker"><code class="docutils literal notranslate">create_session_maker()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.engine_app_state_key"><code class="docutils literal notranslate">engine_app_state_key</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.engine_dependency_key"><code class="docutils literal notranslate">engine_dependency_key</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.provide_engine"><code class="docutils literal notranslate">provide_engine()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.provide_session"><code class="docutils literal notranslate">provide_session()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.session_dependency_key"><code class="docutils literal notranslate">session_dependency_key</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.session_maker_app_state_key"><code class="docutils literal notranslate">session_maker_app_state_key</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.session_scope_key"><code class="docutils literal notranslate">session_scope_key</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.set_default_exception_handler"><code class="docutils literal notranslate">set_default_exception_handler</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.signature_namespace"><code class="docutils literal notranslate">signature_namespace</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.update_app_state"><code class="docutils literal notranslate">update_app_state()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.engine_config"><code class="docutils literal notranslate">engine_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTO"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyDTO</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTO.detect_nested_field"><code class="docutils literal notranslate">detect_nested_field()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTO.generate_field_definitions"><code class="docutils literal notranslate">generate_field_definitions()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTO.config"><code class="docutils literal notranslate">config</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTO.model_type"><code class="docutils literal notranslate">model_type</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyDTOConfig</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig.include_implicit_fields"><code class="docutils literal notranslate">include_implicit_fields</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig.exclude"><code class="docutils literal notranslate">exclude</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig.include"><code class="docutils literal notranslate">include</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig.rename_fields"><code class="docutils literal notranslate">rename_fields</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyInitPlugin</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin.on_app_init"><code class="docutils literal notranslate">on_app_init()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin.on_cli_init"><code class="docutils literal notranslate">on_cli_init()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyPlugin"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyPlugin</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyPlugin.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyPlugin.on_app_init"><code class="docutils literal notranslate">on_app_init()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySerializationPlugin"><code class="docutils literal notranslate"><span class="pre">SQLAlchemySerializationPlugin</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySerializationPlugin.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySerializationPlugin.create_dto_for_type"><code class="docutils literal notranslate">create_dto_for_type()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySerializationPlugin.supports_type"><code class="docutils literal notranslate">supports_type()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig"><code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncConfig</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.before_send_handler"><code class="docutils literal notranslate">before_send_handler</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.create_all_metadata"><code class="docutils literal notranslate">create_all_metadata()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.create_app_state_items"><code class="docutils literal notranslate">create_app_state_items()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.create_session_maker"><code class="docutils literal notranslate">create_session_maker()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.engine_app_state_key"><code class="docutils literal notranslate">engine_app_state_key</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.engine_dependency_key"><code class="docutils literal notranslate">engine_dependency_key</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.provide_engine"><code class="docutils literal notranslate">provide_engine()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.provide_session"><code class="docutils literal notranslate">provide_session()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.session_dependency_key"><code class="docutils literal notranslate">session_dependency_key</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.session_maker_app_state_key"><code class="docutils literal notranslate">session_maker_app_state_key</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.session_scope_key"><code class="docutils literal notranslate">session_scope_key</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.set_default_exception_handler"><code class="docutils literal notranslate">set_default_exception_handler</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.signature_namespace"><code class="docutils literal notranslate">signature_namespace</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.update_app_state"><code class="docutils literal notranslate">update_app_state()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.engine_config"><code class="docutils literal notranslate">engine_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SyncSessionConfig"><code class="docutils literal notranslate"><span class="pre">SyncSessionConfig</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SyncSessionConfig.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.async_autocommit_before_send_handler"><code class="docutils literal notranslate"><span class="pre">async_autocommit_before_send_handler()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.async_autocommit_handler_maker"><code class="docutils literal notranslate"><span class="pre">async_autocommit_handler_maker()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.async_default_before_send_handler"><code class="docutils literal notranslate"><span class="pre">async_default_before_send_handler()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.async_default_handler_maker"><code class="docutils literal notranslate"><span class="pre">async_default_handler_maker()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.get_database_migration_plugin"><code class="docutils literal notranslate"><span class="pre">get_database_migration_plugin()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.sync_autocommit_before_send_handler"><code class="docutils literal notranslate"><span class="pre">sync_autocommit_before_send_handler()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.sync_autocommit_handler_maker"><code class="docutils literal notranslate"><span class="pre">sync_autocommit_handler_maker()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.sync_default_before_send_handler"><code class="docutils literal notranslate"><span class="pre">sync_default_before_send_handler()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.sync_default_handler_maker"><code class="docutils literal notranslate"><span class="pre">sync_default_handler_maker()</span></code></a></li>
+<li><a class="reference internal" href="#additional-api-references">Additional API References</a></li>
+</ul>
+</div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
+  data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
+  <span class="w-8 flex items-center justify-around shrink-0 text-3xl">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </span>
+  <span class="flex-grow px-2 break-all">
+    <span>litestar-org/advanced-alchemy</span>
+    <span class="flex text-sm repo-stats-count">
+      <span class="flex items-center pr-3">
+        <iconify-icon icon="lucide:star"></iconify-icon>
+        <strong class="js-repo-stars ml-1">0</strong>
+      </span>
+      <span class="flex items-center">
+        <iconify-icon icon="lucide:git-fork"></iconify-icon>
+        <strong class="js-repo-forks ml-1">0</strong>
+      </span>
+    </span>
+  </span>
+</a><div class="edit-this-page">
+  <a href="https://github.com/litestar-org/advanced-alchemy/blob/main/docs/reference/extensions/litestar/index.rst">Edit this page</a>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6"><div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">advanced_alchemy</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">API Reference</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Extensions</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="3" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">litestar</strong>
+        <meta itemprop="position" content="4" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+        <article class="yue" role="main">
+          <section id="litestar">
+<h1>litestar<a class="headerlink" href="#litestar" title="Link to this heading">¶</a></h1>
+<p>API Reference for the <code class="docutils literal notranslate"><span class="pre">Litestar</span></code> extensions module</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Private methods and attributes are not included in the API reference.</p>
+</div>
+<hr class="docutils" />
+<dl class="py class" id="module-advanced_alchemy.extensions.litestar">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.AlembicAsyncConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">AlembicAsyncConfig</span></span><a class="reference internal" href="../../../_modules/advanced_alchemy/config/asyncio.html#AlembicAsyncConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.AlembicAsyncConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../config/common.html#advanced_alchemy.config.common.GenericAlembicConfig" title="advanced_alchemy.config.common.GenericAlembicConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericAlembicConfig</span></code></a></p>
+<p>Configuration for an Async Alembic’s Config class.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://alembic.sqlalchemy.org/en/latest/api/config.html">https://alembic.sqlalchemy.org/en/latest/api/config.html</a></p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.AlembicAsyncConfig.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alembic.ini'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_table_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alembic_versions'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_table_schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">script_location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'migrations'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_module_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sa.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">render_as_batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compare_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/home/runner/work/advanced-alchemy/advanced-alchemy/advanced_alchemy/alembic/templates'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.AlembicAsyncConfig.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.AlembicSyncConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">AlembicSyncConfig</span></span><a class="reference internal" href="../../../_modules/advanced_alchemy/config/sync.html#AlembicSyncConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.AlembicSyncConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../config/common.html#advanced_alchemy.config.common.GenericAlembicConfig" title="advanced_alchemy.config.common.GenericAlembicConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericAlembicConfig</span></code></a></p>
+<p>Configuration for Alembic’s synchronous migrations.</p>
+<p>For details see: <a class="reference external" href="https://alembic.sqlalchemy.org/en/latest/api/config.html">https://alembic.sqlalchemy.org/en/latest/api/config.html</a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.AlembicSyncConfig.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alembic.ini'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_table_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alembic_versions'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version_table_schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">script_location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'migrations'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_module_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sa.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">render_as_batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compare_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/home/runner/work/advanced-alchemy/advanced-alchemy/advanced_alchemy/alembic/templates'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.AlembicSyncConfig.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.AsyncSessionConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">AsyncSessionConfig</span></span><a class="reference internal" href="../../../_modules/advanced_alchemy/config/asyncio.html#AsyncSessionConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.AsyncSessionConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../config/common.html#advanced_alchemy.config.common.GenericSessionConfig" title="advanced_alchemy.config.common.GenericSessionConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericSessionConfig</span></code></a>[<a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html#sqlalchemy.ext.asyncio.AsyncConnection" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncConnection</span></code></a>, <a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html#sqlalchemy.ext.asyncio.AsyncEngine" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncEngine</span></code></a>, <a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html#sqlalchemy.ext.asyncio.AsyncSession" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncSession</span></code></a>]</p>
+<p>SQLAlchemy async session config.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.AsyncSessionConfig.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">autobegin=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">autoflush=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binds=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expire_on_commit=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">join_transaction_mode=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_cls=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">twophase=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sync_session_class=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.AsyncSessionConfig.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.AsyncSessionConfig.sync_session_class">
+<span class="sig-name descname"><span class="pre">sync_session_class</span></span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.AsyncSessionConfig.sync_session_class" title="Link to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="../../service.html#advanced_alchemy.service.Empty" title="advanced_alchemy.utils.dataclass.Empty"><code class="xref py py-class docutils literal notranslate"><span class="pre">Empty</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.EngineConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">EngineConfig</span></span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/config/engine.html#EngineConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.EngineConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../config/engine.html#advanced_alchemy.config.engine.EngineConfig" title="advanced_alchemy.config.engine.EngineConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">EngineConfig</span></code></a></p>
+<p>Configuration for SQLAlchemy’s <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/connections.html#sqlalchemy.engine.Engine" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Engine</span></code></a>.</p>
+<p>For details see: <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/engines.html">https://docs.sqlalchemy.org/en/20/core/engines.html</a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.EngineConfig.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connect_args=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">echo=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">echo_pool=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_from_linting=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">execution_options=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide_parameters=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insertmanyvalues_page_size=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isolation_level=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_deserializer=&lt;function</span> <span class="pre">decode_json&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_serializer=&lt;function</span> <span class="pre">serializer&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_length=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging_name=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_identifier_length=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_overflow=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">paramstyle=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pool=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poolclass=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pool_logging_name=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pool_pre_ping=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pool_size=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pool_recycle=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pool_reset_on_return=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pool_timeout=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pool_use_lifo=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugins=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_cache_size=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_insertmanyvalues=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.EngineConfig.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.EngineConfig.json_deserializer">
+<span class="sig-name descname"><span class="pre">json_deserializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_EmptyEnum.EMPTY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_decoders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.EngineConfig.json_deserializer" title="Link to this definition">¶</a></dt>
+<dd><p>Decode a JSON string/bytes into an object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.extensions.litestar.EngineConfig.json_deserializer.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.EngineConfig.json_deserializer.params.value">¶</a> (<span class="sphinx_autodoc_typehints-type">str | bytes</span>) – Value to decode</p></li>
+<li><p><span class="target" id="advanced_alchemy.extensions.litestar.EngineConfig.json_deserializer.params.target_type"></span><strong>target_type</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.EngineConfig.json_deserializer.params.target_type">¶</a> (<span class="sphinx_autodoc_typehints-type">type[T] | EmptyType</span>) – An optional type to decode the data into</p></li>
+<li><p><span class="target" id="advanced_alchemy.extensions.litestar.EngineConfig.json_deserializer.params.type_decoders"></span><strong>type_decoders</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.EngineConfig.json_deserializer.params.type_decoders">¶</a> (<span class="sphinx_autodoc_typehints-type">TypeDecodersSequence | None</span>) – Optional sequence of type decoders</p></li>
+<li><p><span class="target" id="advanced_alchemy.extensions.litestar.EngineConfig.json_deserializer.params.strict"></span><strong>strict</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.EngineConfig.json_deserializer.params.strict">¶</a> (<span class="sphinx_autodoc_typehints-type">bool</span>) – Whether type coercion rules should be strict. Setting to False enables
+a wider set of coercion rules from string to non-string types for all values</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type">Any</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An object</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>SerializationException</strong> – If error decoding <code class="docutils literal notranslate"><span class="pre">value</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.EngineConfig.json_serializer">
+<span class="sig-name descname"><span class="pre">json_serializer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.EngineConfig.json_serializer" title="Link to this definition">¶</a></dt>
+<dd><p>Serialize JSON field values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.EngineConfig.json_serializer.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.EngineConfig.json_serializer.params.value">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../../config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Any json serializable value.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>JSON string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemyAsyncConfig</span></span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/config/asyncio.html#SQLAlchemyAsyncConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../config/asyncio.html#advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig" title="advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyAsyncConfig</span></code></a></p>
+<p>Litestar Async SQLAlchemy Configuration.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">create_engine_callable=&lt;function</span> <span class="pre">create_async_engine&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_config=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_maker_class=&lt;class</span> <span class="pre">'sqlalchemy.ext.asyncio.session.async_sessionmaker'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_string=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_config=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_maker=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_instance=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_all=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_touch_updated_timestamp_listener=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind_key=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alembic_config=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">before_send_handler=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_dependency_key='db_engine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_dependency_key='db_session'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_app_state_key='db_engine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_maker_app_state_key='session_maker_class'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_scope_key='_sqlalchemy_db_session'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_default_exception_handler=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.before_send_handler">
+<span class="sig-name descname"><span class="pre">before_send_handler</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a><span class="pre">[BeforeMessageSendHookHandler,</span> <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a><span class="pre">[</span><code class="docutils literal notranslate"><span class="pre">'autocommit'</span></code><span class="pre">,</span> <code class="docutils literal notranslate"><span class="pre">'autocommit_include_redirects'</span></code><span class="pre">],</span> <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a><span class="pre">]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.before_send_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Handler to call before the ASGI message is sent.</p>
+<p>The handler should handle closing the session stored in the ASGI scope, if it’s still open, and committing and
+uncommitted data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.create_all_metadata">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_all_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/config/asyncio.html#SQLAlchemyAsyncConfig.create_all_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.create_all_metadata" title="Link to this definition">¶</a></dt>
+<dd><p>Create all metadata</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.create_all_metadata.params.app"></span><strong>app</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.create_all_metadata.params.app">¶</a> (<em>Litestar</em>) – The <code class="docutils literal notranslate"><span class="pre">Litestar</span></code> instance</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.create_app_state_items">
+<span class="sig-name descname"><span class="pre">create_app_state_items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/config/asyncio.html#SQLAlchemyAsyncConfig.create_app_state_items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.create_app_state_items" title="Link to this definition">¶</a></dt>
+<dd><p>Key/value pairs to be stored in application state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="../../config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.create_session_maker">
+<span class="sig-name descname"><span class="pre">create_session_maker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/config/asyncio.html#SQLAlchemyAsyncConfig.create_session_maker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.create_session_maker" title="Link to this definition">¶</a></dt>
+<dd><p>Get a session maker. If none exists yet, create one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Session factory used by the plugin.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.engine_app_state_key">
+<span class="sig-name descname"><span class="pre">engine_app_state_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'db_engine'</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.engine_app_state_key" title="Link to this definition">¶</a></dt>
+<dd><p>Key under which to store the SQLAlchemy engine in the application <a class="reference external" href="https://docs.litestar.dev/latest/reference/datastructures/index.html#litestar.datastructures.State" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code></a>
+instance.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.engine_dependency_key">
+<span class="sig-name descname"><span class="pre">engine_dependency_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'db_engine'</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.engine_dependency_key" title="Link to this definition">¶</a></dt>
+<dd><p>Key to use for the dependency injection of database engines.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.provide_engine">
+<span class="sig-name descname"><span class="pre">provide_engine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/config/asyncio.html#SQLAlchemyAsyncConfig.provide_engine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.provide_engine" title="Link to this definition">¶</a></dt>
+<dd><p>Create an engine instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.provide_engine.params.state"></span><strong>state</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.provide_engine.params.state">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.litestar.dev/latest/reference/datastructures/index.html#litestar.datastructures.State" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code></a></span>) – The <code class="docutils literal notranslate"><span class="pre">Litestar.state</span></code> instance.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type">sqlalchemy.ext.asyncio.AsyncEngine</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An engine instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.provide_session">
+<span class="sig-name descname"><span class="pre">provide_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scope</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/config/asyncio.html#SQLAlchemyAsyncConfig.provide_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.provide_session" title="Link to this definition">¶</a></dt>
+<dd><p>Create a session instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.provide_session.params.state"></span><strong>state</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.provide_session.params.state">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.litestar.dev/latest/reference/datastructures/index.html#litestar.datastructures.State" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code></a></span>) – The <code class="docutils literal notranslate"><span class="pre">Litestar.state</span></code> instance.</p></li>
+<li><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.provide_session.params.scope"></span><strong>scope</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.provide_session.params.scope">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPScope" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPScope</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketScope" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketScope</span></code></a>]</span>) – The current connection’s scope.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html#sqlalchemy.ext.asyncio.AsyncSession" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncSession</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A session instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.session_dependency_key">
+<span class="sig-name descname"><span class="pre">session_dependency_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'db_session'</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.session_dependency_key" title="Link to this definition">¶</a></dt>
+<dd><p>Key to use for the dependency injection of database sessions.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.session_maker_app_state_key">
+<span class="sig-name descname"><span class="pre">session_maker_app_state_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'session_maker_class'</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.session_maker_app_state_key" title="Link to this definition">¶</a></dt>
+<dd><p>Key under which to store the SQLAlchemy <a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/session_api.html#sqlalchemy.orm.sessionmaker" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">sessionmaker</span></code></a> in the application
+<a class="reference external" href="https://docs.litestar.dev/latest/reference/datastructures/index.html#litestar.datastructures.State" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code></a> instance.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.session_scope_key">
+<span class="sig-name descname"><span class="pre">session_scope_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_sqlalchemy_db_session'</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.session_scope_key" title="Link to this definition">¶</a></dt>
+<dd><p>Key under which to store the SQLAlchemy scope in the application.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.set_default_exception_handler">
+<span class="sig-name descname"><span class="pre">set_default_exception_handler</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.set_default_exception_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the default exception handler on application start.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.signature_namespace">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signature_namespace</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../../config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.signature_namespace" title="Link to this definition">¶</a></dt>
+<dd><p>Return the plugin’s signature namespace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A string keyed dict of names to be added to the namespace for signature forward reference resolution.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.update_app_state">
+<span class="sig-name descname"><span class="pre">update_app_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/config/asyncio.html#SQLAlchemyAsyncConfig.update_app_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.update_app_state" title="Link to this definition">¶</a></dt>
+<dd><p>Set the app state with engine and session.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.update_app_state.params.app"></span><strong>app</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.update_app_state.params.app">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.litestar.dev/latest/reference/app.html#litestar.app.Litestar" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Litestar</span></code></a></span>) – The <code class="docutils literal notranslate"><span class="pre">Litestar</span></code> instance.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.engine_config">
+<span class="sig-name descname"><span class="pre">engine_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#advanced_alchemy.extensions.litestar.EngineConfig" title="advanced_alchemy.extensions.litestar.plugins.init.config.engine.EngineConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">EngineConfig</span></code></a></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig.engine_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the SQLAlchemy engine.</p>
+<p>The configuration options are documented in the SQLAlchemy documentation.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyDTO">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemyDTO</span></span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/dto.html#SQLAlchemyDTO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTO" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.litestar.dev/latest/reference/dto/base_dto.html#litestar.dto.base_dto.AbstractDTO" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractDTO</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code>]</p>
+<p>Support for domain modelling with SQLAlchemy.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyDTO.detect_nested_field">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">detect_nested_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_definition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/dto.html#SQLAlchemyDTO.detect_nested_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTO.detect_nested_field" title="Link to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">field_definition</span></code> represents a nested model field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemyDTO.detect_nested_field.params.field_definition"></span><strong>field_definition</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTO.detect_nested_field.params.field_definition">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.litestar.dev/latest/reference/typing.html#litestar.typing.FieldDefinition" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">FieldDefinition</span></code></a></span>) – inspect type to determine if field represents a nested model.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">field_definition</span></code> represents a nested model field.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyDTO.generate_field_definitions">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_field_definitions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/dto.html#SQLAlchemyDTO.generate_field_definitions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTO.generate_field_definitions" title="Link to this definition">¶</a></dt>
+<dd><p>Generate DTO field definitions from a SQLAlchemy model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemyDTO.generate_field_definitions.params.model_type"></span><strong>model_type</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTO.generate_field_definitions.params.model_type">¶</a> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.13)"><em>Type</em></a><em>[</em><a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/mapping_api.html#sqlalchemy.orm.DeclarativeBase" title="(in SQLAlchemy v2.0)"><em>sqlalchemy.orm.DeclarativeBase</em></a><em>]</em>) – The SQLAlchemy model type to generate field definitions from.</p>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>collections.abc.Generator[litestar.dto.data_structures.DTOFieldDefinition, None, None]</em> – A generator yielding DTO field definitions.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.13)"><strong>RuntimeError</strong></a> – If the mapper cannot be found for the model type.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.13)"><strong>NotImplementedError</strong></a> – If an unsupported property or extension type is encountered.</p></li>
+<li><p><strong>ImproperConfigurationError</strong> – If a type cannot be parsed from an element.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code></a>[<a class="reference external" href="https://docs.litestar.dev/latest/reference/dto/data_structures.html#litestar.dto.data_structures.DTOFieldDefinition" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DTOFieldDefinition</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyDTO.config">
+<span class="sig-name descname"><span class="pre">config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">ClassVar</span></code></a><span class="pre">[</span><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig" title="advanced_alchemy.extensions.litestar.dto.SQLAlchemyDTOConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyDTOConfig</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTO.config" title="Link to this definition">¶</a></dt>
+<dd><p>Config objects to define properties of the DTO.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyDTO.model_type">
+<span class="sig-name descname"><span class="pre">model_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">type[T]</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTO.model_type" title="Link to this definition">¶</a></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">annotation</span></code> is an iterable, this is the inner type, otherwise will be the same as <code class="docutils literal notranslate"><span class="pre">annotation</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemyDTOConfig</span></span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/dto.html#SQLAlchemyDTOConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.litestar.dev/latest/reference/dto/config.html#litestar.dto.config.DTOConfig" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DTOConfig</span></code></a></p>
+<p>Additional controls for the generated SQLAlchemy DTO.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exclude=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rename_fields=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rename_strategy=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_nested_depth=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">underscore_fields_private=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">experimental_codegen_backend=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forbid_unknown_fields=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_implicit_fields=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig.include_implicit_fields">
+<span class="sig-name descname"><span class="pre">include_implicit_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a><span class="pre">,</span> <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a><span class="pre">[</span><code class="docutils literal notranslate"><span class="pre">'hybrid-only'</span></code><span class="pre">]]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig.include_implicit_fields" title="Link to this definition">¶</a></dt>
+<dd><p>Fields that are implicitly mapped are included.</p>
+<p>Turning this off will lead to exclude all fields not using <code class="docutils literal notranslate"><span class="pre">Mapped</span></code> annotation,</p>
+<p>When setting this to <code class="docutils literal notranslate"><span class="pre">hybrid-only</span></code>, all implicitly mapped fields are excluded
+with the exception for hybrid properties.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig.exclude">
+<span class="sig-name descname"><span class="pre">exclude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Set" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">,</span> <a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/internals.html#sqlalchemy.orm.InstrumentedAttribute" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">InstrumentedAttribute</span></code></a><span class="pre">[</span><a class="reference internal" href="../../config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a><span class="pre">]]]</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig.exclude" title="Link to this definition">¶</a></dt>
+<dd><p>Explicitly exclude fields from the generated DTO.</p>
+<p>If exclude is specified, all fields not specified in exclude will be included by default.</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>The field names are dot-separated paths to nested fields, e.g. <code class="docutils literal notranslate"><span class="pre">&quot;address.street&quot;</span></code> will</dt><dd><p>exclude the <code class="docutils literal notranslate"><span class="pre">&quot;street&quot;</span></code> field from a nested <code class="docutils literal notranslate"><span class="pre">&quot;address&quot;</span></code> model.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>‘exclude’ mutually exclusive with ‘include’ - specifying both values will raise an</dt><dd><p><code class="docutils literal notranslate"><span class="pre">ImproperlyConfiguredException</span></code>.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig.include">
+<span class="sig-name descname"><span class="pre">include</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Set" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">,</span> <a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/internals.html#sqlalchemy.orm.InstrumentedAttribute" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">InstrumentedAttribute</span></code></a><span class="pre">[</span><a class="reference internal" href="../../config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a><span class="pre">]]]</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig.include" title="Link to this definition">¶</a></dt>
+<dd><p>Explicitly include fields in the generated DTO.</p>
+<p>If include is specified, all fields not specified in include will be excluded by default.</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>The field names are dot-separated paths to nested fields, e.g. <code class="docutils literal notranslate"><span class="pre">&quot;address.street&quot;</span></code> will</dt><dd><p>include the <code class="docutils literal notranslate"><span class="pre">&quot;street&quot;</span></code> field from a nested <code class="docutils literal notranslate"><span class="pre">&quot;address&quot;</span></code> model.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>‘include’ mutually exclusive with ‘exclude’ - specifying both values will raise an</dt><dd><p><code class="docutils literal notranslate"><span class="pre">ImproperlyConfiguredException</span></code>.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig.rename_fields">
+<span class="sig-name descname"><span class="pre">rename_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">,</span> <a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/internals.html#sqlalchemy.orm.InstrumentedAttribute" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">InstrumentedAttribute</span></code></a><span class="pre">[</span><a class="reference internal" href="../../config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a><span class="pre">]],</span> <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a><span class="pre">]</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyDTOConfig.rename_fields" title="Link to this definition">¶</a></dt>
+<dd><p>Mapping of field names, to new name.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemyInitPlugin</span></span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/plugin.html#SQLAlchemyInitPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.litestar.dev/latest/reference/plugins/index.html#litestar.plugins.InitPluginProtocol" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">InitPluginProtocol</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/plugins/index.html#litestar.plugins.CLIPlugin" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CLIPlugin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SlotsBase</span></code></p>
+<p>SQLAlchemy application lifecycle configuration.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/plugin.html#SQLAlchemyInitPlugin.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize <code class="docutils literal notranslate"><span class="pre">SQLAlchemyPlugin</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin.params.config">¶</a> – configure DB connection and hook handlers and dependencies.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin.on_app_init">
+<span class="sig-name descname"><span class="pre">on_app_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/plugin.html#SQLAlchemyInitPlugin.on_app_init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin.on_app_init" title="Link to this definition">¶</a></dt>
+<dd><p>Configure application for use with SQLAlchemy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin.on_app_init.params.app_config"></span><strong>app_config</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin.on_app_init.params.app_config">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.litestar.dev/latest/reference/config.html#litestar.config.app.AppConfig" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AppConfig</span></code></a></span>) – The <code class="xref py py-class docutils literal notranslate"><span class="pre">AppConfig</span></code> instance.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.litestar.dev/latest/reference/config.html#litestar.config.app.AppConfig" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AppConfig</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin.on_cli_init">
+<span class="sig-name descname"><span class="pre">on_cli_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cli</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/plugin.html#SQLAlchemyInitPlugin.on_cli_init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin.on_cli_init" title="Link to this definition">¶</a></dt>
+<dd><p>Called when the CLI is initialized.</p>
+<p>This can be used to extend or override existing commands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin.on_cli_init.params.cli"></span><strong>cli</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin.on_cli_init.params.cli">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://click.palletsprojects.com/en/stable/api/#click.Group" title="(in Click v8.1.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Group</span></code></a></span>) – The root <a class="reference external" href="https://click.palletsprojects.com/en/stable/api/#click.Group" title="(in Click v8.1.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">click.Group</span></code></a> of the Litestar CLI</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+<div class="admonition-examples admonition">
+<p class="admonition-title">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Litestar</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">CLIPluginProtocol</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">click</span><span class="w"> </span><span class="kn">import</span> <span class="n">Group</span>
+</span><span data-line="4">
+</span><span data-line="5">
+</span><span data-line="6"><span class="k">class</span><span class="w"> </span><span class="nc">CLIPlugin</span><span class="p">(</span><span class="n">CLIPluginProtocol</span><span class="p">):</span>
+</span><span data-line="7">    <span class="k">def</span><span class="w"> </span><span class="nf">on_cli_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cli</span><span class="p">:</span> <span class="n">Group</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="8">        <span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+</span><span data-line="9">        <span class="k">def</span><span class="w"> </span><span class="nf">is_debug_mode</span><span class="p">(</span><span class="n">app</span><span class="p">:</span> <span class="n">Litestar</span><span class="p">):</span>
+</span><span data-line="10">            <span class="nb">print</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
+</span><span data-line="11">
+</span><span data-line="12">
+</span><span data-line="13"><span class="n">app</span> <span class="o">=</span> <span class="n">Litestar</span><span class="p">(</span><span class="n">plugins</span><span class="o">=</span><span class="p">[</span><span class="n">CLIPlugin</span><span class="p">()])</span>
+</span></pre></div>
+</div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyPlugin">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemyPlugin</span></span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins.html#SQLAlchemyPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyPlugin" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.litestar.dev/latest/reference/plugins/index.html#litestar.plugins.InitPluginProtocol" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">InitPluginProtocol</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SlotsBase</span></code></p>
+<p>A plugin that provides SQLAlchemy integration.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyPlugin.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins.html#SQLAlchemyPlugin.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyPlugin.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize <code class="docutils literal notranslate"><span class="pre">SQLAlchemyPlugin</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemyPlugin.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyPlugin.params.config">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig" title="advanced_alchemy.extensions.litestar.plugins.init.config.asyncio.SQLAlchemyAsyncConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyAsyncConfig</span></code></a>, <a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig" title="advanced_alchemy.extensions.litestar.plugins.init.config.sync.SQLAlchemySyncConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemySyncConfig</span></code></a>, <a class="reference internal" href="../../config/types.html#advanced_alchemy.config.types.Sequence" title="collections.abc.Sequence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyAsyncConfig" title="advanced_alchemy.extensions.litestar.plugins.init.config.asyncio.SQLAlchemyAsyncConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyAsyncConfig</span></code></a>, <a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig" title="advanced_alchemy.extensions.litestar.plugins.init.config.sync.SQLAlchemySyncConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemySyncConfig</span></code></a>]]]</span>) – configure DB connection and hook handlers and dependencies.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemyPlugin.on_app_init">
+<span class="sig-name descname"><span class="pre">on_app_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins.html#SQLAlchemyPlugin.on_app_init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemyPlugin.on_app_init" title="Link to this definition">¶</a></dt>
+<dd><p>Configure application for use with SQLAlchemy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemyPlugin.on_app_init.params.app_config"></span><strong>app_config</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyPlugin.on_app_init.params.app_config">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.litestar.dev/latest/reference/config.html#litestar.config.app.AppConfig" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AppConfig</span></code></a></span>) – The <code class="xref py py-class docutils literal notranslate"><span class="pre">AppConfig</span></code> instance.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.litestar.dev/latest/reference/config.html#litestar.config.app.AppConfig" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AppConfig</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySerializationPlugin">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemySerializationPlugin</span></span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/serialization.html#SQLAlchemySerializationPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySerializationPlugin" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.litestar.dev/latest/reference/plugins/index.html#litestar.plugins.SerializationPluginProtocol" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SerializationPluginProtocol</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">SlotsBase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySerializationPlugin.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/serialization.html#SQLAlchemySerializationPlugin.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySerializationPlugin.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySerializationPlugin.create_dto_for_type">
+<span class="sig-name descname"><span class="pre">create_dto_for_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_definition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/serialization.html#SQLAlchemySerializationPlugin.create_dto_for_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySerializationPlugin.create_dto_for_type" title="Link to this definition">¶</a></dt>
+<dd><p>Given a parsed type, create a DTO class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemySerializationPlugin.create_dto_for_type.params.field_definition"></span><strong>field_definition</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySerializationPlugin.create_dto_for_type.params.field_definition">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.litestar.dev/latest/reference/typing.html#litestar.typing.FieldDefinition" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">FieldDefinition</span></code></a></span>) – A parsed type.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Any]</span></code>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A DTO class.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySerializationPlugin.supports_type">
+<span class="sig-name descname"><span class="pre">supports_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_definition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/serialization.html#SQLAlchemySerializationPlugin.supports_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySerializationPlugin.supports_type" title="Link to this definition">¶</a></dt>
+<dd><p>Given a value of indeterminate type, determine if this value is supported by the plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemySerializationPlugin.supports_type.params.field_definition"></span><strong>field_definition</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySerializationPlugin.supports_type.params.field_definition">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.litestar.dev/latest/reference/typing.html#litestar.typing.FieldDefinition" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">FieldDefinition</span></code></a></span>) – A parsed type.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Whether the type is supported by the plugin.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemySyncConfig</span></span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/config/sync.html#SQLAlchemySyncConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig" title="advanced_alchemy.config.sync.SQLAlchemySyncConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemySyncConfig</span></code></a></p>
+<p>Litestar Sync SQLAlchemy Configuration.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">create_engine_callable=&lt;function</span> <span class="pre">create_engine&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_config=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_maker_class=&lt;class</span> <span class="pre">'sqlalchemy.orm.session.sessionmaker'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_string=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_config=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_maker=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_instance=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_all=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_touch_updated_timestamp_listener=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind_key=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alembic_config=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">before_send_handler=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_dependency_key='db_engine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_dependency_key='db_session'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_app_state_key='db_engine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_maker_app_state_key='session_maker_class'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_scope_key='_sqlalchemy_db_session'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_default_exception_handler=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.before_send_handler">
+<span class="sig-name descname"><span class="pre">before_send_handler</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a><span class="pre">[BeforeMessageSendHookHandler,</span> <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a><span class="pre">[</span><code class="docutils literal notranslate"><span class="pre">'autocommit'</span></code><span class="pre">,</span> <code class="docutils literal notranslate"><span class="pre">'autocommit_include_redirects'</span></code><span class="pre">],</span> <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a><span class="pre">]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.before_send_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Handler to call before the ASGI message is sent.</p>
+<p>The handler should handle closing the session stored in the ASGI scope, if it’s still open, and committing and
+uncommitted data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.create_all_metadata">
+<span class="sig-name descname"><span class="pre">create_all_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/config/sync.html#SQLAlchemySyncConfig.create_all_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.create_all_metadata" title="Link to this definition">¶</a></dt>
+<dd><p>Create all metadata</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.create_all_metadata.params.app"></span><strong>app</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.create_all_metadata.params.app">¶</a> (<em>Litestar</em>) – The <code class="docutils literal notranslate"><span class="pre">Litestar</span></code> instance</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.create_app_state_items">
+<span class="sig-name descname"><span class="pre">create_app_state_items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/config/sync.html#SQLAlchemySyncConfig.create_app_state_items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.create_app_state_items" title="Link to this definition">¶</a></dt>
+<dd><p>Key/value pairs to be stored in application state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, typing.Any]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.create_session_maker">
+<span class="sig-name descname"><span class="pre">create_session_maker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/config/sync.html#SQLAlchemySyncConfig.create_session_maker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.create_session_maker" title="Link to this definition">¶</a></dt>
+<dd><p>Get a session maker. If none exists yet, create one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Session factory used by the plugin.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.engine_app_state_key">
+<span class="sig-name descname"><span class="pre">engine_app_state_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'db_engine'</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.engine_app_state_key" title="Link to this definition">¶</a></dt>
+<dd><p>Key under which to store the SQLAlchemy engine in the application <code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code>
+instance.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.engine_dependency_key">
+<span class="sig-name descname"><span class="pre">engine_dependency_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'db_engine'</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.engine_dependency_key" title="Link to this definition">¶</a></dt>
+<dd><p>Key to use for the dependency injection of database engines.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.provide_engine">
+<span class="sig-name descname"><span class="pre">provide_engine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/config/sync.html#SQLAlchemySyncConfig.provide_engine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.provide_engine" title="Link to this definition">¶</a></dt>
+<dd><p>Create an engine instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.provide_engine.params.state"></span><strong>state</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.provide_engine.params.state">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.litestar.dev/latest/reference/datastructures/index.html#litestar.datastructures.State" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code></a></span>) – The <code class="docutils literal notranslate"><span class="pre">Litestar.state</span></code> instance.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type">sqlalchemy.engine.Engine</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An engine instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.provide_session">
+<span class="sig-name descname"><span class="pre">provide_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scope</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/config/sync.html#SQLAlchemySyncConfig.provide_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.provide_session" title="Link to this definition">¶</a></dt>
+<dd><p>Create a session instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.provide_session.params.state"></span><strong>state</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.provide_session.params.state">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.litestar.dev/latest/reference/datastructures/index.html#litestar.datastructures.State" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code></a></span>) – The <code class="docutils literal notranslate"><span class="pre">Litestar.state</span></code> instance.</p></li>
+<li><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.provide_session.params.scope"></span><strong>scope</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.provide_session.params.scope">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPScope" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPScope</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketScope" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketScope</span></code></a>]</span>) – The current connection’s scope.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/session_api.html#sqlalchemy.orm.Session" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A session instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.session_dependency_key">
+<span class="sig-name descname"><span class="pre">session_dependency_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'db_session'</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.session_dependency_key" title="Link to this definition">¶</a></dt>
+<dd><p>Key to use for the dependency injection of database sessions.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.session_maker_app_state_key">
+<span class="sig-name descname"><span class="pre">session_maker_app_state_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'session_maker_class'</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.session_maker_app_state_key" title="Link to this definition">¶</a></dt>
+<dd><p>Key under which to store the SQLAlchemy <a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/session_api.html#sqlalchemy.orm.sessionmaker" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">sessionmaker</span></code></a> in the application
+<code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code> instance.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.session_scope_key">
+<span class="sig-name descname"><span class="pre">session_scope_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_sqlalchemy_db_session'</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.session_scope_key" title="Link to this definition">¶</a></dt>
+<dd><p>Key under which to store the SQLAlchemy scope in the application.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.set_default_exception_handler">
+<span class="sig-name descname"><span class="pre">set_default_exception_handler</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.set_default_exception_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the default exception handler on application start.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.signature_namespace">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signature_namespace</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">TypeAliasForwardRef</span><span class="p"><span class="pre">(</span></span><span class="s"><span class="pre">'typing.Any'</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.signature_namespace" title="Link to this definition">¶</a></dt>
+<dd><p>Return the plugin’s signature namespace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A string keyed dict of names to be added to the namespace for signature forward reference resolution.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.update_app_state">
+<span class="sig-name descname"><span class="pre">update_app_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/plugins/init/config/sync.html#SQLAlchemySyncConfig.update_app_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.update_app_state" title="Link to this definition">¶</a></dt>
+<dd><p>Set the app state with engine and session.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.update_app_state.params.app"></span><strong>app</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.update_app_state.params.app">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.litestar.dev/latest/reference/app.html#litestar.app.Litestar" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Litestar</span></code></a></span>) – The <code class="docutils literal notranslate"><span class="pre">Litestar</span></code> instance.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.engine_config">
+<span class="sig-name descname"><span class="pre">engine_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#advanced_alchemy.extensions.litestar.EngineConfig" title="advanced_alchemy.extensions.litestar.plugins.init.config.engine.EngineConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">EngineConfig</span></code></a></em><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SQLAlchemySyncConfig.engine_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the SQLAlchemy engine.</p>
+<p>The configuration options are documented in the SQLAlchemy documentation.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SyncSessionConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">SyncSessionConfig</span></span><a class="reference internal" href="../../../_modules/advanced_alchemy/config/sync.html#SyncSessionConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SyncSessionConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../config/common.html#advanced_alchemy.config.common.GenericSessionConfig" title="advanced_alchemy.config.common.GenericSessionConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericSessionConfig</span></code></a>[<a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/connections.html#sqlalchemy.engine.Connection" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Connection</span></code></a>, <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/connections.html#sqlalchemy.engine.Engine" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Engine</span></code></a>, <a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/session_api.html#sqlalchemy.orm.Session" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>]</p>
+<p>Configuration for synchronous SQLAlchemy sessions.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.SyncSessionConfig.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">autobegin=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">autoflush=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binds=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expire_on_commit=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">join_transaction_mode=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_cls=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">twophase=&lt;class</span> <span class="pre">'advanced_alchemy.utils.dataclass.Empty'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.SyncSessionConfig.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.async_autocommit_before_send_handler">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">async_autocommit_before_send_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scope</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.async_autocommit_before_send_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Handle commit/rollback, closing and cleaning up sessions before sending.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.extensions.litestar.async_autocommit_before_send_handler.params.message"></span><strong>message</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.async_autocommit_before_send_handler.params.message">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPResponseStartEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPResponseStartEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPResponseBodyEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPResponseBodyEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPServerPushEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPServerPushEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPDisconnectEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPDisconnectEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketAcceptEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketAcceptEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketSendEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketSendEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketResponseStartEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketResponseStartEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketResponseBodyEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketResponseBodyEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketCloseEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketCloseEvent</span></code></a>]</span>) – ASGI-<code class="docutils literal notranslate"><span class="pre">litestar.types.Message</span></code></p></li>
+<li><p><span class="target" id="advanced_alchemy.extensions.litestar.async_autocommit_before_send_handler.params.scope"></span><strong>scope</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.async_autocommit_before_send_handler.params.scope">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPScope" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPScope</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketScope" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketScope</span></code></a>]</span>) – An ASGI-<code class="docutils literal notranslate"><span class="pre">litestar.types.Scope</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.async_autocommit_handler_maker">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">async_autocommit_handler_maker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commit_on_redirect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_commit_statuses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_rollback_statuses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_scope_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_sqlalchemy_db_session'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.async_autocommit_handler_maker" title="Link to this definition">¶</a></dt>
+<dd><p>Set up the handler to issue a transaction commit or rollback based on specified status codes
+:type _sphinx_paramlinks_advanced_alchemy.extensions.litestar.async_autocommit_handler_maker.commit_on_redirect: 
+:param _sphinx_paramlinks_advanced_alchemy.extensions.litestar.async_autocommit_handler_maker.commit_on_redirect: Issue a commit when the response status is a redirect (<code class="docutils literal notranslate"><span class="pre">3XX</span></code>)
+:type _sphinx_paramlinks_advanced_alchemy.extensions.litestar.async_autocommit_handler_maker.extra_commit_statuses: 
+:param _sphinx_paramlinks_advanced_alchemy.extensions.litestar.async_autocommit_handler_maker.extra_commit_statuses: A set of additional status codes that trigger a commit
+:type _sphinx_paramlinks_advanced_alchemy.extensions.litestar.async_autocommit_handler_maker.extra_rollback_statuses: 
+:param _sphinx_paramlinks_advanced_alchemy.extensions.litestar.async_autocommit_handler_maker.extra_rollback_statuses: A set of additional status codes that trigger a rollback
+:type _sphinx_paramlinks_advanced_alchemy.extensions.litestar.async_autocommit_handler_maker.session_scope_key: 
+:param _sphinx_paramlinks_advanced_alchemy.extensions.litestar.async_autocommit_handler_maker.session_scope_key: The key to use within the application state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The handler callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.async_default_before_send_handler">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">async_default_before_send_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scope</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.async_default_before_send_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Handle commit/rollback, closing and cleaning up sessions before sending.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.extensions.litestar.async_default_before_send_handler.params.message"></span><strong>message</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.async_default_before_send_handler.params.message">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPResponseStartEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPResponseStartEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPResponseBodyEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPResponseBodyEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPServerPushEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPServerPushEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPDisconnectEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPDisconnectEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketAcceptEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketAcceptEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketSendEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketSendEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketResponseStartEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketResponseStartEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketResponseBodyEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketResponseBodyEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketCloseEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketCloseEvent</span></code></a>]</span>) – ASGI-<code class="docutils literal notranslate"><span class="pre">Message</span></code></p></li>
+<li><p><span class="target" id="advanced_alchemy.extensions.litestar.async_default_before_send_handler.params.scope"></span><strong>scope</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.async_default_before_send_handler.params.scope">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPScope" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPScope</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketScope" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketScope</span></code></a>]</span>) – An ASGI-<code class="docutils literal notranslate"><span class="pre">Scope</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.async_default_handler_maker">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">async_default_handler_maker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_scope_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_sqlalchemy_db_session'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.async_default_handler_maker" title="Link to this definition">¶</a></dt>
+<dd><p>Set up the handler to issue a transaction commit or rollback based on specified status codes
+:type _sphinx_paramlinks_advanced_alchemy.extensions.litestar.async_default_handler_maker.session_scope_key: 
+:param _sphinx_paramlinks_advanced_alchemy.extensions.litestar.async_default_handler_maker.session_scope_key: The key to use within the application state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The handler callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.get_database_migration_plugin">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">get_database_migration_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/cli.html#get_database_migration_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.get_database_migration_plugin" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieve a database migration plugin from the Litestar application’s plugins.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#advanced_alchemy.extensions.litestar.SQLAlchemyInitPlugin" title="advanced_alchemy.extensions.litestar.plugins.init.plugin.SQLAlchemyInitPlugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyInitPlugin</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.sync_autocommit_before_send_handler">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">sync_autocommit_before_send_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scope</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.sync_autocommit_before_send_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Handle commit/rollback, closing and cleaning up sessions before sending.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.extensions.litestar.sync_autocommit_before_send_handler.params.message"></span><strong>message</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.sync_autocommit_before_send_handler.params.message">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPResponseStartEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPResponseStartEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPResponseBodyEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPResponseBodyEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPServerPushEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPServerPushEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPDisconnectEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPDisconnectEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketAcceptEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketAcceptEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketSendEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketSendEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketResponseStartEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketResponseStartEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketResponseBodyEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketResponseBodyEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketCloseEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketCloseEvent</span></code></a>]</span>) – ASGI-<code class="docutils literal notranslate"><span class="pre">Message</span></code></p></li>
+<li><p><span class="target" id="advanced_alchemy.extensions.litestar.sync_autocommit_before_send_handler.params.scope"></span><strong>scope</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.sync_autocommit_before_send_handler.params.scope">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPScope" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPScope</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketScope" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketScope</span></code></a>]</span>) – An ASGI-<code class="docutils literal notranslate"><span class="pre">Scope</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.sync_autocommit_handler_maker">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">sync_autocommit_handler_maker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commit_on_redirect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_commit_statuses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_rollback_statuses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_scope_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_sqlalchemy_db_session'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.sync_autocommit_handler_maker" title="Link to this definition">¶</a></dt>
+<dd><p>Set up the handler to issue a transaction commit or rollback based on specified status codes
+:type _sphinx_paramlinks_advanced_alchemy.extensions.litestar.sync_autocommit_handler_maker.commit_on_redirect: 
+:param _sphinx_paramlinks_advanced_alchemy.extensions.litestar.sync_autocommit_handler_maker.commit_on_redirect: Issue a commit when the response status is a redirect (<code class="docutils literal notranslate"><span class="pre">3XX</span></code>)
+:type _sphinx_paramlinks_advanced_alchemy.extensions.litestar.sync_autocommit_handler_maker.extra_commit_statuses: 
+:param _sphinx_paramlinks_advanced_alchemy.extensions.litestar.sync_autocommit_handler_maker.extra_commit_statuses: A set of additional status codes that trigger a commit
+:type _sphinx_paramlinks_advanced_alchemy.extensions.litestar.sync_autocommit_handler_maker.extra_rollback_statuses: 
+:param _sphinx_paramlinks_advanced_alchemy.extensions.litestar.sync_autocommit_handler_maker.extra_rollback_statuses: A set of additional status codes that trigger a rollback
+:type _sphinx_paramlinks_advanced_alchemy.extensions.litestar.sync_autocommit_handler_maker.session_scope_key: 
+:param _sphinx_paramlinks_advanced_alchemy.extensions.litestar.sync_autocommit_handler_maker.session_scope_key: The key to use within the application state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The handler callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.sync_default_before_send_handler">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">sync_default_before_send_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scope</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.sync_default_before_send_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Handle commit/rollback, closing and cleaning up sessions before sending.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.extensions.litestar.sync_default_before_send_handler.params.message"></span><strong>message</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.sync_default_before_send_handler.params.message">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPResponseStartEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPResponseStartEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPResponseBodyEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPResponseBodyEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPServerPushEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPServerPushEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPDisconnectEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPDisconnectEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketAcceptEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketAcceptEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketSendEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketSendEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketResponseStartEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketResponseStartEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketResponseBodyEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketResponseBodyEvent</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketCloseEvent" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketCloseEvent</span></code></a>]</span>) – ASGI-<code class="docutils literal notranslate"><span class="pre">Message</span></code></p></li>
+<li><p><span class="target" id="advanced_alchemy.extensions.litestar.sync_default_before_send_handler.params.scope"></span><strong>scope</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.sync_default_before_send_handler.params.scope">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.HTTPScope" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTPScope</span></code></a>, <a class="reference external" href="https://docs.litestar.dev/latest/reference/types.html#litestar.types.WebSocketScope" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketScope</span></code></a>]</span>) – An ASGI-<code class="docutils literal notranslate"><span class="pre">Scope</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.sync_default_handler_maker">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.extensions.litestar.</span></span><span class="sig-name descname"><span class="pre">sync_default_handler_maker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_scope_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_sqlalchemy_db_session'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.litestar.sync_default_handler_maker" title="Link to this definition">¶</a></dt>
+<dd><p>Set up the handler to issue a transaction commit or rollback based on specified status codes
+:type _sphinx_paramlinks_advanced_alchemy.extensions.litestar.sync_default_handler_maker.session_scope_key: 
+:param _sphinx_paramlinks_advanced_alchemy.extensions.litestar.sync_default_handler_maker.session_scope_key: The key to use within the application state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The handler callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="additional-api-references">
+<h2>Additional API References<a class="headerlink" href="#additional-api-references" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dto.html">dto</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">cli</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="../index.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Extensions</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="dto.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">dto</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2025, Litestar Organization</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a>
+<a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+  <iconify-icon icon="simple-icons:discord"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../_static/documentation_options.js?v=c6cf4326"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=a56c686a"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../../_static/shibuya.js?v=e2230717"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../../_static/versioning.js?v=68b42869"></script></body>
+</html>
