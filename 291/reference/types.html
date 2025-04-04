@@ -298,6 +298,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.types.MutableList.__setitem__"><code class="docutils literal notranslate">__setitem__()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.MutableList.append"><code class="docutils literal notranslate">append()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.MutableList.clear"><code class="docutils literal notranslate">clear()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.MutableList.coerce"><code class="docutils literal notranslate">coerce()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.MutableList.extend"><code class="docutils literal notranslate">extend()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.MutableList.insert"><code class="docutils literal notranslate">insert()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.MutableList.pop"><code class="docutils literal notranslate">pop()</span></code></a></li>
@@ -1235,7 +1236,7 @@ It extends <a class="reference external" href="https://docs.sqlalchemy.org/en/20
 
 <dl class="py method">
 <dt class="sig sig-object py" id="advanced_alchemy.types.EncryptedString.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key=b'\x8b\xb3\xd5Z\x1e\x8c\x00W\x9c\x97&quot;\xfc\xb2\xf2\xef=&lt;\xd7\x15\x8d\xb5\x88\xbd\xd52&lt;\xaa\xc3\xac\x84M\xec'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend=&lt;class</span> <span class="pre">'advanced_alchemy.types.encrypted_string.FernetBackend'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/encrypted_string.html#EncryptedString.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.EncryptedString.__init__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key=b'(U\xc6&#64;\xb7\xafV\x12\x95\xb2\x1e\xbclQ\x9d\t\x16J\x811\xbd\xa6\x13&lt;$\xe2\x07\x14\t\x9b\x94\xe5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend=&lt;class</span> <span class="pre">'advanced_alchemy.types.encrypted_string.FernetBackend'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/encrypted_string.html#EncryptedString.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.EncryptedString.__init__" title="Link to this definition">¶</a></dt>
 <dd><p>Initializes the EncryptedString TypeDecorator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1432,14 +1433,14 @@ For most encryption methods, the encrypted string will be approximately 1.35x lo
 <li><p><span class="target" id="advanced_alchemy.types.EncryptedString.process_bind_param.params.dialect"></span><strong>dialect</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.EncryptedString.process_bind_param.params.dialect">¶</a> (<em>Dialect</em>) – The SQLAlchemy dialect.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The encrypted value or None if the input is None.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a> | None</p>
-</dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the value exceeds the specified length.</p>
+<dd class="field-even"><p><strong>IntegrityError</strong> – If the unencrypted value exceeds the maximum length.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The encrypted value or None if the input is None.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a> | None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1786,12 +1787,6 @@ built-in rotation support.</p>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If the value is not a string.</p></li>
-<li><p><a class="reference external" href="https://cryptography.io/en/latest/fernet/#cryptography.fernet.InvalidToken" title="(in Cryptography v45.0.0.dev1)"><strong>cryptography.fernet.InvalidToken</strong></a> – If decryption fails.</p></li>
-</ul>
-</dd>
 </dl>
 </dd></dl>
 
@@ -1808,12 +1803,6 @@ built-in rotation support.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If the value is not a string.</p></li>
-<li><p><a class="reference external" href="https://cryptography.io/en/latest/fernet/#cryptography.fernet.InvalidToken" title="(in Cryptography v45.0.0.dev1)"><strong>cryptography.fernet.InvalidToken</strong></a> – If encryption fails.</p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -2225,6 +2214,17 @@ and keep them when session rolled back.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.MutableList.coerce">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coerce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/mutables.html#MutableList.coerce"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.MutableList.coerce" title="Link to this definition">¶</a></dt>
+<dd><p>Convert plain list to instance of this class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">typing.Any</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="advanced_alchemy.types.MutableList.extend">
 <span class="sig-name descname"><span class="pre">extend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/mutables.html#MutableList.extend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.MutableList.extend" title="Link to this definition">¶</a></dt>
 <dd><p>Extend list by appending elements from the iterable.</p>
@@ -2253,7 +2253,7 @@ and keep them when session rolled back.</p>
 <p>Raises IndexError if list is empty or index is out of range.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>, bound= <a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>)</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>, bound= Any)</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2331,9 +2331,6 @@ Requires the pgcrypto extension to be installed in the database.</p>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If the value is not a string.</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -2350,9 +2347,6 @@ Requires the pgcrypto extension to be installed in the database.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If the value is not a string.</p>
 </dd>
 </dl>
 </dd></dl>
