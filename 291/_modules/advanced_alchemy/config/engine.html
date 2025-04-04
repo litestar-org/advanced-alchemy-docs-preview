@@ -246,7 +246,7 @@ data-aria-dark="Switch to auto color mode">
         <article class="yue" role="main">
           <h1>Source code for advanced_alchemy.config.engine</h1><div class="highlight"><pre>
 <span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
-</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Union</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 </span><span data-line="3">
 </span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy._serialization</span><span class="w"> </span><span class="kn">import</span> <span class="n">decode_json</span><span class="p">,</span> <span class="n">encode_json</span>
 </span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.dataclass</span><span class="w"> </span><span class="kn">import</span> <span class="n">Empty</span>
@@ -317,7 +317,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="68">    <span class="n">json_serializer</span><span class="p">:</span> <span class="s2">&quot;Callable[[Any], str]&quot;</span> <span class="o">=</span> <span class="n">encode_json</span>
 </span><span data-line="69"><span class="w">    </span><span class="sd">&quot;&quot;&quot;For dialects that support the JSON datatype, this is a Python callable that will render a given object as JSON.</span>
 </span><span data-line="70"><span class="sd">    By default, Litestar&#39;s :attr:`encode_json() &lt;.serialization.encode_json&gt;` is used.&quot;&quot;&quot;</span>
-</span><span data-line="71">    <span class="n">label_length</span><span class="p">:</span> <span class="s2">&quot;Union[int, None, EmptyType]&quot;</span> <span class="o">=</span> <span class="n">Empty</span>
+</span><span data-line="71">    <span class="n">label_length</span><span class="p">:</span> <span class="s2">&quot;Optional[Union[int, EmptyType]]&quot;</span> <span class="o">=</span> <span class="n">Empty</span>
 </span><span data-line="72"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Optional integer value which limits the size of dynamically generated column labels to that many characters. If</span>
 </span><span data-line="73"><span class="sd">    less than 6, labels are generated as “_(counter)”. If ``None``, the value of ``dialect.max_identifier_length``,</span>
 </span><span data-line="74"><span class="sd">    which may be affected via the</span>
@@ -328,7 +328,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="79">    <span class="n">logging_name</span><span class="p">:</span> <span class="s2">&quot;Union[str, EmptyType]&quot;</span> <span class="o">=</span> <span class="n">Empty</span>
 </span><span data-line="80"><span class="w">    </span><span class="sd">&quot;&quot;&quot;String identifier which will be used within the “name” field of logging records generated within the</span>
 </span><span data-line="81"><span class="sd">    “sqlalchemy.engine” logger. Defaults to a hexstring of the object`s id.&quot;&quot;&quot;</span>
-</span><span data-line="82">    <span class="n">max_identifier_length</span><span class="p">:</span> <span class="s2">&quot;Union[int, None, EmptyType]&quot;</span> <span class="o">=</span> <span class="n">Empty</span>
+</span><span data-line="82">    <span class="n">max_identifier_length</span><span class="p">:</span> <span class="s2">&quot;Optional[Union[int, EmptyType]]&quot;</span> <span class="o">=</span> <span class="n">Empty</span>
 </span><span data-line="83"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Override the max_identifier_length determined by the dialect. if ``None`` or ``0``, has no effect. This is the</span>
 </span><span data-line="84"><span class="sd">    database`s configured maximum number of characters that may be used in a SQL identifier such as a table name, column</span>
 </span><span data-line="85"><span class="sd">    name, or label name. All dialects determine this value automatically, however in the case of a new database version</span>
@@ -337,25 +337,25 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="88"><span class="w">    </span><span class="sd">&quot;&quot;&quot;The number of connections to allow in connection pool “overflow”, that is connections that can be opened above</span>
 </span><span data-line="89"><span class="sd">    and beyond the pool_size setting, which defaults to five. This is only used with</span>
 </span><span data-line="90"><span class="sd">    :class:`QueuePool &lt;sqlalchemy.pool.QueuePool&gt;`.&quot;&quot;&quot;</span>
-</span><span data-line="91">    <span class="n">module</span><span class="p">:</span> <span class="s2">&quot;Union[Any, None, EmptyType]&quot;</span> <span class="o">=</span> <span class="n">Empty</span>
+</span><span data-line="91">    <span class="n">module</span><span class="p">:</span> <span class="s2">&quot;Optional[Union[Any, EmptyType]]&quot;</span> <span class="o">=</span> <span class="n">Empty</span>
 </span><span data-line="92"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Reference to a Python module object (the module itself, not its string name). Specifies an alternate DBAPI module</span>
 </span><span data-line="93"><span class="sd">    to be used by the engine`s dialect. Each sub-dialect references a specific DBAPI which will be imported before first</span>
 </span><span data-line="94"><span class="sd">    connect. This parameter causes the import to be bypassed, and the given module to be used instead. Can be used for</span>
 </span><span data-line="95"><span class="sd">    testing of DBAPIs as well as to inject “mock” DBAPI implementations into the</span>
 </span><span data-line="96"><span class="sd">    :class:`Engine &lt;sqlalchemy.engine.Engine&gt;`.&quot;&quot;&quot;</span>
-</span><span data-line="97">    <span class="n">paramstyle</span><span class="p">:</span> <span class="s2">&quot;Union[_ParamStyle, None, EmptyType]&quot;</span> <span class="o">=</span> <span class="n">Empty</span>
+</span><span data-line="97">    <span class="n">paramstyle</span><span class="p">:</span> <span class="s2">&quot;Optional[Union[_ParamStyle, EmptyType]]&quot;</span> <span class="o">=</span> <span class="n">Empty</span>
 </span><span data-line="98"><span class="w">    </span><span class="sd">&quot;&quot;&quot;The paramstyle to use when rendering bound parameters. This style defaults to the one recommended by the DBAPI</span>
 </span><span data-line="99"><span class="sd">    itself, which is retrieved from the ``.paramstyle`` attribute of the DBAPI. However, most DBAPIs accept more than</span>
 </span><span data-line="100"><span class="sd">    one paramstyle, and in particular it may be desirable to change a “named” paramstyle into a “positional” one, or</span>
 </span><span data-line="101"><span class="sd">    vice versa. When this attribute is passed, it should be one of the values &quot;qmark&quot;, &quot;numeric&quot;, &quot;named&quot;, &quot;format&quot; or</span>
 </span><span data-line="102"><span class="sd">    &quot;pyformat&quot;, and should correspond to a parameter style known to be supported by the DBAPI in use.&quot;&quot;&quot;</span>
-</span><span data-line="103">    <span class="n">pool</span><span class="p">:</span> <span class="s2">&quot;Union[Pool, None, EmptyType]&quot;</span> <span class="o">=</span> <span class="n">Empty</span>
+</span><span data-line="103">    <span class="n">pool</span><span class="p">:</span> <span class="s2">&quot;Optional[Union[Pool, EmptyType]]&quot;</span> <span class="o">=</span> <span class="n">Empty</span>
 </span><span data-line="104"><span class="w">    </span><span class="sd">&quot;&quot;&quot;An already-constructed instance of :class:`Pool &lt;sqlalchemy.pool.Pool&gt;`, such as a</span>
 </span><span data-line="105"><span class="sd">    :class:`QueuePool &lt;sqlalchemy.pool.QueuePool&gt;` instance. If non-None, this pool will be used directly as the</span>
 </span><span data-line="106"><span class="sd">    underlying connection pool for the engine, bypassing whatever connection parameters are present in the URL argument.</span>
 </span><span data-line="107"><span class="sd">    For information on constructing connection pools manually, see</span>
 </span><span data-line="108"><span class="sd">    `Connection Pooling &lt;https://docs.sqlalchemy.org/en/20/core/pooling.html&gt;`_.&quot;&quot;&quot;</span>
-</span><span data-line="109">    <span class="n">poolclass</span><span class="p">:</span> <span class="s2">&quot;Union[type[Pool], None, EmptyType]&quot;</span> <span class="o">=</span> <span class="n">Empty</span>
+</span><span data-line="109">    <span class="n">poolclass</span><span class="p">:</span> <span class="s2">&quot;Optional[Union[type[Pool], EmptyType]]&quot;</span> <span class="o">=</span> <span class="n">Empty</span>
 </span><span data-line="110"><span class="w">    </span><span class="sd">&quot;&quot;&quot;A :class:`Pool &lt;sqlalchemy.pool.Pool&gt;` subclass, which will be used to create a connection pool instance using</span>
 </span><span data-line="111"><span class="sd">    the connection parameters given in the URL. Note this differs from pool in that you don`t actually instantiate the</span>
 </span><span data-line="112"><span class="sd">    pool in this case, you just indicate what type of pool to be used.&quot;&quot;&quot;</span>
