@@ -218,11 +218,12 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.engine_config"><code class="docutils literal notranslate">engine_config</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.session_maker"><code class="docutils literal notranslate">session_maker</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.engine_instance"><code class="docutils literal notranslate">engine_instance</span></code></a></li>
-<li><a class="reference internal" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.create_all"><code class="docutils literal notranslate">create_all</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.metadata"><code class="docutils literal notranslate">metadata</span></code></a></li>
-<li><a class="reference internal" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.enable_touch_updated_timestamp_listener"><code class="docutils literal notranslate">enable_touch_updated_timestamp_listener</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.bind_key"><code class="docutils literal notranslate">bind_key</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.enable_touch_updated_timestamp_listener"><code class="docutils literal notranslate">enable_touch_updated_timestamp_listener</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.enable_file_object_listener"><code class="docutils literal notranslate">enable_file_object_listener</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.engine_config_dict"><code class="docutils literal notranslate">engine_config_dict</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.session_config_dict"><code class="docutils literal notranslate">session_config_dict</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.get_engine"><code class="docutils literal notranslate">get_engine()</span></code></a></li>
@@ -436,7 +437,7 @@ or <a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/ses
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.config.common.GenericSQLAlchemyConfig.connection_string">
-<span class="sig-name descname"><span class="pre">connection_string</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union[str,</span> <span class="pre">None]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.connection_string" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">connection_string</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional[str]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.connection_string" title="Link to this definition">¶</a></dt>
 <dd><p>Database connection string in one of the formats supported by SQLAlchemy.</p>
 <div class="admonition-notes admonition">
 <p class="admonition-title">Notes</p>
@@ -456,22 +457,17 @@ e.g. <code class="docutils literal notranslate"><span class="pre">'postgresql+as
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.config.common.GenericSQLAlchemyConfig.session_maker">
-<span class="sig-name descname"><span class="pre">session_maker</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union[Callable[[],</span> <span class="pre">SessionT],</span> <span class="pre">None]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.session_maker" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">session_maker</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional[Callable[[],</span> <span class="pre">SessionT]]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.session_maker" title="Link to this definition">¶</a></dt>
 <dd><p>Callable that returns a session.</p>
 <p>If provided, the plugin will use this rather than instantiate a sessionmaker.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.config.common.GenericSQLAlchemyConfig.engine_instance">
-<span class="sig-name descname"><span class="pre">engine_instance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union[EngineT,</span> <span class="pre">None]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.engine_instance" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">engine_instance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional[EngineT]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.engine_instance" title="Link to this definition">¶</a></dt>
 <dd><p>Optional engine to use.</p>
 <p>If set, the plugin will use the provided instance rather than instantiate an engine.</p>
 </dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="advanced_alchemy.config.common.GenericSQLAlchemyConfig.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">create_engine_callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_maker_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_string=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_config=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_maker=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_instance=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_all=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_touch_updated_timestamp_listener=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind_key=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.__init__" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.config.common.GenericSQLAlchemyConfig.create_all">
@@ -479,11 +475,22 @@ e.g. <code class="docutils literal notranslate"><span class="pre">'postgresql+as
 <dd><p>If true, all models are automatically created on engine creation.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.config.common.GenericSQLAlchemyConfig.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">create_engine_callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_maker_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_string=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_config=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_maker=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_instance=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_all=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind_key=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_touch_updated_timestamp_listener=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_file_object_listener=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.config.common.GenericSQLAlchemyConfig.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union[MetaData,</span> <span class="pre">None]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.metadata" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional[MetaData]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.metadata" title="Link to this definition">¶</a></dt>
 <dd><p>Optional metadata to use.</p>
 <p>If set, the plugin will use the provided instance rather than the default metadata.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.config.common.GenericSQLAlchemyConfig.bind_key">
+<span class="sig-name descname"><span class="pre">bind_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional[str]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.bind_key" title="Link to this definition">¶</a></dt>
+<dd><p>Bind key to register a metadata to a specific engine configuration.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -495,9 +502,11 @@ Disable if you plan to bring your own update mechanism for these columns</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="advanced_alchemy.config.common.GenericSQLAlchemyConfig.bind_key">
-<span class="sig-name descname"><span class="pre">bind_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union[str,</span> <span class="pre">None]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.bind_key" title="Link to this definition">¶</a></dt>
-<dd><p>Bind key to register a metadata to a specific engine configuration.</p>
+<dt class="sig sig-object py" id="advanced_alchemy.config.common.GenericSQLAlchemyConfig.enable_file_object_listener">
+<span class="sig-name descname"><span class="pre">enable_file_object_listener</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.enable_file_object_listener" title="Link to this definition">¶</a></dt>
+<dd><p>Enable FileObject listener.</p>
+<p>This is a listener that will automatically save and delete <code class="xref py py-class docutils literal notranslate"><span class="pre">FileObject</span></code> instances when they are saved or deleted.</p>
+<p>Disable if you plan to bring your own save/delete mechanism for these columns</p>
 </dd></dl>
 
 <dl class="py property">

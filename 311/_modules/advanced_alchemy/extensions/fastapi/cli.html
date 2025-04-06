@@ -263,27 +263,37 @@ data-aria-dark="Switch to auto color mode">
 <div class="viewcode-block" id="get_database_migration_plugin">
 <a class="viewcode-back" href="../../../../reference/extensions/fastapi/index.html#advanced_alchemy.extensions.fastapi.get_database_migration_plugin">[docs]</a>
 </span><span data-line="16"><span class="k">def</span><span class="w"> </span><span class="nf">get_database_migration_plugin</span><span class="p">(</span><span class="n">app</span><span class="p">:</span> <span class="s2">&quot;FastAPI&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AdvancedAlchemy&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="17"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve the Advanced Alchemy extension from a FastAPI application instance.&quot;&quot;&quot;</span>
-</span><span data-line="18">    <span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImproperConfigurationError</span>
-</span><span data-line="19">
-</span><span data-line="20">    <span class="n">extension</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;Optional[AdvancedAlchemy]&quot;</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="s2">&quot;advanced_alchemy&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
-</span><span data-line="21">    <span class="k">if</span> <span class="n">extension</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="22">        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Failed to initialize database CLI. The Advanced Alchemy extension is not properly configured.&quot;</span>
-</span><span data-line="23">        <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span data-line="24">    <span class="k">return</span> <span class="n">extension</span></div>
+</span><span data-line="17"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve the Advanced Alchemy extension from a FastAPI application instance.</span>
+</span><span data-line="18">
+</span><span data-line="19"><span class="sd">    Args:</span>
+</span><span data-line="20"><span class="sd">        app: The FastAPI application instance.</span>
+</span><span data-line="21">
+</span><span data-line="22"><span class="sd">    Raises:</span>
+</span><span data-line="23"><span class="sd">        ImproperConfigurationError: If the Advanced Alchemy extension is not properly configured.</span>
+</span><span data-line="24">
+</span><span data-line="25"><span class="sd">    Returns:</span>
+</span><span data-line="26"><span class="sd">        The Advanced Alchemy extension instance.</span>
+</span><span data-line="27"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="28">    <span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImproperConfigurationError</span>
+</span><span data-line="29">
+</span><span data-line="30">    <span class="n">extension</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;Optional[AdvancedAlchemy]&quot;</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="s2">&quot;advanced_alchemy&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+</span><span data-line="31">    <span class="k">if</span> <span class="n">extension</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="32">        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Failed to initialize database CLI. The Advanced Alchemy extension is not properly configured.&quot;</span>
+</span><span data-line="33">        <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span data-line="34">    <span class="k">return</span> <span class="n">extension</span></div>
 
-</span><span data-line="25">
-</span><span data-line="26">
-</span><span data-line="27"><span class="k">def</span><span class="w"> </span><span class="nf">register_database_commands</span><span class="p">(</span><span class="n">app</span><span class="p">:</span> <span class="s2">&quot;FastAPI&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">click</span><span class="o">.</span><span class="n">Group</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="28">    <span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;database&quot;</span><span class="p">)</span>
-</span><span data-line="29">    <span class="nd">@click</span><span class="o">.</span><span class="n">pass_context</span>
-</span><span data-line="30">    <span class="k">def</span><span class="w"> </span><span class="nf">database_group</span><span class="p">(</span><span class="n">ctx</span><span class="p">:</span> <span class="n">click</span><span class="o">.</span><span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="31"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Manage SQLAlchemy database components.&quot;&quot;&quot;</span>
-</span><span data-line="32">        <span class="n">ctx</span><span class="o">.</span><span class="n">ensure_object</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
-</span><span data-line="33">        <span class="n">ctx</span><span class="o">.</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;configs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_database_migration_plugin</span><span class="p">(</span><span class="n">app</span><span class="p">)</span><span class="o">.</span><span class="n">config</span>
-</span><span data-line="34">
-</span><span data-line="35">    <span class="n">add_migration_commands</span><span class="p">(</span><span class="n">database_group</span><span class="p">)</span>
-</span><span data-line="36">    <span class="k">return</span> <span class="n">database_group</span>
+</span><span data-line="35">
+</span><span data-line="36">
+</span><span data-line="37"><span class="k">def</span><span class="w"> </span><span class="nf">register_database_commands</span><span class="p">(</span><span class="n">app</span><span class="p">:</span> <span class="s2">&quot;FastAPI&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">click</span><span class="o">.</span><span class="n">Group</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="38">    <span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;database&quot;</span><span class="p">)</span>
+</span><span data-line="39">    <span class="nd">@click</span><span class="o">.</span><span class="n">pass_context</span>
+</span><span data-line="40">    <span class="k">def</span><span class="w"> </span><span class="nf">database_group</span><span class="p">(</span><span class="n">ctx</span><span class="p">:</span> <span class="n">click</span><span class="o">.</span><span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="41"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Manage SQLAlchemy database components.&quot;&quot;&quot;</span>
+</span><span data-line="42">        <span class="n">ctx</span><span class="o">.</span><span class="n">ensure_object</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+</span><span data-line="43">        <span class="n">ctx</span><span class="o">.</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;configs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_database_migration_plugin</span><span class="p">(</span><span class="n">app</span><span class="p">)</span><span class="o">.</span><span class="n">config</span>
+</span><span data-line="44">
+</span><span data-line="45">    <span class="n">add_migration_commands</span><span class="p">(</span><span class="n">database_group</span><span class="p">)</span>
+</span><span data-line="46">    <span class="k">return</span> <span class="n">database_group</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
