@@ -367,9 +367,9 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="49">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Seeding database...&quot;</span><span class="p">)</span>
 </span><span data-line="50">
 </span><span data-line="51">    <span class="c1"># Create a session</span>
-</span><span data-line="52">    <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span data-line="52">    <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
 </span><span data-line="53">        <span class="c1"># Create repository for product model</span>
-</span><span data-line="54">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="54">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="55">
 </span><span data-line="56">        <span class="c1"># Load and add product data</span>
 </span><span data-line="57">        <span class="k">try</span><span class="p">:</span>
@@ -377,7 +377,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="59">            <span class="n">product_data</span> <span class="o">=</span> <span class="n">open_fixture</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;product&quot;</span><span class="p">)</span>
 </span><span data-line="60">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">product_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> products from fixture&quot;</span><span class="p">)</span>
 </span><span data-line="61">            <span class="n">product_repo</span><span class="o">.</span><span class="n">add_many</span><span class="p">([</span><span class="n">Product</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">product_data</span><span class="p">])</span>
-</span><span data-line="62">            <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span><span data-line="62">            <span class="n">db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </span><span data-line="63">        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
 </span><span data-line="64">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find fixture file at </span><span class="si">{</span><span class="n">fixtures_path</span><span class="si">}</span><span class="s2">/product.json&quot;</span><span class="p">)</span>
 </span><span data-line="65">
@@ -451,9 +451,9 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="52">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Seeding database...&quot;</span><span class="p">)</span>
 </span><span data-line="53">
 </span><span data-line="54">    <span class="c1"># Create a session</span>
-</span><span data-line="55">    <span class="k">async</span> <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span data-line="55">    <span class="k">async</span> <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
 </span><span data-line="56">        <span class="c1"># Create repository for product model</span>
-</span><span data-line="57">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="57">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="58">
 </span><span data-line="59">        <span class="c1"># Load and add product data</span>
 </span><span data-line="60">        <span class="k">try</span><span class="p">:</span>
@@ -461,7 +461,7 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="62">            <span class="n">product_data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">open_fixture_async</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;product&quot;</span><span class="p">)</span>
 </span><span data-line="63">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">product_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> products from fixture&quot;</span><span class="p">)</span>
 </span><span data-line="64">            <span class="k">await</span> <span class="n">product_repo</span><span class="o">.</span><span class="n">add_many</span><span class="p">([</span><span class="n">Product</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">product_data</span><span class="p">])</span>
-</span><span data-line="65">            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span><span data-line="65">            <span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </span><span data-line="66">        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
 </span><span data-line="67">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find fixture file at </span><span class="si">{</span><span class="n">fixtures_path</span><span class="si">}</span><span class="s2">/product.json&quot;</span><span class="p">)</span>
 </span><span data-line="68">
@@ -539,9 +539,9 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="51">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Seeding database...&quot;</span><span class="p">)</span>
 </span><span data-line="52">
 </span><span data-line="53">    <span class="c1"># Create a session</span>
-</span><span data-line="54">    <span class="k">async</span> <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span data-line="54">    <span class="k">async</span> <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
 </span><span data-line="55">        <span class="c1"># Create repository for product model</span>
-</span><span data-line="56">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="56">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="57">
 </span><span data-line="58">        <span class="c1"># Load and add product data</span>
 </span><span data-line="59">        <span class="k">try</span><span class="p">:</span>
@@ -549,7 +549,7 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="61">            <span class="n">product_data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">open_fixture_async</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;product&quot;</span><span class="p">)</span>
 </span><span data-line="62">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">product_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> products from fixture&quot;</span><span class="p">)</span>
 </span><span data-line="63">            <span class="k">await</span> <span class="n">product_repo</span><span class="o">.</span><span class="n">add_many</span><span class="p">([</span><span class="n">Product</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">product_data</span><span class="p">])</span>
-</span><span data-line="64">            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span><span data-line="64">            <span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </span><span data-line="65">        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
 </span><span data-line="66">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find fixture file at </span><span class="si">{</span><span class="n">fixtures_path</span><span class="si">}</span><span class="s2">/product.json&quot;</span><span class="p">)</span>
 </span><span data-line="67">
@@ -637,16 +637,16 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="53">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running startup routine...&quot;</span><span class="p">)</span>
 </span><span data-line="54">
 </span><span data-line="55">    <span class="c1"># Create a session and seed data</span>
-</span><span data-line="56">    <span class="k">async</span> <span class="k">with</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span data-line="56">    <span class="k">async</span> <span class="k">with</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
 </span><span data-line="57">        <span class="c1"># Create repository for product model</span>
-</span><span data-line="58">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="58">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="59">        <span class="c1"># Load and add product data</span>
 </span><span data-line="60">        <span class="k">try</span><span class="p">:</span>
 </span><span data-line="61">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempting to load fixtures from </span><span class="si">{</span><span class="n">fixtures_path</span><span class="si">}</span><span class="s2">/product.json&quot;</span><span class="p">)</span>
 </span><span data-line="62">            <span class="n">product_data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">open_fixture_async</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;product&quot;</span><span class="p">)</span>
 </span><span data-line="63">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">product_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> products from fixture&quot;</span><span class="p">)</span>
 </span><span data-line="64">            <span class="k">await</span> <span class="n">product_repo</span><span class="o">.</span><span class="n">add_many</span><span class="p">([</span><span class="n">Product</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">product_data</span><span class="p">])</span>
-</span><span data-line="65">            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span><span data-line="65">            <span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </span><span data-line="66">        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
 </span><span data-line="67">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find fixture file at </span><span class="si">{</span><span class="n">fixtures_path</span><span class="si">}</span><span class="s2">/product.json&quot;</span><span class="p">)</span>
 </span><span data-line="68">
@@ -723,16 +723,16 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="52">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running startup routine...&quot;</span><span class="p">)</span>
 </span><span data-line="53">
 </span><span data-line="54">    <span class="c1"># Create a session and seed data</span>
-</span><span data-line="55">    <span class="k">async</span> <span class="k">with</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span data-line="55">    <span class="k">async</span> <span class="k">with</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
 </span><span data-line="56">        <span class="c1"># Create repository for product model</span>
-</span><span data-line="57">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="57">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="58">        <span class="c1"># Load and add product data</span>
 </span><span data-line="59">        <span class="k">try</span><span class="p">:</span>
 </span><span data-line="60">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempting to load fixtures from </span><span class="si">{</span><span class="n">fixtures_path</span><span class="si">}</span><span class="s2">/product.json&quot;</span><span class="p">)</span>
 </span><span data-line="61">            <span class="n">product_data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">open_fixture_async</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;product&quot;</span><span class="p">)</span>
 </span><span data-line="62">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">product_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> products from fixture&quot;</span><span class="p">)</span>
 </span><span data-line="63">            <span class="k">await</span> <span class="n">product_repo</span><span class="o">.</span><span class="n">add_many</span><span class="p">([</span><span class="n">Product</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">product_data</span><span class="p">])</span>
-</span><span data-line="64">            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span><span data-line="64">            <span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </span><span data-line="65">        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
 </span><span data-line="66">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find fixture file at </span><span class="si">{</span><span class="n">fixtures_path</span><span class="si">}</span><span class="s2">/product.json&quot;</span><span class="p">)</span>
 </span><span data-line="67">
@@ -809,16 +809,16 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="47">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running startup routine...&quot;</span><span class="p">)</span>
 </span><span data-line="48">
 </span><span data-line="49">    <span class="c1"># Create a session and seed data</span>
-</span><span data-line="50">    <span class="k">async</span> <span class="k">with</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span data-line="50">    <span class="k">async</span> <span class="k">with</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
 </span><span data-line="51">        <span class="c1"># Create repository for product model</span>
-</span><span data-line="52">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="52">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="53">        <span class="c1"># Load and add product data</span>
 </span><span data-line="54">        <span class="k">try</span><span class="p">:</span>
 </span><span data-line="55">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempting to load fixtures from </span><span class="si">{</span><span class="n">fixtures_path</span><span class="si">}</span><span class="s2">/product.json&quot;</span><span class="p">)</span>
 </span><span data-line="56">            <span class="n">product_data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">open_fixture_async</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;product&quot;</span><span class="p">)</span>
 </span><span data-line="57">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">product_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> products from fixture&quot;</span><span class="p">)</span>
 </span><span data-line="58">            <span class="k">await</span> <span class="n">product_repo</span><span class="o">.</span><span class="n">add_many</span><span class="p">([</span><span class="n">Product</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">product_data</span><span class="p">])</span>
-</span><span data-line="59">            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span><span data-line="59">            <span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </span><span data-line="60">        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
 </span><span data-line="61">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find fixture file at </span><span class="si">{</span><span class="n">fixtures_path</span><span class="si">}</span><span class="s2">/product.json&quot;</span><span class="p">)</span>
 </span><span data-line="62">
@@ -903,16 +903,16 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="46">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running startup routine...&quot;</span><span class="p">)</span>
 </span><span data-line="47">
 </span><span data-line="48">    <span class="c1"># Create a session and seed data</span>
-</span><span data-line="49">    <span class="k">async</span> <span class="k">with</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span data-line="49">    <span class="k">async</span> <span class="k">with</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
 </span><span data-line="50">        <span class="c1"># Create repository for product model</span>
-</span><span data-line="51">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="51">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="52">        <span class="c1"># Load and add product data</span>
 </span><span data-line="53">        <span class="k">try</span><span class="p">:</span>
 </span><span data-line="54">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempting to load fixtures from </span><span class="si">{</span><span class="n">fixtures_path</span><span class="si">}</span><span class="s2">/product.json&quot;</span><span class="p">)</span>
 </span><span data-line="55">            <span class="n">product_data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">open_fixture_async</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;product&quot;</span><span class="p">)</span>
 </span><span data-line="56">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">product_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> products from fixture&quot;</span><span class="p">)</span>
 </span><span data-line="57">            <span class="k">await</span> <span class="n">product_repo</span><span class="o">.</span><span class="n">add_many</span><span class="p">([</span><span class="n">Product</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">product_data</span><span class="p">])</span>
-</span><span data-line="58">            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span><span data-line="58">            <span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </span><span data-line="59">        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
 </span><span data-line="60">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find fixture file at </span><span class="si">{</span><span class="n">fixtures_path</span><span class="si">}</span><span class="s2">/product.json&quot;</span><span class="p">)</span>
 </span><span data-line="61">
@@ -1009,14 +1009,14 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="53"><span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">app_context</span><span class="p">():</span>  <span class="c1"># noqa: SIM117</span>
 </span><span data-line="54">    <span class="c1"># Seed data</span>
 </span><span data-line="55">    <span class="k">with</span> <span class="n">db</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-</span><span data-line="56">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="56">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="57">        <span class="c1"># Load and add product data</span>
 </span><span data-line="58">        <span class="k">try</span><span class="p">:</span>
 </span><span data-line="59">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempting to load fixtures from </span><span class="si">{</span><span class="n">fixtures_path</span><span class="si">}</span><span class="s2">/product.json&quot;</span><span class="p">)</span>
 </span><span data-line="60">            <span class="n">product_data</span> <span class="o">=</span> <span class="n">open_fixture</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;product&quot;</span><span class="p">)</span>
 </span><span data-line="61">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">product_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> products from fixture&quot;</span><span class="p">)</span>
 </span><span data-line="62">            <span class="n">product_repo</span><span class="o">.</span><span class="n">add_many</span><span class="p">([</span><span class="n">Product</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">product_data</span><span class="p">])</span>
-</span><span data-line="63">            <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span><span data-line="63">            <span class="n">db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </span><span data-line="64">        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
 </span><span data-line="65">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find fixture file at </span><span class="si">{</span><span class="n">fixtures_path</span><span class="si">}</span><span class="s2">/product.json&quot;</span><span class="p">)</span>
 </span><span data-line="66">
@@ -1086,14 +1086,14 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="52"><span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">app_context</span><span class="p">():</span>  <span class="c1"># noqa: SIM117</span>
 </span><span data-line="53">    <span class="c1"># Seed data</span>
 </span><span data-line="54">    <span class="k">with</span> <span class="n">db</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-</span><span data-line="55">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="55">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="56">        <span class="c1"># Load and add product data</span>
 </span><span data-line="57">        <span class="k">try</span><span class="p">:</span>
 </span><span data-line="58">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempting to load fixtures from </span><span class="si">{</span><span class="n">fixtures_path</span><span class="si">}</span><span class="s2">/product.json&quot;</span><span class="p">)</span>
 </span><span data-line="59">            <span class="n">product_data</span> <span class="o">=</span> <span class="n">open_fixture</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;product&quot;</span><span class="p">)</span>
 </span><span data-line="60">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">product_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> products from fixture&quot;</span><span class="p">)</span>
 </span><span data-line="61">            <span class="n">product_repo</span><span class="o">.</span><span class="n">add_many</span><span class="p">([</span><span class="n">Product</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">product_data</span><span class="p">])</span>
-</span><span data-line="62">            <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span><span data-line="62">            <span class="n">db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </span><span data-line="63">        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
 </span><span data-line="64">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find fixture file at </span><span class="si">{</span><span class="n">fixtures_path</span><span class="si">}</span><span class="s2">/product.json&quot;</span><span class="p">)</span>
 </span><span data-line="65">

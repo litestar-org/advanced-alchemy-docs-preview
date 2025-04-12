@@ -364,16 +364,17 @@ type-safe operations.</p>
 <p>Let’s implement a basic repository for our blog post model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepository</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
-</span><span data-line="3">
-</span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">PostRepository</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepository</span><span class="p">[</span><span class="n">Post</span><span class="p">]):</span>
-</span><span data-line="5"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Repository for managing blog posts.&quot;&quot;&quot;</span>
-</span><span data-line="6">    <span class="n">model_type</span> <span class="o">=</span> <span class="n">Post</span>
-</span><span data-line="7">
-</span><span data-line="8"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_post</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">author_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
-</span><span data-line="9">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
-</span><span data-line="10">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-</span><span data-line="11">        <span class="n">Post</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span> <span class="n">author_id</span><span class="o">=</span><span class="n">author_id</span><span class="p">),</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span>
-</span><span data-line="12">    <span class="p">)</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="k">class</span><span class="w"> </span><span class="nc">PostRepository</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepository</span><span class="p">[</span><span class="n">Post</span><span class="p">]):</span>
+</span><span data-line="6"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Repository for managing blog posts.&quot;&quot;&quot;</span>
+</span><span data-line="7">    <span class="n">model_type</span> <span class="o">=</span> <span class="n">Post</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_post</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">author_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
+</span><span data-line="10">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="11">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+</span><span data-line="12">        <span class="n">Post</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span> <span class="n">author_id</span><span class="o">=</span><span class="n">author_id</span><span class="p">),</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span>
+</span><span data-line="13">    <span class="p">)</span>
 </span></pre></div>
 </div>
 </section>
@@ -382,8 +383,8 @@ type-safe operations.</p>
 <p>Advanced Alchemy provides powerful filtering capabilities:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 </span><span data-line="2">
-</span><span data-line="3"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_recent_posts</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
-</span><span data-line="4">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="3"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_recent_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="4">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="5">
 </span><span data-line="6">    <span class="c1"># Create filter for posts from last week</span>
 </span><span data-line="7">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
@@ -399,11 +400,11 @@ type-safe operations.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">LimitOffset</span>
 </span><span data-line="2">
 </span><span data-line="3"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_paginated_posts</span><span class="p">(</span>
-</span><span data-line="4">    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
+</span><span data-line="4">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
 </span><span data-line="5">    <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 </span><span data-line="6">    <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span>
 </span><span data-line="7"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span data-line="8">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="8">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="9">
 </span><span data-line="10">    <span class="c1"># Get page of results and total count</span>
 </span><span data-line="11">    <span class="n">results</span><span class="p">,</span> <span class="n">total</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list_and_count</span><span class="p">(</span>
@@ -420,8 +421,8 @@ type-safe operations.</p>
 </section>
 <section id="create-many">
 <h2>Create Many<a class="headerlink" href="#create-many" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_posts</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">UUID</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
-</span><span data-line="2">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">UUID</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="2">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="3">
 </span><span data-line="4">    <span class="c1"># Create posts</span>
 </span><span data-line="5">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">create_many</span><span class="p">(</span>
@@ -433,8 +434,8 @@ type-safe operations.</p>
 </section>
 <section id="update-many">
 <h2>Update Many<a class="headerlink" href="#update-many" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">publish_posts</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">post_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
-</span><span data-line="2">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">publish_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">post_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="2">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="3">
 </span><span data-line="4">    <span class="c1"># Fetch posts to update</span>
 </span><span data-line="5">    <span class="n">posts</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">post_ids</span><span class="p">),</span> <span class="n">published</span> <span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -449,8 +450,8 @@ type-safe operations.</p>
 </section>
 <section id="delete-many">
 <h2>Delete Many<a class="headerlink" href="#delete-many" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">delete_posts</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">post_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
-</span><span data-line="2">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">delete_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">post_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="2">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="3">
 </span><span data-line="4">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">delete_many</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">post_ids</span><span class="p">))</span>
 </span></pre></div>
@@ -458,8 +459,8 @@ type-safe operations.</p>
 </section>
 <section id="delete-where">
 <h2>Delete Where<a class="headerlink" href="#delete-where" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">delete_unpublished_posts</span> <span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
-</span><span data-line="2">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">delete_unpublished_posts</span> <span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="2">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="3">
 </span><span data-line="4">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">delete_where</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">published</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span>
 </span></pre></div>
@@ -468,16 +469,16 @@ type-safe operations.</p>
 <section id="transaction-management">
 <h2>Transaction Management<a class="headerlink" href="#transaction-management" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_post_with_tags</span><span class="p">(</span>
-</span><span data-line="2">    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
+</span><span data-line="2">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
 </span><span data-line="3">    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span data-line="4">    <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span data-line="5">    <span class="n">tag_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 </span><span data-line="6"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
 </span><span data-line="7">    <span class="c1"># Both repositories share the same transaction</span>
-</span><span data-line="8">    <span class="n">post_repo</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
-</span><span data-line="9">    <span class="n">tag_repo</span> <span class="o">=</span> <span class="n">TagRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="8">    <span class="n">post_repo</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="9">    <span class="n">tag_repo</span> <span class="o">=</span> <span class="n">TagRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="10">
-</span><span data-line="11">    <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">begin</span><span class="p">():</span>
+</span><span data-line="11">    <span class="k">async</span> <span class="k">with</span> <span class="n">db_session</span><span class="o">.</span><span class="n">begin</span><span class="p">():</span>
 </span><span data-line="12">        <span class="c1"># Create or get existing tags</span>
 </span><span data-line="13">        <span class="n">tags</span> <span class="o">=</span> <span class="p">[]</span>
 </span><span data-line="14">        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">tag_names</span><span class="p">:</span>
@@ -513,8 +514,8 @@ should be used to handle this lookup even more easily.  See <a class="reference 
 </span><span data-line="4"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Repository for articles with slug-based lookups.&quot;&quot;&quot;</span>
 </span><span data-line="5">    <span class="n">model_type</span> <span class="o">=</span> <span class="n">Article</span>
 </span><span data-line="6">
-</span><span data-line="7"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_article_by_slug</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">slug</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Article</span><span class="p">:</span>
-</span><span data-line="8">    <span class="n">repository</span> <span class="o">=</span> <span class="n">ArticleRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="7"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_article_by_slug</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">slug</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Article</span><span class="p">:</span>
+</span><span data-line="8">    <span class="n">repository</span> <span class="o">=</span> <span class="n">ArticleRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="9">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">get_by_slug</span><span class="p">(</span><span class="n">slug</span><span class="p">)</span>
 </span></pre></div>
 </div>

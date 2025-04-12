@@ -283,8 +283,8 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="12"><span class="c1"># Use standard SQLAlchemy session in your routes</span>
 </span><span data-line="13"><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/users&quot;</span><span class="p">)</span>
 </span><span data-line="14"><span class="k">def</span><span class="w"> </span><span class="nf">list_users</span><span class="p">():</span>
-</span><span data-line="15">    <span class="n">session</span> <span class="o">=</span> <span class="n">alchemy</span><span class="o">.</span><span class="n">get_sync_session</span><span class="p">()</span>
-</span><span data-line="16">    <span class="n">users</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">User</span><span class="p">))</span>
+</span><span data-line="15">    <span class="n">db_session</span> <span class="o">=</span> <span class="n">alchemy</span><span class="o">.</span><span class="n">get_sync_session</span><span class="p">()</span>
+</span><span data-line="16">    <span class="n">users</span> <span class="o">=</span> <span class="n">db_session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">User</span><span class="p">))</span>
 </span><span data-line="17">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;users&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="o">.</span><span class="n">scalars</span><span class="p">()]}</span>
 </span></pre></div>
 </div>
@@ -327,8 +327,8 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="11"><span class="c1"># Use async session in your routes</span>
 </span><span data-line="12"><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/users&quot;</span><span class="p">)</span>
 </span><span data-line="13"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">list_users</span><span class="p">():</span>
-</span><span data-line="14">    <span class="n">session</span> <span class="o">=</span> <span class="n">alchemy</span><span class="o">.</span><span class="n">get_async_session</span><span class="p">()</span>
-</span><span data-line="15">    <span class="n">users</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">User</span><span class="p">))</span>
+</span><span data-line="14">    <span class="n">db_session</span> <span class="o">=</span> <span class="n">alchemy</span><span class="o">.</span><span class="n">get_async_session</span><span class="p">()</span>
+</span><span data-line="15">    <span class="n">users</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">User</span><span class="p">))</span>
 </span><span data-line="16">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;users&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="o">.</span><span class="n">scalars</span><span class="p">()]}</span>
 </span></pre></div>
 </div>
@@ -339,8 +339,8 @@ data-aria-dark="Switch to auto color mode">
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/users&quot;</span><span class="p">)</span>
 </span><span data-line="2"><span class="k">def</span><span class="w"> </span><span class="nf">list_users</span><span class="p">():</span>
-</span><span data-line="3">    <span class="n">session</span> <span class="o">=</span> <span class="n">alchemy</span><span class="o">.</span><span class="n">get_async_session</span><span class="p">()</span>
-</span><span data-line="4">    <span class="n">users</span> <span class="o">=</span> <span class="n">alchemy</span><span class="o">.</span><span class="n">portal</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">,</span> <span class="n">select</span><span class="p">(</span><span class="n">User</span><span class="p">))</span>
+</span><span data-line="3">    <span class="n">db_session</span> <span class="o">=</span> <span class="n">alchemy</span><span class="o">.</span><span class="n">get_async_session</span><span class="p">()</span>
+</span><span data-line="4">    <span class="n">users</span> <span class="o">=</span> <span class="n">alchemy</span><span class="o">.</span><span class="n">portal</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">db_session</span><span class="o">.</span><span class="n">execute</span><span class="p">,</span> <span class="n">select</span><span class="p">(</span><span class="n">User</span><span class="p">))</span>
 </span><span data-line="5">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;users&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="o">.</span><span class="n">scalars</span><span class="p">()]}</span>
 </span></pre></div>
 </div>
