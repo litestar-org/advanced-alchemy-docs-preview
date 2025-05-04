@@ -205,6 +205,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#guid">GUID</a></li>
 <li><a class="reference internal" href="#bigintidentity">BigIntIdentity</a></li>
 <li><a class="reference internal" href="#jsonb">JsonB</a></li>
+<li><a class="reference internal" href="#password-hash">Password Hash</a></li>
 <li><a class="reference internal" href="#file-object-storage">File Object Storage</a><ul>
 <li><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
 <li><a class="reference internal" href="#storage-backends">Storage Backends</a><ul>
@@ -212,9 +213,9 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#obstore-backend">Obstore Backend</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#file-operations">File Operations</a></li>
 <li><a class="reference internal" href="#metadata">Metadata</a></li>
 <li><a class="reference internal" href="#automatic-cleanup">Automatic Cleanup</a></li>
+<li><a class="reference internal" href="#manual-file-operations">Manual File Operations</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#using-types-with-alembic">Using Types with Alembic</a><ul>
@@ -352,8 +353,8 @@ data-aria-dark="Switch to auto color mode">
 <h3>Encryption Backends<a class="headerlink" href="#encryption-backends" title="Link to this heading">¶</a></h3>
 <p>Two encryption backends are available:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../reference/types.html#advanced_alchemy.types.FernetBackend" title="advanced_alchemy.types.FernetBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">advanced_alchemy.types.FernetBackend</span></code></a>: Uses Python’s cryptography library with Fernet encryption</p></li>
-<li><p><a class="reference internal" href="../reference/types.html#advanced_alchemy.types.PGCryptoBackend" title="advanced_alchemy.types.PGCryptoBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">advanced_alchemy.types.PGCryptoBackend</span></code></a>: Uses PostgreSQL’s pgcrypto extension (PostgreSQL only)</p></li>
+<li><p><a class="reference internal" href="../reference/types.html#advanced_alchemy.types.FernetBackend" title="advanced_alchemy.types.encrypted_string.FernetBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">FernetBackend</span></code></a>: Uses Python’s <a class="reference external" href="https://cryptography.io/">cryptography</a> library with Fernet encryption</p></li>
+<li><p><a class="reference internal" href="../reference/types.html#advanced_alchemy.types.encrypted_string.PGCryptoBackend" title="advanced_alchemy.types.encrypted_string.PGCryptoBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">PGCryptoBackend</span></code></a>: Uses PostgreSQL’s <a class="reference external" href="https://www.postgresql.org/docs/current/pgcrypto.html">pgcrypto</a> extension (PostgreSQL only)</p></li>
 </ul>
 </section>
 </section>
@@ -407,6 +408,27 @@ data-aria-dark="Switch to auto color mode">
 </span></pre></div>
 </div>
 </section>
+<section id="password-hash">
+<h2>Password Hash<a class="headerlink" href="#password-hash" title="Link to this heading">¶</a></h2>
+<p>A type for storing password hashes with configurable backends.  Currently supports:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../reference/types.html#advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher" title="advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher"><code class="xref py py-class docutils literal notranslate"><span class="pre">PwdlibHasher</span></code></a>: Uses <a class="reference external" href="https://github.com/pwdlib/pwdlib">pwdlib</a></p></li>
+<li><p><a class="reference internal" href="../reference/types.html#advanced_alchemy.types.password_hash.argon2.Argon2Hasher" title="advanced_alchemy.types.password_hash.argon2.Argon2Hasher"><code class="xref py py-class docutils literal notranslate"><span class="pre">Argon2Hasher</span></code></a>: Uses <a class="reference external" href="https://argon2.readthedocs.io/en/stable/">argon2-cffi</a></p></li>
+<li><p><a class="reference internal" href="../reference/types.html#advanced_alchemy.types.password_hash.passlib.PasslibHasher" title="advanced_alchemy.types.password_hash.passlib.PasslibHasher"><code class="xref py py-class docutils literal notranslate"><span class="pre">PasslibHasher</span></code></a>: Uses <a class="reference external" href="https://passlib.readthedocs.io/en/stable/">passlib</a></p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">DefaultBase</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">PasswordHash</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">pwdlib.hashers.argon2</span><span class="w"> </span><span class="kn">import</span> <span class="n">Argon2Hasher</span> <span class="k">as</span> <span class="n">PwdlibArgon2Hasher</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="k">class</span><span class="w"> </span><span class="nc">MyModel</span><span class="p">(</span><span class="n">DefaultBase</span><span class="p">):</span>
+</span><span data-line="7">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;my_model&quot;</span>
+</span><span data-line="8">    <span class="n">password</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span>
+</span><span data-line="9">    <span class="n">PasswordHash</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">PwdlibHasher</span><span class="p">(</span><span class="n">hasher</span><span class="o">=</span><span class="n">PwdlibArgon2Hasher</span><span class="p">()))</span>
+</span><span data-line="10"><span class="p">)</span>
+</span></pre></div>
+</div>
+</section>
 <section id="file-object-storage">
 <h2>File Object Storage<a class="headerlink" href="#file-object-storage" title="Link to this heading">¶</a></h2>
 <p>Advanced Alchemy provides a powerful file object storage system through the <a class="reference internal" href="../reference/types.html#advanced_alchemy.types.StoredObject" title="advanced_alchemy.types.StoredObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">StoredObject</span></code></a> type. This system supports multiple storage backends and provides automatic file cleanup.</p>
@@ -421,14 +443,14 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="7">
 </span><span data-line="8">    <span class="c1"># Single file storage</span>
 </span><span data-line="9">    <span class="n">attachment</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">FileObject</span><span class="p">]]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span>
-</span><span data-line="10">        <span class="n">StoredObject</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">&quot;local_test_store&quot;</span><span class="p">),</span>
-</span><span data-line="11">        <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="10">        <span class="n">StoredObject</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">&quot;s3&quot;</span><span class="p">),</span>
+</span><span data-line="11">        <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span>
 </span><span data-line="12">    <span class="p">)</span>
 </span><span data-line="13">
 </span><span data-line="14">    <span class="c1"># Multiple file storage</span>
 </span><span data-line="15">    <span class="n">images</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">FileObjectList</span><span class="p">]]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span>
-</span><span data-line="16">        <span class="n">StoredObject</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">&quot;local_test_store&quot;</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-</span><span data-line="17">        <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="16">        <span class="n">StoredObject</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">&quot;s3&quot;</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+</span><span data-line="17">        <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span>
 </span><span data-line="18">    <span class="p">)</span>
 </span></pre></div>
 </div>
@@ -441,19 +463,18 @@ data-aria-dark="Switch to auto color mode">
 <p>The FSSpec backend uses the <a class="reference external" href="https://filesystem-spec.readthedocs.io/">fsspec</a> library to support various storage systems:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">fsspec</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.types.file_object.backends.fsspec</span><span class="w"> </span><span class="kn">import</span> <span class="n">FSSpecBackend</span>
-</span><span data-line="3">
-</span><span data-line="4"><span class="c1"># Local filesystem</span>
-</span><span data-line="5"><span class="n">fs</span> <span class="o">=</span> <span class="n">fsspec</span><span class="o">.</span><span class="n">filesystem</span><span class="p">(</span><span class="s2">&quot;file&quot;</span><span class="p">)</span>
-</span><span data-line="6"><span class="n">backend</span> <span class="o">=</span> <span class="n">FSSpecBackend</span><span class="p">(</span><span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">)</span>
-</span><span data-line="7">
-</span><span data-line="8"><span class="c1"># S3 storage</span>
-</span><span data-line="9"><span class="n">fs</span> <span class="o">=</span> <span class="n">fsspec</span><span class="o">.</span><span class="n">S3FileSystem</span><span class="p">(</span>
-</span><span data-line="10">    <span class="n">anon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span data-line="11">    <span class="n">key</span><span class="o">=</span><span class="s2">&quot;your-access-key&quot;</span><span class="p">,</span>
-</span><span data-line="12">    <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your-secret-key&quot;</span><span class="p">,</span>
-</span><span data-line="13">    <span class="n">endpoint_url</span><span class="o">=</span><span class="s2">&quot;https://your-s3-endpoint&quot;</span><span class="p">,</span>
-</span><span data-line="14"><span class="p">)</span>
-</span><span data-line="15"><span class="n">backend</span> <span class="o">=</span> <span class="n">FSSpecBackend</span><span class="p">(</span><span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;s3&quot;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;your-bucket&quot;</span><span class="p">)</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.types.file_object</span><span class="w"> </span><span class="kn">import</span> <span class="n">storages</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="c1"># Local filesystem</span>
+</span><span data-line="6"><span class="n">storages</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">FSSpecBackend</span><span class="p">(</span><span class="n">fs</span><span class="o">=</span><span class="n">fsspec</span><span class="o">.</span><span class="n">filesystem</span><span class="p">(</span><span class="s2">&quot;file&quot;</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">))</span>
+</span><span data-line="7"><span class="c1"># S3 storage</span>
+</span><span data-line="8"><span class="n">fs</span> <span class="o">=</span> <span class="n">fsspec</span><span class="o">.</span><span class="n">S3FileSystem</span><span class="p">(</span>
+</span><span data-line="9">    <span class="n">anon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="10">    <span class="n">key</span><span class="o">=</span><span class="s2">&quot;your-access-key&quot;</span><span class="p">,</span>
+</span><span data-line="11">    <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your-secret-key&quot;</span><span class="p">,</span>
+</span><span data-line="12">    <span class="n">endpoint_url</span><span class="o">=</span><span class="s2">&quot;https://your-s3-endpoint&quot;</span><span class="p">,</span>
+</span><span data-line="13"><span class="p">)</span>
+</span><span data-line="14"><span class="n">storages</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">FSSpecBackend</span><span class="p">(</span><span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;s3&quot;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;your-bucket&quot;</span><span class="p">))</span>
 </span></pre></div>
 </div>
 </section>
@@ -461,46 +482,25 @@ data-aria-dark="Switch to auto color mode">
 <h4>Obstore Backend<a class="headerlink" href="#obstore-backend" title="Link to this heading">¶</a></h4>
 <p>The Obstore backend provides a simple interface for object storage:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.types.file_object.backends.obstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">ObstoreBackend</span>
-</span><span data-line="2">
-</span><span data-line="3"><span class="c1"># Local storage</span>
-</span><span data-line="4"><span class="n">backend</span> <span class="o">=</span> <span class="n">ObstoreBackend</span><span class="p">(</span>
-</span><span data-line="5">    <span class="n">key</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
-</span><span data-line="6">    <span class="n">fs</span><span class="o">=</span><span class="s2">&quot;file:///path/to/storage&quot;</span><span class="p">,</span>
-</span><span data-line="7"><span class="p">)</span>
-</span><span data-line="8">
-</span><span data-line="9"><span class="c1"># S3 storage</span>
-</span><span data-line="10"><span class="n">backend</span> <span class="o">=</span> <span class="n">ObstoreBackend</span><span class="p">(</span>
-</span><span data-line="11">    <span class="n">key</span><span class="o">=</span><span class="s2">&quot;s3&quot;</span><span class="p">,</span>
-</span><span data-line="12">    <span class="n">fs</span><span class="o">=</span><span class="s2">&quot;s3://your-bucket/&quot;</span><span class="p">,</span>
-</span><span data-line="13">    <span class="n">aws_access_key_id</span><span class="o">=</span><span class="s2">&quot;your-access-key&quot;</span><span class="p">,</span>
-</span><span data-line="14">    <span class="n">aws_secret_access_key</span><span class="o">=</span><span class="s2">&quot;your-secret-key&quot;</span><span class="p">,</span>
-</span><span data-line="15">    <span class="n">aws_endpoint</span><span class="o">=</span><span class="s2">&quot;https://your-s3-endpoint&quot;</span><span class="p">,</span>
-</span><span data-line="16"><span class="p">)</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.types.file_object</span><span class="w"> </span><span class="kn">import</span> <span class="n">storages</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="c1"># Local storage</span>
+</span><span data-line="5"><span class="n">storages</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">ObstoreBackend</span><span class="p">(</span>
+</span><span data-line="6">    <span class="n">key</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
+</span><span data-line="7">    <span class="n">fs</span><span class="o">=</span><span class="s2">&quot;file:///path/to/storage&quot;</span><span class="p">,</span>
+</span><span data-line="8"><span class="p">))</span>
+</span><span data-line="9">
+</span><span data-line="10"><span class="c1"># S3 storage</span>
+</span><span data-line="11"><span class="n">storages</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">ObstoreBackend</span><span class="p">(</span>
+</span><span data-line="12">    <span class="n">key</span><span class="o">=</span><span class="s2">&quot;s3&quot;</span><span class="p">,</span>
+</span><span data-line="13">    <span class="n">fs</span><span class="o">=</span><span class="s2">&quot;s3://your-bucket/&quot;</span><span class="p">,</span>
+</span><span data-line="14">    <span class="n">aws_access_key_id</span><span class="o">=</span><span class="s2">&quot;your-access-key&quot;</span><span class="p">,</span>
+</span><span data-line="15">    <span class="n">aws_secret_access_key</span><span class="o">=</span><span class="s2">&quot;your-secret-key&quot;</span><span class="p">,</span>
+</span><span data-line="16">    <span class="n">aws_endpoint</span><span class="o">=</span><span class="s2">&quot;https://your-s3-endpoint&quot;</span><span class="p">,</span>
+</span><span data-line="17"><span class="p">))</span>
 </span></pre></div>
 </div>
 </section>
-</section>
-<section id="file-operations">
-<h3>File Operations<a class="headerlink" href="#file-operations" title="Link to this heading">¶</a></h3>
-<p>The FileObject class provides various operations for managing files:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># Save a file</span>
-</span><span data-line="2"><span class="n">file_obj</span> <span class="o">=</span> <span class="n">FileObject</span><span class="p">(</span>
-</span><span data-line="3">    <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;local_test_store&quot;</span><span class="p">,</span>
-</span><span data-line="4">    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;test.txt&quot;</span><span class="p">,</span>
-</span><span data-line="5">    <span class="n">content</span><span class="o">=</span><span class="sa">b</span><span class="s2">&quot;Hello, World!&quot;</span><span class="p">,</span>
-</span><span data-line="6"><span class="p">)</span>
-</span><span data-line="7"><span class="k">await</span> <span class="n">file_obj</span><span class="o">.</span><span class="n">save_async</span><span class="p">()</span>
-</span><span data-line="8">
-</span><span data-line="9"><span class="c1"># Get file content</span>
-</span><span data-line="10"><span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="n">file_obj</span><span class="o">.</span><span class="n">get_content_async</span><span class="p">()</span>
-</span><span data-line="11">
-</span><span data-line="12"><span class="c1"># Delete a file</span>
-</span><span data-line="13"><span class="k">await</span> <span class="n">file_obj</span><span class="o">.</span><span class="n">delete_async</span><span class="p">()</span>
-</span><span data-line="14">
-</span><span data-line="15"><span class="c1"># Get signed URL</span>
-</span><span data-line="16"><span class="n">url</span> <span class="o">=</span> <span class="k">await</span> <span class="n">file_obj</span><span class="o">.</span><span class="n">sign_async</span><span class="p">(</span><span class="n">expires_in</span><span class="o">=</span><span class="mi">3600</span><span class="p">)</span>  <span class="c1"># URL expires in 1 hour</span>
-</span></pre></div>
-</div>
 </section>
 <section id="metadata">
 <h3>Metadata<a class="headerlink" href="#metadata" title="Link to this heading">¶</a></h3>
@@ -521,18 +521,45 @@ data-aria-dark="Switch to auto color mode">
 </section>
 <section id="automatic-cleanup">
 <h3>Automatic Cleanup<a class="headerlink" href="#automatic-cleanup" title="Link to this heading">¶</a></h3>
-<p>When a file object is removed from a model or the model is deleted, the associated file is automatically deleted from storage:</p>
+<p>When a file object is removed from a model or the model is deleted, the associated file is automatically saved or deleted from storage:</p>
+<p><strong>Note:</strong> The listener events are automatically configured when using any of the framework adapters.  You may manually configure these events by calling the <cite>configure_listeners</cite> method on the configuration class.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># Update file</span>
-</span><span data-line="2"><span class="n">doc</span><span class="o">.</span><span class="n">attachment</span> <span class="o">=</span> <span class="n">new_file_obj</span>
-</span><span data-line="3"><span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>  <span class="c1"># Old file is automatically deleted</span>
-</span><span data-line="4">
-</span><span data-line="5"><span class="c1"># Clear file</span>
-</span><span data-line="6"><span class="n">doc</span><span class="o">.</span><span class="n">attachment</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="7"><span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>  <span class="c1"># File is automatically deleted</span>
+</span><span data-line="2"><span class="n">doc</span><span class="o">.</span><span class="n">attachment</span> <span class="o">=</span> <span class="n">FileObject</span><span class="p">(</span>
+</span><span data-line="3">    <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;local_test_store&quot;</span><span class="p">,</span>
+</span><span data-line="4">    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;test.txt&quot;</span><span class="p">,</span>
+</span><span data-line="5">    <span class="n">content</span><span class="o">=</span><span class="sa">b</span><span class="s2">&quot;Hello, World!&quot;</span><span class="p">,</span>
+</span><span data-line="6"><span class="p">)</span>
+</span><span data-line="7"><span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>  <span class="c1"># new file is saved, old file is automatically deleted</span>
 </span><span data-line="8">
-</span><span data-line="9"><span class="c1"># Delete model</span>
-</span><span data-line="10"><span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-</span><span data-line="11"><span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>  <span class="c1"># All associated files are automatically deleted</span>
+</span><span data-line="9"><span class="c1"># Clear file</span>
+</span><span data-line="10"><span class="n">doc</span><span class="o">.</span><span class="n">attachment</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="11"><span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>  <span class="c1"># File is automatically deleted</span>
+</span><span data-line="12">
+</span><span data-line="13"><span class="c1"># Delete model</span>
+</span><span data-line="14"><span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+</span><span data-line="15"><span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>  <span class="c1"># All associated files are automatically deleted</span>
+</span></pre></div>
+</div>
+</section>
+<section id="manual-file-operations">
+<h3>Manual File Operations<a class="headerlink" href="#manual-file-operations" title="Link to this heading">¶</a></h3>
+<p>The FileObject class provides various operations for managing files if you don’t want to use the automatic listeners (or can’t use them):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># Save a file</span>
+</span><span data-line="2"><span class="n">file_obj</span> <span class="o">=</span> <span class="n">FileObject</span><span class="p">(</span>
+</span><span data-line="3">    <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;local_test_store&quot;</span><span class="p">,</span>
+</span><span data-line="4">    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;test.txt&quot;</span><span class="p">,</span>
+</span><span data-line="5">    <span class="n">content</span><span class="o">=</span><span class="sa">b</span><span class="s2">&quot;Hello, World!&quot;</span><span class="p">,</span>
+</span><span data-line="6"><span class="p">)</span>
+</span><span data-line="7"><span class="k">await</span> <span class="n">file_obj</span><span class="o">.</span><span class="n">save_async</span><span class="p">()</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="c1"># Get file content</span>
+</span><span data-line="10"><span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="n">file_obj</span><span class="o">.</span><span class="n">get_content_async</span><span class="p">()</span>
+</span><span data-line="11">
+</span><span data-line="12"><span class="c1"># Delete a file</span>
+</span><span data-line="13"><span class="k">await</span> <span class="n">file_obj</span><span class="o">.</span><span class="n">delete_async</span><span class="p">()</span>
+</span><span data-line="14">
+</span><span data-line="15"><span class="c1"># Get signed URL</span>
+</span><span data-line="16"><span class="n">url</span> <span class="o">=</span> <span class="k">await</span> <span class="n">file_obj</span><span class="o">.</span><span class="n">sign_async</span><span class="p">(</span><span class="n">expires_in</span><span class="o">=</span><span class="mi">3600</span><span class="p">)</span>  <span class="c1"># URL expires in 1 hour</span>
 </span></pre></div>
 </div>
 </section>
