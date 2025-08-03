@@ -599,6 +599,29 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="340">            <span class="k">return</span> <span class="n">statement</span>
 </span><span data-line="341">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">desc</span><span class="p">()</span> <span class="k">if</span> <span class="n">is_desc</span> <span class="k">else</span> <span class="n">field</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span></div>
 
+</span><span data-line="342">
+</span><span data-line="343">
+</span><span data-line="344"><span class="k">def</span><span class="w"> </span><span class="nf">column_has_defaults</span><span class="p">(</span><span class="n">column</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span data-line="345"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if a column has any type of default value or update handler.</span>
+</span><span data-line="346">
+</span><span data-line="347"><span class="sd">    This includes:</span>
+</span><span data-line="348"><span class="sd">    - Python-side defaults (column.default)</span>
+</span><span data-line="349"><span class="sd">    - Server-side defaults (column.server_default)</span>
+</span><span data-line="350"><span class="sd">    - Python-side onupdate handlers (column.onupdate)</span>
+</span><span data-line="351"><span class="sd">    - Server-side onupdate handlers (column.server_onupdate)</span>
+</span><span data-line="352">
+</span><span data-line="353"><span class="sd">    Args:</span>
+</span><span data-line="354"><span class="sd">        column: SQLAlchemy column object to check</span>
+</span><span data-line="355">
+</span><span data-line="356"><span class="sd">    Returns:</span>
+</span><span data-line="357"><span class="sd">        bool: True if the column has any type of default or update handler</span>
+</span><span data-line="358"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="359">    <span class="k">return</span> <span class="p">(</span>
+</span><span data-line="360">        <span class="n">column</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span data-line="361">        <span class="ow">or</span> <span class="n">column</span><span class="o">.</span><span class="n">server_default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span data-line="362">        <span class="ow">or</span> <span class="n">column</span><span class="o">.</span><span class="n">onupdate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span data-line="363">        <span class="ow">or</span> <span class="n">column</span><span class="o">.</span><span class="n">server_onupdate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span data-line="364">    <span class="p">)</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
