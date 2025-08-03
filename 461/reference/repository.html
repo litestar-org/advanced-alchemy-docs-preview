@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=397bb51e" />
-    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=c516b45e" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=76b6f612" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -33,13 +33,13 @@
       <img class="dark-logo" src="../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
       <strong>advanced_alchemy</strong>
     </a>
-    <div class="sy-head-nav" id="HeadNav">
+    <div class="sy-head-nav" id="head-nav">
       <nav class="sy-head-links"><ul><li class="link"><a href="../index.html">Home</a></li>
-      <li class="link"><button type="button">
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-2" aria-controls="nav-children-2">
             <span>About</span>
             <i class="i-lucide chevron-down"></i>
           </button>
-        <ul><li><a href="../changelog.html">
+        <ul id="nav-children-2" aria-labelledby="nav-trigger-2"><li><a href="../changelog.html">
                 <span>Changelog</span>
                 <small>All changes for Advanced Alchemy</small>
               </a></li><li><a href="https://litestar.dev/about/organization">
@@ -59,11 +59,11 @@
                 <small>Overview of Advanced Alchemy's security protocols</small>
               </a></li><li><a href="https://github.com/sponsors/Litestar-Org">Sponsor</a></li></ul>
       </li>
-      <li class="link"><button type="button">
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-3" aria-controls="nav-children-3">
             <span>Help</span>
             <i class="i-lucide chevron-down"></i>
           </button>
-        <ul><li><a href="https://discord.gg/dSDXd4mKhp">
+        <ul id="nav-children-3" aria-labelledby="nav-trigger-3"><li><a href="https://discord.gg/dSDXd4mKhp">
                 <span>Discord Help Forum</span>
                 <small>Dedicated Discord help forum</small>
               </a></li><li><a href="https://github.com/litestar-org/advanced-alchemy/discussions">
@@ -87,7 +87,7 @@ data-aria-auto="Switch to light color mode"
 data-aria-light="Switch to dark color mode"
 data-aria-dark="Switch to auto color mode">
 <i class="i-lucide theme-icon"></i>
-</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="HeadNav" aria-expanded="false">
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
         <div class="hamburger">
           <span class="hamburger_1"></span>
           <span class="hamburger_2 -translate-x-2"></span>
@@ -227,6 +227,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.get_one_or_none"><code class="docutils literal notranslate">get_one_or_none()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.list"><code class="docutils literal notranslate">list()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.list_and_count"><code class="docutils literal notranslate">list_and_count()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.wrap_exceptions"><code class="docutils literal notranslate">wrap_exceptions</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepository"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepository</span></code></a><ul>
@@ -321,6 +322,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncQueryRepository.get_one_or_none"><code class="docutils literal notranslate">get_one_or_none()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncQueryRepository.list"><code class="docutils literal notranslate">list()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncQueryRepository.list_and_count"><code class="docutils literal notranslate">list_and_count()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncQueryRepository.wrap_exceptions"><code class="docutils literal notranslate">wrap_exceptions</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncRepository"><code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncRepository</span></code></a><ul>
@@ -431,7 +433,8 @@ data-aria-dark="Switch to auto color mode">
 </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
   </aside>
   <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
-  <main class="sy-main w-full max-sm:max-w-full print:pt-6"><div class="sy-breadcrumbs" role="navigation">
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
   <div class="sy-breadcrumbs-inner flex items-center">
     <div class="md:hidden mr-3">
       <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
@@ -565,13 +568,14 @@ filterable repository implementation must provide.</p>
 <p>This is a loosely typed helper to query for when you need to select data in ways that don’t align to the normal repository pattern.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/repository/_async.html#SQLAlchemyAsyncQueryRepository.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.__init__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/repository/_async.html#SQLAlchemyAsyncQueryRepository.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.__init__" title="Link to this definition">¶</a></dt>
 <dd><p>Repository pattern for SQLAlchemy models.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span class="target" id="advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.params.session"></span><strong>session</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.params.session">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html#sqlalchemy.ext.asyncio.AsyncSession" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncSession</span></code></a>, <a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html#sqlalchemy.ext.asyncio.async_scoped_session" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">async_scoped_session</span></code></a>[<a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html#sqlalchemy.ext.asyncio.AsyncSession" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncSession</span></code></a>]]</span>) – Session managing the unit-of-work for the operation.</p></li>
 <li><p><span class="target" id="advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.params.error_messages"></span><strong>error_messages</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.params.error_messages">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="service.html#advanced_alchemy.service.ErrorMessages" title="advanced_alchemy.exceptions.ErrorMessages"><code class="xref py py-class docutils literal notranslate"><span class="pre">ErrorMessages</span></code></a>]</span>) – A set of error messages to use for operations.</p></li>
+<li><p><span class="target" id="advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.params.wrap_exceptions"></span><strong>wrap_exceptions</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.params.wrap_exceptions">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to wrap exceptions in a SQLAlchemy exception.</p></li>
 <li><p><span class="target" id="advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.params.**kwargs"></span><strong>**kwargs</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.params.**kwargs">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Additional arguments.</p></li>
 </ul>
 </dd>
@@ -713,6 +717,11 @@ filterable repository implementation must provide.</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.wrap_exceptions">
+<span class="sig-name descname"><span class="pre">wrap_exceptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.wrap_exceptions" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -1830,13 +1839,14 @@ for friendlier error messages to clients</p></li>
 <p>This is a loosely typed helper to query for when you need to select data in ways that don’t align to the normal repository pattern.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncQueryRepository.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/repository/_sync.html#SQLAlchemySyncQueryRepository.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncQueryRepository.__init__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/repository/_sync.html#SQLAlchemySyncQueryRepository.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncQueryRepository.__init__" title="Link to this definition">¶</a></dt>
 <dd><p>Repository pattern for SQLAlchemy models.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span class="target" id="advanced_alchemy.repository.SQLAlchemySyncQueryRepository.params.session"></span><strong>session</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncQueryRepository.params.session">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/session_api.html#sqlalchemy.orm.Session" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>, <a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/contextual.html#sqlalchemy.orm.scoped_session" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scoped_session</span></code></a>[<a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/session_api.html#sqlalchemy.orm.Session" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>]]</span>) – Session managing the unit-of-work for the operation.</p></li>
 <li><p><span class="target" id="advanced_alchemy.repository.SQLAlchemySyncQueryRepository.params.error_messages"></span><strong>error_messages</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncQueryRepository.params.error_messages">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="service.html#advanced_alchemy.service.ErrorMessages" title="advanced_alchemy.exceptions.ErrorMessages"><code class="xref py py-class docutils literal notranslate"><span class="pre">ErrorMessages</span></code></a>]</span>) – A set of error messages to use for operations.</p></li>
+<li><p><span class="target" id="advanced_alchemy.repository.SQLAlchemySyncQueryRepository.params.wrap_exceptions"></span><strong>wrap_exceptions</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncQueryRepository.params.wrap_exceptions">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to wrap exceptions in a SQLAlchemy exception.</p></li>
 <li><p><span class="target" id="advanced_alchemy.repository.SQLAlchemySyncQueryRepository.params.**kwargs"></span><strong>**kwargs</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncQueryRepository.params.**kwargs">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Additional arguments.</p></li>
 </ul>
 </dd>
@@ -1978,6 +1988,11 @@ for friendlier error messages to clients</p></li>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncQueryRepository.wrap_exceptions">
+<span class="sig-name descname"><span class="pre">wrap_exceptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncQueryRepository.wrap_exceptions" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -3186,6 +3201,6 @@ for friendlier error messages to clients</p></li>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
       <script src="../_static/design-tabs.js?v=f930bc37"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-      <script src="../_static/shibuya.js?v=e2230717"></script>
+      <script src="../_static/shibuya.js?v=c477d091"></script>
       <script src="../_static/versioning.js?v=68b42869"></script></body>
 </html>

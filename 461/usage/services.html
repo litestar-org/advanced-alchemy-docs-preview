@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=397bb51e" />
-    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=c516b45e" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=76b6f612" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -33,13 +33,13 @@
       <img class="dark-logo" src="../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
       <strong>advanced_alchemy</strong>
     </a>
-    <div class="sy-head-nav" id="HeadNav">
+    <div class="sy-head-nav" id="head-nav">
       <nav class="sy-head-links"><ul><li class="link"><a href="../index.html">Home</a></li>
-      <li class="link"><button type="button">
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-2" aria-controls="nav-children-2">
             <span>About</span>
             <i class="i-lucide chevron-down"></i>
           </button>
-        <ul><li><a href="../changelog.html">
+        <ul id="nav-children-2" aria-labelledby="nav-trigger-2"><li><a href="../changelog.html">
                 <span>Changelog</span>
                 <small>All changes for Advanced Alchemy</small>
               </a></li><li><a href="https://litestar.dev/about/organization">
@@ -59,11 +59,11 @@
                 <small>Overview of Advanced Alchemy's security protocols</small>
               </a></li><li><a href="https://github.com/sponsors/Litestar-Org">Sponsor</a></li></ul>
       </li>
-      <li class="link"><button type="button">
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-3" aria-controls="nav-children-3">
             <span>Help</span>
             <i class="i-lucide chevron-down"></i>
           </button>
-        <ul><li><a href="https://discord.gg/dSDXd4mKhp">
+        <ul id="nav-children-3" aria-labelledby="nav-trigger-3"><li><a href="https://discord.gg/dSDXd4mKhp">
                 <span>Discord Help Forum</span>
                 <small>Dedicated Discord help forum</small>
               </a></li><li><a href="https://github.com/litestar-org/advanced-alchemy/discussions">
@@ -87,7 +87,7 @@ data-aria-auto="Switch to light color mode"
 data-aria-light="Switch to dark color mode"
 data-aria-dark="Switch to auto color mode">
 <i class="i-lucide theme-icon"></i>
-</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="HeadNav" aria-expanded="false">
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
         <div class="hamburger">
           <span class="hamburger_1"></span>
           <span class="hamburger_2 -translate-x-2"></span>
@@ -199,6 +199,13 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#basic-service-usage">Basic Service Usage</a></li>
 <li><a class="reference internal" href="#service-operations">Service Operations</a></li>
 <li><a class="reference internal" href="#complex-operations">Complex Operations</a></li>
+<li><a class="reference internal" href="#schema-integration">Schema Integration</a><ul>
+<li><a class="reference internal" href="#pydantic-models">Pydantic Models</a></li>
+<li><a class="reference internal" href="#msgspec-structs">Msgspec Structs</a></li>
+<li><a class="reference internal" href="#attrs-classes">Attrs Classes</a></li>
+<li><a class="reference internal" href="#sqlalchemy-query-result-support">SQLAlchemy Query Result Support</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#framework-integration">Framework Integration</a></li>
 </ul>
 </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
@@ -224,7 +231,8 @@ data-aria-dark="Switch to auto color mode">
 </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
   </aside>
   <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
-  <main class="sy-main w-full max-sm:max-w-full print:pt-6"><div class="sy-breadcrumbs" role="navigation">
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
   <div class="sy-breadcrumbs-inner flex items-center">
     <div class="md:hidden mr-3">
       <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
@@ -263,11 +271,12 @@ business rules and data transformation needs.</p>
 <p>Services provide:</p>
 <ul class="simple">
 <li><p>Business logic abstraction</p></li>
-<li><p>Data transformation using Pydantic or Msgspec models</p></li>
-<li><p>Input validation</p></li>
+<li><p>Data transformation using Pydantic, Msgspec, or attrs models</p></li>
+<li><p>Input validation and type-safe schema conversion</p></li>
 <li><p>Complex operations involving multiple repositories</p></li>
 <li><p>Consistent error handling</p></li>
 <li><p>Automatic schema validation and transformation</p></li>
+<li><p>Support for SQLAlchemy query results (Row types) and RowMapping objects</p></li>
 </ul>
 </section>
 <section id="basic-service-usage">
@@ -496,6 +505,150 @@ The code below shows a service coordinating posts and tags.</p>
 </span></pre></div>
 </div>
 </section>
+<section id="schema-integration">
+<h2>Schema Integration<a class="headerlink" href="#schema-integration" title="Link to this heading">¶</a></h2>
+<p>Advanced Alchemy services support multiple schema libraries for data transformation and validation:</p>
+<section id="pydantic-models">
+<h3>Pydantic Models<a class="headerlink" href="#pydantic-models" title="Link to this heading">¶</a></h3>
+<div class="sd-tab-set docutils">
+<input id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-2">
+Python 3.9+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">UserSchema</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+</span><span data-line="5">    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="6">    <span class="n">email</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="7">    <span class="n">age</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="8">
+</span><span data-line="9">    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;from_attributes&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+</span><span data-line="10">
+</span><span data-line="11"><span class="c1"># Convert database model to Pydantic schema</span>
+</span><span data-line="12"><span class="n">user_data</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span><span class="n">user_model</span><span class="p">,</span> <span class="n">schema_type</span><span class="o">=</span><span class="n">UserSchema</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+<input checked="checked" id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.10" for="sd-tab-item-3">
+Python 3.10+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">class</span><span class="w"> </span><span class="nc">UserSchema</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+</span><span data-line="4">    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="5">    <span class="n">email</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="6">    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="7">
+</span><span data-line="8">    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;from_attributes&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+</span><span data-line="9">
+</span><span data-line="10"><span class="c1"># Convert database model to Pydantic schema</span>
+</span><span data-line="11"><span class="n">user_data</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span><span class="n">user_model</span><span class="p">,</span> <span class="n">schema_type</span><span class="o">=</span><span class="n">UserSchema</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="msgspec-structs">
+<h3>Msgspec Structs<a class="headerlink" href="#msgspec-structs" title="Link to this heading">¶</a></h3>
+<div class="sd-tab-set docutils">
+<input id="sd-tab-item-4" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-4">
+Python 3.9+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">msgspec</span><span class="w"> </span><span class="kn">import</span> <span class="n">Struct</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">UserStruct</span><span class="p">(</span><span class="n">Struct</span><span class="p">):</span>
+</span><span data-line="5">    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="6">    <span class="n">email</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="7">    <span class="n">age</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="c1"># Convert database model to Msgspec struct</span>
+</span><span data-line="10"><span class="n">user_data</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span><span class="n">user_model</span><span class="p">,</span> <span class="n">schema_type</span><span class="o">=</span><span class="n">UserStruct</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+<input checked="checked" id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.10" for="sd-tab-item-5">
+Python 3.10+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">msgspec</span><span class="w"> </span><span class="kn">import</span> <span class="n">Struct</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">class</span><span class="w"> </span><span class="nc">UserStruct</span><span class="p">(</span><span class="n">Struct</span><span class="p">):</span>
+</span><span data-line="4">    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="5">    <span class="n">email</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="6">    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="c1"># Convert database model to Msgspec struct</span>
+</span><span data-line="9"><span class="n">user_data</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span><span class="n">user_model</span><span class="p">,</span> <span class="n">schema_type</span><span class="o">=</span><span class="n">UserStruct</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="attrs-classes">
+<h3>Attrs Classes<a class="headerlink" href="#attrs-classes" title="Link to this heading">¶</a></h3>
+<div class="sd-tab-set docutils">
+<input id="sd-tab-item-6" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-6">
+Python 3.9+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">attrs</span><span class="w"> </span><span class="kn">import</span> <span class="n">define</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="nd">@define</span>
+</span><span data-line="5"><span class="k">class</span><span class="w"> </span><span class="nc">UserAttrs</span><span class="p">:</span>
+</span><span data-line="6">    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="7">    <span class="n">email</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="8">    <span class="n">age</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="9">
+</span><span data-line="10"><span class="c1"># Convert database model to attrs class</span>
+</span><span data-line="11"><span class="n">user_data</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span><span class="n">user_model</span><span class="p">,</span> <span class="n">schema_type</span><span class="o">=</span><span class="n">UserAttrs</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+<input checked="checked" id="sd-tab-item-7" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.10" for="sd-tab-item-7">
+Python 3.10+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">attrs</span><span class="w"> </span><span class="kn">import</span> <span class="n">define</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="nd">@define</span>
+</span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">UserAttrs</span><span class="p">:</span>
+</span><span data-line="5">    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="6">    <span class="n">email</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="7">    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="c1"># Convert database model to attrs class</span>
+</span><span data-line="10"><span class="n">user_data</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span><span class="n">user_model</span><span class="p">,</span> <span class="n">schema_type</span><span class="o">=</span><span class="n">UserAttrs</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Enhanced attrs Support with cattrs</strong>: When both <code class="docutils literal notranslate"><span class="pre">attrs</span></code> and <code class="docutils literal notranslate"><span class="pre">cattrs</span></code> are installed,
+Advanced Alchemy automatically uses <code class="docutils literal notranslate"><span class="pre">cattrs.structure()</span></code> and <code class="docutils literal notranslate"><span class="pre">cattrs.unstructure()</span></code>
+for improved performance and type-aware serialization. This provides better handling of
+complex types, nested structures, and custom converters.</p>
+</div>
+</section>
+<section id="sqlalchemy-query-result-support">
+<h3>SQLAlchemy Query Result Support<a class="headerlink" href="#sqlalchemy-query-result-support" title="Link to this heading">¶</a></h3>
+<p>Services now provide comprehensive support for SQLAlchemy query results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">select</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="c1"># Direct support for SQLAlchemy Row objects</span>
+</span><span data-line="4"><span class="n">query_results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">User</span><span class="p">))</span>
+</span><span data-line="5"><span class="n">rows</span> <span class="o">=</span> <span class="n">query_results</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>  <span class="c1"># Returns list[Row[Any]]</span>
+</span><span data-line="6">
+</span><span data-line="7"><span class="c1"># Convert Row objects to schema types</span>
+</span><span data-line="8"><span class="n">user_data</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span><span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">schema_type</span><span class="o">=</span><span class="n">UserSchema</span><span class="p">)</span>
+</span><span data-line="9"><span class="n">users_paginated</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">schema_type</span><span class="o">=</span><span class="n">UserSchema</span><span class="p">)</span>
+</span><span data-line="10">
+</span><span data-line="11"><span class="c1"># Also supports RowMapping objects</span>
+</span><span data-line="12"><span class="n">row_mapping_results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">User</span><span class="p">))</span><span class="o">.</span><span class="n">mappings</span><span class="p">()</span>
+</span><span data-line="13"><span class="n">mapping_data</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span><span class="n">row_mapping_results</span><span class="o">.</span><span class="n">first</span><span class="p">(),</span> <span class="n">schema_type</span><span class="o">=</span><span class="n">UserSchema</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</section>
+</section>
 <section id="framework-integration">
 <h2>Framework Integration<a class="headerlink" href="#framework-integration" title="Link to this heading">¶</a></h2>
 <p>Services integrate seamlessly with both Litestar and FastAPI.</p>
@@ -563,6 +716,6 @@ The code below shows a service coordinating posts and tags.</p>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
       <script src="../_static/design-tabs.js?v=f930bc37"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-      <script src="../_static/shibuya.js?v=e2230717"></script>
+      <script src="../_static/shibuya.js?v=c477d091"></script>
       <script src="../_static/versioning.js?v=68b42869"></script></body>
 </html>
