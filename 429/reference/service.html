@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=397bb51e" />
-    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=c516b45e" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=76b6f612" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -33,13 +33,13 @@
       <img class="dark-logo" src="../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
       <strong>advanced_alchemy</strong>
     </a>
-    <div class="sy-head-nav" id="HeadNav">
+    <div class="sy-head-nav" id="head-nav">
       <nav class="sy-head-links"><ul><li class="link"><a href="../index.html">Home</a></li>
-      <li class="link"><button type="button">
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-2" aria-controls="nav-children-2">
             <span>About</span>
             <i class="i-lucide chevron-down"></i>
           </button>
-        <ul><li><a href="../changelog.html">
+        <ul id="nav-children-2" aria-labelledby="nav-trigger-2"><li><a href="../changelog.html">
                 <span>Changelog</span>
                 <small>All changes for Advanced Alchemy</small>
               </a></li><li><a href="https://litestar.dev/about/organization">
@@ -59,11 +59,11 @@
                 <small>Overview of Advanced Alchemy's security protocols</small>
               </a></li><li><a href="https://github.com/sponsors/Litestar-Org">Sponsor</a></li></ul>
       </li>
-      <li class="link"><button type="button">
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-3" aria-controls="nav-children-3">
             <span>Help</span>
             <i class="i-lucide chevron-down"></i>
           </button>
-        <ul><li><a href="https://discord.gg/dSDXd4mKhp">
+        <ul id="nav-children-3" aria-labelledby="nav-trigger-3"><li><a href="https://discord.gg/dSDXd4mKhp">
                 <span>Discord Help Forum</span>
                 <small>Dedicated Discord help forum</small>
               </a></li><li><a href="https://github.com/litestar-org/advanced-alchemy/discussions">
@@ -87,7 +87,7 @@ data-aria-auto="Switch to light color mode"
 data-aria-light="Switch to dark color mode"
 data-aria-dark="Switch to auto color mode">
 <i class="i-lucide theme-icon"></i>
-</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="HeadNav" aria-expanded="false">
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
         <div class="hamburger">
           <span class="hamburger_1"></span>
           <span class="hamburger_2 -translate-x-2"></span>
@@ -162,6 +162,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l4"><a class="reference internal" href="extensions/litestar/dto.html">dto</a></li>
 <li class="toctree-l4"><a class="reference internal" href="extensions/litestar/plugins.html">plugin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="extensions/litestar/cli.html">cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="extensions/litestar/session.html">Session Backends</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="extensions/flask/index.html">flask</a></li>
@@ -195,6 +196,10 @@ data-aria-dark="Switch to auto color mode">
       <i class="i-lucide close"></i>
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#advanced_alchemy.service.AttrsInstance"><code class="docutils literal notranslate"><span class="pre">AttrsInstance</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.service.AttrsInstance.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#advanced_alchemy.service.Empty"><code class="docutils literal notranslate"><span class="pre">Empty</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.service.ErrorMessages"><code class="docutils literal notranslate"><span class="pre">ErrorMessages</span></code></a><ul>
 <li><a class="reference internal" href="#advanced_alchemy.service.ErrorMessages.duplicate_key"><code class="docutils literal notranslate">duplicate_key</span></code></a></li>
@@ -306,7 +311,12 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.service.SQLAlchemySyncRepositoryService.upsert_many"><code class="docutils literal notranslate">upsert_many()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#advanced_alchemy.service.fields"><code class="docutils literal notranslate"><span class="pre">fields()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.service.find_filter"><code class="docutils literal notranslate"><span class="pre">find_filter()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.service.is_attrs_instance"><code class="docutils literal notranslate"><span class="pre">is_attrs_instance()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.service.is_attrs_instance_with_field"><code class="docutils literal notranslate"><span class="pre">is_attrs_instance_with_field()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.service.is_attrs_instance_without_field"><code class="docutils literal notranslate"><span class="pre">is_attrs_instance_without_field()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.service.is_attrs_schema"><code class="docutils literal notranslate"><span class="pre">is_attrs_schema()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.service.is_dict"><code class="docutils literal notranslate"><span class="pre">is_dict()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.service.is_dict_with_field"><code class="docutils literal notranslate"><span class="pre">is_dict_with_field()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.service.is_dict_without_field"><code class="docutils literal notranslate"><span class="pre">is_dict_without_field()</span></code></a></li>
@@ -349,7 +359,8 @@ data-aria-dark="Switch to auto color mode">
 </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
   </aside>
   <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
-  <main class="sy-main w-full max-sm:max-w-full print:pt-6"><div class="sy-breadcrumbs" role="navigation">
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
   <div class="sy-breadcrumbs-inner flex items-center">
     <div class="md:hidden mr-3">
       <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
@@ -380,6 +391,17 @@ data-aria-dark="Switch to auto color mode">
         <article class="yue" role="main">
           <section id="module-advanced_alchemy.service">
 <span id="services"></span><h1>services<a class="headerlink" href="#module-advanced_alchemy.service" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.service.AttrsInstance">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.service.</span></span><span class="sig-name descname"><span class="pre">AttrsInstance</span></span><a class="reference internal" href="../_modules/attr.html#AttrsInstance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.service.AttrsInstance" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.service.AttrsInstance.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.service.AttrsInstance.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="advanced_alchemy.service.Empty">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.service.</span></span><span class="sig-name descname"><span class="pre">Empty</span></span><a class="reference internal" href="../_modules/advanced_alchemy/utils/dataclass.html#Empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.service.Empty" title="Link to this definition">¶</a></dt>
@@ -496,10 +518,10 @@ Type: <code class="xref py py-class docutils literal notranslate"><span class="p
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>AdvancedAlchemyError</strong> – If <cite>schema_type</cite> is not a valid Pydantic or Msgspec schema and both libraries are not installed.</p>
+<dd class="field-even"><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.AdvancedAlchemyError" title="advanced_alchemy.exceptions.AdvancedAlchemyError"><strong>AdvancedAlchemyError</strong></a> – If <cite>schema_type</cite> is not a valid Pydantic, Msgspec, or attrs schema and all libraries are not installed.</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelProtocol</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.RowMapping</span></code> | <a class="reference internal" href="#advanced_alchemy.service.OffsetPagination" title="advanced_alchemy.service.pagination.OffsetPagination"><code class="xref py py-class docutils literal notranslate"><span class="pre">OffsetPagination</span></code></a> | <a class="reference external" href="https://jcristharif.com/msgspec/api.html#msgspec.Struct" title="(in msgspec)"><code class="xref py py-class docutils literal notranslate"><span class="pre">msgspec.Struct</span></code></a> | <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></a></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelProtocol</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.RowMapping</span></code> | <a class="reference internal" href="#advanced_alchemy.service.OffsetPagination" title="advanced_alchemy.service.pagination.OffsetPagination"><code class="xref py py-class docutils literal notranslate"><span class="pre">OffsetPagination</span></code></a> | <a class="reference external" href="https://jcristharif.com/msgspec/api.html#msgspec.Struct" title="(in msgspec)"><code class="xref py py-class docutils literal notranslate"><span class="pre">msgspec.Struct</span></code></a> | <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></a> | <code class="xref py py-class docutils literal notranslate"><span class="pre">attrs</span> <span class="pre">class</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -532,7 +554,7 @@ Type: <code class="xref py py-class docutils literal notranslate"><span class="p
 <p>Handles construction of the database session._create_select_for_model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>AdvancedAlchemyError</strong> – If no configuration or session is provided.</p>
+<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.AdvancedAlchemyError" title="advanced_alchemy.exceptions.AdvancedAlchemyError"><strong>AdvancedAlchemyError</strong></a> – If no configuration or session is provided.</p>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
 <dd class="field-even"><p>The service object instance.</p>
@@ -802,7 +824,7 @@ for friendlier error messages to clients</p></li>
 <p>Handles construction of the database session._create_select_for_model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>AdvancedAlchemyError</strong> – If no configuration or session is provided.</p>
+<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.AdvancedAlchemyError" title="advanced_alchemy.exceptions.AdvancedAlchemyError"><strong>AdvancedAlchemyError</strong></a> – If no configuration or session is provided.</p>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
 <dd class="field-even"><p>The service object instance.</p>
@@ -819,7 +841,7 @@ for friendlier error messages to clients</p></li>
 <dd><p>Return the repository instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ImproperConfigurationError</strong> – If the repository is not initialized.</p>
+<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError" title="advanced_alchemy.exceptions.ImproperConfigurationError"><strong>ImproperConfigurationError</strong></a> – If the repository is not initialized.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The repository instance.</p>
@@ -952,7 +974,6 @@ for friendlier error messages to clients</p></li>
 <li><p><span class="target" id="advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.create_many.params.auto_commit"></span><strong>auto_commit</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.create_many.params.auto_commit">¶</a> – Commit objects before returning.</p></li>
 <li><p><span class="target" id="advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.create_many.params.error_messages"></span><strong>error_messages</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.create_many.params.error_messages">¶</a> – An optional dictionary of templates to use
 for friendlier error messages to clients</p></li>
-<li><p><span class="target" id="advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.create_many.params.uniquify"></span><strong>uniquify</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.create_many.params.uniquify">¶</a> – Optionally apply the <code class="docutils literal notranslate"><span class="pre">unique()</span></code> method to results before returning.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1059,7 +1080,7 @@ for friendlier error messages to clients</p></li>
 empty, all fields are matched.</p></li>
 <li><p><span class="target" id="advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_and_update.params.attribute_names"></span><strong>attribute_names</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_and_update.params.attribute_names">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]</span>) – an iterable of attribute names to pass into the <code class="docutils literal notranslate"><span class="pre">update</span></code>
 method.</p></li>
-<li><p><span class="target" id="advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_and_update.params.with_for_update"></span><strong>with_for_update</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_and_update.params.with_for_update">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]</span>) – indicating FOR UPDATE should be used, or may be a
+<li><p><span class="target" id="advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_and_update.params.with_for_update"></span><strong>with_for_update</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_and_update.params.with_for_update">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[sqlalchemy.sql.selectable.ForUpdateArg, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]</span>) – indicating FOR UPDATE should be used, or may be a
 dictionary containing flags to indicate a more specific set of
 FOR UPDATE flags for the SELECT</p></li>
 <li><p><span class="target" id="advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_and_update.params.auto_expunge"></span><strong>auto_expunge</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_and_update.params.auto_expunge">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]</span>) – Remove object from session before returning.</p></li>
@@ -1097,7 +1118,7 @@ empty, all fields are matched.</p></li>
 <li><p><span class="target" id="advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_or_upsert.params.create"></span><strong>create</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_or_upsert.params.create">¶</a> – Should a model be created.  If no model is found, an exception is raised.</p></li>
 <li><p><span class="target" id="advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_or_upsert.params.attribute_names"></span><strong>attribute_names</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_or_upsert.params.attribute_names">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]</span>) – an iterable of attribute names to pass into the <code class="docutils literal notranslate"><span class="pre">update</span></code>
 method.</p></li>
-<li><p><span class="target" id="advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_or_upsert.params.with_for_update"></span><strong>with_for_update</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_or_upsert.params.with_for_update">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]</span>) – indicating FOR UPDATE should be used, or may be a
+<li><p><span class="target" id="advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_or_upsert.params.with_for_update"></span><strong>with_for_update</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_or_upsert.params.with_for_update">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[sqlalchemy.sql.selectable.ForUpdateArg, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]</span>) – indicating FOR UPDATE should be used, or may be a
 dictionary containing flags to indicate a more specific set of
 FOR UPDATE flags for the SELECT</p></li>
 <li><p><span class="target" id="advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_or_upsert.params.auto_expunge"></span><strong>auto_expunge</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.get_or_upsert.params.auto_expunge">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]</span>) – Remove object from session before returning.</p></li>
@@ -1147,7 +1168,7 @@ for friendlier error messages to clients</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>RepositoryError</strong> – If no configuration or session is provided.</p>
+<dd class="field-even"><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.RepositoryError" title="advanced_alchemy.exceptions.RepositoryError"><strong>RepositoryError</strong></a> – If no configuration or session is provided.</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Updated representation.</p>
@@ -1265,7 +1286,7 @@ for friendlier error messages to clients</p></li>
 <p>Handles construction of the database session._create_select_for_model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>AdvancedAlchemyError</strong> – If no configuration or session is provided.</p>
+<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.AdvancedAlchemyError" title="advanced_alchemy.exceptions.AdvancedAlchemyError"><strong>AdvancedAlchemyError</strong></a> – If no configuration or session is provided.</p>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
 <dd class="field-even"><p>The service object instance.</p>
@@ -1535,7 +1556,7 @@ for friendlier error messages to clients</p></li>
 <p>Handles construction of the database session._create_select_for_model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>AdvancedAlchemyError</strong> – If no configuration or session is provided.</p>
+<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.AdvancedAlchemyError" title="advanced_alchemy.exceptions.AdvancedAlchemyError"><strong>AdvancedAlchemyError</strong></a> – If no configuration or session is provided.</p>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
 <dd class="field-even"><p>The service object instance.</p>
@@ -1552,7 +1573,7 @@ for friendlier error messages to clients</p></li>
 <dd><p>Return the repository instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ImproperConfigurationError</strong> – If the repository is not initialized.</p>
+<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError" title="advanced_alchemy.exceptions.ImproperConfigurationError"><strong>ImproperConfigurationError</strong></a> – If the repository is not initialized.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The repository instance.</p>
@@ -1685,7 +1706,6 @@ for friendlier error messages to clients</p></li>
 <li><p><span class="target" id="advanced_alchemy.service.SQLAlchemySyncRepositoryService.create_many.params.auto_commit"></span><strong>auto_commit</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemySyncRepositoryService.create_many.params.auto_commit">¶</a> – Commit objects before returning.</p></li>
 <li><p><span class="target" id="advanced_alchemy.service.SQLAlchemySyncRepositoryService.create_many.params.error_messages"></span><strong>error_messages</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemySyncRepositoryService.create_many.params.error_messages">¶</a> – An optional dictionary of templates to use
 for friendlier error messages to clients</p></li>
-<li><p><span class="target" id="advanced_alchemy.service.SQLAlchemySyncRepositoryService.create_many.params.uniquify"></span><strong>uniquify</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemySyncRepositoryService.create_many.params.uniquify">¶</a> – Optionally apply the <code class="docutils literal notranslate"><span class="pre">unique()</span></code> method to results before returning.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1792,7 +1812,7 @@ for friendlier error messages to clients</p></li>
 empty, all fields are matched.</p></li>
 <li><p><span class="target" id="advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_and_update.params.attribute_names"></span><strong>attribute_names</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_and_update.params.attribute_names">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]</span>) – an iterable of attribute names to pass into the <code class="docutils literal notranslate"><span class="pre">update</span></code>
 method.</p></li>
-<li><p><span class="target" id="advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_and_update.params.with_for_update"></span><strong>with_for_update</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_and_update.params.with_for_update">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]</span>) – indicating FOR UPDATE should be used, or may be a
+<li><p><span class="target" id="advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_and_update.params.with_for_update"></span><strong>with_for_update</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_and_update.params.with_for_update">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[sqlalchemy.sql.selectable.ForUpdateArg, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]</span>) – indicating FOR UPDATE should be used, or may be a
 dictionary containing flags to indicate a more specific set of
 FOR UPDATE flags for the SELECT</p></li>
 <li><p><span class="target" id="advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_and_update.params.auto_expunge"></span><strong>auto_expunge</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_and_update.params.auto_expunge">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]</span>) – Remove object from session before returning.</p></li>
@@ -1830,7 +1850,7 @@ empty, all fields are matched.</p></li>
 <li><p><span class="target" id="advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_or_upsert.params.create"></span><strong>create</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_or_upsert.params.create">¶</a> – Should a model be created.  If no model is found, an exception is raised.</p></li>
 <li><p><span class="target" id="advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_or_upsert.params.attribute_names"></span><strong>attribute_names</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_or_upsert.params.attribute_names">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]</span>) – an iterable of attribute names to pass into the <code class="docutils literal notranslate"><span class="pre">update</span></code>
 method.</p></li>
-<li><p><span class="target" id="advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_or_upsert.params.with_for_update"></span><strong>with_for_update</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_or_upsert.params.with_for_update">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]</span>) – indicating FOR UPDATE should be used, or may be a
+<li><p><span class="target" id="advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_or_upsert.params.with_for_update"></span><strong>with_for_update</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_or_upsert.params.with_for_update">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[sqlalchemy.sql.selectable.ForUpdateArg, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]</span>) – indicating FOR UPDATE should be used, or may be a
 dictionary containing flags to indicate a more specific set of
 FOR UPDATE flags for the SELECT</p></li>
 <li><p><span class="target" id="advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_or_upsert.params.auto_expunge"></span><strong>auto_expunge</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.SQLAlchemySyncRepositoryService.get_or_upsert.params.auto_expunge">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]</span>) – Remove object from session before returning.</p></li>
@@ -1880,7 +1900,7 @@ for friendlier error messages to clients</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>RepositoryError</strong> – If no configuration or session is provided.</p>
+<dd class="field-even"><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.RepositoryError" title="advanced_alchemy.exceptions.RepositoryError"><strong>RepositoryError</strong></a> – If no configuration or session is provided.</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Updated representation.</p>
@@ -1973,6 +1993,35 @@ for friendlier error messages to clients</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.service.fields">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.service.</span></span><span class="sig-name descname"><span class="pre">fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/attr/_make.html#fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.service.fields" title="Link to this definition">¶</a></dt>
+<dd><p>Return the tuple of <em>attrs</em> attributes for a class.</p>
+<p>The tuple also allows accessing the fields by their names (see below for
+examples).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.service.fields.params.cls"></span><strong>cls</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.fields.params.cls">¶</a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.13)"><em>type</em></a>) – Class to introspect.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <em>cls</em> is not a class.</p></li>
+<li><p><strong>attrs.exceptions.NotAnAttrsClassError</strong> – If <em>cls</em> is not an <em>attrs</em> class.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple (with name accessors) of <cite>attrs.Attribute</cite></p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 16.2.0: </span>Returned tuple allows accessing the fields
+by name.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 23.1.0: </span>Add support for generic classes.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="advanced_alchemy.service.find_filter">
 <span class="sig-prename descclassname"><span class="pre">advanced_alchemy.service.</span></span><span class="sig-name descname"><span class="pre">find_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/service/_util.html#find_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.service.find_filter" title="Link to this definition">¶</a></dt>
 <dd><p>Get the filter specified by filter type from the filters.</p>
@@ -1985,6 +2034,80 @@ for friendlier error messages to clients</p></li>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The match filter instance or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.service.is_attrs_instance">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.service.</span></span><span class="sig-name descname"><span class="pre">is_attrs_instance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/service/typing.html#is_attrs_instance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.service.is_attrs_instance" title="Link to this definition">¶</a></dt>
+<dd><p>Check if a value is an attrs class instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.service.is_attrs_instance.params.v"></span><strong>v</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.is_attrs_instance.params.v">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Value to check.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeGuard</span></code>[<a class="reference internal" href="#advanced_alchemy.service.AttrsInstance" title="attr.AttrsInstance"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttrsInstance</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.service.is_attrs_instance_with_field">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.service.</span></span><span class="sig-name descname"><span class="pre">is_attrs_instance_with_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/service/typing.html#is_attrs_instance_with_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.service.is_attrs_instance_with_field" title="Link to this definition">¶</a></dt>
+<dd><p>Check if an attrs instance has a specific field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.service.is_attrs_instance_with_field.params.v"></span><strong>v</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.is_attrs_instance_with_field.params.v">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Value to check.</p></li>
+<li><p><span class="target" id="advanced_alchemy.service.is_attrs_instance_with_field.params.field_name"></span><strong>field_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.is_attrs_instance_with_field.params.field_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Field name to check for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeGuard</span></code>[<a class="reference internal" href="#advanced_alchemy.service.AttrsInstance" title="attr.AttrsInstance"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttrsInstance</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.service.is_attrs_instance_without_field">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.service.</span></span><span class="sig-name descname"><span class="pre">is_attrs_instance_without_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/service/typing.html#is_attrs_instance_without_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.service.is_attrs_instance_without_field" title="Link to this definition">¶</a></dt>
+<dd><p>Check if an attrs instance does not have a specific field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.service.is_attrs_instance_without_field.params.v"></span><strong>v</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.is_attrs_instance_without_field.params.v">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Value to check.</p></li>
+<li><p><span class="target" id="advanced_alchemy.service.is_attrs_instance_without_field.params.field_name"></span><strong>field_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.is_attrs_instance_without_field.params.field_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Field name to check for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeGuard</span></code>[<a class="reference internal" href="#advanced_alchemy.service.AttrsInstance" title="attr.AttrsInstance"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttrsInstance</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.service.is_attrs_schema">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.service.</span></span><span class="sig-name descname"><span class="pre">is_attrs_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/service/typing.html#is_attrs_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.service.is_attrs_schema" title="Link to this definition">¶</a></dt>
+<dd><p>Check if a class type is an attrs schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.service.is_attrs_schema.params.cls"></span><strong>cls</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.is_attrs_schema.params.cls">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Class to check.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeGuard</span></code>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a>[<a class="reference internal" href="#advanced_alchemy.service.AttrsInstance" title="attr.AttrsInstance"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttrsInstance</span></code></a>]]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2180,13 +2303,13 @@ for friendlier error messages to clients</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="advanced_alchemy.service.is_schema">
 <span class="sig-prename descclassname"><span class="pre">advanced_alchemy.service.</span></span><span class="sig-name descname"><span class="pre">is_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/service/typing.html#is_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.service.is_schema" title="Link to this definition">¶</a></dt>
-<dd><p>Check if a value is a msgspec Struct or Pydantic model.</p>
+<dd><p>Check if a value is a msgspec Struct, Pydantic model, or attrs instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="target" id="advanced_alchemy.service.is_schema.params.v"></span><strong>v</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.is_schema.params.v">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Value to check.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeGuard</span></code>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://jcristharif.com/msgspec/api.html#msgspec.Struct" title="(in msgspec)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Struct</span></code></a>, <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a>]]</span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeGuard</span></code>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://jcristharif.com/msgspec/api.html#msgspec.Struct" title="(in msgspec)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Struct</span></code></a>, <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a>, <a class="reference internal" href="#advanced_alchemy.service.AttrsInstance" title="attr.AttrsInstance"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttrsInstance</span></code></a>]]</span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
@@ -2197,7 +2320,7 @@ for friendlier error messages to clients</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="advanced_alchemy.service.is_schema_or_dict">
 <span class="sig-prename descclassname"><span class="pre">advanced_alchemy.service.</span></span><span class="sig-name descname"><span class="pre">is_schema_or_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/service/typing.html#is_schema_or_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.service.is_schema_or_dict" title="Link to this definition">¶</a></dt>
-<dd><p>Check if a value is a msgspec Struct, Pydantic model, or dict.</p>
+<dd><p>Check if a value is a msgspec Struct, Pydantic model, attrs class, or dict.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="target" id="advanced_alchemy.service.is_schema_or_dict.params.v"></span><strong>v</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.is_schema_or_dict.params.v">¶</a> – Value to check.</p>
@@ -2211,7 +2334,7 @@ for friendlier error messages to clients</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="advanced_alchemy.service.is_schema_or_dict_with_field">
 <span class="sig-prename descclassname"><span class="pre">advanced_alchemy.service.</span></span><span class="sig-name descname"><span class="pre">is_schema_or_dict_with_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/service/typing.html#is_schema_or_dict_with_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.service.is_schema_or_dict_with_field" title="Link to this definition">¶</a></dt>
-<dd><p>Check if a value is a msgspec Struct, Pydantic model, or dict with a specific field.</p>
+<dd><p>Check if a value is a msgspec Struct, Pydantic model, attrs instance, or dict with a specific field.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -2228,7 +2351,7 @@ for friendlier error messages to clients</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="advanced_alchemy.service.is_schema_or_dict_without_field">
 <span class="sig-prename descclassname"><span class="pre">advanced_alchemy.service.</span></span><span class="sig-name descname"><span class="pre">is_schema_or_dict_without_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/service/typing.html#is_schema_or_dict_without_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.service.is_schema_or_dict_without_field" title="Link to this definition">¶</a></dt>
-<dd><p>Check if a value is a msgspec Struct, Pydantic model, or dict without a specific field.</p>
+<dd><p>Check if a value is a msgspec Struct, Pydantic model, attrs instance, or dict without a specific field.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -2245,7 +2368,7 @@ for friendlier error messages to clients</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="advanced_alchemy.service.is_schema_with_field">
 <span class="sig-prename descclassname"><span class="pre">advanced_alchemy.service.</span></span><span class="sig-name descname"><span class="pre">is_schema_with_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/service/typing.html#is_schema_with_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.service.is_schema_with_field" title="Link to this definition">¶</a></dt>
-<dd><p>Check if a value is a msgspec Struct or Pydantic model with a specific field.</p>
+<dd><p>Check if a value is a msgspec Struct, Pydantic model, or attrs instance with a specific field.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -2254,7 +2377,7 @@ for friendlier error messages to clients</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeGuard</span></code>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://jcristharif.com/msgspec/api.html#msgspec.Struct" title="(in msgspec)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Struct</span></code></a>, <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a>]]</span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeGuard</span></code>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://jcristharif.com/msgspec/api.html#msgspec.Struct" title="(in msgspec)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Struct</span></code></a>, <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a>, <a class="reference internal" href="#advanced_alchemy.service.AttrsInstance" title="attr.AttrsInstance"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttrsInstance</span></code></a>]]</span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
@@ -2265,7 +2388,7 @@ for friendlier error messages to clients</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="advanced_alchemy.service.is_schema_without_field">
 <span class="sig-prename descclassname"><span class="pre">advanced_alchemy.service.</span></span><span class="sig-name descname"><span class="pre">is_schema_without_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/service/typing.html#is_schema_without_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.service.is_schema_without_field" title="Link to this definition">¶</a></dt>
-<dd><p>Check if a value is a msgspec Struct or Pydantic model without a specific field.</p>
+<dd><p>Check if a value is a msgspec Struct, Pydantic model, or attrs instance without a specific field.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -2274,7 +2397,7 @@ for friendlier error messages to clients</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeGuard</span></code>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://jcristharif.com/msgspec/api.html#msgspec.Struct" title="(in msgspec)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Struct</span></code></a>, <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a>]]</span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeGuard</span></code>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://jcristharif.com/msgspec/api.html#msgspec.Struct" title="(in msgspec)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Struct</span></code></a>, <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a>, <a class="reference internal" href="#advanced_alchemy.service.AttrsInstance" title="attr.AttrsInstance"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttrsInstance</span></code></a>]]</span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
@@ -2309,7 +2432,7 @@ for friendlier error messages to clients</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span class="target" id="advanced_alchemy.service.schema_dump.params.data"></span><strong>data</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.schema_dump.params.data">¶</a> – <code class="xref py py-type docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">Any]</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">advanced_alchemy.base.ModelProtocol</span></code> | <a class="reference external" href="https://jcristharif.com/msgspec/api.html#msgspec.Struct" title="(in msgspec)"><code class="xref py py-class docutils literal notranslate"><span class="pre">msgspec.Struct</span></code></a> | <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></a> | <code class="xref py py-class docutils literal notranslate"><span class="pre">litestar.dto.data_structures.DTOData[ModelT]</span></code></p></li>
+<li><p><span class="target" id="advanced_alchemy.service.schema_dump.params.data"></span><strong>data</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.schema_dump.params.data">¶</a> – <code class="xref py py-type docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">Any]</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">advanced_alchemy.base.ModelProtocol</span></code> | <a class="reference external" href="https://jcristharif.com/msgspec/api.html#msgspec.Struct" title="(in msgspec)"><code class="xref py py-class docutils literal notranslate"><span class="pre">msgspec.Struct</span></code></a> | <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></a> | <code class="xref py py-class docutils literal notranslate"><span class="pre">attrs</span> <span class="pre">class</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">litestar.dto.data_structures.DTOData[ModelT]</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.RowMapping</span></code> | <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/connections.html#sqlalchemy.engine.Row" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.engine.row.Row</span></code></a></p></li>
 <li><p><span class="target" id="advanced_alchemy.service.schema_dump.params.exclude_unset"></span><strong>exclude_unset</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.service.schema_dump.params.exclude_unset">¶</a> – <code class="xref py py-type docutils literal notranslate"><span class="pre">bool</span></code> Whether to exclude unset values.</p></li>
 </ul>
 </dd>
@@ -2381,6 +2504,6 @@ for friendlier error messages to clients</p></li>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
       <script src="../_static/design-tabs.js?v=f930bc37"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-      <script src="../_static/shibuya.js?v=e2230717"></script>
+      <script src="../_static/shibuya.js?v=c477d091"></script>
       <script src="../_static/versioning.js?v=68b42869"></script></body>
 </html>

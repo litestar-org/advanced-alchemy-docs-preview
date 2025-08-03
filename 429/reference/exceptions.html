@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=397bb51e" />
-    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=c516b45e" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=76b6f612" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -33,13 +33,13 @@
       <img class="dark-logo" src="../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
       <strong>advanced_alchemy</strong>
     </a>
-    <div class="sy-head-nav" id="HeadNav">
+    <div class="sy-head-nav" id="head-nav">
       <nav class="sy-head-links"><ul><li class="link"><a href="../index.html">Home</a></li>
-      <li class="link"><button type="button">
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-2" aria-controls="nav-children-2">
             <span>About</span>
             <i class="i-lucide chevron-down"></i>
           </button>
-        <ul><li><a href="../changelog.html">
+        <ul id="nav-children-2" aria-labelledby="nav-trigger-2"><li><a href="../changelog.html">
                 <span>Changelog</span>
                 <small>All changes for Advanced Alchemy</small>
               </a></li><li><a href="https://litestar.dev/about/organization">
@@ -59,11 +59,11 @@
                 <small>Overview of Advanced Alchemy's security protocols</small>
               </a></li><li><a href="https://github.com/sponsors/Litestar-Org">Sponsor</a></li></ul>
       </li>
-      <li class="link"><button type="button">
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-3" aria-controls="nav-children-3">
             <span>Help</span>
             <i class="i-lucide chevron-down"></i>
           </button>
-        <ul><li><a href="https://discord.gg/dSDXd4mKhp">
+        <ul id="nav-children-3" aria-labelledby="nav-trigger-3"><li><a href="https://discord.gg/dSDXd4mKhp">
                 <span>Discord Help Forum</span>
                 <small>Dedicated Discord help forum</small>
               </a></li><li><a href="https://github.com/litestar-org/advanced-alchemy/discussions">
@@ -87,7 +87,7 @@ data-aria-auto="Switch to light color mode"
 data-aria-light="Switch to dark color mode"
 data-aria-dark="Switch to auto color mode">
 <i class="i-lucide theme-icon"></i>
-</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="HeadNav" aria-expanded="false">
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
         <div class="hamburger">
           <span class="hamburger_1"></span>
           <span class="hamburger_2 -translate-x-2"></span>
@@ -162,6 +162,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l4"><a class="reference internal" href="extensions/litestar/dto.html">dto</a></li>
 <li class="toctree-l4"><a class="reference internal" href="extensions/litestar/plugins.html">plugin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="extensions/litestar/cli.html">cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="extensions/litestar/session.html">Session Backends</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="extensions/flask/index.html">flask</a></li>
@@ -194,7 +195,27 @@ data-aria-dark="Switch to auto color mode">
     <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
       <i class="i-lucide close"></i>
     </button>
-    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#advanced_alchemy.exceptions.AdvancedAlchemyError"><code class="docutils literal notranslate"><span class="pre">AdvancedAlchemyError</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.exceptions.AdvancedAlchemyError.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.exceptions.DuplicateKeyError"><code class="docutils literal notranslate"><span class="pre">DuplicateKeyError</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.exceptions.ErrorMessages"><code class="docutils literal notranslate"><span class="pre">ErrorMessages</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.exceptions.ForeignKeyError"><code class="docutils literal notranslate"><span class="pre">ForeignKeyError</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.exceptions.ImproperConfigurationError"><code class="docutils literal notranslate"><span class="pre">ImproperConfigurationError</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.exceptions.IntegrityError"><code class="docutils literal notranslate"><span class="pre">IntegrityError</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.exceptions.MissingDependencyError"><code class="docutils literal notranslate"><span class="pre">MissingDependencyError</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.exceptions.MissingDependencyError.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.exceptions.MultipleResultsFoundError"><code class="docutils literal notranslate"><span class="pre">MultipleResultsFoundError</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.exceptions.NotFoundError"><code class="docutils literal notranslate"><span class="pre">NotFoundError</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.exceptions.RepositoryError"><code class="docutils literal notranslate"><span class="pre">RepositoryError</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.exceptions.SerializationError"><code class="docutils literal notranslate"><span class="pre">SerializationError</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.exceptions.wrap_sqlalchemy_exception"><code class="docutils literal notranslate"><span class="pre">wrap_sqlalchemy_exception()</span></code></a></li>
+</ul>
+</div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
   data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
   <span class="w-8 flex items-center justify-around shrink-0 text-3xl">
     <iconify-icon icon="simple-icons:github"></iconify-icon>
@@ -217,7 +238,8 @@ data-aria-dark="Switch to auto color mode">
 </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
   </aside>
   <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
-  <main class="sy-main w-full max-sm:max-w-full print:pt-6"><div class="sy-breadcrumbs" role="navigation">
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
   <div class="sy-breadcrumbs-inner flex items-center">
     <div class="md:hidden mr-3">
       <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
@@ -246,16 +268,16 @@ data-aria-dark="Switch to auto color mode">
 </div><div class="flex flex-col break-words justify-between">
       <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
         <article class="yue" role="main">
-          <section id="exceptions">
-<h1>exceptions<a class="headerlink" href="#exceptions" title="Link to this heading">¶</a></h1>
+          <section id="module-advanced_alchemy.exceptions">
+<span id="exceptions"></span><h1>exceptions<a class="headerlink" href="#module-advanced_alchemy.exceptions" title="Link to this heading">¶</a></h1>
 <dl class="py exception">
-<dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">AdvancedAlchemyError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#AdvancedAlchemyError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dt class="sig sig-object py" id="advanced_alchemy.exceptions.AdvancedAlchemyError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">AdvancedAlchemyError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#AdvancedAlchemyError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.exceptions.AdvancedAlchemyError" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
 <p>Base exception class from which all Advanced Alchemy exceptions inherit.</p>
 <dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#AdvancedAlchemyError.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dt class="sig sig-object py" id="advanced_alchemy.exceptions.AdvancedAlchemyError.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#AdvancedAlchemyError.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.exceptions.AdvancedAlchemyError.__init__" title="Link to this definition">¶</a></dt>
 <dd><p>Initialize <code class="docutils literal notranslate"><span class="pre">AdvancedAlchemyException</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -270,9 +292,9 @@ data-aria-dark="Switch to auto color mode">
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">DuplicateKeyError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#DuplicateKeyError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">IntegrityError</span></code></p>
+<dt class="sig sig-object py" id="advanced_alchemy.exceptions.DuplicateKeyError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">DuplicateKeyError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#DuplicateKeyError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.exceptions.DuplicateKeyError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.exceptions.IntegrityError" title="advanced_alchemy.exceptions.IntegrityError"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntegrityError</span></code></a></p>
 <p>Duplicate key error.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -285,15 +307,15 @@ data-aria-dark="Switch to auto color mode">
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">ErrorMessages</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#ErrorMessages"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dt class="sig sig-object py" id="advanced_alchemy.exceptions.ErrorMessages">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">ErrorMessages</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#ErrorMessages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.exceptions.ErrorMessages" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypedDict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></a></p>
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">ForeignKeyError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#ForeignKeyError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">IntegrityError</span></code></p>
+<dt class="sig sig-object py" id="advanced_alchemy.exceptions.ForeignKeyError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">ForeignKeyError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#ForeignKeyError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.exceptions.ForeignKeyError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.exceptions.IntegrityError" title="advanced_alchemy.exceptions.IntegrityError"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntegrityError</span></code></a></p>
 <p>Foreign key error.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -306,9 +328,9 @@ data-aria-dark="Switch to auto color mode">
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">ImproperConfigurationError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#ImproperConfigurationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AdvancedAlchemyError</span></code></p>
+<dt class="sig sig-object py" id="advanced_alchemy.exceptions.ImproperConfigurationError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">ImproperConfigurationError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#ImproperConfigurationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.exceptions.ImproperConfigurationError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.exceptions.AdvancedAlchemyError" title="advanced_alchemy.exceptions.AdvancedAlchemyError"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdvancedAlchemyError</span></code></a></p>
 <p>Improper Configuration error.</p>
 <p>This exception is raised when there is an issue with the configuration of a module.</p>
 <dl class="field-list simple">
@@ -322,9 +344,9 @@ data-aria-dark="Switch to auto color mode">
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">IntegrityError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#IntegrityError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RepositoryError</span></code></p>
+<dt class="sig sig-object py" id="advanced_alchemy.exceptions.IntegrityError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">IntegrityError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#IntegrityError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.exceptions.IntegrityError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.exceptions.RepositoryError" title="advanced_alchemy.exceptions.RepositoryError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RepositoryError</span></code></a></p>
 <p>Data integrity error.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -337,9 +359,9 @@ data-aria-dark="Switch to auto color mode">
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">MissingDependencyError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#MissingDependencyError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AdvancedAlchemyError</span></code>, <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ImportError" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImportError</span></code></a></p>
+<dt class="sig sig-object py" id="advanced_alchemy.exceptions.MissingDependencyError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">MissingDependencyError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#MissingDependencyError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.exceptions.MissingDependencyError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.exceptions.AdvancedAlchemyError" title="advanced_alchemy.exceptions.AdvancedAlchemyError"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdvancedAlchemyError</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ImportError" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImportError</span></code></a></p>
 <p>Missing optional dependency.</p>
 <p>This exception is raised when a module depends on a dependency that has not been installed.</p>
 <dl class="field-list simple">
@@ -351,8 +373,8 @@ data-aria-dark="Switch to auto color mode">
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">install_package</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#MissingDependencyError.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dt class="sig sig-object py" id="advanced_alchemy.exceptions.MissingDependencyError.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">install_package</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#MissingDependencyError.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.exceptions.MissingDependencyError.__init__" title="Link to this definition">¶</a></dt>
 <dd><p>Initialize <code class="docutils literal notranslate"><span class="pre">AdvancedAlchemyException</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -367,9 +389,9 @@ data-aria-dark="Switch to auto color mode">
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">MultipleResultsFoundError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#MultipleResultsFoundError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RepositoryError</span></code></p>
+<dt class="sig sig-object py" id="advanced_alchemy.exceptions.MultipleResultsFoundError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">MultipleResultsFoundError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#MultipleResultsFoundError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.exceptions.MultipleResultsFoundError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.exceptions.RepositoryError" title="advanced_alchemy.exceptions.RepositoryError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RepositoryError</span></code></a></p>
 <p>Multiple results found error.</p>
 <p>This exception is raised when a single result was expected but multiple were found.</p>
 <dl class="field-list simple">
@@ -383,9 +405,9 @@ data-aria-dark="Switch to auto color mode">
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">NotFoundError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#NotFoundError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RepositoryError</span></code></p>
+<dt class="sig sig-object py" id="advanced_alchemy.exceptions.NotFoundError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">NotFoundError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#NotFoundError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.exceptions.NotFoundError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.exceptions.RepositoryError" title="advanced_alchemy.exceptions.RepositoryError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RepositoryError</span></code></a></p>
 <p>Not found error.</p>
 <p>This exception is raised when a requested resource is not found.</p>
 <dl class="field-list simple">
@@ -399,9 +421,9 @@ data-aria-dark="Switch to auto color mode">
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">RepositoryError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#RepositoryError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AdvancedAlchemyError</span></code></p>
+<dt class="sig sig-object py" id="advanced_alchemy.exceptions.RepositoryError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">RepositoryError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#RepositoryError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.exceptions.RepositoryError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.exceptions.AdvancedAlchemyError" title="advanced_alchemy.exceptions.AdvancedAlchemyError"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdvancedAlchemyError</span></code></a></p>
 <p>Base repository exception type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -414,9 +436,9 @@ data-aria-dark="Switch to auto color mode">
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">SerializationError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#SerializationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AdvancedAlchemyError</span></code></p>
+<dt class="sig sig-object py" id="advanced_alchemy.exceptions.SerializationError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">SerializationError</span></span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#SerializationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.exceptions.SerializationError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.exceptions.AdvancedAlchemyError" title="advanced_alchemy.exceptions.AdvancedAlchemyError"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdvancedAlchemyError</span></code></a></p>
 <p>Encoding or decoding error.</p>
 <p>This exception is raised when serialization or deserialization of an object fails.</p>
 <dl class="field-list simple">
@@ -430,8 +452,8 @@ data-aria-dark="Switch to auto color mode">
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">wrap_sqlalchemy_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dialect_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#wrap_sqlalchemy_exception"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dt class="sig sig-object py" id="advanced_alchemy.exceptions.wrap_sqlalchemy_exception">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.exceptions.</span></span><span class="sig-name descname"><span class="pre">wrap_sqlalchemy_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dialect_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/exceptions.html#wrap_sqlalchemy_exception"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.exceptions.wrap_sqlalchemy_exception" title="Link to this definition">¶</a></dt>
 <dd><p>Do something within context to raise a <code class="docutils literal notranslate"><span class="pre">RepositoryError</span></code> chained
 from an original <code class="docutils literal notranslate"><span class="pre">SQLAlchemyError</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
@@ -454,15 +476,15 @@ from an original <code class="docutils literal notranslate"><span class="pre">SQ
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>NotFoundError</strong> – Raised when no rows matched the specified data.</p></li>
+<li><p><a class="reference internal" href="#advanced_alchemy.exceptions.NotFoundError" title="advanced_alchemy.exceptions.NotFoundError"><strong>NotFoundError</strong></a> – Raised when no rows matched the specified data.</p></li>
 <li><p><strong>MultipleResultsFound</strong> – Raised when multiple rows matched the specified data.</p></li>
-<li><p><strong>IntegrityError</strong> – Raised when an integrity error occurs.</p></li>
+<li><p><a class="reference internal" href="#advanced_alchemy.exceptions.IntegrityError" title="advanced_alchemy.exceptions.IntegrityError"><strong>IntegrityError</strong></a> – Raised when an integrity error occurs.</p></li>
 <li><p><strong>InvalidRequestError</strong> – Raised when an invalid request was made to SQLAlchemy.</p></li>
-<li><p><strong>RepositoryError</strong> – Raised for other SQLAlchemy errors.</p></li>
+<li><p><a class="reference internal" href="#advanced_alchemy.exceptions.RepositoryError" title="advanced_alchemy.exceptions.RepositoryError"><strong>RepositoryError</strong></a> – Raised for other SQLAlchemy errors.</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.13)"><strong>AttributeError</strong></a> – Raised when an attribute error occurs during processing.</p></li>
 <li><p><strong>SQLAlchemyError</strong> – Raised for general SQLAlchemy errors.</p></li>
 <li><p><strong>StatementError</strong> – Raised when there is an issue processing the statement.</p></li>
-<li><p><strong>MultipleResultsFoundError</strong> – Raised when multiple rows matched the specified data.</p></li>
+<li><p><a class="reference internal" href="#advanced_alchemy.exceptions.MultipleResultsFoundError" title="advanced_alchemy.exceptions.MultipleResultsFoundError"><strong>MultipleResultsFoundError</strong></a> – Raised when multiple rows matched the specified data.</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -530,6 +552,6 @@ from an original <code class="docutils literal notranslate"><span class="pre">SQ
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
       <script src="../_static/design-tabs.js?v=f930bc37"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-      <script src="../_static/shibuya.js?v=e2230717"></script>
+      <script src="../_static/shibuya.js?v=c477d091"></script>
       <script src="../_static/versioning.js?v=68b42869"></script></body>
 </html>
