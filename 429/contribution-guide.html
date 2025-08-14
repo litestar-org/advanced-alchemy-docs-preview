@@ -328,24 +328,95 @@ could be titled <code class="docutils literal notranslate"><span class="pre">fix
 <section id="creating-a-new-release">
 <h2>Creating a new release<a class="headerlink" href="#creating-a-new-release" title="Link to this heading">¶</a></h2>
 <ol class="arabic">
-<li><dl>
-<dt>Increment the version in <a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/blob/main/pyproject.toml">pyproject.toml</a>.</dt><dd><div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The version should follow <a class="reference external" href="https://semver.org/">semantic versioning</a> and <a class="reference external" href="https://www.python.org/dev/peps/pep-0440/">PEP 440</a>.</p>
-</div>
-</dd>
-</dl>
-</li>
-<li><p><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/releases/new">Draft a new release</a> on GitHub</p>
+<li><p><strong>Set up your environment</strong></p>
 <ul class="simple">
-<li><p>Use <code class="docutils literal notranslate"><span class="pre">vMAJOR.MINOR.PATCH</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">v1.2.3</span></code>) as both the tag and release title</p></li>
-<li><p>Fill in the release description. You can use the “Generate release notes” function to get a draft for this</p></li>
+<li><p>Ensure you have the <code class="docutils literal notranslate"><span class="pre">gh</span></code> CLI installed and logged in to GitHub.</p></li>
+<li><p>Switch to the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch.</p></li>
 </ul>
 </li>
-<li><p>Commit your changes and push to <code class="docutils literal notranslate"><span class="pre">main</span></code></p></li>
-<li><p>Publish the release</p></li>
-<li><p>Go to <a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/actions">Actions</a> and approve the release workflow</p></li>
-<li><p>Check that the workflow runs successfully</p></li>
+<li><p><strong>Install and update dependencies</strong></p>
+<ul>
+<li><p>Run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">make<span class="w"> </span>install<span class="w">   </span><span class="c1"># Install all dependencies</span>
+</span><span data-line="2">make<span class="w"> </span>upgrade<span class="w">   </span><span class="c1"># Update dependencies to the latest versions</span>
+</span><span data-line="3">make<span class="w"> </span>docs<span class="w">      </span><span class="c1"># Verify documentation builds</span>
+</span></pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>Bump the version</strong></p>
+<ul>
+<li><p>Run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">make<span class="w"> </span>release<span class="w"> </span><span class="nv">bump</span><span class="o">=</span>patch
+</span></pre></div>
+</div>
+</li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">bump=minor</span></code> or <code class="docutils literal notranslate"><span class="pre">bump=major</span></code> if you need to bump the minor or major version instead.</p></li>
+</ul>
+</li>
+<li><p><strong>Prepare the release</strong></p>
+<ul>
+<li><p>Run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">uv<span class="w"> </span>run<span class="w"> </span>tools/prepare_release.py<span class="w"> </span>-c<span class="w"> </span>-i<span class="w"> </span>--base<span class="w"> </span>v<span class="o">{</span>current_version<span class="o">}</span><span class="w"> </span><span class="o">{</span>new_version<span class="o">}</span>
+</span></pre></div>
+</div>
+</li>
+<li><p>Replace <code class="docutils literal notranslate"><span class="pre">{current_version}</span></code> with the current version (e.g., <code class="docutils literal notranslate"><span class="pre">1.2.3</span></code>).</p></li>
+<li><p>Replace <code class="docutils literal notranslate"><span class="pre">{new_version}</span></code> with the new version (e.g., <code class="docutils literal notranslate"><span class="pre">1.2.4</span></code>).</p></li>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">tools/prepare_release.py</span> <span class="pre">-c</span> <span class="pre">-i</span> <span class="pre">--base</span> <span class="pre">v1.4.4</span> <span class="pre">1.4.5</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>Run linters and formatters</strong></p>
+<ul>
+<li><p>Ensure code style compliance:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">make<span class="w"> </span>lint
+</span></pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>Clean up the changelog</strong></p>
+<ul>
+<li><p>Open <code class="docutils literal notranslate"><span class="pre">docs/changelog.rst</span></code> and remove any placeholder comments, such as:</p>
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="nt">&lt;!-- By submitting this pull request, you agree to ... --&gt;</span>
+</span><span data-line="2"><span class="nt">&lt;!-- Please add in issue numbers this pull request will close ... --&gt;</span>
+</span></pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>Commit the release</strong></p>
+<ul>
+<li><p>Create a new branch:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>v<span class="o">{</span>new_version<span class="o">}</span>
+</span></pre></div>
+</div>
+</li>
+<li><p>Commit the changes:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">git<span class="w"> </span>commit<span class="w"> </span>-am<span class="w"> </span><span class="s2">&quot;chore(release): bump to v{new_version}&quot;</span>
+</span></pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>Open a pull request</strong></p>
+<ul class="simple">
+<li><p>Push the branch and create a PR into <code class="docutils literal notranslate"><span class="pre">main</span></code>.</p></li>
+<li><p>Merge once CI checks pass.</p></li>
+</ul>
+</li>
+<li><p><strong>Verify the release draft</strong></p>
+<ul class="simple">
+<li><p>Once merged, a draft release will be created under <code class="docutils literal notranslate"><span class="pre">Releases</span></code> on GitHub.</p></li>
+<li><p>Edit and publish it.</p></li>
+</ul>
+</li>
+<li><p><strong>Publish to PyPI</strong></p>
+<ul class="simple">
+<li><p>Approve the <code class="docutils literal notranslate"><span class="pre">Latest</span> <span class="pre">Release</span></code> workflow under <code class="docutils literal notranslate"><span class="pre">Actions</span></code> to publish the package to PyPI.</p></li>
+</ul>
+</li>
 </ol>
 </section>
 </section>
