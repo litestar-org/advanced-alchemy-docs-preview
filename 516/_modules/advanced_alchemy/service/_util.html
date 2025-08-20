@@ -471,149 +471,152 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="215">            <span class="p">)</span>
 </span><span data-line="216">        <span class="k">if</span> <span class="n">MSGSPEC_INSTALLED</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">schema_type</span><span class="p">,</span> <span class="n">Struct</span><span class="p">):</span>
 </span><span data-line="217">            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-</span><span data-line="218">                <span class="k">return</span> <span class="n">convert</span><span class="p">(</span>
-</span><span data-line="219">                    <span class="n">obj</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-</span><span data-line="220">                    <span class="nb">type</span><span class="o">=</span><span class="n">schema_type</span><span class="p">,</span>
-</span><span data-line="221">                    <span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span data-line="222">                    <span class="n">dec_hook</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span>
-</span><span data-line="223">                        <span class="n">_default_msgspec_deserializer</span><span class="p">,</span>
-</span><span data-line="224">                        <span class="n">type_decoders</span><span class="o">=</span><span class="n">DEFAULT_TYPE_DECODERS</span><span class="p">,</span>
-</span><span data-line="225">                    <span class="p">),</span>
-</span><span data-line="226">                <span class="p">)</span>
-</span><span data-line="227">            <span class="n">converted_items</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span>
-</span><span data-line="228">                <span class="n">obj</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-</span><span data-line="229">                <span class="nb">type</span><span class="o">=</span><span class="nb">list</span><span class="p">[</span><span class="n">schema_type</span><span class="p">],</span>  <span class="c1"># type: ignore[valid-type]</span>
-</span><span data-line="230">                <span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span data-line="231">                <span class="n">dec_hook</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span>
-</span><span data-line="232">                    <span class="n">_default_msgspec_deserializer</span><span class="p">,</span>
-</span><span data-line="233">                    <span class="n">type_decoders</span><span class="o">=</span><span class="n">DEFAULT_TYPE_DECODERS</span><span class="p">,</span>
-</span><span data-line="234">                <span class="p">),</span>
-</span><span data-line="235">            <span class="p">)</span>
-</span><span data-line="236">            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;OffsetPagination[ModelDTOT]&quot;</span><span class="p">,</span> <span class="n">_create_pagination</span><span class="p">(</span><span class="n">converted_items</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">total</span><span class="p">))</span>
-</span><span data-line="237">
-</span><span data-line="238">        <span class="k">if</span> <span class="n">PYDANTIC_INSTALLED</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">schema_type</span><span class="p">,</span> <span class="n">BaseModel</span><span class="p">):</span>
-</span><span data-line="239">            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-</span><span data-line="240">                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>
-</span><span data-line="241">                    <span class="s2">&quot;ModelDTOT&quot;</span><span class="p">,</span>
-</span><span data-line="242">                    <span class="n">get_type_adapter</span><span class="p">(</span><span class="n">schema_type</span><span class="p">)</span><span class="o">.</span><span class="n">validate_python</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-</span><span data-line="243">                <span class="p">)</span>
-</span><span data-line="244">            <span class="n">validated_items</span> <span class="o">=</span> <span class="n">get_type_adapter</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">schema_type</span><span class="p">])</span><span class="o">.</span><span class="n">validate_python</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># type: ignore[valid-type] # pyright: ignore[reportUnknownArgumentType]</span>
-</span><span data-line="245">            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;OffsetPagination[ModelDTOT]&quot;</span><span class="p">,</span> <span class="n">_create_pagination</span><span class="p">(</span><span class="n">validated_items</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">total</span><span class="p">))</span>
-</span><span data-line="246">        <span class="k">if</span> <span class="n">CATTRS_INSTALLED</span> <span class="ow">and</span> <span class="n">is_attrs_schema</span><span class="p">(</span><span class="n">schema_type</span><span class="p">):</span>
-</span><span data-line="247">            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-</span><span data-line="248">                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;ModelDTOT&quot;</span><span class="p">,</span> <span class="n">structure</span><span class="p">(</span><span class="n">schema_dump</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">schema_type</span><span class="p">))</span>
-</span><span data-line="249">            <span class="n">structured_items</span> <span class="o">=</span> <span class="p">[</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;ModelDTOT&quot;</span><span class="p">,</span> <span class="n">structure</span><span class="p">(</span><span class="n">schema_dump</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="n">schema_type</span><span class="p">))</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
-</span><span data-line="250">            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;OffsetPagination[ModelDTOT]&quot;</span><span class="p">,</span> <span class="n">_create_pagination</span><span class="p">(</span><span class="n">structured_items</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">total</span><span class="p">))</span>
-</span><span data-line="251">
-</span><span data-line="252">        <span class="k">if</span> <span class="n">ATTRS_INSTALLED</span> <span class="ow">and</span> <span class="n">is_attrs_schema</span><span class="p">(</span><span class="n">schema_type</span><span class="p">):</span>
-</span><span data-line="253">            <span class="c1"># Cache field names for performance</span>
-</span><span data-line="254">            <span class="n">field_names</span> <span class="o">=</span> <span class="n">_get_attrs_field_names</span><span class="p">(</span><span class="n">schema_type</span><span class="p">)</span>
-</span><span data-line="255">
-</span><span data-line="256">            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-</span><span data-line="257">                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;ModelDTOT&quot;</span><span class="p">,</span> <span class="n">_convert_attrs_item</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">schema_type</span><span class="p">,</span> <span class="n">field_names</span><span class="p">))</span>
+</span><span data-line="218">                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>  <span class="c1"># type: ignore[redundant-cast]</span>
+</span><span data-line="219">                    <span class="s2">&quot;ModelDTOT&quot;</span><span class="p">,</span>
+</span><span data-line="220">                    <span class="n">convert</span><span class="p">(</span>
+</span><span data-line="221">                        <span class="n">obj</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+</span><span data-line="222">                        <span class="nb">type</span><span class="o">=</span><span class="n">schema_type</span><span class="p">,</span>
+</span><span data-line="223">                        <span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="224">                        <span class="n">dec_hook</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span>
+</span><span data-line="225">                            <span class="n">_default_msgspec_deserializer</span><span class="p">,</span>
+</span><span data-line="226">                            <span class="n">type_decoders</span><span class="o">=</span><span class="n">DEFAULT_TYPE_DECODERS</span><span class="p">,</span>
+</span><span data-line="227">                        <span class="p">),</span>
+</span><span data-line="228">                    <span class="p">),</span>
+</span><span data-line="229">                <span class="p">)</span>
+</span><span data-line="230">            <span class="n">converted_items</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span>
+</span><span data-line="231">                <span class="n">obj</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+</span><span data-line="232">                <span class="nb">type</span><span class="o">=</span><span class="nb">list</span><span class="p">[</span><span class="n">schema_type</span><span class="p">],</span>  <span class="c1"># type: ignore[valid-type]</span>
+</span><span data-line="233">                <span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="234">                <span class="n">dec_hook</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span>
+</span><span data-line="235">                    <span class="n">_default_msgspec_deserializer</span><span class="p">,</span>
+</span><span data-line="236">                    <span class="n">type_decoders</span><span class="o">=</span><span class="n">DEFAULT_TYPE_DECODERS</span><span class="p">,</span>
+</span><span data-line="237">                <span class="p">),</span>
+</span><span data-line="238">            <span class="p">)</span>
+</span><span data-line="239">            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;OffsetPagination[ModelDTOT]&quot;</span><span class="p">,</span> <span class="n">_create_pagination</span><span class="p">(</span><span class="n">converted_items</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">total</span><span class="p">))</span>
+</span><span data-line="240">
+</span><span data-line="241">        <span class="k">if</span> <span class="n">PYDANTIC_INSTALLED</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">schema_type</span><span class="p">,</span> <span class="n">BaseModel</span><span class="p">):</span>
+</span><span data-line="242">            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
+</span><span data-line="243">                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>
+</span><span data-line="244">                    <span class="s2">&quot;ModelDTOT&quot;</span><span class="p">,</span>
+</span><span data-line="245">                    <span class="n">get_type_adapter</span><span class="p">(</span><span class="n">schema_type</span><span class="p">)</span><span class="o">.</span><span class="n">validate_python</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+</span><span data-line="246">                <span class="p">)</span>
+</span><span data-line="247">            <span class="n">validated_items</span> <span class="o">=</span> <span class="n">get_type_adapter</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">schema_type</span><span class="p">])</span><span class="o">.</span><span class="n">validate_python</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># type: ignore[valid-type] # pyright: ignore[reportUnknownArgumentType]</span>
+</span><span data-line="248">            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;OffsetPagination[ModelDTOT]&quot;</span><span class="p">,</span> <span class="n">_create_pagination</span><span class="p">(</span><span class="n">validated_items</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">total</span><span class="p">))</span>
+</span><span data-line="249">        <span class="k">if</span> <span class="n">CATTRS_INSTALLED</span> <span class="ow">and</span> <span class="n">is_attrs_schema</span><span class="p">(</span><span class="n">schema_type</span><span class="p">):</span>
+</span><span data-line="250">            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
+</span><span data-line="251">                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;ModelDTOT&quot;</span><span class="p">,</span> <span class="n">structure</span><span class="p">(</span><span class="n">schema_dump</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">schema_type</span><span class="p">))</span>
+</span><span data-line="252">            <span class="n">structured_items</span> <span class="o">=</span> <span class="p">[</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;ModelDTOT&quot;</span><span class="p">,</span> <span class="n">structure</span><span class="p">(</span><span class="n">schema_dump</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="n">schema_type</span><span class="p">))</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+</span><span data-line="253">            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;OffsetPagination[ModelDTOT]&quot;</span><span class="p">,</span> <span class="n">_create_pagination</span><span class="p">(</span><span class="n">structured_items</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">total</span><span class="p">))</span>
+</span><span data-line="254">
+</span><span data-line="255">        <span class="k">if</span> <span class="n">ATTRS_INSTALLED</span> <span class="ow">and</span> <span class="n">is_attrs_schema</span><span class="p">(</span><span class="n">schema_type</span><span class="p">):</span>
+</span><span data-line="256">            <span class="c1"># Cache field names for performance</span>
+</span><span data-line="257">            <span class="n">field_names</span> <span class="o">=</span> <span class="n">_get_attrs_field_names</span><span class="p">(</span><span class="n">schema_type</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
 </span><span data-line="258">
-</span><span data-line="259">            <span class="n">converted_items</span> <span class="o">=</span> <span class="p">[</span><span class="n">_convert_attrs_item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">schema_type</span><span class="p">,</span> <span class="n">field_names</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
-</span><span data-line="260">            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;OffsetPagination[ModelDTOT]&quot;</span><span class="p">,</span> <span class="n">_create_pagination</span><span class="p">(</span><span class="n">converted_items</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">total</span><span class="p">))</span>
+</span><span data-line="259">            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
+</span><span data-line="260">                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;ModelDTOT&quot;</span><span class="p">,</span> <span class="n">_convert_attrs_item</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">schema_type</span><span class="p">,</span> <span class="n">field_names</span><span class="p">))</span>
 </span><span data-line="261">
-</span><span data-line="262">        <span class="k">if</span> <span class="ow">not</span> <span class="n">MSGSPEC_INSTALLED</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">PYDANTIC_INSTALLED</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ATTRS_INSTALLED</span><span class="p">:</span>
-</span><span data-line="263">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Either Msgspec, Pydantic, or attrs must be installed to use schema conversion&quot;</span>
-</span><span data-line="264">            <span class="k">raise</span> <span class="n">AdvancedAlchemyError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span data-line="265">
-</span><span data-line="266">        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;`schema_type` should be a valid Pydantic, Msgspec, or attrs schema&quot;</span>
-</span><span data-line="267">        <span class="k">raise</span> <span class="n">AdvancedAlchemyError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+</span><span data-line="262">            <span class="n">converted_items</span> <span class="o">=</span> <span class="p">[</span><span class="n">_convert_attrs_item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">schema_type</span><span class="p">,</span> <span class="n">field_names</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+</span><span data-line="263">            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;OffsetPagination[ModelDTOT]&quot;</span><span class="p">,</span> <span class="n">_create_pagination</span><span class="p">(</span><span class="n">converted_items</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">total</span><span class="p">))</span>
+</span><span data-line="264">
+</span><span data-line="265">        <span class="k">if</span> <span class="ow">not</span> <span class="n">MSGSPEC_INSTALLED</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">PYDANTIC_INSTALLED</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ATTRS_INSTALLED</span><span class="p">:</span>
+</span><span data-line="266">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Either Msgspec, Pydantic, or attrs must be installed to use schema conversion&quot;</span>
+</span><span data-line="267">            <span class="k">raise</span> <span class="n">AdvancedAlchemyError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span data-line="268">
+</span><span data-line="269">        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;`schema_type` should be a valid Pydantic, Msgspec, or attrs schema&quot;</span>
+</span><span data-line="270">        <span class="k">raise</span> <span class="n">AdvancedAlchemyError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
 </div>
 
-</span><span data-line="268">
-</span><span data-line="269">
-</span><span data-line="270"><span class="c1"># Private helper functions</span>
 </span><span data-line="271">
 </span><span data-line="272">
-</span><span data-line="273"><span class="k">def</span><span class="w"> </span><span class="nf">_default_msgspec_deserializer</span><span class="p">(</span>
-</span><span data-line="274">    <span class="n">target_type</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="275">    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="276">    <span class="n">type_decoders</span><span class="p">:</span> <span class="s2">&quot;Union[Sequence[tuple[Callable[[Any], bool], Callable[[Any, Any], Any]]], None]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="277"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-</span><span data-line="278"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Transform values non-natively supported by ``msgspec``</span>
-</span><span data-line="279">
-</span><span data-line="280"><span class="sd">    Args:</span>
-</span><span data-line="281"><span class="sd">        target_type: Encountered type</span>
-</span><span data-line="282"><span class="sd">        value: Value to coerce</span>
-</span><span data-line="283"><span class="sd">        type_decoders: Optional sequence of type decoders</span>
-</span><span data-line="284">
-</span><span data-line="285"><span class="sd">    Raises:</span>
-</span><span data-line="286"><span class="sd">        TypeError: If the value cannot be coerced to the target type</span>
+</span><span data-line="273"><span class="c1"># Private helper functions</span>
+</span><span data-line="274">
+</span><span data-line="275">
+</span><span data-line="276"><span class="k">def</span><span class="w"> </span><span class="nf">_default_msgspec_deserializer</span><span class="p">(</span>
+</span><span data-line="277">    <span class="n">target_type</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="278">    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="279">    <span class="n">type_decoders</span><span class="p">:</span> <span class="s2">&quot;Union[Sequence[tuple[Callable[[Any], bool], Callable[[Any, Any], Any]]], None]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="280"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+</span><span data-line="281"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Transform values non-natively supported by ``msgspec``</span>
+</span><span data-line="282">
+</span><span data-line="283"><span class="sd">    Args:</span>
+</span><span data-line="284"><span class="sd">        target_type: Encountered type</span>
+</span><span data-line="285"><span class="sd">        value: Value to coerce</span>
+</span><span data-line="286"><span class="sd">        type_decoders: Optional sequence of type decoders</span>
 </span><span data-line="287">
-</span><span data-line="288"><span class="sd">    Returns:</span>
-</span><span data-line="289"><span class="sd">        A ``msgspec``-supported type</span>
-</span><span data-line="290"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="291">
-</span><span data-line="292">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">target_type</span><span class="p">):</span>
-</span><span data-line="293">        <span class="k">return</span> <span class="n">value</span>
+</span><span data-line="288"><span class="sd">    Raises:</span>
+</span><span data-line="289"><span class="sd">        TypeError: If the value cannot be coerced to the target type</span>
+</span><span data-line="290">
+</span><span data-line="291"><span class="sd">    Returns:</span>
+</span><span data-line="292"><span class="sd">        A ``msgspec``-supported type</span>
+</span><span data-line="293"><span class="sd">    &quot;&quot;&quot;</span>
 </span><span data-line="294">
-</span><span data-line="295">    <span class="k">if</span> <span class="n">type_decoders</span><span class="p">:</span>
-</span><span data-line="296">        <span class="k">for</span> <span class="n">predicate</span><span class="p">,</span> <span class="n">decoder</span> <span class="ow">in</span> <span class="n">type_decoders</span><span class="p">:</span>
-</span><span data-line="297">            <span class="k">if</span> <span class="n">predicate</span><span class="p">(</span><span class="n">target_type</span><span class="p">):</span>
-</span><span data-line="298">                <span class="k">return</span> <span class="n">decoder</span><span class="p">(</span><span class="n">target_type</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-</span><span data-line="299">
-</span><span data-line="300">    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">target_type</span><span class="p">,</span> <span class="p">(</span><span class="n">Path</span><span class="p">,</span> <span class="n">PurePath</span><span class="p">,</span> <span class="n">UUID</span><span class="p">)):</span>
-</span><span data-line="301">        <span class="k">return</span> <span class="n">target_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="295">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">target_type</span><span class="p">):</span>
+</span><span data-line="296">        <span class="k">return</span> <span class="n">value</span>
+</span><span data-line="297">
+</span><span data-line="298">    <span class="k">if</span> <span class="n">type_decoders</span><span class="p">:</span>
+</span><span data-line="299">        <span class="k">for</span> <span class="n">predicate</span><span class="p">,</span> <span class="n">decoder</span> <span class="ow">in</span> <span class="n">type_decoders</span><span class="p">:</span>
+</span><span data-line="300">            <span class="k">if</span> <span class="n">predicate</span><span class="p">(</span><span class="n">target_type</span><span class="p">):</span>
+</span><span data-line="301">                <span class="k">return</span> <span class="n">decoder</span><span class="p">(</span><span class="n">target_type</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </span><span data-line="302">
-</span><span data-line="303">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="303">    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">target_type</span><span class="p">,</span> <span class="p">(</span><span class="n">Path</span><span class="p">,</span> <span class="n">PurePath</span><span class="p">,</span> <span class="n">UUID</span><span class="p">)):</span>
 </span><span data-line="304">        <span class="k">return</span> <span class="n">target_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-</span><span data-line="305">    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span data-line="306">        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Unsupported type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">!r}</span><span class="s2">&quot;</span>
-</span><span data-line="307">        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
-</span><span data-line="308">
-</span><span data-line="309">
-</span><span data-line="310"><span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
-</span><span data-line="311"><span class="k">def</span><span class="w"> </span><span class="nf">_get_attrs_field_names</span><span class="p">(</span><span class="n">schema_type</span><span class="p">:</span> <span class="s2">&quot;type[Any]&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;set[str]&quot;</span><span class="p">:</span>
-</span><span data-line="312"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get and cache the field names for a given attrs class.</span>
-</span><span data-line="313">
-</span><span data-line="314"><span class="sd">    Args:</span>
-</span><span data-line="315"><span class="sd">        schema_type: attrs class to get field names for.</span>
+</span><span data-line="305">
+</span><span data-line="306">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="307">        <span class="k">return</span> <span class="n">target_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="308">    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span data-line="309">        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Unsupported type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">!r}</span><span class="s2">&quot;</span>
+</span><span data-line="310">        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+</span><span data-line="311">
+</span><span data-line="312">
+</span><span data-line="313"><span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+</span><span data-line="314"><span class="k">def</span><span class="w"> </span><span class="nf">_get_attrs_field_names</span><span class="p">(</span><span class="n">schema_type</span><span class="p">:</span> <span class="s2">&quot;type[Any]&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;set[str]&quot;</span><span class="p">:</span>
+</span><span data-line="315"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get and cache the field names for a given attrs class.</span>
 </span><span data-line="316">
-</span><span data-line="317"><span class="sd">    Returns:</span>
-</span><span data-line="318"><span class="sd">        Set of field names for the attrs class.</span>
-</span><span data-line="319"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="320">    <span class="k">if</span> <span class="n">ATTRS_INSTALLED</span> <span class="ow">and</span> <span class="n">is_attrs_schema</span><span class="p">(</span><span class="n">schema_type</span><span class="p">):</span>
-</span><span data-line="321">        <span class="k">return</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">schema_type</span><span class="p">)}</span>
-</span><span data-line="322">    <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
-</span><span data-line="323">
-</span><span data-line="324">
-</span><span data-line="325"><span class="k">def</span><span class="w"> </span><span class="nf">_convert_attrs_item</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">schema_type</span><span class="p">:</span> <span class="s2">&quot;type[ModelDTOT]&quot;</span><span class="p">,</span> <span class="n">field_names</span><span class="p">:</span> <span class="s2">&quot;set[str]&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ModelDTOT&quot;</span><span class="p">:</span>
-</span><span data-line="326"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a single item to attrs schema using cached field names.</span>
+</span><span data-line="317"><span class="sd">    Args:</span>
+</span><span data-line="318"><span class="sd">        schema_type: attrs class to get field names for.</span>
+</span><span data-line="319">
+</span><span data-line="320"><span class="sd">    Returns:</span>
+</span><span data-line="321"><span class="sd">        Set of field names for the attrs class.</span>
+</span><span data-line="322"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="323">    <span class="k">if</span> <span class="n">ATTRS_INSTALLED</span> <span class="ow">and</span> <span class="n">is_attrs_schema</span><span class="p">(</span><span class="n">schema_type</span><span class="p">):</span>
+</span><span data-line="324">        <span class="k">return</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">schema_type</span><span class="p">)}</span>
+</span><span data-line="325">    <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
+</span><span data-line="326">
 </span><span data-line="327">
-</span><span data-line="328"><span class="sd">    Args:</span>
-</span><span data-line="329"><span class="sd">        item: Item to convert.</span>
-</span><span data-line="330"><span class="sd">        schema_type: Target attrs schema type.</span>
-</span><span data-line="331"><span class="sd">        field_names: Cached set of field names.</span>
-</span><span data-line="332">
-</span><span data-line="333"><span class="sd">    Returns:</span>
-</span><span data-line="334"><span class="sd">        Converted attrs instance.</span>
-</span><span data-line="335"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="336">    <span class="n">item_dict</span> <span class="o">=</span> <span class="n">schema_dump</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-</span><span data-line="337">    <span class="n">filtered_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">item_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">}</span>
-</span><span data-line="338">    <span class="k">return</span> <span class="n">schema_type</span><span class="p">(</span><span class="o">**</span><span class="n">filtered_dict</span><span class="p">)</span>  <span class="c1"># type: ignore[return-value]</span>
-</span><span data-line="339">
-</span><span data-line="340">
-</span><span data-line="341"><span class="k">def</span><span class="w"> </span><span class="nf">_create_pagination</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">filters</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="s2">&quot;Optional[int]&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;OffsetPagination[Any]&quot;</span><span class="p">:</span>
-</span><span data-line="342"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create OffsetPagination with consistent limit_offset logic.</span>
+</span><span data-line="328"><span class="k">def</span><span class="w"> </span><span class="nf">_convert_attrs_item</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">schema_type</span><span class="p">:</span> <span class="s2">&quot;type[ModelDTOT]&quot;</span><span class="p">,</span> <span class="n">field_names</span><span class="p">:</span> <span class="s2">&quot;set[str]&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ModelDTOT&quot;</span><span class="p">:</span>
+</span><span data-line="329"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a single item to attrs schema using cached field names.</span>
+</span><span data-line="330">
+</span><span data-line="331"><span class="sd">    Args:</span>
+</span><span data-line="332"><span class="sd">        item: Item to convert.</span>
+</span><span data-line="333"><span class="sd">        schema_type: Target attrs schema type.</span>
+</span><span data-line="334"><span class="sd">        field_names: Cached set of field names.</span>
+</span><span data-line="335">
+</span><span data-line="336"><span class="sd">    Returns:</span>
+</span><span data-line="337"><span class="sd">        Converted attrs instance.</span>
+</span><span data-line="338"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="339">    <span class="n">item_dict</span> <span class="o">=</span> <span class="n">schema_dump</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+</span><span data-line="340">    <span class="n">filtered_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">item_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">}</span>
+</span><span data-line="341">    <span class="k">return</span> <span class="n">schema_type</span><span class="p">(</span><span class="o">**</span><span class="n">filtered_dict</span><span class="p">)</span>  <span class="c1"># type: ignore[return-value]</span>
+</span><span data-line="342">
 </span><span data-line="343">
-</span><span data-line="344"><span class="sd">    Args:</span>
-</span><span data-line="345"><span class="sd">        items: Items to paginate.</span>
-</span><span data-line="346"><span class="sd">        filters: Filters to extract LimitOffset from.</span>
-</span><span data-line="347"><span class="sd">        total: Total count or None.</span>
-</span><span data-line="348">
-</span><span data-line="349"><span class="sd">    Returns:</span>
-</span><span data-line="350"><span class="sd">        OffsetPagination instance.</span>
-</span><span data-line="351"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="352">    <span class="n">limit_offset</span> <span class="o">=</span> <span class="n">find_filter</span><span class="p">(</span><span class="n">LimitOffset</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">)</span> <span class="ow">or</span> <span class="n">LimitOffset</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">),</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span data-line="353">    <span class="k">return</span> <span class="n">OffsetPagination</span><span class="p">(</span>
-</span><span data-line="354">        <span class="n">items</span><span class="o">=</span><span class="n">items</span><span class="p">,</span>
-</span><span data-line="355">        <span class="n">limit</span><span class="o">=</span><span class="n">limit_offset</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span>
-</span><span data-line="356">        <span class="n">offset</span><span class="o">=</span><span class="n">limit_offset</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span>
-</span><span data-line="357">        <span class="n">total</span><span class="o">=</span><span class="n">total</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">),</span>
-</span><span data-line="358">    <span class="p">)</span>
+</span><span data-line="344"><span class="k">def</span><span class="w"> </span><span class="nf">_create_pagination</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">filters</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="s2">&quot;Optional[int]&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;OffsetPagination[Any]&quot;</span><span class="p">:</span>
+</span><span data-line="345"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create OffsetPagination with consistent limit_offset logic.</span>
+</span><span data-line="346">
+</span><span data-line="347"><span class="sd">    Args:</span>
+</span><span data-line="348"><span class="sd">        items: Items to paginate.</span>
+</span><span data-line="349"><span class="sd">        filters: Filters to extract LimitOffset from.</span>
+</span><span data-line="350"><span class="sd">        total: Total count or None.</span>
+</span><span data-line="351">
+</span><span data-line="352"><span class="sd">    Returns:</span>
+</span><span data-line="353"><span class="sd">        OffsetPagination instance.</span>
+</span><span data-line="354"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="355">    <span class="n">limit_offset</span> <span class="o">=</span> <span class="n">find_filter</span><span class="p">(</span><span class="n">LimitOffset</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">)</span> <span class="ow">or</span> <span class="n">LimitOffset</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">),</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span data-line="356">    <span class="k">return</span> <span class="n">OffsetPagination</span><span class="p">(</span>
+</span><span data-line="357">        <span class="n">items</span><span class="o">=</span><span class="n">items</span><span class="p">,</span>
+</span><span data-line="358">        <span class="n">limit</span><span class="o">=</span><span class="n">limit_offset</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span>
+</span><span data-line="359">        <span class="n">offset</span><span class="o">=</span><span class="n">limit_offset</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span>
+</span><span data-line="360">        <span class="n">total</span><span class="o">=</span><span class="n">total</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">),</span>
+</span><span data-line="361">    <span class="p">)</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
