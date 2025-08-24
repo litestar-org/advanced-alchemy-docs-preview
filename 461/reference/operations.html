@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=397bb51e" />
-    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=76b6f612" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=d48c410d" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -162,6 +162,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l4"><a class="reference internal" href="extensions/litestar/dto.html">dto</a></li>
 <li class="toctree-l4"><a class="reference internal" href="extensions/litestar/plugins.html">plugin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="extensions/litestar/cli.html">cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="extensions/litestar/session.html">Session Backends</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="extensions/flask/index.html">flask</a></li>
@@ -196,9 +197,21 @@ data-aria-dark="Switch to auto color mode">
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
 <li><a class="reference internal" href="#features">Features</a></li>
-<li><a class="reference internal" href="#todo">Todo:</a></li>
+<li><a class="reference internal" href="#security">Security</a></li>
 <li><a class="reference internal" href="#notes">Notes:</a></li>
 <li><a class="reference internal" href="#see-also">See Also:</a></li>
+<li><a class="reference internal" href="#advanced_alchemy.operations.MergeStatement"><code class="docutils literal notranslate"><span class="pre">MergeStatement</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.operations.MergeStatement.inherit_cache"><code class="docutils literal notranslate">inherit_cache</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.operations.MergeStatement.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.operations.OnConflictUpsert"><code class="docutils literal notranslate"><span class="pre">OnConflictUpsert</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.supports_native_upsert"><code class="docutils literal notranslate">supports_native_upsert()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_upsert"><code class="docutils literal notranslate">create_upsert()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_merge_upsert"><code class="docutils literal notranslate">create_merge_upsert()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.operations.validate_identifier"><code class="docutils literal notranslate"><span class="pre">validate_identifier()</span></code></a></li>
 </ul>
 </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
   data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
@@ -264,22 +277,21 @@ providing efficient implementations for common database operations patterns.</p>
 <section id="features">
 <h2>Features<a class="headerlink" href="#features" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Table merging and upsert operations</p></li>
-<li><p>Dynamic table creation from SELECT statements</p></li>
-<li><p>Bulk data import/export operations</p></li>
-<li><p>Optimized copy operations for PostgreSQL</p></li>
-<li><p>Transaction-safe batch operations</p></li>
+<li><p>Cross-database ON CONFLICT/ON DUPLICATE KEY UPDATE operations</p></li>
+<li><p>MERGE statement support for Oracle and PostgreSQL 15+</p></li>
 </ul>
 </section>
-<section id="todo">
-<h2>Todo:<a class="headerlink" href="#todo" title="Link to this heading">¶</a></h2>
+<section id="security">
+<h2>Security<a class="headerlink" href="#security" title="Link to this heading">¶</a></h2>
+<p>This module constructs SQL statements using database identifiers (table and column names)
+that MUST come from trusted sources only. All identifiers should originate from:</p>
 <ul class="simple">
-<li><p>Implement merge operations with customizable conflict resolution</p></li>
-<li><p>Add CTAS (Create Table As Select) functionality</p></li>
-<li><p>Implement bulk copy operations (COPY TO/FROM) for PostgreSQL</p></li>
-<li><p>Add support for temporary table operations</p></li>
-<li><p>Implement materialized view operations</p></li>
+<li><p>SQLAlchemy model metadata (e.g., Model.__table__)</p></li>
+<li><p>Hardcoded strings in application code</p></li>
+<li><p>Validated configuration files</p></li>
 </ul>
+<p>Never pass user input directly as table names, column names, or other SQL identifiers.
+Data values are properly parameterized using bindparam() to prevent SQL injection.</p>
 </section>
 <section id="notes">
 <h2>Notes:<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
@@ -294,6 +306,184 @@ optimizations for specific database backends where appropriate.</p>
 <li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">advanced_alchemy.extensions</span></code> : Additional database extensions</p></li>
 </ul>
 </section>
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.operations.MergeStatement">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.operations.</span></span><span class="sig-name descname"><span class="pre">MergeStatement</span></span><a class="reference internal" href="../_modules/advanced_alchemy/operations.html#MergeStatement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.operations.MergeStatement" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/selectable.html#sqlalchemy.sql.expression.Executable" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Executable</span></code></a>, <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/foundation.html#sqlalchemy.sql.expression.ClauseElement" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ClauseElement</span></code></a></p>
+<p>A MERGE statement for Oracle and PostgreSQL 15+.</p>
+<p>This provides a high-level interface for MERGE operations that
+can handle both matched and unmatched conditions.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.operations.MergeStatement.inherit_cache">
+<span class="sig-name descname"><span class="pre">inherit_cache</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional[bool]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#advanced_alchemy.operations.MergeStatement.inherit_cache" title="Link to this definition">¶</a></dt>
+<dd><p>Indicate if this <code class="xref py py-class docutils literal notranslate"><span class="pre">HasCacheKey</span></code> instance should make use of the
+cache key generation scheme used by its immediate superclass.</p>
+<p>The attribute defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>, which indicates that a construct has
+not yet taken into account whether or not its appropriate for it to
+participate in caching; this is functionally equivalent to setting the
+value to <code class="docutils literal notranslate"><span class="pre">False</span></code>, except that a warning is also emitted.</p>
+<p>This flag can be set to <code class="docutils literal notranslate"><span class="pre">True</span></code> on a particular class, if the SQL that
+corresponds to the object does not change based on attributes which
+are local to this class, and not its superclass.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/compiler.html#compilerext-caching" title="(in SQLAlchemy v2.0)"><span>Enabling Caching Support for Custom Constructs</span></a> - General guideslines for setting the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">HasCacheKey.inherit_cache</span></code> attribute for third-party or user
+defined SQL constructs.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.operations.MergeStatement.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when_matched_update</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">when_not_matched_insert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/operations.html#MergeStatement.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.operations.MergeStatement.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize a MERGE statement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.operations.MergeStatement.params.table"></span><strong>table</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.MergeStatement.params.table">¶</a> (<span class="sphinx_autodoc_typehints-type">sqlalchemy.schema.Table</span>) – Target table for the merge operation</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.MergeStatement.params.source"></span><strong>source</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.MergeStatement.params.source">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/foundation.html#sqlalchemy.sql.expression.ClauseElement" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ClauseElement</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Source data (can be a subquery or table)</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.MergeStatement.params.on_condition"></span><strong>on_condition</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.MergeStatement.params.on_condition">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/foundation.html#sqlalchemy.sql.expression.ClauseElement" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ClauseElement</span></code></a></span>) – Condition for matching rows</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.MergeStatement.params.when_matched_update"></span><strong>when_matched_update</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.MergeStatement.params.when_matched_update">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, typing.Any] | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – Values to update when rows match</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.MergeStatement.params.when_not_matched_insert"></span><strong>when_not_matched_insert</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.MergeStatement.params.when_not_matched_insert">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, typing.Any] | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – Values to insert when rows don’t match</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.operations.OnConflictUpsert">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.operations.</span></span><span class="sig-name descname"><span class="pre">OnConflictUpsert</span></span><a class="reference internal" href="../_modules/advanced_alchemy/operations.html#OnConflictUpsert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.operations.OnConflictUpsert" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Cross-database upsert operation using dialect-specific constructs.</p>
+<p>This class provides a unified interface for upsert operations across
+different database backends using their native ON CONFLICT or
+ON DUPLICATE KEY UPDATE mechanisms.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.operations.OnConflictUpsert.supports_native_upsert">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">supports_native_upsert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dialect_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/operations.html#OnConflictUpsert.supports_native_upsert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.operations.OnConflictUpsert.supports_native_upsert" title="Link to this definition">¶</a></dt>
+<dd><p>Check if the dialect supports native upsert operations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.operations.OnConflictUpsert.supports_native_upsert.params.dialect_name"></span><strong>dialect_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.supports_native_upsert.params.dialect_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Name of the database dialect</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if native upsert is supported, False otherwise</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.operations.OnConflictUpsert.create_upsert">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_upsert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conflict_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dialect_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_identifiers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/operations.html#OnConflictUpsert.create_upsert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.operations.OnConflictUpsert.create_upsert" title="Link to this definition">¶</a></dt>
+<dd><p>Create a dialect-specific upsert statement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.operations.OnConflictUpsert.create_upsert.params.table"></span><strong>table</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_upsert.params.table">¶</a> (<span class="sphinx_autodoc_typehints-type">sqlalchemy.schema.Table</span>) – Target table for the upsert</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.OnConflictUpsert.create_upsert.params.values"></span><strong>values</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_upsert.params.values">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, typing.Any]</span>) – Values to insert/update</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.OnConflictUpsert.create_upsert.params.conflict_columns"></span><strong>conflict_columns</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_upsert.params.conflict_columns">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – Columns that define the conflict condition</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.OnConflictUpsert.create_upsert.params.update_columns"></span><strong>update_columns</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_upsert.params.update_columns">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>] | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – Columns to update on conflict (defaults to all non-conflict columns)</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.OnConflictUpsert.create_upsert.params.dialect_name"></span><strong>dialect_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_upsert.params.dialect_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – Database dialect name (auto-detected if not provided)</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.OnConflictUpsert.create_upsert.params.validate_identifiers"></span><strong>validate_identifiers</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_upsert.params.validate_identifiers">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – If True, validate column names for safety (default: False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/dml.html#sqlalchemy.sql.expression.Insert" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Insert</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A SQLAlchemy Insert statement with upsert logic</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.13)"><strong>NotImplementedError</strong></a> – If the dialect doesn’t support native upsert</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If validate_identifiers is True and invalid identifiers are found</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.operations.OnConflictUpsert.create_merge_upsert">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_merge_upsert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conflict_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dialect_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_identifiers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/operations.html#OnConflictUpsert.create_merge_upsert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.operations.OnConflictUpsert.create_merge_upsert" title="Link to this definition">¶</a></dt>
+<dd><p>Create a MERGE-based upsert for Oracle/PostgreSQL 15+.</p>
+<p>For Oracle databases, this method automatically generates values for primary key
+columns that have callable defaults (such as UUID generation functions). This is
+necessary because Oracle MERGE statements cannot use Python callable defaults
+directly in the INSERT clause.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.operations.OnConflictUpsert.create_merge_upsert.params.table"></span><strong>table</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_merge_upsert.params.table">¶</a> (<span class="sphinx_autodoc_typehints-type">sqlalchemy.schema.Table</span>) – Target table for the upsert</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.OnConflictUpsert.create_merge_upsert.params.values"></span><strong>values</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_merge_upsert.params.values">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, typing.Any]</span>) – Values to insert/update</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.OnConflictUpsert.create_merge_upsert.params.conflict_columns"></span><strong>conflict_columns</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_merge_upsert.params.conflict_columns">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – Columns that define the matching condition</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.OnConflictUpsert.create_merge_upsert.params.update_columns"></span><strong>update_columns</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_merge_upsert.params.update_columns">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>] | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – Columns to update on match (defaults to all non-conflict columns)</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.OnConflictUpsert.create_merge_upsert.params.dialect_name"></span><strong>dialect_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_merge_upsert.params.dialect_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – Database dialect name (used to determine Oracle-specific syntax)</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.OnConflictUpsert.create_merge_upsert.params.validate_identifiers"></span><strong>validate_identifiers</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_merge_upsert.params.validate_identifiers">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – If True, validate column names for safety (default: False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference internal" href="#advanced_alchemy.operations.MergeStatement" title="advanced_alchemy.operations.MergeStatement"><code class="xref py py-class docutils literal notranslate"><span class="pre">MergeStatement</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, typing.Any]]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of (MergeStatement, additional_params) where additional_params
+contains any generated values (like Oracle UUID primary keys)</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If validate_identifiers is True and invalid identifiers are found</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.operations.validate_identifier">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.operations.</span></span><span class="sig-name descname"><span class="pre">validate_identifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'identifier'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/operations.html#validate_identifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.operations.validate_identifier" title="Link to this definition">¶</a></dt>
+<dd><p>Validate a SQL identifier to ensure it’s safe for use in SQL statements.</p>
+<p>This function provides validation for SQL identifiers
+(table names, column names, etc.) to ensure they contain only safe characters.
+While the operations in this module should only receive identifiers from
+trusted sources, this validation adds an extra layer of security.</p>
+<p>Note: SQL keywords (like ‘select’, ‘insert’, etc.) are allowed as they can
+be properly quoted/escaped by SQLAlchemy when used as identifiers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.operations.validate_identifier.params.name"></span><strong>name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.validate_identifier.params.name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The identifier to validate</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.validate_identifier.params.identifier_type"></span><strong>identifier_type</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.validate_identifier.params.identifier_type">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Type of identifier for error messages (e.g., “column”, “table”)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The validated identifier</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the identifier is empty or contains invalid characters</p>
+</dd>
+</dl>
+<div class="admonition-examples admonition">
+<p class="admonition-title">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">validate_identifier</span><span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">)</span>
+</span><span data-line="2"><span class="go">&#39;user_id&#39;</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">validate_identifier</span><span class="p">(</span><span class="s2">&quot;users_table&quot;</span><span class="p">,</span> <span class="s2">&quot;table&quot;</span><span class="p">)</span>
+</span><span data-line="4"><span class="go">&#39;users_table&#39;</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="n">validate_identifier</span><span class="p">(</span><span class="s2">&quot;select&quot;</span><span class="p">)</span>  <span class="c1"># SQL keywords are allowed</span>
+</span><span data-line="6"><span class="go">&#39;select&#39;</span>
+</span><span data-line="7"><span class="gp">&gt;&gt;&gt; </span><span class="n">validate_identifier</span><span class="p">(</span>
+</span><span data-line="8"><span class="gp">... </span>    <span class="s2">&quot;drop table users; --&quot;</span>
+</span><span data-line="9"><span class="gp">... </span><span class="p">)</span>  <span class="c1"># Raises ValueError - contains invalid characters</span>
+</span></pre></div>
+</div>
+</div>
+</dd></dl>
+
 </section>
 
         </article><button class="back-to-top" type="button">
@@ -353,6 +543,6 @@ optimizations for specific database backends where appropriate.</p>
       <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
       <script src="../_static/design-tabs.js?v=f930bc37"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-      <script src="../_static/shibuya.js?v=c477d091"></script>
+      <script src="../_static/shibuya.js?v=e730760c"></script>
       <script src="../_static/versioning.js?v=68b42869"></script></body>
 </html>
