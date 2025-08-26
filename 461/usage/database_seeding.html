@@ -331,7 +331,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="11"><span class="c1"># Database connection string</span>
 </span><span data-line="12"><span class="n">DATABASE_URL</span> <span class="o">=</span> <span class="s2">&quot;sqlite:///db.sqlite3&quot;</span>
 </span><span data-line="13">
-</span><span data-line="14"><span class="n">config</span> <span class="o">=</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">(</span>
+</span><span data-line="14"><span class="n">alchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">(</span>
 </span><span data-line="15">    <span class="n">engine_instance</span><span class="o">=</span><span class="n">create_engine</span><span class="p">(</span><span class="n">DATABASE_URL</span><span class="p">),</span>
 </span><span data-line="16">    <span class="n">session_config</span><span class="o">=</span><span class="n">SyncSessionConfig</span><span class="p">(</span><span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span data-line="17"><span class="p">)</span>
@@ -359,7 +359,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="39"><span class="k">def</span><span class="w"> </span><span class="nf">initialize_database</span><span class="p">():</span>
 </span><span data-line="40"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the database and create tables.&quot;&quot;&quot;</span>
 </span><span data-line="41">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating database tables...&quot;</span><span class="p">)</span>
-</span><span data-line="42">    <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+</span><span data-line="42">    <span class="k">with</span> <span class="n">alchemy_config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
 </span><span data-line="43">        <span class="n">UUIDBase</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
 </span><span data-line="44">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tables created successfully&quot;</span><span class="p">)</span>
 </span><span data-line="45">
@@ -369,7 +369,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="49">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Seeding database...&quot;</span><span class="p">)</span>
 </span><span data-line="50">
 </span><span data-line="51">    <span class="c1"># Create a session</span>
-</span><span data-line="52">    <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
+</span><span data-line="52">    <span class="k">with</span> <span class="n">alchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
 </span><span data-line="53">        <span class="c1"># Create repository for product model</span>
 </span><span data-line="54">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="55">
@@ -415,7 +415,7 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="14"><span class="c1"># Database connection string</span>
 </span><span data-line="15"><span class="n">DATABASE_URL</span> <span class="o">=</span> <span class="s2">&quot;sqlite+aiosqlite:///db.sqlite3&quot;</span>
 </span><span data-line="16">
-</span><span data-line="17"><span class="n">config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
+</span><span data-line="17"><span class="n">alchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
 </span><span data-line="18">    <span class="n">engine_instance</span><span class="o">=</span><span class="n">create_async_engine</span><span class="p">(</span><span class="n">DATABASE_URL</span><span class="p">),</span>
 </span><span data-line="19">    <span class="n">session_config</span><span class="o">=</span><span class="n">AsyncSessionConfig</span><span class="p">(</span><span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span data-line="20"><span class="p">)</span>
@@ -443,7 +443,7 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="42"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">initialize_database</span><span class="p">():</span>
 </span><span data-line="43"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the database and create tables.&quot;&quot;&quot;</span>
 </span><span data-line="44">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating database tables...&quot;</span><span class="p">)</span>
-</span><span data-line="45">    <span class="k">async</span> <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+</span><span data-line="45">    <span class="k">async</span> <span class="k">with</span> <span class="n">alchemy_config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
 </span><span data-line="46">        <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">run_sync</span><span class="p">(</span><span class="n">UUIDBase</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">)</span>
 </span><span data-line="47">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tables created successfully&quot;</span><span class="p">)</span>
 </span><span data-line="48">
@@ -453,7 +453,7 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="52">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Seeding database...&quot;</span><span class="p">)</span>
 </span><span data-line="53">
 </span><span data-line="54">    <span class="c1"># Create a session</span>
-</span><span data-line="55">    <span class="k">async</span> <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
+</span><span data-line="55">    <span class="k">async</span> <span class="k">with</span> <span class="n">alchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
 </span><span data-line="56">        <span class="c1"># Create repository for product model</span>
 </span><span data-line="57">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="58">
@@ -503,7 +503,7 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="13"><span class="c1"># Database connection string</span>
 </span><span data-line="14"><span class="n">DATABASE_URL</span> <span class="o">=</span> <span class="s2">&quot;sqlite+aiosqlite:///db.sqlite3&quot;</span>
 </span><span data-line="15">
-</span><span data-line="16"><span class="n">config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
+</span><span data-line="16"><span class="n">alchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
 </span><span data-line="17">    <span class="n">engine_instance</span><span class="o">=</span><span class="n">create_async_engine</span><span class="p">(</span><span class="n">DATABASE_URL</span><span class="p">),</span>
 </span><span data-line="18">    <span class="n">session_config</span><span class="o">=</span><span class="n">AsyncSessionConfig</span><span class="p">(</span><span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span data-line="19"><span class="p">)</span>
@@ -531,7 +531,7 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="41"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">initialize_database</span><span class="p">():</span>
 </span><span data-line="42"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the database and create tables.&quot;&quot;&quot;</span>
 </span><span data-line="43">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating database tables...&quot;</span><span class="p">)</span>
-</span><span data-line="44">    <span class="k">async</span> <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+</span><span data-line="44">    <span class="k">async</span> <span class="k">with</span> <span class="n">alchemy_config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
 </span><span data-line="45">        <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">run_sync</span><span class="p">(</span><span class="n">UUIDBase</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">)</span>
 </span><span data-line="46">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tables created successfully&quot;</span><span class="p">)</span>
 </span><span data-line="47">
@@ -541,7 +541,7 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="51">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Seeding database...&quot;</span><span class="p">)</span>
 </span><span data-line="52">
 </span><span data-line="53">    <span class="c1"># Create a session</span>
-</span><span data-line="54">    <span class="k">async</span> <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
+</span><span data-line="54">    <span class="k">async</span> <span class="k">with</span> <span class="n">alchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
 </span><span data-line="55">        <span class="c1"># Create repository for product model</span>
 </span><span data-line="56">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="57">
@@ -608,13 +608,13 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="22"><span class="n">fixtures_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;fixtures&quot;</span>
 </span><span data-line="23">
 </span><span data-line="24"><span class="n">session_config</span> <span class="o">=</span> <span class="n">AsyncSessionConfig</span><span class="p">(</span><span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span data-line="25"><span class="n">sqlalchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
+</span><span data-line="25"><span class="n">alchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
 </span><span data-line="26">    <span class="n">connection_string</span><span class="o">=</span><span class="n">DATABASE_URL</span><span class="p">,</span>
 </span><span data-line="27">    <span class="n">before_send_handler</span><span class="o">=</span><span class="s2">&quot;autocommit&quot;</span><span class="p">,</span>
 </span><span data-line="28">    <span class="n">session_config</span><span class="o">=</span><span class="n">session_config</span><span class="p">,</span>
 </span><span data-line="29">    <span class="n">create_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 </span><span data-line="30"><span class="p">)</span>
-</span><span data-line="31"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">SQLAlchemyPlugin</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">sqlalchemy_config</span><span class="p">)</span>
+</span><span data-line="31"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">SQLAlchemyPlugin</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">)</span>
 </span><span data-line="32">
 </span><span data-line="33">
 </span><span data-line="34"><span class="k">class</span><span class="w"> </span><span class="nc">Product</span><span class="p">(</span><span class="n">UUIDBase</span><span class="p">):</span>
@@ -639,7 +639,7 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="53">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running startup routine...&quot;</span><span class="p">)</span>
 </span><span data-line="54">
 </span><span data-line="55">    <span class="c1"># Create a session and seed data</span>
-</span><span data-line="56">    <span class="k">async</span> <span class="k">with</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
+</span><span data-line="56">    <span class="k">async</span> <span class="k">with</span> <span class="n">alchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
 </span><span data-line="57">        <span class="c1"># Create repository for product model</span>
 </span><span data-line="58">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="59">        <span class="c1"># Load and add product data</span>
@@ -694,13 +694,13 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="21"><span class="n">fixtures_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;fixtures&quot;</span>
 </span><span data-line="22">
 </span><span data-line="23"><span class="n">session_config</span> <span class="o">=</span> <span class="n">AsyncSessionConfig</span><span class="p">(</span><span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span data-line="24"><span class="n">sqlalchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
+</span><span data-line="24"><span class="n">alchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
 </span><span data-line="25">    <span class="n">connection_string</span><span class="o">=</span><span class="n">DATABASE_URL</span><span class="p">,</span>
 </span><span data-line="26">    <span class="n">before_send_handler</span><span class="o">=</span><span class="s2">&quot;autocommit&quot;</span><span class="p">,</span>
 </span><span data-line="27">    <span class="n">session_config</span><span class="o">=</span><span class="n">session_config</span><span class="p">,</span>
 </span><span data-line="28">    <span class="n">create_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 </span><span data-line="29"><span class="p">)</span>
-</span><span data-line="30"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">SQLAlchemyPlugin</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">sqlalchemy_config</span><span class="p">)</span>
+</span><span data-line="30"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">SQLAlchemyPlugin</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">)</span>
 </span><span data-line="31">
 </span><span data-line="32">
 </span><span data-line="33"><span class="k">class</span><span class="w"> </span><span class="nc">Product</span><span class="p">(</span><span class="n">UUIDBase</span><span class="p">):</span>
@@ -725,7 +725,7 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="52">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running startup routine...&quot;</span><span class="p">)</span>
 </span><span data-line="53">
 </span><span data-line="54">    <span class="c1"># Create a session and seed data</span>
-</span><span data-line="55">    <span class="k">async</span> <span class="k">with</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
+</span><span data-line="55">    <span class="k">async</span> <span class="k">with</span> <span class="n">alchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
 </span><span data-line="56">        <span class="c1"># Create repository for product model</span>
 </span><span data-line="57">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="58">        <span class="c1"># Load and add product data</span>
@@ -811,7 +811,7 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="47">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running startup routine...&quot;</span><span class="p">)</span>
 </span><span data-line="48">
 </span><span data-line="49">    <span class="c1"># Create a session and seed data</span>
-</span><span data-line="50">    <span class="k">async</span> <span class="k">with</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
+</span><span data-line="50">    <span class="k">async</span> <span class="k">with</span> <span class="n">alchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
 </span><span data-line="51">        <span class="c1"># Create repository for product model</span>
 </span><span data-line="52">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="53">        <span class="c1"># Load and add product data</span>
@@ -837,7 +837,7 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="73">
 </span><span data-line="74">
 </span><span data-line="75"><span class="n">session_config</span> <span class="o">=</span> <span class="n">AsyncSessionConfig</span><span class="p">(</span><span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span data-line="76"><span class="n">sqlalchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
+</span><span data-line="76"><span class="n">alchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
 </span><span data-line="77">    <span class="n">connection_string</span><span class="o">=</span><span class="n">DATABASE_URL</span><span class="p">,</span>
 </span><span data-line="78">    <span class="n">commit_mode</span><span class="o">=</span><span class="s2">&quot;autocommit&quot;</span><span class="p">,</span>
 </span><span data-line="79">    <span class="n">session_config</span><span class="o">=</span><span class="n">session_config</span><span class="p">,</span>
@@ -847,7 +847,7 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="83"><span class="c1"># Create the FastAPI application with lifespan</span>
 </span><span data-line="84"><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">lifespan</span><span class="o">=</span><span class="n">lifespan</span><span class="p">)</span>
 </span><span data-line="85">
-</span><span data-line="86"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">AdvancedAlchemy</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">sqlalchemy_config</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">)</span>
+</span><span data-line="86"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">AdvancedAlchemy</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">)</span>
 </span><span data-line="87">
 </span><span data-line="88"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 </span><span data-line="89">    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">)</span>
@@ -905,7 +905,7 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="46">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running startup routine...&quot;</span><span class="p">)</span>
 </span><span data-line="47">
 </span><span data-line="48">    <span class="c1"># Create a session and seed data</span>
-</span><span data-line="49">    <span class="k">async</span> <span class="k">with</span> <span class="n">sqlalchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
+</span><span data-line="49">    <span class="k">async</span> <span class="k">with</span> <span class="n">alchemy_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
 </span><span data-line="50">        <span class="c1"># Create repository for product model</span>
 </span><span data-line="51">        <span class="n">product_repo</span> <span class="o">=</span> <span class="n">ProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="52">        <span class="c1"># Load and add product data</span>
@@ -931,7 +931,7 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="72">
 </span><span data-line="73">
 </span><span data-line="74"><span class="n">session_config</span> <span class="o">=</span> <span class="n">AsyncSessionConfig</span><span class="p">(</span><span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span data-line="75"><span class="n">sqlalchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
+</span><span data-line="75"><span class="n">alchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
 </span><span data-line="76">    <span class="n">connection_string</span><span class="o">=</span><span class="n">DATABASE_URL</span><span class="p">,</span>
 </span><span data-line="77">    <span class="n">commit_mode</span><span class="o">=</span><span class="s2">&quot;autocommit&quot;</span><span class="p">,</span>
 </span><span data-line="78">    <span class="n">session_config</span><span class="o">=</span><span class="n">session_config</span><span class="p">,</span>
@@ -941,7 +941,7 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="82"><span class="c1"># Create the FastAPI application with lifespan</span>
 </span><span data-line="83"><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">lifespan</span><span class="o">=</span><span class="n">lifespan</span><span class="p">)</span>
 </span><span data-line="84">
-</span><span data-line="85"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">AdvancedAlchemy</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">sqlalchemy_config</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">)</span>
+</span><span data-line="85"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">AdvancedAlchemy</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">)</span>
 </span><span data-line="86">
 </span><span data-line="87"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 </span><span data-line="88">    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">)</span>
@@ -996,7 +996,7 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="38">
 </span><span data-line="39"><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 </span><span data-line="40">
-</span><span data-line="41"><span class="n">sqlalchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">(</span>
+</span><span data-line="41"><span class="n">alchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">(</span>
 </span><span data-line="42">    <span class="n">connection_string</span><span class="o">=</span><span class="n">DATABASE_URL</span><span class="p">,</span>
 </span><span data-line="43">    <span class="n">commit_mode</span><span class="o">=</span><span class="s2">&quot;autocommit&quot;</span><span class="p">,</span>
 </span><span data-line="44">    <span class="n">session_config</span><span class="o">=</span><span class="n">SyncSessionConfig</span><span class="p">(</span>
@@ -1005,8 +1005,8 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="47">    <span class="n">create_all</span><span class="o">=</span><span class="kc">True</span>
 </span><span data-line="48"><span class="p">)</span>
 </span><span data-line="49">
-</span><span data-line="50"><span class="n">db</span> <span class="o">=</span> <span class="n">AdvancedAlchemy</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">sqlalchemy_config</span><span class="p">)</span>
-</span><span data-line="51"><span class="n">db</span><span class="o">.</span><span class="n">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+</span><span data-line="50"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">AdvancedAlchemy</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">)</span>
+</span><span data-line="51"><span class="n">alchemy</span><span class="o">.</span><span class="n">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 </span><span data-line="52">
 </span><span data-line="53"><span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">app_context</span><span class="p">():</span>  <span class="c1"># noqa: SIM117</span>
 </span><span data-line="54">    <span class="c1"># Seed data</span>
@@ -1073,7 +1073,7 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="37">
 </span><span data-line="38"><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 </span><span data-line="39">
-</span><span data-line="40"><span class="n">sqlalchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">(</span>
+</span><span data-line="40"><span class="n">alchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">(</span>
 </span><span data-line="41">    <span class="n">connection_string</span><span class="o">=</span><span class="n">DATABASE_URL</span><span class="p">,</span>
 </span><span data-line="42">    <span class="n">commit_mode</span><span class="o">=</span><span class="s2">&quot;autocommit&quot;</span><span class="p">,</span>
 </span><span data-line="43">    <span class="n">session_config</span><span class="o">=</span><span class="n">SyncSessionConfig</span><span class="p">(</span>
@@ -1082,8 +1082,8 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="46">    <span class="n">create_all</span><span class="o">=</span><span class="kc">True</span>
 </span><span data-line="47"><span class="p">)</span>
 </span><span data-line="48">
-</span><span data-line="49"><span class="n">db</span> <span class="o">=</span> <span class="n">AdvancedAlchemy</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">sqlalchemy_config</span><span class="p">)</span>
-</span><span data-line="50"><span class="n">db</span><span class="o">.</span><span class="n">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+</span><span data-line="49"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">AdvancedAlchemy</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">)</span>
+</span><span data-line="50"><span class="n">alchemy</span><span class="o">.</span><span class="n">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 </span><span data-line="51">
 </span><span data-line="52"><span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">app_context</span><span class="p">():</span>  <span class="c1"># noqa: SIM117</span>
 </span><span data-line="53">    <span class="c1"># Seed data</span>
