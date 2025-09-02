@@ -2686,236 +2686,238 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="2271">        <span class="n">session</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">AsyncSession</span><span class="p">,</span> <span class="n">async_scoped_session</span><span class="p">[</span><span class="n">AsyncSession</span><span class="p">]],</span>
 </span><span data-line="2272">        <span class="n">error_messages</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ErrorMessages</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span data-line="2273">        <span class="n">wrap_exceptions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span data-line="2274">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="2275"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Repository pattern for SQLAlchemy models.</span>
-</span><span data-line="2276">
-</span><span data-line="2277"><span class="sd">        Args:</span>
-</span><span data-line="2278"><span class="sd">            session: Session managing the unit-of-work for the operation.</span>
-</span><span data-line="2279"><span class="sd">            error_messages: A set of error messages to use for operations.</span>
-</span><span data-line="2280"><span class="sd">            wrap_exceptions: Whether to wrap exceptions in a SQLAlchemy exception.</span>
-</span><span data-line="2281">
-</span><span data-line="2282"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="2283">        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
-</span><span data-line="2284">        <span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span> <span class="o">=</span> <span class="n">error_messages</span>
-</span><span data-line="2285">        <span class="bp">self</span><span class="o">.</span><span class="n">wrap_exceptions</span> <span class="o">=</span> <span class="n">wrap_exceptions</span>
-</span><span data-line="2286">        <span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span><span class="o">.</span><span class="n">dialect</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">dialect</span></div>
+</span><span data-line="2274">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="2275">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="2276"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Repository pattern for SQLAlchemy models.</span>
+</span><span data-line="2277">
+</span><span data-line="2278"><span class="sd">        Args:</span>
+</span><span data-line="2279"><span class="sd">            session: Session managing the unit-of-work for the operation.</span>
+</span><span data-line="2280"><span class="sd">            error_messages: A set of error messages to use for operations.</span>
+</span><span data-line="2281"><span class="sd">            wrap_exceptions: Whether to wrap exceptions in a SQLAlchemy exception.</span>
+</span><span data-line="2282"><span class="sd">            **kwargs: Additional arguments (ignored).</span>
+</span><span data-line="2283">
+</span><span data-line="2284"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="2285">        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
+</span><span data-line="2286">        <span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span> <span class="o">=</span> <span class="n">error_messages</span>
+</span><span data-line="2287">        <span class="bp">self</span><span class="o">.</span><span class="n">wrap_exceptions</span> <span class="o">=</span> <span class="n">wrap_exceptions</span>
+</span><span data-line="2288">        <span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span><span class="o">.</span><span class="n">dialect</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">dialect</span></div>
 
-</span><span data-line="2287">
+</span><span data-line="2289">
 <div class="viewcode-block" id="SQLAlchemyAsyncQueryRepository.get_one">
 <a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.get_one">[docs]</a>
-</span><span data-line="2288">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_one</span><span class="p">(</span>
-</span><span data-line="2289">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="2290">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span>
-</span><span data-line="2291">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="2292">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
-</span><span data-line="2293"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get instance identified by ``kwargs``.</span>
-</span><span data-line="2294">
-</span><span data-line="2295"><span class="sd">        Args:</span>
-</span><span data-line="2296"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
-</span><span data-line="2297"><span class="sd">            **kwargs: Instance attribute value filters.</span>
-</span><span data-line="2298">
-</span><span data-line="2299"><span class="sd">        Returns:</span>
-</span><span data-line="2300"><span class="sd">            The retrieved instance.</span>
-</span><span data-line="2301"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="2302">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">wrap_exceptions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrap_exceptions</span><span class="p">):</span>
-</span><span data-line="2303">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_statement_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span data-line="2304">            <span class="n">instance</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">))</span><span class="o">.</span><span class="n">scalar_one_or_none</span><span class="p">()</span>
-</span><span data-line="2305">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_not_found</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span></div>
+</span><span data-line="2290">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_one</span><span class="p">(</span>
+</span><span data-line="2291">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="2292">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span>
+</span><span data-line="2293">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="2294">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+</span><span data-line="2295"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get instance identified by ``kwargs``.</span>
+</span><span data-line="2296">
+</span><span data-line="2297"><span class="sd">        Args:</span>
+</span><span data-line="2298"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
+</span><span data-line="2299"><span class="sd">            **kwargs: Instance attribute value filters.</span>
+</span><span data-line="2300">
+</span><span data-line="2301"><span class="sd">        Returns:</span>
+</span><span data-line="2302"><span class="sd">            The retrieved instance.</span>
+</span><span data-line="2303"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="2304">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">wrap_exceptions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrap_exceptions</span><span class="p">):</span>
+</span><span data-line="2305">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_statement_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="2306">            <span class="n">instance</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">))</span><span class="o">.</span><span class="n">scalar_one_or_none</span><span class="p">()</span>
+</span><span data-line="2307">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_not_found</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span></div>
 
-</span><span data-line="2306">
+</span><span data-line="2308">
 <div class="viewcode-block" id="SQLAlchemyAsyncQueryRepository.get_one_or_none">
 <a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.get_one_or_none">[docs]</a>
-</span><span data-line="2307">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_one_or_none</span><span class="p">(</span>
-</span><span data-line="2308">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="2309">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-</span><span data-line="2310">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="2311">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
-</span><span data-line="2312"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get instance identified by ``kwargs`` or None if not found.</span>
-</span><span data-line="2313">
-</span><span data-line="2314"><span class="sd">        Args:</span>
-</span><span data-line="2315"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
-</span><span data-line="2316"><span class="sd">            **kwargs: Instance attribute value filters.</span>
-</span><span data-line="2317">
-</span><span data-line="2318"><span class="sd">        Returns:</span>
-</span><span data-line="2319"><span class="sd">            The retrieved instance or None</span>
-</span><span data-line="2320"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="2321">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">wrap_exceptions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrap_exceptions</span><span class="p">):</span>
-</span><span data-line="2322">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_statement_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span data-line="2323">            <span class="n">instance</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">))</span><span class="o">.</span><span class="n">scalar_one_or_none</span><span class="p">()</span>
-</span><span data-line="2324">            <span class="k">return</span> <span class="n">instance</span> <span class="ow">or</span> <span class="kc">None</span></div>
+</span><span data-line="2309">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_one_or_none</span><span class="p">(</span>
+</span><span data-line="2310">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="2311">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span data-line="2312">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="2313">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+</span><span data-line="2314"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get instance identified by ``kwargs`` or None if not found.</span>
+</span><span data-line="2315">
+</span><span data-line="2316"><span class="sd">        Args:</span>
+</span><span data-line="2317"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
+</span><span data-line="2318"><span class="sd">            **kwargs: Instance attribute value filters.</span>
+</span><span data-line="2319">
+</span><span data-line="2320"><span class="sd">        Returns:</span>
+</span><span data-line="2321"><span class="sd">            The retrieved instance or None</span>
+</span><span data-line="2322"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="2323">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">wrap_exceptions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrap_exceptions</span><span class="p">):</span>
+</span><span data-line="2324">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_statement_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="2325">            <span class="n">instance</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">))</span><span class="o">.</span><span class="n">scalar_one_or_none</span><span class="p">()</span>
+</span><span data-line="2326">            <span class="k">return</span> <span class="n">instance</span> <span class="ow">or</span> <span class="kc">None</span></div>
 
-</span><span data-line="2325">
+</span><span data-line="2327">
 <div class="viewcode-block" id="SQLAlchemyAsyncQueryRepository.count">
 <a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.count">[docs]</a>
-</span><span data-line="2326">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span data-line="2327"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the count of records returned by a query.</span>
-</span><span data-line="2328">
-</span><span data-line="2329"><span class="sd">        Args:</span>
-</span><span data-line="2330"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
-</span><span data-line="2331"><span class="sd">            **kwargs: Instance attribute value filters.</span>
-</span><span data-line="2332">
-</span><span data-line="2333"><span class="sd">        Returns:</span>
-</span><span data-line="2334"><span class="sd">            Count of records returned by query, ignoring pagination.</span>
-</span><span data-line="2335"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="2336">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">wrap_exceptions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrap_exceptions</span><span class="p">):</span>
-</span><span data-line="2337">            <span class="n">statement</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">with_only_columns</span><span class="p">(</span><span class="n">sql_func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)),</span> <span class="n">maintain_column_froms</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span>
-</span><span data-line="2338">                <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="2339">            <span class="p">)</span>
-</span><span data-line="2340">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_statement_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span data-line="2341">            <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
-</span><span data-line="2342">            <span class="k">return</span> <span class="n">results</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>  <span class="c1"># type: ignore</span></div>
+</span><span data-line="2328">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="2329"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the count of records returned by a query.</span>
+</span><span data-line="2330">
+</span><span data-line="2331"><span class="sd">        Args:</span>
+</span><span data-line="2332"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
+</span><span data-line="2333"><span class="sd">            **kwargs: Instance attribute value filters.</span>
+</span><span data-line="2334">
+</span><span data-line="2335"><span class="sd">        Returns:</span>
+</span><span data-line="2336"><span class="sd">            Count of records returned by query, ignoring pagination.</span>
+</span><span data-line="2337"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="2338">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">wrap_exceptions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrap_exceptions</span><span class="p">):</span>
+</span><span data-line="2339">            <span class="n">statement</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">with_only_columns</span><span class="p">(</span><span class="n">sql_func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)),</span> <span class="n">maintain_column_froms</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span>
+</span><span data-line="2340">                <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="2341">            <span class="p">)</span>
+</span><span data-line="2342">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_statement_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="2343">            <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
+</span><span data-line="2344">            <span class="k">return</span> <span class="n">results</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>  <span class="c1"># type: ignore</span></div>
 
-</span><span data-line="2343">
+</span><span data-line="2345">
 <div class="viewcode-block" id="SQLAlchemyAsyncQueryRepository.list_and_count">
 <a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.list_and_count">[docs]</a>
-</span><span data-line="2344">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">list_and_count</span><span class="p">(</span>
-</span><span data-line="2345">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="2346">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-</span><span data-line="2347">        <span class="n">count_with_window_function</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="2348">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="2349">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span data-line="2350"><span class="w">        </span><span class="sd">&quot;&quot;&quot;List records with total count.</span>
-</span><span data-line="2351">
-</span><span data-line="2352"><span class="sd">        Args:</span>
-</span><span data-line="2353"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
-</span><span data-line="2354"><span class="sd">            count_with_window_function: Force list and count to use two queries instead of an analytical window function.</span>
-</span><span data-line="2355"><span class="sd">            **kwargs: Instance attribute value filters.</span>
-</span><span data-line="2356">
-</span><span data-line="2357"><span class="sd">        Returns:</span>
-</span><span data-line="2358"><span class="sd">            Count of records returned by query, ignoring pagination.</span>
-</span><span data-line="2359"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="2360">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;spanner&quot;</span><span class="p">,</span> <span class="s2">&quot;spanner+spanner&quot;</span><span class="p">}</span> <span class="ow">or</span> <span class="n">count_with_window_function</span><span class="p">:</span>
-</span><span data-line="2361">            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list_and_count_basic</span><span class="p">(</span><span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span data-line="2362">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list_and_count_window</span><span class="p">(</span><span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</span><span data-line="2346">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">list_and_count</span><span class="p">(</span>
+</span><span data-line="2347">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="2348">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span data-line="2349">        <span class="n">count_with_window_function</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="2350">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="2351">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span data-line="2352"><span class="w">        </span><span class="sd">&quot;&quot;&quot;List records with total count.</span>
+</span><span data-line="2353">
+</span><span data-line="2354"><span class="sd">        Args:</span>
+</span><span data-line="2355"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
+</span><span data-line="2356"><span class="sd">            count_with_window_function: Force list and count to use two queries instead of an analytical window function.</span>
+</span><span data-line="2357"><span class="sd">            **kwargs: Instance attribute value filters.</span>
+</span><span data-line="2358">
+</span><span data-line="2359"><span class="sd">        Returns:</span>
+</span><span data-line="2360"><span class="sd">            Count of records returned by query, ignoring pagination.</span>
+</span><span data-line="2361"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="2362">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dialect</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;spanner&quot;</span><span class="p">,</span> <span class="s2">&quot;spanner+spanner&quot;</span><span class="p">}</span> <span class="ow">or</span> <span class="n">count_with_window_function</span><span class="p">:</span>
+</span><span data-line="2363">            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list_and_count_basic</span><span class="p">(</span><span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="2364">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list_and_count_window</span><span class="p">(</span><span class="n">statement</span><span class="o">=</span><span class="n">statement</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-</span><span data-line="2363">
-</span><span data-line="2364">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_list_and_count_window</span><span class="p">(</span>
-</span><span data-line="2365">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="2366">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-</span><span data-line="2367">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="2368">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span data-line="2369"><span class="w">        </span><span class="sd">&quot;&quot;&quot;List records with total count.</span>
-</span><span data-line="2370">
-</span><span data-line="2371"><span class="sd">        Args:</span>
-</span><span data-line="2372"><span class="sd">            *filters: Types for specific filtering operations.</span>
-</span><span data-line="2373"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
-</span><span data-line="2374"><span class="sd">            **kwargs: Instance attribute value filters.</span>
-</span><span data-line="2375">
-</span><span data-line="2376"><span class="sd">        Returns:</span>
-</span><span data-line="2377"><span class="sd">            Count of records returned by query using an analytical window function, ignoring pagination.</span>
-</span><span data-line="2378"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="2379">
-</span><span data-line="2380">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">wrap_exceptions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrap_exceptions</span><span class="p">):</span>
-</span><span data-line="2381">            <span class="n">statement</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">add_columns</span><span class="p">(</span><span class="n">over</span><span class="p">(</span><span class="n">sql_func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">))))</span>
-</span><span data-line="2382">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_statement_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span data-line="2383">            <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
-</span><span data-line="2384">            <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span data-line="2385">            <span class="n">instances</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="2386">            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">count_value</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
-</span><span data-line="2387">                <span class="n">instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
-</span><span data-line="2388">                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span data-line="2389">                    <span class="n">count</span> <span class="o">=</span> <span class="n">count_value</span>
-</span><span data-line="2390">            <span class="k">return</span> <span class="n">instances</span><span class="p">,</span> <span class="n">count</span>
-</span><span data-line="2391">
-</span><span data-line="2392">    <span class="nd">@staticmethod</span>
-</span><span data-line="2393">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_count_stmt</span><span class="p">(</span><span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
-</span><span data-line="2394">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">with_only_columns</span><span class="p">(</span><span class="n">sql_func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)),</span> <span class="n">maintain_column_froms</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownVariable]</span>
-</span><span data-line="2395">
-</span><span data-line="2396">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_list_and_count_basic</span><span class="p">(</span>
-</span><span data-line="2397">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="2398">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-</span><span data-line="2399">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="2400">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span data-line="2401"><span class="w">        </span><span class="sd">&quot;&quot;&quot;List records with total count.</span>
-</span><span data-line="2402">
-</span><span data-line="2403"><span class="sd">        Args:</span>
-</span><span data-line="2404"><span class="sd">            statement: To facilitate customization of the underlying select query. .</span>
-</span><span data-line="2405"><span class="sd">            **kwargs: Instance attribute value filters.</span>
-</span><span data-line="2406">
-</span><span data-line="2407"><span class="sd">        Returns:</span>
-</span><span data-line="2408"><span class="sd">            Count of records returned by query using 2 queries, ignoring pagination.</span>
-</span><span data-line="2409"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="2410">
-</span><span data-line="2411">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">wrap_exceptions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrap_exceptions</span><span class="p">):</span>
-</span><span data-line="2412">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_statement_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span data-line="2413">            <span class="n">count_result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_count_stmt</span><span class="p">(</span><span class="n">statement</span><span class="p">))</span>
-</span><span data-line="2414">            <span class="n">count</span> <span class="o">=</span> <span class="n">count_result</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
-</span><span data-line="2415">            <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
-</span><span data-line="2416">            <span class="n">instances</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="2417">            <span class="k">for</span> <span class="p">(</span><span class="n">instance</span><span class="p">,)</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
-</span><span data-line="2418">                <span class="n">instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
-</span><span data-line="2419">            <span class="k">return</span> <span class="n">instances</span><span class="p">,</span> <span class="n">count</span>
-</span><span data-line="2420">
+</span><span data-line="2365">
+</span><span data-line="2366">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_list_and_count_window</span><span class="p">(</span>
+</span><span data-line="2367">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="2368">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span data-line="2369">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="2370">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span data-line="2371"><span class="w">        </span><span class="sd">&quot;&quot;&quot;List records with total count.</span>
+</span><span data-line="2372">
+</span><span data-line="2373"><span class="sd">        Args:</span>
+</span><span data-line="2374"><span class="sd">            *filters: Types for specific filtering operations.</span>
+</span><span data-line="2375"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
+</span><span data-line="2376"><span class="sd">            **kwargs: Instance attribute value filters.</span>
+</span><span data-line="2377">
+</span><span data-line="2378"><span class="sd">        Returns:</span>
+</span><span data-line="2379"><span class="sd">            Count of records returned by query using an analytical window function, ignoring pagination.</span>
+</span><span data-line="2380"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="2381">
+</span><span data-line="2382">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">wrap_exceptions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrap_exceptions</span><span class="p">):</span>
+</span><span data-line="2383">            <span class="n">statement</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">add_columns</span><span class="p">(</span><span class="n">over</span><span class="p">(</span><span class="n">sql_func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">))))</span>
+</span><span data-line="2384">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_statement_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="2385">            <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
+</span><span data-line="2386">            <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="2387">            <span class="n">instances</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="2388">            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">count_value</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+</span><span data-line="2389">                <span class="n">instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+</span><span data-line="2390">                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span data-line="2391">                    <span class="n">count</span> <span class="o">=</span> <span class="n">count_value</span>
+</span><span data-line="2392">            <span class="k">return</span> <span class="n">instances</span><span class="p">,</span> <span class="n">count</span>
+</span><span data-line="2393">
+</span><span data-line="2394">    <span class="nd">@staticmethod</span>
+</span><span data-line="2395">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_count_stmt</span><span class="p">(</span><span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+</span><span data-line="2396">        <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">with_only_columns</span><span class="p">(</span><span class="n">sql_func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)),</span> <span class="n">maintain_column_froms</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownVariable]</span>
+</span><span data-line="2397">
+</span><span data-line="2398">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_list_and_count_basic</span><span class="p">(</span>
+</span><span data-line="2399">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="2400">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span data-line="2401">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="2402">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span data-line="2403"><span class="w">        </span><span class="sd">&quot;&quot;&quot;List records with total count.</span>
+</span><span data-line="2404">
+</span><span data-line="2405"><span class="sd">        Args:</span>
+</span><span data-line="2406"><span class="sd">            statement: To facilitate customization of the underlying select query. .</span>
+</span><span data-line="2407"><span class="sd">            **kwargs: Instance attribute value filters.</span>
+</span><span data-line="2408">
+</span><span data-line="2409"><span class="sd">        Returns:</span>
+</span><span data-line="2410"><span class="sd">            Count of records returned by query using 2 queries, ignoring pagination.</span>
+</span><span data-line="2411"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="2412">
+</span><span data-line="2413">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">wrap_exceptions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrap_exceptions</span><span class="p">):</span>
+</span><span data-line="2414">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_statement_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="2415">            <span class="n">count_result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_count_stmt</span><span class="p">(</span><span class="n">statement</span><span class="p">))</span>
+</span><span data-line="2416">            <span class="n">count</span> <span class="o">=</span> <span class="n">count_result</span><span class="o">.</span><span class="n">scalar_one</span><span class="p">()</span>
+</span><span data-line="2417">            <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
+</span><span data-line="2418">            <span class="n">instances</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="2419">            <span class="k">for</span> <span class="p">(</span><span class="n">instance</span><span class="p">,)</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+</span><span data-line="2420">                <span class="n">instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+</span><span data-line="2421">            <span class="k">return</span> <span class="n">instances</span><span class="p">,</span> <span class="n">count</span>
+</span><span data-line="2422">
 <div class="viewcode-block" id="SQLAlchemyAsyncQueryRepository.list">
 <a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.list">[docs]</a>
-</span><span data-line="2421">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
-</span><span data-line="2422"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a list of instances, optionally filtered.</span>
-</span><span data-line="2423">
-</span><span data-line="2424"><span class="sd">        Args:</span>
-</span><span data-line="2425"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
-</span><span data-line="2426"><span class="sd">            **kwargs: Instance attribute value filters.</span>
-</span><span data-line="2427">
-</span><span data-line="2428"><span class="sd">        Returns:</span>
-</span><span data-line="2429"><span class="sd">            The list of instances, after filtering applied.</span>
-</span><span data-line="2430"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="2431">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">wrap_exceptions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrap_exceptions</span><span class="p">):</span>
-</span><span data-line="2432">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_statement_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span data-line="2433">            <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
-</span><span data-line="2434">            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">all</span><span class="p">())</span></div>
+</span><span data-line="2423">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+</span><span data-line="2424"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a list of instances, optionally filtered.</span>
+</span><span data-line="2425">
+</span><span data-line="2426"><span class="sd">        Args:</span>
+</span><span data-line="2427"><span class="sd">            statement: To facilitate customization of the underlying select query.</span>
+</span><span data-line="2428"><span class="sd">            **kwargs: Instance attribute value filters.</span>
+</span><span data-line="2429">
+</span><span data-line="2430"><span class="sd">        Returns:</span>
+</span><span data-line="2431"><span class="sd">            The list of instances, after filtering applied.</span>
+</span><span data-line="2432"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="2433">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">wrap_exceptions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrap_exceptions</span><span class="p">):</span>
+</span><span data-line="2434">            <span class="n">statement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_statement_by_kwargs</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="2435">            <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
+</span><span data-line="2436">            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">all</span><span class="p">())</span></div>
 
-</span><span data-line="2435">
-</span><span data-line="2436">    <span class="k">def</span><span class="w"> </span><span class="nf">_filter_statement_by_kwargs</span><span class="p">(</span>
-</span><span data-line="2437">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="2438">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
-</span><span data-line="2439">        <span class="o">/</span><span class="p">,</span>
-</span><span data-line="2440">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="2441">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
-</span><span data-line="2442"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter the collection by kwargs.</span>
-</span><span data-line="2443">
-</span><span data-line="2444"><span class="sd">        Args:</span>
-</span><span data-line="2445"><span class="sd">            statement: statement to filter</span>
-</span><span data-line="2446"><span class="sd">            **kwargs: key/value pairs such that objects remaining in the statement after filtering</span>
-</span><span data-line="2447"><span class="sd">                have the property that their attribute named `key` has value equal to `value`.</span>
-</span><span data-line="2448">
-</span><span data-line="2449"><span class="sd">        Returns:</span>
-</span><span data-line="2450"><span class="sd">            The filtered statement.</span>
-</span><span data-line="2451"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="2452">
-</span><span data-line="2453">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">):</span>
-</span><span data-line="2454">            <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span data-line="2455">
-</span><span data-line="2456">    <span class="c1"># the following is all sqlalchemy implementation detail, and shouldn&#39;t be directly accessed</span>
+</span><span data-line="2437">
+</span><span data-line="2438">    <span class="k">def</span><span class="w"> </span><span class="nf">_filter_statement_by_kwargs</span><span class="p">(</span>
+</span><span data-line="2439">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="2440">        <span class="n">statement</span><span class="p">:</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span data-line="2441">        <span class="o">/</span><span class="p">,</span>
+</span><span data-line="2442">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="2443">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+</span><span data-line="2444"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter the collection by kwargs.</span>
+</span><span data-line="2445">
+</span><span data-line="2446"><span class="sd">        Args:</span>
+</span><span data-line="2447"><span class="sd">            statement: statement to filter</span>
+</span><span data-line="2448"><span class="sd">            **kwargs: key/value pairs such that objects remaining in the statement after filtering</span>
+</span><span data-line="2449"><span class="sd">                have the property that their attribute named `key` has value equal to `value`.</span>
+</span><span data-line="2450">
+</span><span data-line="2451"><span class="sd">        Returns:</span>
+</span><span data-line="2452"><span class="sd">            The filtered statement.</span>
+</span><span data-line="2453"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="2454">
+</span><span data-line="2455">        <span class="k">with</span> <span class="n">wrap_sqlalchemy_exception</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span><span class="p">):</span>
+</span><span data-line="2456">            <span class="k">return</span> <span class="n">statement</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span><span data-line="2457">
+</span><span data-line="2458">    <span class="c1"># the following is all sqlalchemy implementation detail, and shouldn&#39;t be directly accessed</span>
+</span><span data-line="2459">
 <div class="viewcode-block" id="SQLAlchemyAsyncQueryRepository.check_not_found">
 <a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.check_not_found">[docs]</a>
-</span><span data-line="2458">    <span class="nd">@staticmethod</span>
-</span><span data-line="2459">    <span class="k">def</span><span class="w"> </span><span class="nf">check_not_found</span><span class="p">(</span><span class="n">item_or_none</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-</span><span data-line="2460"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Raise :class:`NotFoundError` if ``item_or_none`` is ``None``.</span>
-</span><span data-line="2461">
-</span><span data-line="2462"><span class="sd">        Args:</span>
-</span><span data-line="2463"><span class="sd">            item_or_none: Item to be tested for existence.</span>
-</span><span data-line="2464">
-</span><span data-line="2465"><span class="sd">        Raises:</span>
-</span><span data-line="2466"><span class="sd">            NotFoundError: If ``item_or_none`` is ``None``</span>
-</span><span data-line="2467">
-</span><span data-line="2468"><span class="sd">        Returns:</span>
-</span><span data-line="2469"><span class="sd">            The item, if it exists.</span>
-</span><span data-line="2470"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="2471">        <span class="k">if</span> <span class="n">item_or_none</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="2472">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No item found when one was expected&quot;</span>
-</span><span data-line="2473">            <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span data-line="2474">        <span class="k">return</span> <span class="n">item_or_none</span></div>
+</span><span data-line="2460">    <span class="nd">@staticmethod</span>
+</span><span data-line="2461">    <span class="k">def</span><span class="w"> </span><span class="nf">check_not_found</span><span class="p">(</span><span class="n">item_or_none</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+</span><span data-line="2462"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Raise :class:`NotFoundError` if ``item_or_none`` is ``None``.</span>
+</span><span data-line="2463">
+</span><span data-line="2464"><span class="sd">        Args:</span>
+</span><span data-line="2465"><span class="sd">            item_or_none: Item to be tested for existence.</span>
+</span><span data-line="2466">
+</span><span data-line="2467"><span class="sd">        Raises:</span>
+</span><span data-line="2468"><span class="sd">            NotFoundError: If ``item_or_none`` is ``None``</span>
+</span><span data-line="2469">
+</span><span data-line="2470"><span class="sd">        Returns:</span>
+</span><span data-line="2471"><span class="sd">            The item, if it exists.</span>
+</span><span data-line="2472"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="2473">        <span class="k">if</span> <span class="n">item_or_none</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="2474">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No item found when one was expected&quot;</span>
+</span><span data-line="2475">            <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span data-line="2476">        <span class="k">return</span> <span class="n">item_or_none</span></div>
 
-</span><span data-line="2475">
+</span><span data-line="2477">
 <div class="viewcode-block" id="SQLAlchemyAsyncQueryRepository.execute">
 <a class="viewcode-back" href="../../../reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.execute">[docs]</a>
-</span><span data-line="2476">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span>
-</span><span data-line="2477">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="2478">        <span class="n">statement</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
-</span><span data-line="2479">            <span class="n">ReturningDelete</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">ReturningUpdate</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">Update</span><span class="p">,</span> <span class="n">Delete</span><span class="p">,</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
-</span><span data-line="2480">        <span class="p">],</span>
-</span><span data-line="2481">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
-</span><span data-line="2482">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span></div>
+</span><span data-line="2478">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span>
+</span><span data-line="2479">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="2480">        <span class="n">statement</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+</span><span data-line="2481">            <span class="n">ReturningDelete</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">ReturningUpdate</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">Select</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">Update</span><span class="p">,</span> <span class="n">Delete</span><span class="p">,</span> <span class="n">Select</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+</span><span data-line="2482">        <span class="p">],</span>
+</span><span data-line="2483">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+</span><span data-line="2484">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span></div>
 </div>
 
 </span></pre></div>
