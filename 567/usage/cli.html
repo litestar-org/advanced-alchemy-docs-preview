@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="amber" data-content_root="../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Command Line Tool - Advanced Alchemy</title><link rel="shortcut icon" href="../_static/favicon.png"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Database Seeding and Fixture Loading" href="database_seeding.html" /><link rel="prev" title="Types" href="types.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=104075c0" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=bb284d7b" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_paramlinks.css" />
+    <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=0b86c658" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="Command Line Tool"/>
+<meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="/">
+      <img class="light-logo" src="../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
+      <img class="dark-logo" src="../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
+      <strong>advanced_alchemy</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul><li class="link"><a href="../index.html">Home</a></li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-2" aria-controls="nav-children-2">
+            <span>About</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-2" aria-labelledby="nav-trigger-2"><li><a href="../changelog.html">
+                <span>Changelog</span>
+                <small>All changes for Advanced Alchemy</small>
+              </a></li><li><a href="https://litestar.dev/about/organization">
+                <span>Litestar Organization</span>
+                <small>Details about the Litestar organization, the team behind Advanced Alchemy</small>
+              </a></li><li><a href="../releases.html">
+                <span>Releases</span>
+                <small>Explore the release process, versioning, and deprecation policy for Advanced Alchemy</small>
+              </a></li><li><a href="../contribution-guide.html">
+                <span>Contributing</span>
+                <small>Learn how to contribute to the Advanced Alchemy project</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file">
+                <span>Code of Conduct</span>
+                <small>Review the etiquette for interacting with the Advanced Alchemy community</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file#security-ov-file">
+                <span>Security</span>
+                <small>Overview of Advanced Alchemy's security protocols</small>
+              </a></li><li><a href="https://github.com/sponsors/Litestar-Org">Sponsor</a></li></ul>
+      </li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-3" aria-controls="nav-children-3">
+            <span>Help</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-3" aria-labelledby="nav-trigger-3"><li><a href="https://discord.gg/dSDXd4mKhp">
+                <span>Discord Help Forum</span>
+                <small>Dedicated Discord help forum</small>
+              </a></li><li><a href="https://github.com/litestar-org/advanced-alchemy/discussions">
+                <span>GitHub Discussions</span>
+                <small>GitHub Discussions</small>
+              </a></li></ul>
+      </li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6"><div class="sidebar-links">
+  <ul>
+    <li><a class="icon-link" href="https://discord.gg/dSDXd4mKhp">
+  <span class="icon">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path fill="var(--accent-9)" fill-rule="evenodd" clip-rule="evenodd" d="M11 5a6 6 0 0 0-4.687 9.746c.215.27.315.62.231.954l-.514 2.058a1 1 0 0 0 1.485 1.1l2.848-1.71c.174-.104.374-.15.576-.148H13a6 6 0 0 0 0-12h-2Z"/>
+      <circle fill="white" cx="12" cy="11" r="1"/>
+      <circle fill="white" cx="9" cy="11" r="1"/>
+      <circle fill="white" cx="15" cy="11" r="1"/>
+    </svg>
+  </span>
+  <span class="text">Discussion</span>
+</a></li>
+  </ul>
+</div>
+        <div class="globaltoc" data-expand-depth="2"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 _expand"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Usage</a><ul class="current">
+<li class="toctree-l2 _expand"><a class="reference internal" href="modeling.html">Modeling</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="repositories.html">Repositories</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="services.html">Services</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Command Line Tool</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="database_seeding.html">Database Seeding and Fixture Loading</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="frameworks/litestar.html">Litestar Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="frameworks/flask.html">Flask Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="frameworks/fastapi.html">FastAPI Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/index.html">API Reference</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/base.html">base</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/mixins/index.html">mixins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/mixins/unique.html">unique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/mixins/nanoid.html">nanoid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/mixins/uuid.html">uuid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/mixins/sentinel.html">sentinel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/mixins/bigint.html">bigint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/mixins/audit.html">audit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/mixins/slug.html">slug</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/config/index.html">config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/config/asyncio.html">asyncio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/config/common.html">common</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/config/engine.html">engine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/config/sync.html">sync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/config/types.html">types</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/operations.html">operations</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/types.html">types</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/exceptions.html">exceptions</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/utils.html">utils</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/repository.html">repositories</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/filters.html">filters</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/service.html">services</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/extensions/index.html">Extensions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/extensions/litestar/index.html">litestar</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/extensions/litestar/dto.html">dto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/extensions/litestar/plugins.html">plugin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/extensions/litestar/cli.html">cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/extensions/litestar/session.html">Session Backends</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/extensions/flask/index.html">flask</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/extensions/sanic/index.html">sanic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/extensions/starlette/index.html">starlette</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/extensions/fastapi/index.html">fastapi</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/alembic/index.html">alembic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/alembic/commands.html">commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/alembic/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../changelog.html">1.x Changelog</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../contribution-guide.html">Contribution guide</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/search?q=user%3Alitestar-org+state%3Aopen+label%3A%22good+first+issue%22+++no%3Aassignee+repo%3A%22advanced-alchemy%22&amp;type=issues">Available Issues</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/litestar-org/.github?tab=coc-ov-file#readme">Code of Conduct</a></li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li><a class="reference internal" href="#global-options">Global Options</a></li>
+<li><a class="reference internal" href="#config">Config</a></li>
+<li><a class="reference internal" href="#available-commands">Available Commands</a><ul>
+<li><a class="reference internal" href="#show-current-revision">show-current-revision</a></li>
+<li><a class="reference internal" href="#downgrade">downgrade</a></li>
+<li><a class="reference internal" href="#upgrade">upgrade</a></li>
+<li><a class="reference internal" href="#init">init</a></li>
+<li><a class="reference internal" href="#make-migrations">make-migrations</a></li>
+<li><a class="reference internal" href="#drop-all">drop-all</a></li>
+<li><a class="reference internal" href="#dump-data">dump-data</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#extending-the-cli">Extending the CLI</a><ul>
+<li><a class="reference internal" href="#basic-extension">Basic Extension</a></li>
+<li><a class="reference internal" href="#custom-group-integration">Custom Group Integration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#typer-integration">Typer integration</a></li>
+</ul>
+</div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
+  data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
+  <span class="w-8 flex items-center justify-around shrink-0 text-3xl">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </span>
+  <span class="flex-grow px-2 break-all">
+    
+    
+      <span>advanced-alchemy</span>
+    
+    <span class="flex text-sm repo-stats-count">
+      <span class="flex items-center pr-3">
+        <iconify-icon icon="lucide:star"></iconify-icon>
+        <strong class="js-repo-stars ml-1">0</strong>
+      </span>
+      <span class="flex items-center">
+        <iconify-icon icon="lucide:git-fork"></iconify-icon>
+        <strong class="js-repo-forks ml-1">0</strong>
+      </span>
+    </span>
+  </span>
+</a><div class="edit-this-page">
+  <a href="https://github.com/litestar-org/advanced-alchemy/blob/main/docs/usage/cli.rst">Edit this page</a>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">advanced_alchemy</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">Usage</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Command Line Tool</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+        <article class="yue" role="main">
+          <section id="command-line-tool">
+<h1>Command Line Tool<a class="headerlink" href="#command-line-tool" title="Link to this heading">¶</a></h1>
+<p>Advanced Alchemy provides a command-line interface (CLI) for common database operations and project management tasks.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
+<p>The CLI is installed with Advanced Alchemy with the extra <code class="docutils literal notranslate"><span class="pre">cli</span></code>:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="key1" for="sd-tab-item-0">
+pip</label><div class="sd-tab-content docutils">
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Using pip</span><a class="headerlink" href="#id1" title="Link to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>advanced-alchemy<span class="o">[</span>cli<span class="o">]</span>
+</span></pre></div>
+</div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+uv</label><div class="sd-tab-content docutils">
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Using <a class="reference external" href="https://docs.astral.sh/uv/">UV</a></span><a class="headerlink" href="#id2" title="Link to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">uv<span class="w"> </span>add<span class="w"> </span>advanced-alchemy<span class="o">[</span>cli<span class="o">]</span>
+</span></pre></div>
+</div>
+</div>
+</div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="key2" for="sd-tab-item-2">
+pipx</label><div class="sd-tab-content docutils">
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Using <a class="reference external" href="https://pypa.github.io/pipx/">pipx</a></span><a class="headerlink" href="#id3" title="Link to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">pipx<span class="w"> </span>install<span class="w"> </span>advanced-alchemy<span class="o">[</span>cli<span class="o">]</span>
+</span></pre></div>
+</div>
+</div>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-3">
+pdm</label><div class="sd-tab-content docutils">
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Using <a class="reference external" href="https://pdm.fming.dev/">PDM</a></span><a class="headerlink" href="#id4" title="Link to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">pdm<span class="w"> </span>add<span class="w"> </span>advanced-alchemy<span class="o">[</span>cli<span class="o">]</span>
+</span></pre></div>
+</div>
+</div>
+</div>
+<input id="sd-tab-item-4" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-4">
+Poetry</label><div class="sd-tab-content docutils">
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Using <a class="reference external" href="https://python-poetry.org/">Poetry</a></span><a class="headerlink" href="#id5" title="Link to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">poetry<span class="w"> </span>add<span class="w"> </span>advanced-alchemy<span class="o">[</span>cli<span class="o">]</span>
+</span></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading">¶</a></h2>
+<p>The CLI can be invoked using the <code class="docutils literal notranslate"><span class="pre">alchemy</span></code> command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>--help
+</span></pre></div>
+</div>
+</section>
+<section id="global-options">
+<h2>Global Options<a class="headerlink" href="#global-options" title="Link to this heading">¶</a></h2>
+<p>The following options are available for all commands:</p>
+<div class="table-wrapper colwidths-given docutils container" id="id6">
+<table class="docutils align-default" id="id6">
+<caption><span class="caption-text">Global options</span><a class="headerlink" href="#id6" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Explanation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--config</span></code> TEXT</p></td>
+<td><p><strong>Required</strong>. Dotted path to SQLAlchemy config(s), it’s an instance of <code class="docutils literal notranslate"><span class="pre">SQLAlchemyConfig</span></code> (sync or async). Example: <code class="docutils literal notranslate"><span class="pre">--config</span> <span class="pre">path.to.alchemy-config.config</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--bind-key</span></code> TEXT</p></td>
+<td><p>Optional. Specify which SQLAlchemy config to use</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--no-prompt</span></code></p></td>
+<td><p>Optional. Skip confirmation prompts</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--verbose</span></code></p></td>
+<td><p>Optional. Enable verbose output</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="config">
+<h2>Config<a class="headerlink" href="#config" title="Link to this heading">¶</a></h2>
+<p>Here is an example of what <strong>config</strong> looks like.</p>
+<p>If the file is named <code class="docutils literal notranslate"><span class="pre">alchemy-config.py</span></code>, you would need to use it like this <code class="docutils literal notranslate"><span class="pre">--config</span> <span class="pre">path.to.alchemy-config.config</span></code></p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">alchemy-config.py</span><a class="headerlink" href="#id7" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyConfig</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="c1"># Create a test config using SQLite</span>
+</span><span data-line="4"><span class="n">config</span> <span class="o">=</span> <span class="n">SQLAlchemyConfig</span><span class="p">(</span>
+</span><span data-line="5">    <span class="n">connection_url</span><span class="o">=</span><span class="s2">&quot;sqlite:///test.db&quot;</span>
+</span><span data-line="6"><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+</section>
+<section id="available-commands">
+<h2>Available Commands<a class="headerlink" href="#available-commands" title="Link to this heading">¶</a></h2>
+<section id="show-current-revision">
+<h3>show-current-revision<a class="headerlink" href="#show-current-revision" title="Link to this heading">¶</a></h3>
+<p>Show the current revision of the database:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>show-current-revision<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config
+</span></pre></div>
+</div>
+</section>
+<section id="downgrade">
+<h3>downgrade<a class="headerlink" href="#downgrade" title="Link to this heading">¶</a></h3>
+<p>Downgrade database to a specific revision:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>downgrade<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config<span class="w"> </span><span class="o">[</span>REVISION<span class="o">]</span>
+</span></pre></div>
+</div>
+<div class="table-wrapper colwidths-given docutils container" id="id8">
+<table class="docutils align-default" id="id8">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id8" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Explanation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--sql</span></code></p></td>
+<td><p>Generate SQL output for offline migrations</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--tag</span></code> TEXT</p></td>
+<td><p>Arbitrary tag for custom env.py scripts</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">REVISION</span></code></p></td>
+<td><p>Target revision (default: “-1”)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="upgrade">
+<h3>upgrade<a class="headerlink" href="#upgrade" title="Link to this heading">¶</a></h3>
+<p>Upgrade database to a specific revision:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>upgrade<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config<span class="w"> </span><span class="o">[</span>REVISION<span class="o">]</span>
+</span></pre></div>
+</div>
+<div class="table-wrapper colwidths-given docutils container" id="id9">
+<table class="docutils align-default" id="id9">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id9" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Explanation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--sql</span></code></p></td>
+<td><p>Generate SQL output for offline migrations</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--tag</span></code> TEXT</p></td>
+<td><p>Arbitrary tag for custom env.py scripts</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">REVISION</span></code></p></td>
+<td><p>Target revision (default: “head”)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="init">
+<h3>init<a class="headerlink" href="#init" title="Link to this heading">¶</a></h3>
+<p>Initialize migrations for the project:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>init<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config<span class="w"> </span><span class="o">[</span>DIRECTORY<span class="o">]</span>
+</span></pre></div>
+</div>
+<div class="table-wrapper colwidths-given docutils container" id="id10">
+<table class="docutils align-default" id="id10">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id10" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Explanation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--multidb</span></code></p></td>
+<td><p>Support multiple databases</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--package</span></code></p></td>
+<td><p>Create __init__.py for created folder (default: True)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DIRECTORY</span></code></p></td>
+<td><p>Directory for migration files (optional)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="make-migrations">
+<h3>make-migrations<a class="headerlink" href="#make-migrations" title="Link to this heading">¶</a></h3>
+<p>Create a new migration revision:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>make-migrations<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config
+</span></pre></div>
+</div>
+<div class="table-wrapper colwidths-given docutils container" id="id11">
+<table class="docutils align-default" id="id11">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id11" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Explanation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-m</span></code>, <code class="docutils literal notranslate"><span class="pre">--message</span></code> TEXT</p></td>
+<td><p>Revision message</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--autogenerate</span></code>/ <code class="docutils literal notranslate"><span class="pre">--no-autogenerate</span></code></p></td>
+<td><p>Automatically detect changes (default: True)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--sql</span></code></p></td>
+<td><p>Export to .sql instead of writing to database</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--head</span></code> TEXT</p></td>
+<td><p>Base revision for new revision (default: “head”)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--splice</span></code></p></td>
+<td><p>Allow non-head revision as the “head”</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--branch-label</span></code> TEXT</p></td>
+<td><p>Branch label for new revision</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--version-path</span></code> TEXT</p></td>
+<td><p>Specific path for version file</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--rev-id</span></code> TEXT</p></td>
+<td><p>Specific revision ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="drop-all">
+<h3>drop-all<a class="headerlink" href="#drop-all" title="Link to this heading">¶</a></h3>
+<p>Drop all tables from the database:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>drop-all<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config
+</span></pre></div>
+</div>
+</section>
+<section id="dump-data">
+<h3>dump-data<a class="headerlink" href="#dump-data" title="Link to this heading">¶</a></h3>
+<p>Dump specified tables from the database to JSON files:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>dump-data<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config<span class="w"> </span>--table<span class="w"> </span>TABLE_NAME
+</span></pre></div>
+</div>
+<div class="table-wrapper colwidths-given docutils container" id="id12">
+<table class="docutils align-default" id="id12">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id12" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Explanation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--table</span></code> TEXT</p></td>
+<td><p>Name of table to dump (use ‘*’ for all tables)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--dir</span></code> PATH</p></td>
+<td><p>Directory to save JSON files (default: ./fixtures)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="extending-the-cli">
+<h2>Extending the CLI<a class="headerlink" href="#extending-the-cli" title="Link to this heading">¶</a></h2>
+<p>If you’re using Click in your project, you can extend Advanced Alchemy’s CLI with your own commands. The CLI provides two main functions for integration:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">get_alchemy_group()</span></code>: Get the base CLI group</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">add_migration_commands()</span></code>: Add migration-related commands to a group</p></li>
+</ul>
+<section id="basic-extension">
+<h3>Basic Extension<a class="headerlink" href="#basic-extension" title="Link to this heading">¶</a></h3>
+<p>Here’s how to extend the CLI with your own commands:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_alchemy_group</span><span class="p">,</span> <span class="n">add_migration_commands</span>
+</span><span data-line="2"><span class="kn">import</span><span class="w"> </span><span class="nn">click</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="c1"># Get the base group</span>
+</span><span data-line="5"><span class="n">alchemy_group</span> <span class="o">=</span> <span class="n">get_alchemy_group</span><span class="p">()</span>
+</span><span data-line="6">
+</span><span data-line="7"><span class="c1"># Add your custom commands</span>
+</span><span data-line="8"><span class="nd">@alchemy_group</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-command&quot;</span><span class="p">)</span>
+</span><span data-line="9"><span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--my-option&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom option&quot;</span><span class="p">)</span>
+</span><span data-line="10"><span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">(</span><span class="n">my_option</span><span class="p">):</span>
+</span><span data-line="11"><span class="w">    </span><span class="sd">&quot;&quot;&quot;My custom command.&quot;&quot;&quot;</span>
+</span><span data-line="12">    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running my command with option: </span><span class="si">{</span><span class="n">my_option</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="13">
+</span><span data-line="14"><span class="c1"># Add migration commands to your group</span>
+</span><span data-line="15"><span class="n">add_migration_commands</span><span class="p">(</span><span class="n">alchemy_group</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</section>
+<section id="custom-group-integration">
+<h3>Custom Group Integration<a class="headerlink" href="#custom-group-integration" title="Link to this heading">¶</a></h3>
+<p>You can also integrate Advanced Alchemy’s commands into your existing Click group:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">click</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_migration_commands</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+</span><span data-line="5"><span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+</span><span data-line="6"><span class="w">    </span><span class="sd">&quot;&quot;&quot;My application CLI.&quot;&quot;&quot;</span>
+</span><span data-line="7">    <span class="k">pass</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="c1"># Add migration commands to your CLI group</span>
+</span><span data-line="10"><span class="n">add_migration_commands</span><span class="p">(</span><span class="n">cli</span><span class="p">)</span>
+</span><span data-line="11">
+</span><span data-line="12"><span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+</span><span data-line="13"><span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
+</span><span data-line="14"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom command in your CLI.&quot;&quot;&quot;</span>
+</span><span data-line="15">    <span class="k">pass</span>
+</span><span data-line="16">
+</span><span data-line="17"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span data-line="18">    <span class="n">cli</span><span class="p">()</span>
+</span></pre></div>
+</div>
+</section>
+</section>
+<section id="typer-integration">
+<h2>Typer integration<a class="headerlink" href="#typer-integration" title="Link to this heading">¶</a></h2>
+<p>You can integrate Advanced Alchemy’s CLI commands into your existing <code class="docutils literal notranslate"><span class="pre">Typer</span></code> application. Here’s how:</p>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">cli.py</span><a class="headerlink" href="#id13" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">typer</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_alchemy_group</span><span class="p">,</span> <span class="n">add_migration_commands</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="n">app</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Typer</span><span class="p">()</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+</span><span data-line="7"><span class="k">def</span><span class="w"> </span><span class="nf">hello</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="8"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Says hello to the world.&quot;&quot;&quot;</span>
+</span><span data-line="9">    <span class="n">typer</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="10">
+</span><span data-line="11"><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">()</span>
+</span><span data-line="12"><span class="k">def</span><span class="w"> </span><span class="nf">callback</span><span class="p">():</span>
+</span><span data-line="13"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="14"><span class="sd">    Typer app, including Click subapp</span>
+</span><span data-line="15"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="16">    <span class="k">pass</span>
+</span><span data-line="17">
+</span><span data-line="18"><span class="k">def</span><span class="w"> </span><span class="nf">create_cli</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">typer</span><span class="o">.</span><span class="n">Typer</span><span class="p">:</span>
+</span><span data-line="19"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create the CLI application with both Typer and Click commands.&quot;&quot;&quot;</span>
+</span><span data-line="20">    <span class="c1"># Get the Click group from advanced_alchemy</span>
+</span><span data-line="21">    <span class="n">alchemy_group</span> <span class="o">=</span> <span class="n">get_alchemy_group</span><span class="p">()</span>
+</span><span data-line="22">
+</span><span data-line="23">    <span class="c1"># Convert our Typer app to a Click command object</span>
+</span><span data-line="24">    <span class="n">typer_click_object</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">get_command</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+</span><span data-line="25">
+</span><span data-line="26">    <span class="c1"># Add all migration commands from the alchemy group to our CLI</span>
+</span><span data-line="27">    <span class="n">typer_click_object</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">add_migration_commands</span><span class="p">(</span><span class="n">alchemy_group</span><span class="p">))</span>
+</span><span data-line="28">
+</span><span data-line="29">    <span class="k">return</span> <span class="n">typer_click_object</span>
+</span><span data-line="30">
+</span><span data-line="31"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span data-line="32">    <span class="n">cli</span> <span class="o">=</span> <span class="n">create_cli</span><span class="p">()</span>
+</span><span data-line="33">    <span class="n">cli</span><span class="p">()</span>
+</span></pre></div>
+</div>
+</div>
+<p>After setting up the integration, you can use both your <code class="docutils literal notranslate"><span class="pre">Typer</span></code> commands and Advanced Alchemy commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># Use your Typer commands</span>
+</span><span data-line="2">python<span class="w"> </span>cli.py<span class="w"> </span>hello<span class="w"> </span>Cody
+</span><span data-line="3">
+</span><span data-line="4"><span class="c1"># Use Advanced Alchemy commands</span>
+</span><span data-line="5">python<span class="w"> </span>cli.py<span class="w"> </span>alchemy<span class="w"> </span>upgrade<span class="w"> </span>--config<span class="w"> </span>path.to.config
+</span><span data-line="6">python<span class="w"> </span>cli.py<span class="w"> </span>alchemy<span class="w"> </span>make-migrations<span class="w"> </span>--config<span class="w"> </span>path.to.config
+</span></pre></div>
+</div>
+</section>
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="types.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Types</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="database_seeding.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Database Seeding and Fixture Loading</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2025, Litestar Organization</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a>
+<a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+  <iconify-icon icon="simple-icons:discord"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../_static/documentation_options.js?v=6f8f3740"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=a56c686a"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/shibuya.js?v=e730760c"></script>
+      <script src="../_static/versioning.js?v=68b42869"></script></body>
+</html>
