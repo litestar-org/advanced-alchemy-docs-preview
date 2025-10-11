@@ -2,7 +2,7 @@
 <html lang="en" data-accent-color="amber" data-content_root="../../">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Obstore File Storage - Advanced Alchemy</title><link rel="shortcut icon" href="../../_static/favicon.png"/><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Obstore Storage Backend - Advanced Alchemy</title><link rel="shortcut icon" href="../../_static/favicon.png"/><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><script>
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=104075c0" />
@@ -22,7 +22,7 @@
   --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
 }
 </style>
-    <meta property="og:type" content="website"/><meta property="og:title" content="Obstore File Storage"/>
+    <meta property="og:type" content="website"/><meta property="og:title" content="Obstore Storage Backend"/>
 <meta name="twitter:card" content="summary"/>
   </head>
 <body><div class="sy-head">
@@ -212,11 +212,11 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#multipart-upload">Multipart Upload</a></li>
 <li><a class="reference internal" href="#migration-from-fsspec">Migration from FSSpec</a></li>
 <li><a class="reference internal" href="#testing">Testing</a></li>
-<li><a class="reference internal" href="#best-practices">Best Practices</a><ul>
-<li><a class="reference internal" href="#use-environment-variables">1. Use Environment Variables</a></li>
-<li><a class="reference internal" href="#configure-at-startup">2. Configure at Startup</a></li>
-<li><a class="reference internal" href="#use-signed-urls-for-direct-access">3. Use Signed URLs for Direct Access</a></li>
-<li><a class="reference internal" href="#adjust-chunk-sizes">4. Adjust Chunk Sizes</a></li>
+<li><a class="reference internal" href="#configuration-patterns">Configuration Patterns</a><ul>
+<li><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
+<li><a class="reference internal" href="#startup-configuration">Startup Configuration</a></li>
+<li><a class="reference internal" href="#signed-urls">Signed URLs</a></li>
+<li><a class="reference internal" href="#chunk-size-configuration">Chunk Size Configuration</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#common-issues">Common Issues</a><ul>
@@ -266,7 +266,7 @@ data-aria-dark="Switch to auto color mode">
         <span>/</span>
         <meta itemprop="position" content="1" />
       </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-        <strong itemprop="name">Obstore File Storage</strong>
+        <strong itemprop="name">Obstore Storage Backend</strong>
         <meta itemprop="position" content="2" />
       </li></ol>
     <div class="xl:hidden ml-1">
@@ -279,9 +279,16 @@ data-aria-dark="Switch to auto color mode">
 </div><div class="flex flex-col break-words justify-between">
       <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
         <article class="yue" role="main">
-          <section id="obstore-file-storage">
-<h1>Obstore File Storage<a class="headerlink" href="#obstore-file-storage" title="Link to this heading">¶</a></h1>
-<p>High-performance Rust-based file storage backend for Advanced Alchemy.</p>
+          <section id="obstore-storage-backend">
+<h1>Obstore Storage Backend<a class="headerlink" href="#obstore-storage-backend" title="Link to this heading">¶</a></h1>
+<p>Rust-based storage backend implementation.</p>
+<p><strong>Characteristics:</strong></p>
+<ul class="simple">
+<li><p>Implementation: Rust via PyO3 bindings</p></li>
+<li><p>Async support: Native async/await</p></li>
+<li><p>Supported backends: S3, GCS, Azure, local filesystem, memory</p></li>
+<li><p>Additional features: Native multipart upload, metadata support</p></li>
+</ul>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">uv<span class="w"> </span>add<span class="w"> </span><span class="s2">&quot;advanced-alchemy[obstore]&quot;</span>
@@ -532,10 +539,10 @@ data-aria-dark="Switch to auto color mode">
 </span></pre></div>
 </div>
 </section>
-<section id="best-practices">
-<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading">¶</a></h2>
-<section id="use-environment-variables">
-<h3>1. Use Environment Variables<a class="headerlink" href="#use-environment-variables" title="Link to this heading">¶</a></h3>
+<section id="configuration-patterns">
+<h2>Configuration Patterns<a class="headerlink" href="#configuration-patterns" title="Link to this heading">¶</a></h2>
+<section id="environment-variables">
+<h3>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 </span><span data-line="2">
 </span><span data-line="3"><span class="n">storages</span><span class="o">.</span><span class="n">register_backend</span><span class="p">(</span><span class="n">ObstoreBackend</span><span class="p">(</span>
@@ -548,8 +555,8 @@ data-aria-dark="Switch to auto color mode">
 </span></pre></div>
 </div>
 </section>
-<section id="configure-at-startup">
-<h3>2. Configure at Startup<a class="headerlink" href="#configure-at-startup" title="Link to this heading">¶</a></h3>
+<section id="startup-configuration">
+<h3>Startup Configuration<a class="headerlink" href="#startup-configuration" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">asynccontextmanager</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Litestar</span>
 </span><span data-line="3">
@@ -566,8 +573,8 @@ data-aria-dark="Switch to auto color mode">
 </span></pre></div>
 </div>
 </section>
-<section id="use-signed-urls-for-direct-access">
-<h3>3. Use Signed URLs for Direct Access<a class="headerlink" href="#use-signed-urls-for-direct-access" title="Link to this heading">¶</a></h3>
+<section id="signed-urls">
+<h3>Signed URLs<a class="headerlink" href="#signed-urls" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># Generate signed URL for download</span>
 </span><span data-line="2"><span class="n">download_url</span> <span class="o">=</span> <span class="k">await</span> <span class="n">file_obj</span><span class="o">.</span><span class="n">sign_async</span><span class="p">(</span><span class="n">expires_in</span><span class="o">=</span><span class="mi">3600</span><span class="p">)</span>
 </span><span data-line="3">
@@ -576,8 +583,8 @@ data-aria-dark="Switch to auto color mode">
 </span></pre></div>
 </div>
 </section>
-<section id="adjust-chunk-sizes">
-<h3>4. Adjust Chunk Sizes<a class="headerlink" href="#adjust-chunk-sizes" title="Link to this heading">¶</a></h3>
+<section id="chunk-size-configuration">
+<h3>Chunk Size Configuration<a class="headerlink" href="#chunk-size-configuration" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># Small files (&lt;10MB): disable multipart</span>
 </span><span data-line="2"><span class="k">await</span> <span class="n">small_file</span><span class="o">.</span><span class="n">save_async</span><span class="p">(</span><span class="n">use_multipart</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span data-line="3">

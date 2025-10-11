@@ -202,7 +202,7 @@ data-aria-dark="Switch to auto color mode">
 </ul>
 </li>
 <li><a class="reference internal" href="#advanced-alchemy-specific-patterns">Advanced Alchemy-Specific Patterns</a><ul>
-<li><a class="reference internal" href="#uuid-primary-keys-strongly-recommended">UUID Primary Keys (Strongly Recommended)</a></li>
+<li><a class="reference internal" href="#uuid-primary-keys">UUID Primary Keys</a></li>
 <li><a class="reference internal" href="#transaction-retry-logic">Transaction Retry Logic</a></li>
 <li><a class="reference internal" href="#postgresql-compatibility">PostgreSQL Compatibility</a></li>
 <li><a class="reference internal" href="#upsert-operations">Upsert Operations</a></li>
@@ -211,8 +211,8 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#pytest-markers">pytest Markers</a></li>
 <li><a class="reference internal" href="#connection-pooling">Connection Pooling</a></li>
 <li><a class="reference internal" href="#docker-setup">Docker Setup</a></li>
-<li><a class="reference internal" href="#common-gotchas">Common Gotchas</a><ul>
-<li><a class="reference internal" href="#avoid-sequential-primary-keys">Avoid Sequential Primary Keys</a></li>
+<li><a class="reference internal" href="#key-differences">Key Differences</a><ul>
+<li><a class="reference internal" href="#sequential-primary-keys">Sequential Primary Keys</a></li>
 <li><a class="reference internal" href="#transaction-serialization-errors">Transaction Serialization Errors</a></li>
 </ul>
 </li>
@@ -313,13 +313,13 @@ data-aria-dark="Switch to auto color mode">
 </section>
 <section id="advanced-alchemy-specific-patterns">
 <h2>Advanced Alchemy-Specific Patterns<a class="headerlink" href="#advanced-alchemy-specific-patterns" title="Link to this heading">¶</a></h2>
-<section id="uuid-primary-keys-strongly-recommended">
-<h3>UUID Primary Keys (Strongly Recommended)<a class="headerlink" href="#uuid-primary-keys-strongly-recommended" title="Link to this heading">¶</a></h3>
-<p>CockroachDB <strong>strongly recommends UUID primary keys</strong> to avoid transaction contention hotspots:</p>
+<section id="uuid-primary-keys">
+<h3>UUID Primary Keys<a class="headerlink" href="#uuid-primary-keys" title="Link to this heading">¶</a></h3>
+<p>UUID primary keys avoid transaction contention hotspots in distributed systems:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUIDAuditBase</span>
 </span><span data-line="2">
 </span><span data-line="3"><span class="k">class</span><span class="w"> </span><span class="nc">User</span><span class="p">(</span><span class="n">UUIDAuditBase</span><span class="p">):</span>
-</span><span data-line="4"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Uses UUID primary key - recommended for CockroachDB.&quot;&quot;&quot;</span>
+</span><span data-line="4"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Uses UUID primary key.&quot;&quot;&quot;</span>
 </span><span data-line="5">
 </span><span data-line="6">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;users&quot;</span>
 </span><span data-line="7">
@@ -327,11 +327,11 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="9">    <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Mapped[str]&quot;</span>
 </span></pre></div>
 </div>
-<p><strong>Why UUIDs?</strong></p>
+<p><strong>UUID characteristics in CockroachDB:</strong></p>
 <ul class="simple">
-<li><p>Avoids hotspots on sequential primary keys</p></li>
-<li><p>Better distribution across nodes in distributed systems</p></li>
-<li><p>No central counter coordination</p></li>
+<li><p>Sequential primary keys create hotspots in distributed systems</p></li>
+<li><p>UUIDs distribute writes across nodes</p></li>
+<li><p>No central counter coordination required</p></li>
 </ul>
 </section>
 <section id="transaction-retry-logic">
@@ -431,15 +431,16 @@ data-aria-dark="Switch to auto color mode">
 </span></pre></div>
 </div>
 </section>
-<section id="common-gotchas">
-<h2>Common Gotchas<a class="headerlink" href="#common-gotchas" title="Link to this heading">¶</a></h2>
-<section id="avoid-sequential-primary-keys">
-<h3>Avoid Sequential Primary Keys<a class="headerlink" href="#avoid-sequential-primary-keys" title="Link to this heading">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># ❌ Sequential IDs cause hotspots in distributed systems</span>
+<section id="key-differences">
+<h2>Key Differences<a class="headerlink" href="#key-differences" title="Link to this heading">¶</a></h2>
+<section id="sequential-primary-keys">
+<h3>Sequential Primary Keys<a class="headerlink" href="#sequential-primary-keys" title="Link to this heading">¶</a></h3>
+<p>Sequential primary keys create transaction contention in distributed systems:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># Sequential IDs create hotspots</span>
 </span><span data-line="2"><span class="k">class</span><span class="w"> </span><span class="nc">Order</span><span class="p">(</span><span class="n">BigIntBase</span><span class="p">):</span>
 </span><span data-line="3">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;orders&quot;</span>
 </span><span data-line="4">
-</span><span data-line="5"><span class="c1"># ✅ Use UUIDs for distributed workloads</span>
+</span><span data-line="5"><span class="c1"># UUIDs distribute writes across nodes</span>
 </span><span data-line="6"><span class="k">class</span><span class="w"> </span><span class="nc">Order</span><span class="p">(</span><span class="n">UUIDAuditBase</span><span class="p">):</span>
 </span><span data-line="7">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;orders&quot;</span>
 </span></pre></div>
