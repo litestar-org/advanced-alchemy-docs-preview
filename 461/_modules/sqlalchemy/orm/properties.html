@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>sqlalchemy.orm.properties - Advanced Alchemy</title><link rel="shortcut icon" href="../../../_static/favicon.png"/><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
-  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=397bb51e" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=d48c410d" />
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=3270565a" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=bb284d7b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_paramlinks.css" />
     <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=0b86c658" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=118d83bc" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/syntax-highlighting.css?v=4ec1c4a8" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -90,8 +91,8 @@ data-aria-dark="Switch to auto color mode">
 </button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
         <div class="hamburger">
           <span class="hamburger_1"></span>
-          <span class="hamburger_2 -translate-x-2"></span>
-          <span class="hamburger_3 -translate-x-1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
         </div>
       </button>
     </div>
@@ -201,7 +202,10 @@ data-aria-dark="Switch to auto color mode">
     <iconify-icon icon="simple-icons:github"></iconify-icon>
   </span>
   <span class="flex-grow px-2 break-all">
-    <span>litestar-org/advanced-alchemy</span>
+    
+    
+      <span>advanced-alchemy</span>
+    
     <span class="flex text-sm repo-stats-count">
       <span class="flex items-center pr-3">
         <iconify-icon icon="lucide:star"></iconify-icon>
@@ -1018,142 +1022,170 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="769">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_nullable</span><span class="p">:</span>
 </span><span data-line="770">            <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">nullable</span> <span class="o">=</span> <span class="n">nullable</span>
 </span><span data-line="771">
-</span><span data-line="772">        <span class="n">our_type</span> <span class="o">=</span> <span class="n">de_optionalize_union_types</span><span class="p">(</span><span class="n">argument</span><span class="p">)</span>
-</span><span data-line="773">
-</span><span data-line="774">        <span class="n">find_mapped_in</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
-</span><span data-line="775">        <span class="n">our_type_is_pep593</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span data-line="776">        <span class="n">raw_pep_593_type</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="777">
-</span><span data-line="778">        <span class="k">if</span> <span class="n">is_pep593</span><span class="p">(</span><span class="n">our_type</span><span class="p">):</span>
-</span><span data-line="779">            <span class="n">our_type_is_pep593</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span data-line="780">
-</span><span data-line="781">            <span class="n">pep_593_components</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">(</span><span class="n">our_type</span><span class="p">)</span>
-</span><span data-line="782">            <span class="n">raw_pep_593_type</span> <span class="o">=</span> <span class="n">pep_593_components</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span data-line="783">            <span class="k">if</span> <span class="n">nullable</span><span class="p">:</span>
-</span><span data-line="784">                <span class="n">raw_pep_593_type</span> <span class="o">=</span> <span class="n">de_optionalize_union_types</span><span class="p">(</span><span class="n">raw_pep_593_type</span><span class="p">)</span>
-</span><span data-line="785">            <span class="n">find_mapped_in</span> <span class="o">=</span> <span class="n">pep_593_components</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-</span><span data-line="786">        <span class="k">elif</span> <span class="n">is_pep695</span><span class="p">(</span><span class="n">argument</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_pep593</span><span class="p">(</span><span class="n">argument</span><span class="o">.</span><span class="n">__value__</span><span class="p">):</span>
-</span><span data-line="787">            <span class="c1"># do not support nested annotation inside unions ets</span>
-</span><span data-line="788">            <span class="n">find_mapped_in</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">(</span><span class="n">argument</span><span class="o">.</span><span class="n">__value__</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
-</span><span data-line="789">
-</span><span data-line="790">        <span class="n">use_args_from</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MappedColumn</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span>
-</span><span data-line="791">        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">find_mapped_in</span><span class="p">:</span>
-</span><span data-line="792">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">MappedColumn</span><span class="p">):</span>
-</span><span data-line="793">                <span class="n">use_args_from</span> <span class="o">=</span> <span class="n">elem</span>
-</span><span data-line="794">                <span class="k">break</span>
-</span><span data-line="795">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="796">            <span class="n">use_args_from</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="797">
-</span><span data-line="798">        <span class="k">if</span> <span class="n">use_args_from</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="799">
-</span><span data-line="800">            <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">_adjust_for_existing_column</span><span class="p">(</span>
-</span><span data-line="801">                <span class="n">decl_scan</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span>
-</span><span data-line="802">            <span class="p">)</span>
-</span><span data-line="803">
-</span><span data-line="804">            <span class="k">if</span> <span class="p">(</span>
-</span><span data-line="805">                <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_insert_default</span>
-</span><span data-line="806">                <span class="ow">and</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span data-line="807">            <span class="p">):</span>
-</span><span data-line="808">                <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="809">
-</span><span data-line="810">            <span class="n">use_args_from</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">_merge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">)</span>
-</span><span data-line="811">            <span class="n">sqltype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">type</span>
-</span><span data-line="812">
-</span><span data-line="813">            <span class="k">if</span> <span class="p">(</span>
-</span><span data-line="814">                <span class="n">use_args_from</span><span class="o">.</span><span class="n">deferred</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_NoArg</span><span class="o">.</span><span class="n">NO_ARG</span>
-</span><span data-line="815">                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">deferred</span> <span class="ow">is</span> <span class="n">_NoArg</span><span class="o">.</span><span class="n">NO_ARG</span>
-</span><span data-line="816">            <span class="p">):</span>
-</span><span data-line="817">                <span class="bp">self</span><span class="o">.</span><span class="n">deferred</span> <span class="o">=</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">deferred</span>
-</span><span data-line="818">
-</span><span data-line="819">            <span class="k">if</span> <span class="p">(</span>
-</span><span data-line="820">                <span class="n">use_args_from</span><span class="o">.</span><span class="n">deferred_group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span data-line="821">                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">deferred_group</span> <span class="ow">is</span> <span class="kc">None</span>
-</span><span data-line="822">            <span class="p">):</span>
-</span><span data-line="823">                <span class="bp">self</span><span class="o">.</span><span class="n">deferred_group</span> <span class="o">=</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">deferred_group</span>
-</span><span data-line="824">
-</span><span data-line="825">            <span class="k">if</span> <span class="p">(</span>
-</span><span data-line="826">                <span class="n">use_args_from</span><span class="o">.</span><span class="n">deferred_raiseload</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span data-line="827">                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">deferred_raiseload</span> <span class="ow">is</span> <span class="kc">None</span>
-</span><span data-line="828">            <span class="p">):</span>
-</span><span data-line="829">                <span class="bp">self</span><span class="o">.</span><span class="n">deferred_raiseload</span> <span class="o">=</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">deferred_raiseload</span>
-</span><span data-line="830">
-</span><span data-line="831">            <span class="k">if</span> <span class="p">(</span>
-</span><span data-line="832">                <span class="n">use_args_from</span><span class="o">.</span><span class="n">_use_existing_column</span>
-</span><span data-line="833">                <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_existing_column</span>
-</span><span data-line="834">            <span class="p">):</span>
-</span><span data-line="835">                <span class="bp">self</span><span class="o">.</span><span class="n">_use_existing_column</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span data-line="836">
-</span><span data-line="837">            <span class="k">if</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">active_history</span><span class="p">:</span>
-</span><span data-line="838">                <span class="bp">self</span><span class="o">.</span><span class="n">active_history</span> <span class="o">=</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">active_history</span>
-</span><span data-line="839">
-</span><span data-line="840">            <span class="k">if</span> <span class="p">(</span>
-</span><span data-line="841">                <span class="n">use_args_from</span><span class="o">.</span><span class="n">_sort_order</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span data-line="842">                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sort_order</span> <span class="ow">is</span> <span class="n">_NoArg</span><span class="o">.</span><span class="n">NO_ARG</span>
-</span><span data-line="843">            <span class="p">):</span>
-</span><span data-line="844">                <span class="bp">self</span><span class="o">.</span><span class="n">_sort_order</span> <span class="o">=</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">_sort_order</span>
-</span><span data-line="845">
-</span><span data-line="846">            <span class="k">if</span> <span class="p">(</span>
-</span><span data-line="847">                <span class="n">use_args_from</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span data-line="848">                <span class="ow">or</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span data-line="849">            <span class="p">):</span>
-</span><span data-line="850">                <span class="n">util</span><span class="o">.</span><span class="n">warn_deprecated</span><span class="p">(</span>
-</span><span data-line="851">                    <span class="s2">&quot;Can&#39;t use the &#39;key&#39; or &#39;name&#39; arguments in &quot;</span>
-</span><span data-line="852">                    <span class="s2">&quot;Annotated with mapped_column(); this will be ignored&quot;</span><span class="p">,</span>
-</span><span data-line="853">                    <span class="s2">&quot;2.0.22&quot;</span><span class="p">,</span>
-</span><span data-line="854">                <span class="p">)</span>
-</span><span data-line="855">
-</span><span data-line="856">            <span class="k">if</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">_has_dataclass_arguments</span><span class="p">:</span>
-</span><span data-line="857">                <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
-</span><span data-line="858">                    <span class="n">use_args_from</span><span class="o">.</span><span class="n">_attribute_options</span><span class="o">.</span><span class="n">_fields</span>
-</span><span data-line="859">                <span class="p">):</span>
-</span><span data-line="860">                    <span class="k">if</span> <span class="p">(</span>
-</span><span data-line="861">                        <span class="n">use_args_from</span><span class="o">.</span><span class="n">_attribute_options</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-</span><span data-line="862">                        <span class="ow">is</span> <span class="ow">not</span> <span class="n">_NoArg</span><span class="o">.</span><span class="n">NO_ARG</span>
-</span><span data-line="863">                    <span class="p">):</span>
-</span><span data-line="864">                        <span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;dataclasses_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-</span><span data-line="865">                        <span class="n">util</span><span class="o">.</span><span class="n">warn_deprecated</span><span class="p">(</span>
-</span><span data-line="866">                            <span class="sa">f</span><span class="s2">&quot;Argument &#39;</span><span class="si">{</span><span class="n">arg</span><span class="si">}</span><span class="s2">&#39; is a dataclass argument and &quot;</span>
-</span><span data-line="867">                            <span class="s2">&quot;cannot be specified within a mapped_column() &quot;</span>
-</span><span data-line="868">                            <span class="s2">&quot;bundled inside of an Annotated object&quot;</span><span class="p">,</span>
-</span><span data-line="869">                            <span class="s2">&quot;2.0.22&quot;</span><span class="p">,</span>
-</span><span data-line="870">                        <span class="p">)</span>
-</span><span data-line="871">
-</span><span data-line="872">        <span class="k">if</span> <span class="n">sqltype</span><span class="o">.</span><span class="n">_isnull</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">foreign_keys</span><span class="p">:</span>
-</span><span data-line="873">            <span class="n">checks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
-</span><span data-line="874">            <span class="k">if</span> <span class="n">our_type_is_pep593</span><span class="p">:</span>
-</span><span data-line="875">                <span class="n">checks</span> <span class="o">=</span> <span class="p">[</span><span class="n">our_type</span><span class="p">,</span> <span class="n">raw_pep_593_type</span><span class="p">]</span>
-</span><span data-line="876">            <span class="k">else</span><span class="p">:</span>
-</span><span data-line="877">                <span class="n">checks</span> <span class="o">=</span> <span class="p">[</span><span class="n">our_type</span><span class="p">]</span>
-</span><span data-line="878">
-</span><span data-line="879">            <span class="k">for</span> <span class="n">check_type</span> <span class="ow">in</span> <span class="n">checks</span><span class="p">:</span>
-</span><span data-line="880">                <span class="n">new_sqltype</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">_resolve_type</span><span class="p">(</span><span class="n">check_type</span><span class="p">)</span>
-</span><span data-line="881">                <span class="k">if</span> <span class="n">new_sqltype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="882">                    <span class="k">break</span>
-</span><span data-line="883">            <span class="k">else</span><span class="p">:</span>
-</span><span data-line="884">                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">our_type</span><span class="p">,</span> <span class="n">TypeEngine</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-</span><span data-line="885">                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">our_type</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
-</span><span data-line="886">                    <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">our_type</span><span class="p">,</span> <span class="n">TypeEngine</span><span class="p">)</span>
-</span><span data-line="887">                <span class="p">):</span>
-</span><span data-line="888">                    <span class="k">raise</span> <span class="n">orm_exc</span><span class="o">.</span><span class="n">MappedAnnotationError</span><span class="p">(</span>
-</span><span data-line="889">                        <span class="sa">f</span><span class="s2">&quot;The type provided inside the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">key</span><span class="si">!r}</span><span class="s2"> &quot;</span>
-</span><span data-line="890">                        <span class="s2">&quot;attribute Mapped annotation is the SQLAlchemy type &quot;</span>
-</span><span data-line="891">                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">our_type</span><span class="si">}</span><span class="s2">. Expected a Python type instead&quot;</span>
-</span><span data-line="892">                    <span class="p">)</span>
-</span><span data-line="893">                <span class="k">elif</span> <span class="n">is_a_type</span><span class="p">(</span><span class="n">our_type</span><span class="p">):</span>
-</span><span data-line="894">                    <span class="k">raise</span> <span class="n">orm_exc</span><span class="o">.</span><span class="n">MappedAnnotationError</span><span class="p">(</span>
-</span><span data-line="895">                        <span class="s2">&quot;Could not locate SQLAlchemy Core type for Python &quot;</span>
-</span><span data-line="896">                        <span class="sa">f</span><span class="s2">&quot;type </span><span class="si">{</span><span class="n">our_type</span><span class="si">}</span><span class="s2"> inside the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">key</span><span class="si">!r}</span><span class="s2"> &quot;</span>
-</span><span data-line="897">                        <span class="s2">&quot;attribute Mapped annotation&quot;</span>
-</span><span data-line="898">                    <span class="p">)</span>
-</span><span data-line="899">                <span class="k">else</span><span class="p">:</span>
-</span><span data-line="900">                    <span class="k">raise</span> <span class="n">orm_exc</span><span class="o">.</span><span class="n">MappedAnnotationError</span><span class="p">(</span>
-</span><span data-line="901">                        <span class="sa">f</span><span class="s2">&quot;The object provided inside the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">key</span><span class="si">!r}</span><span class="s2"> &quot;</span>
-</span><span data-line="902">                        <span class="s2">&quot;attribute Mapped annotation is not a Python type, &quot;</span>
-</span><span data-line="903">                        <span class="sa">f</span><span class="s2">&quot;it&#39;s the object </span><span class="si">{</span><span class="n">our_type</span><span class="si">!r}</span><span class="s2">. Expected a Python &quot;</span>
-</span><span data-line="904">                        <span class="s2">&quot;type.&quot;</span>
-</span><span data-line="905">                    <span class="p">)</span>
-</span><span data-line="906">
-</span><span data-line="907">            <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">_set_type</span><span class="p">(</span><span class="n">new_sqltype</span><span class="p">)</span>
+</span><span data-line="772">        <span class="n">find_mapped_in</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+</span><span data-line="773">        <span class="n">our_type_is_pep593</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="774">        <span class="n">raw_pep_593_type</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="775">        <span class="n">raw_pep_695_type</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="776">
+</span><span data-line="777">        <span class="n">our_type</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">de_optionalize_union_types</span><span class="p">(</span><span class="n">argument</span><span class="p">)</span>
+</span><span data-line="778">
+</span><span data-line="779">        <span class="k">if</span> <span class="n">is_pep695</span><span class="p">(</span><span class="n">our_type</span><span class="p">):</span>
+</span><span data-line="780">            <span class="n">raw_pep_695_type</span> <span class="o">=</span> <span class="n">our_type</span>
+</span><span data-line="781">            <span class="n">our_type</span> <span class="o">=</span> <span class="n">de_optionalize_union_types</span><span class="p">(</span><span class="n">raw_pep_695_type</span><span class="o">.</span><span class="n">__value__</span><span class="p">)</span>
+</span><span data-line="782">            <span class="n">our_args</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">(</span><span class="n">raw_pep_695_type</span><span class="p">)</span>
+</span><span data-line="783">            <span class="k">if</span> <span class="n">our_args</span><span class="p">:</span>
+</span><span data-line="784">                <span class="n">our_type</span> <span class="o">=</span> <span class="n">our_type</span><span class="p">[</span><span class="n">our_args</span><span class="p">]</span>
+</span><span data-line="785">
+</span><span data-line="786">        <span class="k">if</span> <span class="n">is_pep593</span><span class="p">(</span><span class="n">our_type</span><span class="p">):</span>
+</span><span data-line="787">            <span class="n">our_type_is_pep593</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="788">
+</span><span data-line="789">            <span class="n">pep_593_components</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">(</span><span class="n">our_type</span><span class="p">)</span>
+</span><span data-line="790">            <span class="n">raw_pep_593_type</span> <span class="o">=</span> <span class="n">pep_593_components</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="791">            <span class="k">if</span> <span class="n">nullable</span><span class="p">:</span>
+</span><span data-line="792">                <span class="n">raw_pep_593_type</span> <span class="o">=</span> <span class="n">de_optionalize_union_types</span><span class="p">(</span><span class="n">raw_pep_593_type</span><span class="p">)</span>
+</span><span data-line="793">            <span class="n">find_mapped_in</span> <span class="o">=</span> <span class="n">pep_593_components</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+</span><span data-line="794">
+</span><span data-line="795">        <span class="n">use_args_from</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MappedColumn</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span>
+</span><span data-line="796">        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">find_mapped_in</span><span class="p">:</span>
+</span><span data-line="797">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">MappedColumn</span><span class="p">):</span>
+</span><span data-line="798">                <span class="n">use_args_from</span> <span class="o">=</span> <span class="n">elem</span>
+</span><span data-line="799">                <span class="k">break</span>
+</span><span data-line="800">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="801">            <span class="n">use_args_from</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="802">
+</span><span data-line="803">        <span class="k">if</span> <span class="n">use_args_from</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="804">
+</span><span data-line="805">            <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">_adjust_for_existing_column</span><span class="p">(</span>
+</span><span data-line="806">                <span class="n">decl_scan</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span>
+</span><span data-line="807">            <span class="p">)</span>
+</span><span data-line="808">
+</span><span data-line="809">            <span class="k">if</span> <span class="p">(</span>
+</span><span data-line="810">                <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_insert_default</span>
+</span><span data-line="811">                <span class="ow">and</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span data-line="812">            <span class="p">):</span>
+</span><span data-line="813">                <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="814">
+</span><span data-line="815">            <span class="n">use_args_from</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">_merge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">)</span>
+</span><span data-line="816">            <span class="n">sqltype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">type</span>
+</span><span data-line="817">
+</span><span data-line="818">            <span class="k">if</span> <span class="p">(</span>
+</span><span data-line="819">                <span class="n">use_args_from</span><span class="o">.</span><span class="n">deferred</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_NoArg</span><span class="o">.</span><span class="n">NO_ARG</span>
+</span><span data-line="820">                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">deferred</span> <span class="ow">is</span> <span class="n">_NoArg</span><span class="o">.</span><span class="n">NO_ARG</span>
+</span><span data-line="821">            <span class="p">):</span>
+</span><span data-line="822">                <span class="bp">self</span><span class="o">.</span><span class="n">deferred</span> <span class="o">=</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">deferred</span>
+</span><span data-line="823">
+</span><span data-line="824">            <span class="k">if</span> <span class="p">(</span>
+</span><span data-line="825">                <span class="n">use_args_from</span><span class="o">.</span><span class="n">deferred_group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span data-line="826">                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">deferred_group</span> <span class="ow">is</span> <span class="kc">None</span>
+</span><span data-line="827">            <span class="p">):</span>
+</span><span data-line="828">                <span class="bp">self</span><span class="o">.</span><span class="n">deferred_group</span> <span class="o">=</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">deferred_group</span>
+</span><span data-line="829">
+</span><span data-line="830">            <span class="k">if</span> <span class="p">(</span>
+</span><span data-line="831">                <span class="n">use_args_from</span><span class="o">.</span><span class="n">deferred_raiseload</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span data-line="832">                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">deferred_raiseload</span> <span class="ow">is</span> <span class="kc">None</span>
+</span><span data-line="833">            <span class="p">):</span>
+</span><span data-line="834">                <span class="bp">self</span><span class="o">.</span><span class="n">deferred_raiseload</span> <span class="o">=</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">deferred_raiseload</span>
+</span><span data-line="835">
+</span><span data-line="836">            <span class="k">if</span> <span class="p">(</span>
+</span><span data-line="837">                <span class="n">use_args_from</span><span class="o">.</span><span class="n">_use_existing_column</span>
+</span><span data-line="838">                <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_existing_column</span>
+</span><span data-line="839">            <span class="p">):</span>
+</span><span data-line="840">                <span class="bp">self</span><span class="o">.</span><span class="n">_use_existing_column</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="841">
+</span><span data-line="842">            <span class="k">if</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">active_history</span><span class="p">:</span>
+</span><span data-line="843">                <span class="bp">self</span><span class="o">.</span><span class="n">active_history</span> <span class="o">=</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">active_history</span>
+</span><span data-line="844">
+</span><span data-line="845">            <span class="k">if</span> <span class="p">(</span>
+</span><span data-line="846">                <span class="n">use_args_from</span><span class="o">.</span><span class="n">_sort_order</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span data-line="847">                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sort_order</span> <span class="ow">is</span> <span class="n">_NoArg</span><span class="o">.</span><span class="n">NO_ARG</span>
+</span><span data-line="848">            <span class="p">):</span>
+</span><span data-line="849">                <span class="bp">self</span><span class="o">.</span><span class="n">_sort_order</span> <span class="o">=</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">_sort_order</span>
+</span><span data-line="850">
+</span><span data-line="851">            <span class="k">if</span> <span class="p">(</span>
+</span><span data-line="852">                <span class="n">use_args_from</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span data-line="853">                <span class="ow">or</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span data-line="854">            <span class="p">):</span>
+</span><span data-line="855">                <span class="n">util</span><span class="o">.</span><span class="n">warn_deprecated</span><span class="p">(</span>
+</span><span data-line="856">                    <span class="s2">&quot;Can&#39;t use the &#39;key&#39; or &#39;name&#39; arguments in &quot;</span>
+</span><span data-line="857">                    <span class="s2">&quot;Annotated with mapped_column(); this will be ignored&quot;</span><span class="p">,</span>
+</span><span data-line="858">                    <span class="s2">&quot;2.0.22&quot;</span><span class="p">,</span>
+</span><span data-line="859">                <span class="p">)</span>
+</span><span data-line="860">
+</span><span data-line="861">            <span class="k">if</span> <span class="n">use_args_from</span><span class="o">.</span><span class="n">_has_dataclass_arguments</span><span class="p">:</span>
+</span><span data-line="862">                <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+</span><span data-line="863">                    <span class="n">use_args_from</span><span class="o">.</span><span class="n">_attribute_options</span><span class="o">.</span><span class="n">_fields</span>
+</span><span data-line="864">                <span class="p">):</span>
+</span><span data-line="865">                    <span class="k">if</span> <span class="p">(</span>
+</span><span data-line="866">                        <span class="n">use_args_from</span><span class="o">.</span><span class="n">_attribute_options</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+</span><span data-line="867">                        <span class="ow">is</span> <span class="ow">not</span> <span class="n">_NoArg</span><span class="o">.</span><span class="n">NO_ARG</span>
+</span><span data-line="868">                    <span class="p">):</span>
+</span><span data-line="869">                        <span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;dataclasses_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span data-line="870">                        <span class="n">util</span><span class="o">.</span><span class="n">warn_deprecated</span><span class="p">(</span>
+</span><span data-line="871">                            <span class="sa">f</span><span class="s2">&quot;Argument &#39;</span><span class="si">{</span><span class="n">arg</span><span class="si">}</span><span class="s2">&#39; is a dataclass argument and &quot;</span>
+</span><span data-line="872">                            <span class="s2">&quot;cannot be specified within a mapped_column() &quot;</span>
+</span><span data-line="873">                            <span class="s2">&quot;bundled inside of an Annotated object&quot;</span><span class="p">,</span>
+</span><span data-line="874">                            <span class="s2">&quot;2.0.22&quot;</span><span class="p">,</span>
+</span><span data-line="875">                        <span class="p">)</span>
+</span><span data-line="876">
+</span><span data-line="877">        <span class="k">if</span> <span class="n">sqltype</span><span class="o">.</span><span class="n">_isnull</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">foreign_keys</span><span class="p">:</span>
+</span><span data-line="878">            <span class="n">checks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+</span><span data-line="879">            <span class="k">if</span> <span class="n">our_type_is_pep593</span><span class="p">:</span>
+</span><span data-line="880">                <span class="n">checks</span> <span class="o">=</span> <span class="p">[</span><span class="n">our_type</span><span class="p">,</span> <span class="n">raw_pep_593_type</span><span class="p">]</span>
+</span><span data-line="881">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="882">                <span class="n">checks</span> <span class="o">=</span> <span class="p">[</span><span class="n">our_type</span><span class="p">]</span>
+</span><span data-line="883">
+</span><span data-line="884">            <span class="k">if</span> <span class="n">raw_pep_695_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="885">                <span class="n">checks</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">raw_pep_695_type</span><span class="p">)</span>
+</span><span data-line="886">
+</span><span data-line="887">            <span class="k">for</span> <span class="n">check_type</span> <span class="ow">in</span> <span class="n">checks</span><span class="p">:</span>
+</span><span data-line="888">                <span class="n">new_sqltype</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">_resolve_type</span><span class="p">(</span>
+</span><span data-line="889">                    <span class="n">check_type</span><span class="p">,</span> <span class="n">_do_fallbacks</span><span class="o">=</span><span class="n">check_type</span> <span class="ow">is</span> <span class="n">our_type</span>
+</span><span data-line="890">                <span class="p">)</span>
+</span><span data-line="891">                <span class="k">if</span> <span class="n">new_sqltype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="892">                    <span class="k">break</span>
+</span><span data-line="893">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="894">                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">our_type</span><span class="p">,</span> <span class="n">TypeEngine</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+</span><span data-line="895">                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">our_type</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
+</span><span data-line="896">                    <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">our_type</span><span class="p">,</span> <span class="n">TypeEngine</span><span class="p">)</span>
+</span><span data-line="897">                <span class="p">):</span>
+</span><span data-line="898">                    <span class="k">raise</span> <span class="n">orm_exc</span><span class="o">.</span><span class="n">MappedAnnotationError</span><span class="p">(</span>
+</span><span data-line="899">                        <span class="sa">f</span><span class="s2">&quot;The type provided inside the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">key</span><span class="si">!r}</span><span class="s2"> &quot;</span>
+</span><span data-line="900">                        <span class="s2">&quot;attribute Mapped annotation is the SQLAlchemy type &quot;</span>
+</span><span data-line="901">                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">our_type</span><span class="si">}</span><span class="s2">. Expected a Python type instead&quot;</span>
+</span><span data-line="902">                    <span class="p">)</span>
+</span><span data-line="903">                <span class="k">elif</span> <span class="n">is_a_type</span><span class="p">(</span><span class="n">checks</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+</span><span data-line="904">                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">checks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span><span data-line="905">                        <span class="n">detail</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="906">                            <span class="s2">&quot;the type object is not resolvable by the registry&quot;</span>
+</span><span data-line="907">                        <span class="p">)</span>
+</span><span data-line="908">                    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">checks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+</span><span data-line="909">                        <span class="n">detail</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="910">                            <span class="sa">f</span><span class="s2">&quot;neither &#39;</span><span class="si">{</span><span class="n">checks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; nor &#39;</span><span class="si">{</span><span class="n">checks</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+</span><span data-line="911">                            <span class="s2">&quot;are resolvable by the registry&quot;</span>
+</span><span data-line="912">                        <span class="p">)</span>
+</span><span data-line="913">                    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="914">                        <span class="n">detail</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="915">                            <span class="sa">f</span><span class="s2">&quot;&quot;&quot;none of </span><span class="si">{</span>
+</span><span data-line="916"><span class="w">                                </span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">checks</span><span class="p">)</span>
+</span><span data-line="917"><span class="w">                            </span><span class="si">}</span><span class="s2"> &quot;&quot;&quot;</span>
+</span><span data-line="918">                            <span class="s2">&quot;are resolvable by the registry&quot;</span>
+</span><span data-line="919">                        <span class="p">)</span>
+</span><span data-line="920">                    <span class="k">raise</span> <span class="n">orm_exc</span><span class="o">.</span><span class="n">MappedAnnotationError</span><span class="p">(</span>
+</span><span data-line="921">                        <span class="s2">&quot;Could not locate SQLAlchemy Core type when resolving &quot;</span>
+</span><span data-line="922">                        <span class="sa">f</span><span class="s2">&quot;for Python type indicated by &#39;</span><span class="si">{</span><span class="n">checks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; inside &quot;</span>
+</span><span data-line="923">                        <span class="s2">&quot;the &quot;</span>
+</span><span data-line="924">                        <span class="sa">f</span><span class="s2">&quot;Mapped[] annotation for the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">key</span><span class="si">!r}</span><span class="s2"> &quot;</span>
+</span><span data-line="925">                        <span class="sa">f</span><span class="s2">&quot;attribute; </span><span class="si">{</span><span class="n">detail</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="926">                    <span class="p">)</span>
+</span><span data-line="927">                <span class="k">else</span><span class="p">:</span>
+</span><span data-line="928">                    <span class="k">raise</span> <span class="n">orm_exc</span><span class="o">.</span><span class="n">MappedAnnotationError</span><span class="p">(</span>
+</span><span data-line="929">                        <span class="sa">f</span><span class="s2">&quot;The object provided inside the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">key</span><span class="si">!r}</span><span class="s2"> &quot;</span>
+</span><span data-line="930">                        <span class="s2">&quot;attribute Mapped annotation is not a Python type, &quot;</span>
+</span><span data-line="931">                        <span class="sa">f</span><span class="s2">&quot;it&#39;s the object </span><span class="si">{</span><span class="n">argument</span><span class="si">!r}</span><span class="s2">. Expected a Python &quot;</span>
+</span><span data-line="932">                        <span class="s2">&quot;type.&quot;</span>
+</span><span data-line="933">                    <span class="p">)</span>
+</span><span data-line="934">
+</span><span data-line="935">            <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">_set_type</span><span class="p">(</span><span class="n">new_sqltype</span><span class="p">)</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
