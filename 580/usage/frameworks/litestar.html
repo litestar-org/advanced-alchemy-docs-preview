@@ -200,6 +200,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#key-features">Key Features</a></li>
 <li><a class="reference internal" href="#basic-setup">Basic Setup</a></li>
 <li><a class="reference internal" href="#sqlalchemy-models">SQLAlchemy Models</a></li>
+<li><a class="reference internal" href="#using-properties-with-dtos">Using Properties with DTOs</a></li>
 <li><a class="reference internal" href="#pydantic-schemas">Pydantic Schemas</a></li>
 <li><a class="reference internal" href="#repository-and-service-layer">Repository and Service Layer</a></li>
 <li><a class="reference internal" href="#controllers">Controllers</a></li>
@@ -378,6 +379,45 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span></pre></div>
 </div>
 </div>
+</div>
+</section>
+<section id="using-properties-with-dtos">
+<h2>Using Properties with DTOs<a class="headerlink" href="#using-properties-with-dtos" title="Link to this heading">¶</a></h2>
+<p>SQLAlchemyDTO includes Python <code class="docutils literal notranslate"><span class="pre">&#64;property</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;functools.cached_property</span></code> decorated methods as read-only fields.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">MappedAsDataclass</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.extensions.litestar</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span><span class="p">,</span> <span class="n">SQLAlchemyDTO</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="k">class</span><span class="w"> </span><span class="nc">UserModel</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">UUIDAuditBase</span><span class="p">,</span> <span class="n">MappedAsDataclass</span><span class="p">):</span>
+</span><span data-line="6">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;user&quot;</span>
+</span><span data-line="7">
+</span><span data-line="8">    <span class="n">first_name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span data-line="9">    <span class="n">last_name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span data-line="10">
+</span><span data-line="11">    <span class="nd">@property</span>
+</span><span data-line="12">    <span class="k">def</span><span class="w"> </span><span class="nf">full_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="13">        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">first_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">last_name</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="14">
+</span><span data-line="15">    <span class="nd">@cached_property</span>
+</span><span data-line="16">    <span class="k">def</span><span class="w"> </span><span class="nf">name_length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="17">        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_name</span><span class="p">)</span>
+</span><span data-line="18">
+</span><span data-line="19"><span class="c1"># DTO includes: id, created_at, updated_at, first_name, last_name,</span>
+</span><span data-line="20"><span class="c1"># full_name (read-only), name_length (read-only)</span>
+</span><span data-line="21"><span class="n">UserDTO</span> <span class="o">=</span> <span class="n">SQLAlchemyDTO</span><span class="p">[</span><span class="n">UserModel</span><span class="p">]</span>
+</span></pre></div>
+</div>
+<p>Property handling characteristics:</p>
+<ul class="simple">
+<li><p>Detected from model class and mixins</p></li>
+<li><p>Marked as <code class="docutils literal notranslate"><span class="pre">READ_ONLY</span></code> (cannot be set via DTO)</p></li>
+<li><p>Type inferred from return type annotations</p></li>
+<li><p>Private properties (starting with <code class="docutils literal notranslate"><span class="pre">_</span></code>) excluded</p></li>
+<li><p>Skipped if already handled by SQLAlchemy descriptors (e.g., <code class="docutils literal notranslate"><span class="pre">hybrid_property</span></code>)</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Properties with setters (<code class="docutils literal notranslate"><span class="pre">&#64;property.setter</span></code>) are marked <code class="docutils literal notranslate"><span class="pre">READ_ONLY</span></code>. Setter support is not implemented.</p>
 </div>
 </section>
 <section id="pydantic-schemas">
