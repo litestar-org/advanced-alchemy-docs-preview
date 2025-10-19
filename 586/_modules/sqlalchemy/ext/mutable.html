@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="amber" data-content_root="../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>sqlalchemy.ext.mutable - Advanced Alchemy</title><link rel="shortcut icon" href="../../../_static/favicon.png"/><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=3270565a" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=bb284d7b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_paramlinks.css" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=118d83bc" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/syntax-highlighting.css?v=70fc3471" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="sqlalchemy.ext.mutable"/>
+<meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="/">
+      <img class="light-logo" src="../../../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
+      <img class="dark-logo" src="../../../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
+      <strong>advanced_alchemy</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul><li class="link"><a href="../../../index.html">Home</a></li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-2" aria-controls="nav-children-2">
+            <span>About</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-2" aria-labelledby="nav-trigger-2"><li><a href="../../../changelog.html">
+                <span>Changelog</span>
+                <small>All changes for Advanced Alchemy</small>
+              </a></li><li><a href="https://litestar.dev/about/organization">
+                <span>Litestar Organization</span>
+                <small>Details about the Litestar organization, the team behind Advanced Alchemy</small>
+              </a></li><li><a href="../../../releases.html">
+                <span>Releases</span>
+                <small>Explore the release process, versioning, and deprecation policy for Advanced Alchemy</small>
+              </a></li><li><a href="../../../contribution-guide.html">
+                <span>Contributing</span>
+                <small>Learn how to contribute to the Advanced Alchemy project</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file">
+                <span>Code of Conduct</span>
+                <small>Review the etiquette for interacting with the Advanced Alchemy community</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file#security-ov-file">
+                <span>Security</span>
+                <small>Overview of Advanced Alchemy's security protocols</small>
+              </a></li><li><a href="https://github.com/sponsors/Litestar-Org">Sponsor</a></li></ul>
+      </li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-3" aria-controls="nav-children-3">
+            <span>Help</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-3" aria-labelledby="nav-trigger-3"><li><a href="https://discord.gg/dSDXd4mKhp">
+                <span>Discord Help Forum</span>
+                <small>Dedicated Discord help forum</small>
+              </a></li><li><a href="https://github.com/litestar-org/advanced-alchemy/discussions">
+                <span>GitHub Discussions</span>
+                <small>GitHub Discussions</small>
+              </a></li></ul>
+      </li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6"><div class="sidebar-links">
+  <ul>
+    <li><a class="icon-link" href="https://discord.gg/dSDXd4mKhp">
+  <span class="icon">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path fill="var(--accent-9)" fill-rule="evenodd" clip-rule="evenodd" d="M11 5a6 6 0 0 0-4.687 9.746c.215.27.315.62.231.954l-.514 2.058a1 1 0 0 0 1.485 1.1l2.848-1.71c.174-.104.374-.15.576-.148H13a6 6 0 0 0 0-12h-2Z"/>
+      <circle fill="white" cx="12" cy="11" r="1"/>
+      <circle fill="white" cx="9" cy="11" r="1"/>
+      <circle fill="white" cx="15" cy="11" r="1"/>
+    </svg>
+  </span>
+  <span class="text">Discussion</span>
+</a></li>
+  </ul>
+</div>
+        <div class="globaltoc" data-expand-depth="2"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../usage/index.html">Usage</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/modeling/index.html">Modeling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/modeling/basics.html">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/modeling/relationships.html">Relationships</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/modeling/advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/repositories/index.html">Repositories</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/repositories/basics.html">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/repositories/filtering.html">Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/repositories/advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/services/index.html">Services</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/services/basics.html">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/services/schemas.html">Schema Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/services/advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/types/index.html">Custom Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/types/basic-types.html">Basic Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/types/security-types.html">Security Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/types/file-storage.html">File Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/types/advanced-types.html">Advanced Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/storage/index.html">Storage Backends</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/storage/fsspec.html">FSSpec Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/storage/obstore.html">Obstore Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/storage/configuration.html">Storage Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/cli/index.html">CLI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/cli/migrations.html">Migrations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/cli/commands.html">Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/database_seeding.html">Database Seeding and Fixture Loading</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../usage/frameworks/index.html">Framework Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/frameworks/litestar.html">Litestar Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/frameworks/fastapi.html">FastAPI Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../usage/frameworks/flask.html">Flask Integration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../reference/index.html">API Reference</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../reference/base.html">base</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../reference/mixins/index.html">mixins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/mixins/unique.html">unique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/mixins/nanoid.html">nanoid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/mixins/uuid.html">uuid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/mixins/sentinel.html">sentinel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/mixins/bigint.html">bigint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/mixins/audit.html">audit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/mixins/slug.html">slug</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../reference/config/index.html">config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/config/asyncio.html">asyncio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/config/common.html">common</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/config/engine.html">engine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/config/sync.html">sync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/config/types.html">types</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../reference/operations.html">operations</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../reference/types.html">types</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../reference/exceptions.html">exceptions</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../reference/utils.html">utils</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../reference/cli.html">cli</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../reference/repository.html">repositories</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../reference/filters.html">filters</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../reference/service.html">services</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../reference/extensions/index.html">Extensions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/extensions/litestar/index.html">litestar</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/extensions/litestar/dto.html">dto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/extensions/litestar/plugins.html">plugin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/extensions/litestar/cli.html">cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/extensions/litestar/session.html">Session Backends</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/extensions/flask/index.html">flask</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/extensions/sanic/index.html">sanic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/extensions/starlette/index.html">starlette</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/extensions/fastapi/index.html">fastapi</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../../reference/alembic/index.html">alembic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/alembic/commands.html">commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/alembic/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../changelog.html">1.x Changelog</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../contribution-guide.html">Contribution guide</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/search?q=user%3Alitestar-org+state%3Aopen+label%3A%22good+first+issue%22+++no%3Aassignee+repo%3A%22advanced-alchemy%22&amp;type=issues">Available Issues</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/litestar-org/.github?tab=coc-ov-file#readme">Code of Conduct</a></li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
+  data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
+  <span class="w-8 flex items-center justify-around shrink-0 text-3xl">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </span>
+  <span class="flex-grow px-2 break-all">
+    
+    
+      <span>advanced-alchemy</span>
+    
+    <span class="flex text-sm repo-stats-count">
+      <span class="flex items-center pr-3">
+        <iconify-icon icon="lucide:star"></iconify-icon>
+        <strong class="js-repo-stars ml-1">0</strong>
+      </span>
+      <span class="flex items-center">
+        <iconify-icon icon="lucide:git-fork"></iconify-icon>
+        <strong class="js-repo-forks ml-1">0</strong>
+      </span>
+    </span>
+  </span>
+</a><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">advanced_alchemy</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">sqlalchemy.ext.mutable</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+        <article class="yue" role="main">
+          <h1>Source code for sqlalchemy.ext.mutable</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="c1"># ext/mutable.py</span>
+</span><span data-line="2"><span class="c1"># Copyright (C) 2005-2025 the SQLAlchemy authors and contributors</span>
+</span><span data-line="3"><span class="c1"># &lt;see AUTHORS file&gt;</span>
+</span><span data-line="4"><span class="c1">#</span>
+</span><span data-line="5"><span class="c1"># This module is part of SQLAlchemy and is released under</span>
+</span><span data-line="6"><span class="c1"># the MIT License: https://www.opensource.org/licenses/mit-license.php</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Provide support for tracking of in-place changes to scalar values,</span>
+</span><span data-line="9"><span class="sd">which are propagated into ORM change events on owning parent objects.</span>
+</span><span data-line="10">
+</span><span data-line="11"><span class="sd">.. _mutable_scalars:</span>
+</span><span data-line="12">
+</span><span data-line="13"><span class="sd">Establishing Mutability on Scalar Column Values</span>
+</span><span data-line="14"><span class="sd">===============================================</span>
+</span><span data-line="15">
+</span><span data-line="16"><span class="sd">A typical example of a &quot;mutable&quot; structure is a Python dictionary.</span>
+</span><span data-line="17"><span class="sd">Following the example introduced in :ref:`types_toplevel`, we</span>
+</span><span data-line="18"><span class="sd">begin with a custom type that marshals Python dictionaries into</span>
+</span><span data-line="19"><span class="sd">JSON strings before being persisted::</span>
+</span><span data-line="20">
+</span><span data-line="21"><span class="sd">    from sqlalchemy.types import TypeDecorator, VARCHAR</span>
+</span><span data-line="22"><span class="sd">    import json</span>
+</span><span data-line="23">
+</span><span data-line="24">
+</span><span data-line="25"><span class="sd">    class JSONEncodedDict(TypeDecorator):</span>
+</span><span data-line="26"><span class="sd">        &quot;Represents an immutable structure as a json-encoded string.&quot;</span>
+</span><span data-line="27">
+</span><span data-line="28"><span class="sd">        impl = VARCHAR</span>
+</span><span data-line="29">
+</span><span data-line="30"><span class="sd">        def process_bind_param(self, value, dialect):</span>
+</span><span data-line="31"><span class="sd">            if value is not None:</span>
+</span><span data-line="32"><span class="sd">                value = json.dumps(value)</span>
+</span><span data-line="33"><span class="sd">            return value</span>
+</span><span data-line="34">
+</span><span data-line="35"><span class="sd">        def process_result_value(self, value, dialect):</span>
+</span><span data-line="36"><span class="sd">            if value is not None:</span>
+</span><span data-line="37"><span class="sd">                value = json.loads(value)</span>
+</span><span data-line="38"><span class="sd">            return value</span>
+</span><span data-line="39">
+</span><span data-line="40"><span class="sd">The usage of ``json`` is only for the purposes of example. The</span>
+</span><span data-line="41"><span class="sd">:mod:`sqlalchemy.ext.mutable` extension can be used</span>
+</span><span data-line="42"><span class="sd">with any type whose target Python type may be mutable, including</span>
+</span><span data-line="43"><span class="sd">:class:`.PickleType`, :class:`_postgresql.ARRAY`, etc.</span>
+</span><span data-line="44">
+</span><span data-line="45"><span class="sd">When using the :mod:`sqlalchemy.ext.mutable` extension, the value itself</span>
+</span><span data-line="46"><span class="sd">tracks all parents which reference it.  Below, we illustrate a simple</span>
+</span><span data-line="47"><span class="sd">version of the :class:`.MutableDict` dictionary object, which applies</span>
+</span><span data-line="48"><span class="sd">the :class:`.Mutable` mixin to a plain Python dictionary::</span>
+</span><span data-line="49">
+</span><span data-line="50"><span class="sd">    from sqlalchemy.ext.mutable import Mutable</span>
+</span><span data-line="51">
+</span><span data-line="52">
+</span><span data-line="53"><span class="sd">    class MutableDict(Mutable, dict):</span>
+</span><span data-line="54"><span class="sd">        @classmethod</span>
+</span><span data-line="55"><span class="sd">        def coerce(cls, key, value):</span>
+</span><span data-line="56"><span class="sd">            &quot;Convert plain dictionaries to MutableDict.&quot;</span>
+</span><span data-line="57">
+</span><span data-line="58"><span class="sd">            if not isinstance(value, MutableDict):</span>
+</span><span data-line="59"><span class="sd">                if isinstance(value, dict):</span>
+</span><span data-line="60"><span class="sd">                    return MutableDict(value)</span>
+</span><span data-line="61">
+</span><span data-line="62"><span class="sd">                # this call will raise ValueError</span>
+</span><span data-line="63"><span class="sd">                return Mutable.coerce(key, value)</span>
+</span><span data-line="64"><span class="sd">            else:</span>
+</span><span data-line="65"><span class="sd">                return value</span>
+</span><span data-line="66">
+</span><span data-line="67"><span class="sd">        def __setitem__(self, key, value):</span>
+</span><span data-line="68"><span class="sd">            &quot;Detect dictionary set events and emit change events.&quot;</span>
+</span><span data-line="69">
+</span><span data-line="70"><span class="sd">            dict.__setitem__(self, key, value)</span>
+</span><span data-line="71"><span class="sd">            self.changed()</span>
+</span><span data-line="72">
+</span><span data-line="73"><span class="sd">        def __delitem__(self, key):</span>
+</span><span data-line="74"><span class="sd">            &quot;Detect dictionary del events and emit change events.&quot;</span>
+</span><span data-line="75">
+</span><span data-line="76"><span class="sd">            dict.__delitem__(self, key)</span>
+</span><span data-line="77"><span class="sd">            self.changed()</span>
+</span><span data-line="78">
+</span><span data-line="79"><span class="sd">The above dictionary class takes the approach of subclassing the Python</span>
+</span><span data-line="80"><span class="sd">built-in ``dict`` to produce a dict</span>
+</span><span data-line="81"><span class="sd">subclass which routes all mutation events through ``__setitem__``.  There are</span>
+</span><span data-line="82"><span class="sd">variants on this approach, such as subclassing ``UserDict.UserDict`` or</span>
+</span><span data-line="83"><span class="sd">``collections.MutableMapping``; the part that&#39;s important to this example is</span>
+</span><span data-line="84"><span class="sd">that the :meth:`.Mutable.changed` method is called whenever an in-place</span>
+</span><span data-line="85"><span class="sd">change to the datastructure takes place.</span>
+</span><span data-line="86">
+</span><span data-line="87"><span class="sd">We also redefine the :meth:`.Mutable.coerce` method which will be used to</span>
+</span><span data-line="88"><span class="sd">convert any values that are not instances of ``MutableDict``, such</span>
+</span><span data-line="89"><span class="sd">as the plain dictionaries returned by the ``json`` module, into the</span>
+</span><span data-line="90"><span class="sd">appropriate type.  Defining this method is optional; we could just as well</span>
+</span><span data-line="91"><span class="sd">created our ``JSONEncodedDict`` such that it always returns an instance</span>
+</span><span data-line="92"><span class="sd">of ``MutableDict``, and additionally ensured that all calling code</span>
+</span><span data-line="93"><span class="sd">uses ``MutableDict`` explicitly.  When :meth:`.Mutable.coerce` is not</span>
+</span><span data-line="94"><span class="sd">overridden, any values applied to a parent object which are not instances</span>
+</span><span data-line="95"><span class="sd">of the mutable type will raise a ``ValueError``.</span>
+</span><span data-line="96">
+</span><span data-line="97"><span class="sd">Our new ``MutableDict`` type offers a class method</span>
+</span><span data-line="98"><span class="sd">:meth:`~.Mutable.as_mutable` which we can use within column metadata</span>
+</span><span data-line="99"><span class="sd">to associate with types. This method grabs the given type object or</span>
+</span><span data-line="100"><span class="sd">class and associates a listener that will detect all future mappings</span>
+</span><span data-line="101"><span class="sd">of this type, applying event listening instrumentation to the mapped</span>
+</span><span data-line="102"><span class="sd">attribute. Such as, with classical table metadata::</span>
+</span><span data-line="103">
+</span><span data-line="104"><span class="sd">    from sqlalchemy import Table, Column, Integer</span>
+</span><span data-line="105">
+</span><span data-line="106"><span class="sd">    my_data = Table(</span>
+</span><span data-line="107"><span class="sd">        &quot;my_data&quot;,</span>
+</span><span data-line="108"><span class="sd">        metadata,</span>
+</span><span data-line="109"><span class="sd">        Column(&quot;id&quot;, Integer, primary_key=True),</span>
+</span><span data-line="110"><span class="sd">        Column(&quot;data&quot;, MutableDict.as_mutable(JSONEncodedDict)),</span>
+</span><span data-line="111"><span class="sd">    )</span>
+</span><span data-line="112">
+</span><span data-line="113"><span class="sd">Above, :meth:`~.Mutable.as_mutable` returns an instance of ``JSONEncodedDict``</span>
+</span><span data-line="114"><span class="sd">(if the type object was not an instance already), which will intercept any</span>
+</span><span data-line="115"><span class="sd">attributes which are mapped against this type.  Below we establish a simple</span>
+</span><span data-line="116"><span class="sd">mapping against the ``my_data`` table::</span>
+</span><span data-line="117">
+</span><span data-line="118"><span class="sd">    from sqlalchemy.orm import DeclarativeBase</span>
+</span><span data-line="119"><span class="sd">    from sqlalchemy.orm import Mapped</span>
+</span><span data-line="120"><span class="sd">    from sqlalchemy.orm import mapped_column</span>
+</span><span data-line="121">
+</span><span data-line="122">
+</span><span data-line="123"><span class="sd">    class Base(DeclarativeBase):</span>
+</span><span data-line="124"><span class="sd">        pass</span>
+</span><span data-line="125">
+</span><span data-line="126">
+</span><span data-line="127"><span class="sd">    class MyDataClass(Base):</span>
+</span><span data-line="128"><span class="sd">        __tablename__ = &quot;my_data&quot;</span>
+</span><span data-line="129"><span class="sd">        id: Mapped[int] = mapped_column(primary_key=True)</span>
+</span><span data-line="130"><span class="sd">        data: Mapped[dict[str, str]] = mapped_column(</span>
+</span><span data-line="131"><span class="sd">            MutableDict.as_mutable(JSONEncodedDict)</span>
+</span><span data-line="132"><span class="sd">        )</span>
+</span><span data-line="133">
+</span><span data-line="134"><span class="sd">The ``MyDataClass.data`` member will now be notified of in place changes</span>
+</span><span data-line="135"><span class="sd">to its value.</span>
+</span><span data-line="136">
+</span><span data-line="137"><span class="sd">Any in-place changes to the ``MyDataClass.data`` member</span>
+</span><span data-line="138"><span class="sd">will flag the attribute as &quot;dirty&quot; on the parent object::</span>
+</span><span data-line="139">
+</span><span data-line="140"><span class="sd">    &gt;&gt;&gt; from sqlalchemy.orm import Session</span>
+</span><span data-line="141">
+</span><span data-line="142"><span class="sd">    &gt;&gt;&gt; sess = Session(some_engine)</span>
+</span><span data-line="143"><span class="sd">    &gt;&gt;&gt; m1 = MyDataClass(data={&quot;value1&quot;: &quot;foo&quot;})</span>
+</span><span data-line="144"><span class="sd">    &gt;&gt;&gt; sess.add(m1)</span>
+</span><span data-line="145"><span class="sd">    &gt;&gt;&gt; sess.commit()</span>
+</span><span data-line="146">
+</span><span data-line="147"><span class="sd">    &gt;&gt;&gt; m1.data[&quot;value1&quot;] = &quot;bar&quot;</span>
+</span><span data-line="148"><span class="sd">    &gt;&gt;&gt; assert m1 in sess.dirty</span>
+</span><span data-line="149"><span class="sd">    True</span>
+</span><span data-line="150">
+</span><span data-line="151"><span class="sd">The ``MutableDict`` can be associated with all future instances</span>
+</span><span data-line="152"><span class="sd">of ``JSONEncodedDict`` in one step, using</span>
+</span><span data-line="153"><span class="sd">:meth:`~.Mutable.associate_with`.  This is similar to</span>
+</span><span data-line="154"><span class="sd">:meth:`~.Mutable.as_mutable` except it will intercept all occurrences</span>
+</span><span data-line="155"><span class="sd">of ``MutableDict`` in all mappings unconditionally, without</span>
+</span><span data-line="156"><span class="sd">the need to declare it individually::</span>
+</span><span data-line="157">
+</span><span data-line="158"><span class="sd">    from sqlalchemy.orm import DeclarativeBase</span>
+</span><span data-line="159"><span class="sd">    from sqlalchemy.orm import Mapped</span>
+</span><span data-line="160"><span class="sd">    from sqlalchemy.orm import mapped_column</span>
+</span><span data-line="161">
+</span><span data-line="162"><span class="sd">    MutableDict.associate_with(JSONEncodedDict)</span>
+</span><span data-line="163">
+</span><span data-line="164">
+</span><span data-line="165"><span class="sd">    class Base(DeclarativeBase):</span>
+</span><span data-line="166"><span class="sd">        pass</span>
+</span><span data-line="167">
+</span><span data-line="168">
+</span><span data-line="169"><span class="sd">    class MyDataClass(Base):</span>
+</span><span data-line="170"><span class="sd">        __tablename__ = &quot;my_data&quot;</span>
+</span><span data-line="171"><span class="sd">        id: Mapped[int] = mapped_column(primary_key=True)</span>
+</span><span data-line="172"><span class="sd">        data: Mapped[dict[str, str]] = mapped_column(JSONEncodedDict)</span>
+</span><span data-line="173">
+</span><span data-line="174"><span class="sd">Supporting Pickling</span>
+</span><span data-line="175"><span class="sd">--------------------</span>
+</span><span data-line="176">
+</span><span data-line="177"><span class="sd">The key to the :mod:`sqlalchemy.ext.mutable` extension relies upon the</span>
+</span><span data-line="178"><span class="sd">placement of a ``weakref.WeakKeyDictionary`` upon the value object, which</span>
+</span><span data-line="179"><span class="sd">stores a mapping of parent mapped objects keyed to the attribute name under</span>
+</span><span data-line="180"><span class="sd">which they are associated with this value. ``WeakKeyDictionary`` objects are</span>
+</span><span data-line="181"><span class="sd">not picklable, due to the fact that they contain weakrefs and function</span>
+</span><span data-line="182"><span class="sd">callbacks. In our case, this is a good thing, since if this dictionary were</span>
+</span><span data-line="183"><span class="sd">picklable, it could lead to an excessively large pickle size for our value</span>
+</span><span data-line="184"><span class="sd">objects that are pickled by themselves outside of the context of the parent.</span>
+</span><span data-line="185"><span class="sd">The developer responsibility here is only to provide a ``__getstate__`` method</span>
+</span><span data-line="186"><span class="sd">that excludes the :meth:`~MutableBase._parents` collection from the pickle</span>
+</span><span data-line="187"><span class="sd">stream::</span>
+</span><span data-line="188">
+</span><span data-line="189"><span class="sd">    class MyMutableType(Mutable):</span>
+</span><span data-line="190"><span class="sd">        def __getstate__(self):</span>
+</span><span data-line="191"><span class="sd">            d = self.__dict__.copy()</span>
+</span><span data-line="192"><span class="sd">            d.pop(&quot;_parents&quot;, None)</span>
+</span><span data-line="193"><span class="sd">            return d</span>
+</span><span data-line="194">
+</span><span data-line="195"><span class="sd">With our dictionary example, we need to return the contents of the dict itself</span>
+</span><span data-line="196"><span class="sd">(and also restore them on __setstate__)::</span>
+</span><span data-line="197">
+</span><span data-line="198"><span class="sd">    class MutableDict(Mutable, dict):</span>
+</span><span data-line="199"><span class="sd">        # ....</span>
+</span><span data-line="200">
+</span><span data-line="201"><span class="sd">        def __getstate__(self):</span>
+</span><span data-line="202"><span class="sd">            return dict(self)</span>
+</span><span data-line="203">
+</span><span data-line="204"><span class="sd">        def __setstate__(self, state):</span>
+</span><span data-line="205"><span class="sd">            self.update(state)</span>
+</span><span data-line="206">
+</span><span data-line="207"><span class="sd">In the case that our mutable value object is pickled as it is attached to one</span>
+</span><span data-line="208"><span class="sd">or more parent objects that are also part of the pickle, the :class:`.Mutable`</span>
+</span><span data-line="209"><span class="sd">mixin will re-establish the :attr:`.Mutable._parents` collection on each value</span>
+</span><span data-line="210"><span class="sd">object as the owning parents themselves are unpickled.</span>
+</span><span data-line="211">
+</span><span data-line="212"><span class="sd">Receiving Events</span>
+</span><span data-line="213"><span class="sd">----------------</span>
+</span><span data-line="214">
+</span><span data-line="215"><span class="sd">The :meth:`.AttributeEvents.modified` event handler may be used to receive</span>
+</span><span data-line="216"><span class="sd">an event when a mutable scalar emits a change event.  This event handler</span>
+</span><span data-line="217"><span class="sd">is called when the :func:`.attributes.flag_modified` function is called</span>
+</span><span data-line="218"><span class="sd">from within the mutable extension::</span>
+</span><span data-line="219">
+</span><span data-line="220"><span class="sd">    from sqlalchemy.orm import DeclarativeBase</span>
+</span><span data-line="221"><span class="sd">    from sqlalchemy.orm import Mapped</span>
+</span><span data-line="222"><span class="sd">    from sqlalchemy.orm import mapped_column</span>
+</span><span data-line="223"><span class="sd">    from sqlalchemy import event</span>
+</span><span data-line="224">
+</span><span data-line="225">
+</span><span data-line="226"><span class="sd">    class Base(DeclarativeBase):</span>
+</span><span data-line="227"><span class="sd">        pass</span>
+</span><span data-line="228">
+</span><span data-line="229">
+</span><span data-line="230"><span class="sd">    class MyDataClass(Base):</span>
+</span><span data-line="231"><span class="sd">        __tablename__ = &quot;my_data&quot;</span>
+</span><span data-line="232"><span class="sd">        id: Mapped[int] = mapped_column(primary_key=True)</span>
+</span><span data-line="233"><span class="sd">        data: Mapped[dict[str, str]] = mapped_column(</span>
+</span><span data-line="234"><span class="sd">            MutableDict.as_mutable(JSONEncodedDict)</span>
+</span><span data-line="235"><span class="sd">        )</span>
+</span><span data-line="236">
+</span><span data-line="237">
+</span><span data-line="238"><span class="sd">    @event.listens_for(MyDataClass.data, &quot;modified&quot;)</span>
+</span><span data-line="239"><span class="sd">    def modified_json(instance, initiator):</span>
+</span><span data-line="240"><span class="sd">        print(&quot;json value modified:&quot;, instance.data)</span>
+</span><span data-line="241">
+</span><span data-line="242"><span class="sd">.. _mutable_composites:</span>
+</span><span data-line="243">
+</span><span data-line="244"><span class="sd">Establishing Mutability on Composites</span>
+</span><span data-line="245"><span class="sd">=====================================</span>
+</span><span data-line="246">
+</span><span data-line="247"><span class="sd">Composites are a special ORM feature which allow a single scalar attribute to</span>
+</span><span data-line="248"><span class="sd">be assigned an object value which represents information &quot;composed&quot; from one</span>
+</span><span data-line="249"><span class="sd">or more columns from the underlying mapped table. The usual example is that of</span>
+</span><span data-line="250"><span class="sd">a geometric &quot;point&quot;, and is introduced in :ref:`mapper_composite`.</span>
+</span><span data-line="251">
+</span><span data-line="252"><span class="sd">As is the case with :class:`.Mutable`, the user-defined composite class</span>
+</span><span data-line="253"><span class="sd">subclasses :class:`.MutableComposite` as a mixin, and detects and delivers</span>
+</span><span data-line="254"><span class="sd">change events to its parents via the :meth:`.MutableComposite.changed` method.</span>
+</span><span data-line="255"><span class="sd">In the case of a composite class, the detection is usually via the usage of the</span>
+</span><span data-line="256"><span class="sd">special Python method ``__setattr__()``. In the example below, we expand upon the ``Point``</span>
+</span><span data-line="257"><span class="sd">class introduced in :ref:`mapper_composite` to include</span>
+</span><span data-line="258"><span class="sd">:class:`.MutableComposite` in its bases and to route attribute set events via</span>
+</span><span data-line="259"><span class="sd">``__setattr__`` to the :meth:`.MutableComposite.changed` method::</span>
+</span><span data-line="260">
+</span><span data-line="261"><span class="sd">    import dataclasses</span>
+</span><span data-line="262"><span class="sd">    from sqlalchemy.ext.mutable import MutableComposite</span>
+</span><span data-line="263">
+</span><span data-line="264">
+</span><span data-line="265"><span class="sd">    @dataclasses.dataclass</span>
+</span><span data-line="266"><span class="sd">    class Point(MutableComposite):</span>
+</span><span data-line="267"><span class="sd">        x: int</span>
+</span><span data-line="268"><span class="sd">        y: int</span>
+</span><span data-line="269">
+</span><span data-line="270"><span class="sd">        def __setattr__(self, key, value):</span>
+</span><span data-line="271"><span class="sd">            &quot;Intercept set events&quot;</span>
+</span><span data-line="272">
+</span><span data-line="273"><span class="sd">            # set the attribute</span>
+</span><span data-line="274"><span class="sd">            object.__setattr__(self, key, value)</span>
+</span><span data-line="275">
+</span><span data-line="276"><span class="sd">            # alert all parents to the change</span>
+</span><span data-line="277"><span class="sd">            self.changed()</span>
+</span><span data-line="278">
+</span><span data-line="279"><span class="sd">The :class:`.MutableComposite` class makes use of class mapping events to</span>
+</span><span data-line="280"><span class="sd">automatically establish listeners for any usage of :func:`_orm.composite` that</span>
+</span><span data-line="281"><span class="sd">specifies our ``Point`` type. Below, when ``Point`` is mapped to the ``Vertex``</span>
+</span><span data-line="282"><span class="sd">class, listeners are established which will route change events from ``Point``</span>
+</span><span data-line="283"><span class="sd">objects to each of the ``Vertex.start`` and ``Vertex.end`` attributes::</span>
+</span><span data-line="284">
+</span><span data-line="285"><span class="sd">    from sqlalchemy.orm import DeclarativeBase, Mapped</span>
+</span><span data-line="286"><span class="sd">    from sqlalchemy.orm import composite, mapped_column</span>
+</span><span data-line="287">
+</span><span data-line="288">
+</span><span data-line="289"><span class="sd">    class Base(DeclarativeBase):</span>
+</span><span data-line="290"><span class="sd">        pass</span>
+</span><span data-line="291">
+</span><span data-line="292">
+</span><span data-line="293"><span class="sd">    class Vertex(Base):</span>
+</span><span data-line="294"><span class="sd">        __tablename__ = &quot;vertices&quot;</span>
+</span><span data-line="295">
+</span><span data-line="296"><span class="sd">        id: Mapped[int] = mapped_column(primary_key=True)</span>
+</span><span data-line="297">
+</span><span data-line="298"><span class="sd">        start: Mapped[Point] = composite(</span>
+</span><span data-line="299"><span class="sd">            mapped_column(&quot;x1&quot;), mapped_column(&quot;y1&quot;)</span>
+</span><span data-line="300"><span class="sd">        )</span>
+</span><span data-line="301"><span class="sd">        end: Mapped[Point] = composite(</span>
+</span><span data-line="302"><span class="sd">            mapped_column(&quot;x2&quot;), mapped_column(&quot;y2&quot;)</span>
+</span><span data-line="303"><span class="sd">        )</span>
+</span><span data-line="304">
+</span><span data-line="305"><span class="sd">        def __repr__(self):</span>
+</span><span data-line="306"><span class="sd">            return f&quot;Vertex(start={self.start}, end={self.end})&quot;</span>
+</span><span data-line="307">
+</span><span data-line="308"><span class="sd">Any in-place changes to the ``Vertex.start`` or ``Vertex.end`` members</span>
+</span><span data-line="309"><span class="sd">will flag the attribute as &quot;dirty&quot; on the parent object:</span>
+</span><span data-line="310">
+</span><span data-line="311"><span class="sd">.. sourcecode:: python+sql</span>
+</span><span data-line="312">
+</span><span data-line="313"><span class="sd">    &gt;&gt;&gt; from sqlalchemy.orm import Session</span>
+</span><span data-line="314"><span class="sd">    &gt;&gt;&gt; sess = Session(engine)</span>
+</span><span data-line="315"><span class="sd">    &gt;&gt;&gt; v1 = Vertex(start=Point(3, 4), end=Point(12, 15))</span>
+</span><span data-line="316"><span class="sd">    &gt;&gt;&gt; sess.add(v1)</span>
+</span><span data-line="317"><span class="sd">    {sql}&gt;&gt;&gt; sess.flush()</span>
+</span><span data-line="318"><span class="sd">    BEGIN (implicit)</span>
+</span><span data-line="319"><span class="sd">    INSERT INTO vertices (x1, y1, x2, y2) VALUES (?, ?, ?, ?)</span>
+</span><span data-line="320"><span class="sd">    [...] (3, 4, 12, 15)</span>
+</span><span data-line="321">
+</span><span data-line="322"><span class="sd">    {stop}&gt;&gt;&gt; v1.end.x = 8</span>
+</span><span data-line="323"><span class="sd">    &gt;&gt;&gt; assert v1 in sess.dirty</span>
+</span><span data-line="324"><span class="sd">    True</span>
+</span><span data-line="325"><span class="sd">    {sql}&gt;&gt;&gt; sess.commit()</span>
+</span><span data-line="326"><span class="sd">    UPDATE vertices SET x2=? WHERE vertices.id = ?</span>
+</span><span data-line="327"><span class="sd">    [...] (8, 1)</span>
+</span><span data-line="328"><span class="sd">    COMMIT</span>
+</span><span data-line="329">
+</span><span data-line="330"><span class="sd">Coercing Mutable Composites</span>
+</span><span data-line="331"><span class="sd">---------------------------</span>
+</span><span data-line="332">
+</span><span data-line="333"><span class="sd">The :meth:`.MutableBase.coerce` method is also supported on composite types.</span>
+</span><span data-line="334"><span class="sd">In the case of :class:`.MutableComposite`, the :meth:`.MutableBase.coerce`</span>
+</span><span data-line="335"><span class="sd">method is only called for attribute set operations, not load operations.</span>
+</span><span data-line="336"><span class="sd">Overriding the :meth:`.MutableBase.coerce` method is essentially equivalent</span>
+</span><span data-line="337"><span class="sd">to using a :func:`.validates` validation routine for all attributes which</span>
+</span><span data-line="338"><span class="sd">make use of the custom composite type::</span>
+</span><span data-line="339">
+</span><span data-line="340"><span class="sd">    @dataclasses.dataclass</span>
+</span><span data-line="341"><span class="sd">    class Point(MutableComposite):</span>
+</span><span data-line="342"><span class="sd">        # other Point methods</span>
+</span><span data-line="343"><span class="sd">        # ...</span>
+</span><span data-line="344">
+</span><span data-line="345"><span class="sd">        def coerce(cls, key, value):</span>
+</span><span data-line="346"><span class="sd">            if isinstance(value, tuple):</span>
+</span><span data-line="347"><span class="sd">                value = Point(*value)</span>
+</span><span data-line="348"><span class="sd">            elif not isinstance(value, Point):</span>
+</span><span data-line="349"><span class="sd">                raise ValueError(&quot;tuple or Point expected&quot;)</span>
+</span><span data-line="350"><span class="sd">            return value</span>
+</span><span data-line="351">
+</span><span data-line="352"><span class="sd">Supporting Pickling</span>
+</span><span data-line="353"><span class="sd">--------------------</span>
+</span><span data-line="354">
+</span><span data-line="355"><span class="sd">As is the case with :class:`.Mutable`, the :class:`.MutableComposite` helper</span>
+</span><span data-line="356"><span class="sd">class uses a ``weakref.WeakKeyDictionary`` available via the</span>
+</span><span data-line="357"><span class="sd">:meth:`MutableBase._parents` attribute which isn&#39;t picklable. If we need to</span>
+</span><span data-line="358"><span class="sd">pickle instances of ``Point`` or its owning class ``Vertex``, we at least need</span>
+</span><span data-line="359"><span class="sd">to define a ``__getstate__`` that doesn&#39;t include the ``_parents`` dictionary.</span>
+</span><span data-line="360"><span class="sd">Below we define both a ``__getstate__`` and a ``__setstate__`` that package up</span>
+</span><span data-line="361"><span class="sd">the minimal form of our ``Point`` class::</span>
+</span><span data-line="362">
+</span><span data-line="363"><span class="sd">    @dataclasses.dataclass</span>
+</span><span data-line="364"><span class="sd">    class Point(MutableComposite):</span>
+</span><span data-line="365"><span class="sd">        # ...</span>
+</span><span data-line="366">
+</span><span data-line="367"><span class="sd">        def __getstate__(self):</span>
+</span><span data-line="368"><span class="sd">            return self.x, self.y</span>
+</span><span data-line="369">
+</span><span data-line="370"><span class="sd">        def __setstate__(self, state):</span>
+</span><span data-line="371"><span class="sd">            self.x, self.y = state</span>
+</span><span data-line="372">
+</span><span data-line="373"><span class="sd">As with :class:`.Mutable`, the :class:`.MutableComposite` augments the</span>
+</span><span data-line="374"><span class="sd">pickling process of the parent&#39;s object-relational state so that the</span>
+</span><span data-line="375"><span class="sd">:meth:`MutableBase._parents` collection is restored to all ``Point`` objects.</span>
+</span><span data-line="376">
+</span><span data-line="377"><span class="sd">&quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+</span><span data-line="378">
+</span><span data-line="379"><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+</span><span data-line="380">
+</span><span data-line="381"><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+</span><span data-line="382"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractSet</span>
+</span><span data-line="383"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+</span><span data-line="384"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span>
+</span><span data-line="385"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
+</span><span data-line="386"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+</span><span data-line="387"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+</span><span data-line="388"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">overload</span>
+</span><span data-line="389"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Set</span>
+</span><span data-line="390"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span>
+</span><span data-line="391"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+</span><span data-line="392"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeVar</span>
+</span><span data-line="393"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
+</span><span data-line="394"><span class="kn">import</span><span class="w"> </span><span class="nn">weakref</span>
+</span><span data-line="395"><span class="kn">from</span><span class="w"> </span><span class="nn">weakref</span><span class="w"> </span><span class="kn">import</span> <span class="n">WeakKeyDictionary</span>
+</span><span data-line="396">
+</span><span data-line="397"><span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">event</span>
+</span><span data-line="398"><span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">inspect</span>
+</span><span data-line="399"><span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">types</span>
+</span><span data-line="400"><span class="kn">from</span><span class="w"> </span><span class="nn">..orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapper</span>
+</span><span data-line="401"><span class="kn">from</span><span class="w"> </span><span class="nn">..orm._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">_ExternalEntityType</span>
+</span><span data-line="402"><span class="kn">from</span><span class="w"> </span><span class="nn">..orm._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">_O</span>
+</span><span data-line="403"><span class="kn">from</span><span class="w"> </span><span class="nn">..orm._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">_T</span>
+</span><span data-line="404"><span class="kn">from</span><span class="w"> </span><span class="nn">..orm.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="n">AttributeEventToken</span>
+</span><span data-line="405"><span class="kn">from</span><span class="w"> </span><span class="nn">..orm.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="n">flag_modified</span>
+</span><span data-line="406"><span class="kn">from</span><span class="w"> </span><span class="nn">..orm.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="n">InstrumentedAttribute</span>
+</span><span data-line="407"><span class="kn">from</span><span class="w"> </span><span class="nn">..orm.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="n">QueryableAttribute</span>
+</span><span data-line="408"><span class="kn">from</span><span class="w"> </span><span class="nn">..orm.context</span><span class="w"> </span><span class="kn">import</span> <span class="n">QueryContext</span>
+</span><span data-line="409"><span class="kn">from</span><span class="w"> </span><span class="nn">..orm.decl_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeclarativeAttributeIntercept</span>
+</span><span data-line="410"><span class="kn">from</span><span class="w"> </span><span class="nn">..orm.state</span><span class="w"> </span><span class="kn">import</span> <span class="n">InstanceState</span>
+</span><span data-line="411"><span class="kn">from</span><span class="w"> </span><span class="nn">..orm.unitofwork</span><span class="w"> </span><span class="kn">import</span> <span class="n">UOWTransaction</span>
+</span><span data-line="412"><span class="kn">from</span><span class="w"> </span><span class="nn">..sql._typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">_TypeEngineArgument</span>
+</span><span data-line="413"><span class="kn">from</span><span class="w"> </span><span class="nn">..sql.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SchemaEventTarget</span>
+</span><span data-line="414"><span class="kn">from</span><span class="w"> </span><span class="nn">..sql.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Column</span>
+</span><span data-line="415"><span class="kn">from</span><span class="w"> </span><span class="nn">..sql.type_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeEngine</span>
+</span><span data-line="416"><span class="kn">from</span><span class="w"> </span><span class="nn">..util</span><span class="w"> </span><span class="kn">import</span> <span class="n">memoized_property</span>
+</span><span data-line="417"><span class="kn">from</span><span class="w"> </span><span class="nn">..util.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">SupportsIndex</span>
+</span><span data-line="418">
+</span><span data-line="419"><span class="n">_KT</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;_KT&quot;</span><span class="p">)</span>  <span class="c1"># Key type.</span>
+</span><span data-line="420"><span class="n">_VT</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;_VT&quot;</span><span class="p">)</span>  <span class="c1"># Value type.</span>
+</span><span data-line="421">
+</span><span data-line="422">
+</span><span data-line="423"><span class="k">class</span><span class="w"> </span><span class="nc">MutableBase</span><span class="p">:</span>
+</span><span data-line="424"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Common base class to :class:`.Mutable`</span>
+</span><span data-line="425"><span class="sd">    and :class:`.MutableComposite`.</span>
+</span><span data-line="426">
+</span><span data-line="427"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="428">
+</span><span data-line="429">    <span class="nd">@memoized_property</span>
+</span><span data-line="430">    <span class="k">def</span><span class="w"> </span><span class="nf">_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WeakKeyDictionary</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+</span><span data-line="431"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Dictionary of parent object&#39;s :class:`.InstanceState`-&gt;attribute</span>
+</span><span data-line="432"><span class="sd">        name on the parent.</span>
+</span><span data-line="433">
+</span><span data-line="434"><span class="sd">        This attribute is a so-called &quot;memoized&quot; property.  It initializes</span>
+</span><span data-line="435"><span class="sd">        itself with a new ``weakref.WeakKeyDictionary`` the first time</span>
+</span><span data-line="436"><span class="sd">        it is accessed, returning the same object upon subsequent access.</span>
+</span><span data-line="437">
+</span><span data-line="438"><span class="sd">        .. versionchanged:: 1.4 the :class:`.InstanceState` is now used</span>
+</span><span data-line="439"><span class="sd">           as the key in the weak dictionary rather than the instance</span>
+</span><span data-line="440"><span class="sd">           itself.</span>
+</span><span data-line="441">
+</span><span data-line="442"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="443">
+</span><span data-line="444">        <span class="k">return</span> <span class="n">weakref</span><span class="o">.</span><span class="n">WeakKeyDictionary</span><span class="p">()</span>
+</span><span data-line="445">
+</span><span data-line="446">    <span class="nd">@classmethod</span>
+</span><span data-line="447">    <span class="k">def</span><span class="w"> </span><span class="nf">coerce</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+</span><span data-line="448"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Given a value, coerce it into the target type.</span>
+</span><span data-line="449">
+</span><span data-line="450"><span class="sd">        Can be overridden by custom subclasses to coerce incoming</span>
+</span><span data-line="451"><span class="sd">        data into a particular type.</span>
+</span><span data-line="452">
+</span><span data-line="453"><span class="sd">        By default, raises ``ValueError``.</span>
+</span><span data-line="454">
+</span><span data-line="455"><span class="sd">        This method is called in different scenarios depending on if</span>
+</span><span data-line="456"><span class="sd">        the parent class is of type :class:`.Mutable` or of type</span>
+</span><span data-line="457"><span class="sd">        :class:`.MutableComposite`.  In the case of the former, it is called</span>
+</span><span data-line="458"><span class="sd">        for both attribute-set operations as well as during ORM loading</span>
+</span><span data-line="459"><span class="sd">        operations.  For the latter, it is only called during attribute-set</span>
+</span><span data-line="460"><span class="sd">        operations; the mechanics of the :func:`.composite` construct</span>
+</span><span data-line="461"><span class="sd">        handle coercion during load operations.</span>
+</span><span data-line="462">
+</span><span data-line="463">
+</span><span data-line="464"><span class="sd">        :param key: string name of the ORM-mapped attribute being set.</span>
+</span><span data-line="465"><span class="sd">        :param value: the incoming value.</span>
+</span><span data-line="466"><span class="sd">        :return: the method should return the coerced value, or raise</span>
+</span><span data-line="467"><span class="sd">         ``ValueError`` if the coercion cannot be completed.</span>
+</span><span data-line="468">
+</span><span data-line="469"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="470">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="471">            <span class="k">return</span> <span class="kc">None</span>
+</span><span data-line="472">        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Attribute &#39;</span><span class="si">%s</span><span class="s2">&#39; does not accept objects of type </span><span class="si">%s</span><span class="s2">&quot;</span>
+</span><span data-line="473">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
+</span><span data-line="474">
+</span><span data-line="475">    <span class="nd">@classmethod</span>
+</span><span data-line="476">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_listen_keys</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="n">QueryableAttribute</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span data-line="477"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Given a descriptor attribute, return a ``set()`` of the attribute</span>
+</span><span data-line="478"><span class="sd">        keys which indicate a change in the state of this attribute.</span>
+</span><span data-line="479">
+</span><span data-line="480"><span class="sd">        This is normally just ``set([attribute.key])``, but can be overridden</span>
+</span><span data-line="481"><span class="sd">        to provide for additional keys.  E.g. a :class:`.MutableComposite`</span>
+</span><span data-line="482"><span class="sd">        augments this set with the attribute keys associated with the columns</span>
+</span><span data-line="483"><span class="sd">        that comprise the composite value.</span>
+</span><span data-line="484">
+</span><span data-line="485"><span class="sd">        This collection is consulted in the case of intercepting the</span>
+</span><span data-line="486"><span class="sd">        :meth:`.InstanceEvents.refresh` and</span>
+</span><span data-line="487"><span class="sd">        :meth:`.InstanceEvents.refresh_flush` events, which pass along a list</span>
+</span><span data-line="488"><span class="sd">        of attribute names that have been refreshed; the list is compared</span>
+</span><span data-line="489"><span class="sd">        against this set to determine if action needs to be taken.</span>
+</span><span data-line="490">
+</span><span data-line="491"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="492">        <span class="k">return</span> <span class="p">{</span><span class="n">attribute</span><span class="o">.</span><span class="n">key</span><span class="p">}</span>
+</span><span data-line="493">
+</span><span data-line="494">    <span class="nd">@classmethod</span>
+</span><span data-line="495">    <span class="k">def</span><span class="w"> </span><span class="nf">_listen_on_attribute</span><span class="p">(</span>
+</span><span data-line="496">        <span class="bp">cls</span><span class="p">,</span>
+</span><span data-line="497">        <span class="n">attribute</span><span class="p">:</span> <span class="n">QueryableAttribute</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span data-line="498">        <span class="n">coerce</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+</span><span data-line="499">        <span class="n">parent_cls</span><span class="p">:</span> <span class="n">_ExternalEntityType</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span data-line="500">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="501"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Establish this type as a mutation listener for the given</span>
+</span><span data-line="502"><span class="sd">        mapped descriptor.</span>
+</span><span data-line="503">
+</span><span data-line="504"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="505">        <span class="n">key</span> <span class="o">=</span> <span class="n">attribute</span><span class="o">.</span><span class="n">key</span>
+</span><span data-line="506">        <span class="k">if</span> <span class="n">parent_cls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">attribute</span><span class="o">.</span><span class="n">class_</span><span class="p">:</span>
+</span><span data-line="507">            <span class="k">return</span>
+</span><span data-line="508">
+</span><span data-line="509">        <span class="c1"># rely on &quot;propagate&quot; here</span>
+</span><span data-line="510">        <span class="n">parent_cls</span> <span class="o">=</span> <span class="n">attribute</span><span class="o">.</span><span class="n">class_</span>
+</span><span data-line="511">
+</span><span data-line="512">        <span class="n">listen_keys</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_listen_keys</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
+</span><span data-line="513">
+</span><span data-line="514">        <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">InstanceState</span><span class="p">[</span><span class="n">_O</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="515"><span class="w">            </span><span class="sd">&quot;&quot;&quot;Listen for objects loaded or refreshed.</span>
+</span><span data-line="516">
+</span><span data-line="517"><span class="sd">            Wrap the target data member&#39;s value with</span>
+</span><span data-line="518"><span class="sd">            ``Mutable``.</span>
+</span><span data-line="519">
+</span><span data-line="520"><span class="sd">            &quot;&quot;&quot;</span>
+</span><span data-line="521">            <span class="n">val</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="522">            <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="523">                <span class="k">if</span> <span class="n">coerce</span><span class="p">:</span>
+</span><span data-line="524">                    <span class="n">val</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+</span><span data-line="525">                    <span class="k">assert</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span data-line="526">                    <span class="n">state</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+</span><span data-line="527">                <span class="n">val</span><span class="o">.</span><span class="n">_parents</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
+</span><span data-line="528">
+</span><span data-line="529">        <span class="k">def</span><span class="w"> </span><span class="nf">load_attrs</span><span class="p">(</span>
+</span><span data-line="530">            <span class="n">state</span><span class="p">:</span> <span class="n">InstanceState</span><span class="p">[</span><span class="n">_O</span><span class="p">],</span>
+</span><span data-line="531">            <span class="n">ctx</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">object</span><span class="p">,</span> <span class="n">QueryContext</span><span class="p">,</span> <span class="n">UOWTransaction</span><span class="p">],</span>
+</span><span data-line="532">            <span class="n">attrs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span data-line="533">        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="534">            <span class="k">if</span> <span class="ow">not</span> <span class="n">attrs</span> <span class="ow">or</span> <span class="n">listen_keys</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">attrs</span><span class="p">):</span>
+</span><span data-line="535">                <span class="n">load</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+</span><span data-line="536">
+</span><span data-line="537">        <span class="k">def</span><span class="w"> </span><span class="nf">set_</span><span class="p">(</span>
+</span><span data-line="538">            <span class="n">target</span><span class="p">:</span> <span class="n">InstanceState</span><span class="p">[</span><span class="n">_O</span><span class="p">],</span>
+</span><span data-line="539">            <span class="n">value</span><span class="p">:</span> <span class="n">MutableBase</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="540">            <span class="n">oldvalue</span><span class="p">:</span> <span class="n">MutableBase</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="541">            <span class="n">initiator</span><span class="p">:</span> <span class="n">AttributeEventToken</span><span class="p">,</span>
+</span><span data-line="542">        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MutableBase</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="543"><span class="w">            </span><span class="sd">&quot;&quot;&quot;Listen for set/replace events on the target</span>
+</span><span data-line="544"><span class="sd">            data member.</span>
+</span><span data-line="545">
+</span><span data-line="546"><span class="sd">            Establish a weak reference to the parent object</span>
+</span><span data-line="547"><span class="sd">            on the incoming value, remove it for the one</span>
+</span><span data-line="548"><span class="sd">            outgoing.</span>
+</span><span data-line="549">
+</span><span data-line="550"><span class="sd">            &quot;&quot;&quot;</span>
+</span><span data-line="551">            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">oldvalue</span><span class="p">:</span>
+</span><span data-line="552">                <span class="k">return</span> <span class="n">value</span>
+</span><span data-line="553">
+</span><span data-line="554">            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+</span><span data-line="555">                <span class="n">value</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span data-line="556">            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="557">                <span class="n">value</span><span class="o">.</span><span class="n">_parents</span><span class="p">[</span><span class="n">target</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
+</span><span data-line="558">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">oldvalue</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+</span><span data-line="559">                <span class="n">oldvalue</span><span class="o">.</span><span class="n">_parents</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">inspect</span><span class="p">(</span><span class="n">target</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="560">            <span class="k">return</span> <span class="n">value</span>
+</span><span data-line="561">
+</span><span data-line="562">        <span class="k">def</span><span class="w"> </span><span class="nf">pickle</span><span class="p">(</span>
+</span><span data-line="563">            <span class="n">state</span><span class="p">:</span> <span class="n">InstanceState</span><span class="p">[</span><span class="n">_O</span><span class="p">],</span> <span class="n">state_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+</span><span data-line="564">        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="565">            <span class="n">val</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="566">            <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="567">                <span class="k">if</span> <span class="s2">&quot;ext.mutable.values&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">state_dict</span><span class="p">:</span>
+</span><span data-line="568">                    <span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;ext.mutable.values&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+</span><span data-line="569">                <span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;ext.mutable.values&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+</span><span data-line="570">
+</span><span data-line="571">        <span class="k">def</span><span class="w"> </span><span class="nf">unpickle</span><span class="p">(</span>
+</span><span data-line="572">            <span class="n">state</span><span class="p">:</span> <span class="n">InstanceState</span><span class="p">[</span><span class="n">_O</span><span class="p">],</span> <span class="n">state_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+</span><span data-line="573">        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="574">            <span class="k">if</span> <span class="s2">&quot;ext.mutable.values&quot;</span> <span class="ow">in</span> <span class="n">state_dict</span><span class="p">:</span>
+</span><span data-line="575">                <span class="n">collection</span> <span class="o">=</span> <span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;ext.mutable.values&quot;</span><span class="p">]</span>
+</span><span data-line="576">                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</span><span data-line="577">                    <span class="c1"># legacy format</span>
+</span><span data-line="578">                    <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">collection</span><span class="p">:</span>
+</span><span data-line="579">                        <span class="n">val</span><span class="o">.</span><span class="n">_parents</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
+</span><span data-line="580">                <span class="k">else</span><span class="p">:</span>
+</span><span data-line="581">                    <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;ext.mutable.values&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]:</span>
+</span><span data-line="582">                        <span class="n">val</span><span class="o">.</span><span class="n">_parents</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
+</span><span data-line="583">
+</span><span data-line="584">        <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span>
+</span><span data-line="585">            <span class="n">parent_cls</span><span class="p">,</span>
+</span><span data-line="586">            <span class="s2">&quot;_sa_event_merge_wo_load&quot;</span><span class="p">,</span>
+</span><span data-line="587">            <span class="n">load</span><span class="p">,</span>
+</span><span data-line="588">            <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="589">            <span class="n">propagate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="590">        <span class="p">)</span>
+</span><span data-line="591">
+</span><span data-line="592">        <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">parent_cls</span><span class="p">,</span> <span class="s2">&quot;load&quot;</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">propagate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="593">        <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span>
+</span><span data-line="594">            <span class="n">parent_cls</span><span class="p">,</span> <span class="s2">&quot;refresh&quot;</span><span class="p">,</span> <span class="n">load_attrs</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">propagate</span><span class="o">=</span><span class="kc">True</span>
+</span><span data-line="595">        <span class="p">)</span>
+</span><span data-line="596">        <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span>
+</span><span data-line="597">            <span class="n">parent_cls</span><span class="p">,</span> <span class="s2">&quot;refresh_flush&quot;</span><span class="p">,</span> <span class="n">load_attrs</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">propagate</span><span class="o">=</span><span class="kc">True</span>
+</span><span data-line="598">        <span class="p">)</span>
+</span><span data-line="599">        <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span>
+</span><span data-line="600">            <span class="n">attribute</span><span class="p">,</span> <span class="s2">&quot;set&quot;</span><span class="p">,</span> <span class="n">set_</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">retval</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">propagate</span><span class="o">=</span><span class="kc">True</span>
+</span><span data-line="601">        <span class="p">)</span>
+</span><span data-line="602">        <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">parent_cls</span><span class="p">,</span> <span class="s2">&quot;pickle&quot;</span><span class="p">,</span> <span class="n">pickle</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">propagate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="603">        <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span>
+</span><span data-line="604">            <span class="n">parent_cls</span><span class="p">,</span> <span class="s2">&quot;unpickle&quot;</span><span class="p">,</span> <span class="n">unpickle</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">propagate</span><span class="o">=</span><span class="kc">True</span>
+</span><span data-line="605">        <span class="p">)</span>
+</span><span data-line="606">
+</span><span data-line="607">
+</span><span data-line="608"><span class="k">class</span><span class="w"> </span><span class="nc">Mutable</span><span class="p">(</span><span class="n">MutableBase</span><span class="p">):</span>
+</span><span data-line="609"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Mixin that defines transparent propagation of change</span>
+</span><span data-line="610"><span class="sd">    events to a parent object.</span>
+</span><span data-line="611">
+</span><span data-line="612"><span class="sd">    See the example in :ref:`mutable_scalars` for usage information.</span>
+</span><span data-line="613">
+</span><span data-line="614"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="615">
+</span><span data-line="616">    <span class="k">def</span><span class="w"> </span><span class="nf">changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="617"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Subclasses should call this method whenever change events occur.&quot;&quot;&quot;</span>
+</span><span data-line="618">
+</span><span data-line="619">        <span class="k">for</span> <span class="n">parent</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parents</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span data-line="620">            <span class="n">flag_modified</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">obj</span><span class="p">(),</span> <span class="n">key</span><span class="p">)</span>
+</span><span data-line="621">
+</span><span data-line="622">    <span class="nd">@classmethod</span>
+</span><span data-line="623">    <span class="k">def</span><span class="w"> </span><span class="nf">associate_with_attribute</span><span class="p">(</span>
+</span><span data-line="624">        <span class="bp">cls</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="n">InstrumentedAttribute</span><span class="p">[</span><span class="n">_O</span><span class="p">]</span>
+</span><span data-line="625">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="626"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Establish this type as a mutation listener for the given</span>
+</span><span data-line="627"><span class="sd">        mapped descriptor.</span>
+</span><span data-line="628">
+</span><span data-line="629"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="630">        <span class="bp">cls</span><span class="o">.</span><span class="n">_listen_on_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">attribute</span><span class="o">.</span><span class="n">class_</span><span class="p">)</span>
+</span><span data-line="631">
+</span><span data-line="632">    <span class="nd">@classmethod</span>
+</span><span data-line="633">    <span class="k">def</span><span class="w"> </span><span class="nf">associate_with</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">sqltype</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="634"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Associate this wrapper with all future mapped columns</span>
+</span><span data-line="635"><span class="sd">        of the given type.</span>
+</span><span data-line="636">
+</span><span data-line="637"><span class="sd">        This is a convenience method that calls</span>
+</span><span data-line="638"><span class="sd">        ``associate_with_attribute`` automatically.</span>
+</span><span data-line="639">
+</span><span data-line="640"><span class="sd">        .. warning::</span>
+</span><span data-line="641">
+</span><span data-line="642"><span class="sd">           The listeners established by this method are *global*</span>
+</span><span data-line="643"><span class="sd">           to all mappers, and are *not* garbage collected.   Only use</span>
+</span><span data-line="644"><span class="sd">           :meth:`.associate_with` for types that are permanent to an</span>
+</span><span data-line="645"><span class="sd">           application, not with ad-hoc types else this will cause unbounded</span>
+</span><span data-line="646"><span class="sd">           growth in memory usage.</span>
+</span><span data-line="647">
+</span><span data-line="648"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="649">
+</span><span data-line="650">        <span class="k">def</span><span class="w"> </span><span class="nf">listen_for_type</span><span class="p">(</span><span class="n">mapper</span><span class="p">:</span> <span class="n">Mapper</span><span class="p">[</span><span class="n">_O</span><span class="p">],</span> <span class="n">class_</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="651">            <span class="k">if</span> <span class="n">mapper</span><span class="o">.</span><span class="n">non_primary</span><span class="p">:</span>
+</span><span data-line="652">                <span class="k">return</span>
+</span><span data-line="653">            <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">mapper</span><span class="o">.</span><span class="n">column_attrs</span><span class="p">:</span>
+</span><span data-line="654">                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">sqltype</span><span class="p">):</span>
+</span><span data-line="655">                    <span class="bp">cls</span><span class="o">.</span><span class="n">associate_with_attribute</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">key</span><span class="p">))</span>
+</span><span data-line="656">
+</span><span data-line="657">        <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">Mapper</span><span class="p">,</span> <span class="s2">&quot;mapper_configured&quot;</span><span class="p">,</span> <span class="n">listen_for_type</span><span class="p">)</span>
+</span><span data-line="658">
+</span><span data-line="659">    <span class="nd">@classmethod</span>
+</span><span data-line="660">    <span class="k">def</span><span class="w"> </span><span class="nf">as_mutable</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">sqltype</span><span class="p">:</span> <span class="n">_TypeEngineArgument</span><span class="p">[</span><span class="n">_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeEngine</span><span class="p">[</span><span class="n">_T</span><span class="p">]:</span>
+</span><span data-line="661"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Associate a SQL type with this mutable Python type.</span>
+</span><span data-line="662">
+</span><span data-line="663"><span class="sd">        This establishes listeners that will detect ORM mappings against</span>
+</span><span data-line="664"><span class="sd">        the given type, adding mutation event trackers to those mappings.</span>
+</span><span data-line="665">
+</span><span data-line="666"><span class="sd">        The type is returned, unconditionally as an instance, so that</span>
+</span><span data-line="667"><span class="sd">        :meth:`.as_mutable` can be used inline::</span>
+</span><span data-line="668">
+</span><span data-line="669"><span class="sd">            Table(</span>
+</span><span data-line="670"><span class="sd">                &quot;mytable&quot;,</span>
+</span><span data-line="671"><span class="sd">                metadata,</span>
+</span><span data-line="672"><span class="sd">                Column(&quot;id&quot;, Integer, primary_key=True),</span>
+</span><span data-line="673"><span class="sd">                Column(&quot;data&quot;, MyMutableType.as_mutable(PickleType)),</span>
+</span><span data-line="674"><span class="sd">            )</span>
+</span><span data-line="675">
+</span><span data-line="676"><span class="sd">        Note that the returned type is always an instance, even if a class</span>
+</span><span data-line="677"><span class="sd">        is given, and that only columns which are declared specifically with</span>
+</span><span data-line="678"><span class="sd">        that type instance receive additional instrumentation.</span>
+</span><span data-line="679">
+</span><span data-line="680"><span class="sd">        To associate a particular mutable type with all occurrences of a</span>
+</span><span data-line="681"><span class="sd">        particular type, use the :meth:`.Mutable.associate_with` classmethod</span>
+</span><span data-line="682"><span class="sd">        of the particular :class:`.Mutable` subclass to establish a global</span>
+</span><span data-line="683"><span class="sd">        association.</span>
+</span><span data-line="684">
+</span><span data-line="685"><span class="sd">        .. warning::</span>
+</span><span data-line="686">
+</span><span data-line="687"><span class="sd">           The listeners established by this method are *global*</span>
+</span><span data-line="688"><span class="sd">           to all mappers, and are *not* garbage collected.   Only use</span>
+</span><span data-line="689"><span class="sd">           :meth:`.as_mutable` for types that are permanent to an application,</span>
+</span><span data-line="690"><span class="sd">           not with ad-hoc types else this will cause unbounded growth</span>
+</span><span data-line="691"><span class="sd">           in memory usage.</span>
+</span><span data-line="692">
+</span><span data-line="693"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="694">        <span class="n">sqltype</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">to_instance</span><span class="p">(</span><span class="n">sqltype</span><span class="p">)</span>
+</span><span data-line="695">
+</span><span data-line="696">        <span class="c1"># a SchemaType will be copied when the Column is copied,</span>
+</span><span data-line="697">        <span class="c1"># and we&#39;ll lose our ability to link that type back to the original.</span>
+</span><span data-line="698">        <span class="c1"># so track our original type w/ columns</span>
+</span><span data-line="699">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sqltype</span><span class="p">,</span> <span class="n">SchemaEventTarget</span><span class="p">):</span>
+</span><span data-line="700">
+</span><span data-line="701">            <span class="nd">@event</span><span class="o">.</span><span class="n">listens_for</span><span class="p">(</span><span class="n">sqltype</span><span class="p">,</span> <span class="s2">&quot;before_parent_attach&quot;</span><span class="p">)</span>
+</span><span data-line="702">            <span class="k">def</span><span class="w"> </span><span class="nf">_add_column_memo</span><span class="p">(</span>
+</span><span data-line="703">                <span class="n">sqltyp</span><span class="p">:</span> <span class="n">TypeEngine</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+</span><span data-line="704">                <span class="n">parent</span><span class="p">:</span> <span class="n">Column</span><span class="p">[</span><span class="n">_T</span><span class="p">],</span>
+</span><span data-line="705">            <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="706">                <span class="n">parent</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;_ext_mutable_orig_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sqltyp</span>
+</span><span data-line="707">
+</span><span data-line="708">            <span class="n">schema_event_check</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="709">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="710">            <span class="n">schema_event_check</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="711">
+</span><span data-line="712">        <span class="k">def</span><span class="w"> </span><span class="nf">listen_for_type</span><span class="p">(</span>
+</span><span data-line="713">            <span class="n">mapper</span><span class="p">:</span> <span class="n">Mapper</span><span class="p">[</span><span class="n">_T</span><span class="p">],</span>
+</span><span data-line="714">            <span class="n">class_</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DeclarativeAttributeIntercept</span><span class="p">,</span> <span class="nb">type</span><span class="p">],</span>
+</span><span data-line="715">        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="716">            <span class="k">if</span> <span class="n">mapper</span><span class="o">.</span><span class="n">non_primary</span><span class="p">:</span>
+</span><span data-line="717">                <span class="k">return</span>
+</span><span data-line="718">            <span class="n">_APPLIED_KEY</span> <span class="o">=</span> <span class="s2">&quot;_ext_mutable_listener_applied&quot;</span>
+</span><span data-line="719">
+</span><span data-line="720">            <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">mapper</span><span class="o">.</span><span class="n">column_attrs</span><span class="p">:</span>
+</span><span data-line="721">                <span class="k">if</span> <span class="p">(</span>
+</span><span data-line="722">                    <span class="c1"># all Mutable types refer to a Column that&#39;s mapped,</span>
+</span><span data-line="723">                    <span class="c1"># since this is the only kind of Core target the ORM can</span>
+</span><span data-line="724">                    <span class="c1"># &quot;mutate&quot;</span>
+</span><span data-line="725">                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">expression</span><span class="p">,</span> <span class="n">Column</span><span class="p">)</span>
+</span><span data-line="726">                    <span class="ow">and</span> <span class="p">(</span>
+</span><span data-line="727">                        <span class="p">(</span>
+</span><span data-line="728">                            <span class="n">schema_event_check</span>
+</span><span data-line="729">                            <span class="ow">and</span> <span class="n">prop</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+</span><span data-line="730">                                <span class="s2">&quot;_ext_mutable_orig_type&quot;</span>
+</span><span data-line="731">                            <span class="p">)</span>
+</span><span data-line="732">                            <span class="ow">is</span> <span class="n">sqltype</span>
+</span><span data-line="733">                        <span class="p">)</span>
+</span><span data-line="734">                        <span class="ow">or</span> <span class="n">prop</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="n">sqltype</span>
+</span><span data-line="735">                    <span class="p">)</span>
+</span><span data-line="736">                <span class="p">):</span>
+</span><span data-line="737">                    <span class="k">if</span> <span class="ow">not</span> <span class="n">prop</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_APPLIED_KEY</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+</span><span data-line="738">                        <span class="n">prop</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">_APPLIED_KEY</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="739">                        <span class="bp">cls</span><span class="o">.</span><span class="n">associate_with_attribute</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">key</span><span class="p">))</span>
+</span><span data-line="740">
+</span><span data-line="741">        <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">Mapper</span><span class="p">,</span> <span class="s2">&quot;mapper_configured&quot;</span><span class="p">,</span> <span class="n">listen_for_type</span><span class="p">)</span>
+</span><span data-line="742">
+</span><span data-line="743">        <span class="k">return</span> <span class="n">sqltype</span>
+</span><span data-line="744">
+</span><span data-line="745">
+</span><span data-line="746"><span class="k">class</span><span class="w"> </span><span class="nc">MutableComposite</span><span class="p">(</span><span class="n">MutableBase</span><span class="p">):</span>
+</span><span data-line="747"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Mixin that defines transparent propagation of change</span>
+</span><span data-line="748"><span class="sd">    events on a SQLAlchemy &quot;composite&quot; object to its</span>
+</span><span data-line="749"><span class="sd">    owning parent or parents.</span>
+</span><span data-line="750">
+</span><span data-line="751"><span class="sd">    See the example in :ref:`mutable_composites` for usage information.</span>
+</span><span data-line="752">
+</span><span data-line="753"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="754">
+</span><span data-line="755">    <span class="nd">@classmethod</span>
+</span><span data-line="756">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_listen_keys</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attribute</span><span class="p">:</span> <span class="n">QueryableAttribute</span><span class="p">[</span><span class="n">_O</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span data-line="757">        <span class="k">return</span> <span class="p">{</span><span class="n">attribute</span><span class="o">.</span><span class="n">key</span><span class="p">}</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">property</span><span class="o">.</span><span class="n">_attribute_keys</span><span class="p">)</span>
+</span><span data-line="758">
+</span><span data-line="759">    <span class="k">def</span><span class="w"> </span><span class="nf">changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="760"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Subclasses should call this method whenever change events occur.&quot;&quot;&quot;</span>
+</span><span data-line="761">
+</span><span data-line="762">        <span class="k">for</span> <span class="n">parent</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parents</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span data-line="763">            <span class="n">prop</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">mapper</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span><span data-line="764">            <span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+</span><span data-line="765">                <span class="n">prop</span><span class="o">.</span><span class="n">_composite_values_from_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+</span><span data-line="766">                <span class="n">prop</span><span class="o">.</span><span class="n">_attribute_keys</span><span class="p">,</span>
+</span><span data-line="767">            <span class="p">):</span>
+</span><span data-line="768">                <span class="nb">setattr</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">obj</span><span class="p">(),</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span data-line="769">
+</span><span data-line="770">
+</span><span data-line="771"><span class="k">def</span><span class="w"> </span><span class="nf">_setup_composite_listener</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="772">    <span class="k">def</span><span class="w"> </span><span class="nf">_listen_for_type</span><span class="p">(</span><span class="n">mapper</span><span class="p">:</span> <span class="n">Mapper</span><span class="p">[</span><span class="n">_T</span><span class="p">],</span> <span class="n">class_</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="773">        <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">mapper</span><span class="o">.</span><span class="n">iterate_properties</span><span class="p">:</span>
+</span><span data-line="774">            <span class="k">if</span> <span class="p">(</span>
+</span><span data-line="775">                <span class="nb">hasattr</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="s2">&quot;composite_class&quot;</span><span class="p">)</span>
+</span><span data-line="776">                <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">composite_class</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
+</span><span data-line="777">                <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">composite_class</span><span class="p">,</span> <span class="n">MutableComposite</span><span class="p">)</span>
+</span><span data-line="778">            <span class="p">):</span>
+</span><span data-line="779">                <span class="n">prop</span><span class="o">.</span><span class="n">composite_class</span><span class="o">.</span><span class="n">_listen_on_attribute</span><span class="p">(</span>
+</span><span data-line="780">                    <span class="nb">getattr</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">key</span><span class="p">),</span> <span class="kc">False</span><span class="p">,</span> <span class="n">class_</span>
+</span><span data-line="781">                <span class="p">)</span>
+</span><span data-line="782">
+</span><span data-line="783">    <span class="k">if</span> <span class="ow">not</span> <span class="n">event</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">Mapper</span><span class="p">,</span> <span class="s2">&quot;mapper_configured&quot;</span><span class="p">,</span> <span class="n">_listen_for_type</span><span class="p">):</span>
+</span><span data-line="784">        <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">Mapper</span><span class="p">,</span> <span class="s2">&quot;mapper_configured&quot;</span><span class="p">,</span> <span class="n">_listen_for_type</span><span class="p">)</span>
+</span><span data-line="785">
+</span><span data-line="786">
+</span><span data-line="787"><span class="n">_setup_composite_listener</span><span class="p">()</span>
+</span><span data-line="788">
+</span><span data-line="789">
+</span><span data-line="790"><span class="k">class</span><span class="w"> </span><span class="nc">MutableDict</span><span class="p">(</span><span class="n">Mutable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">_KT</span><span class="p">,</span> <span class="n">_VT</span><span class="p">]):</span>
+</span><span data-line="791"><span class="w">    </span><span class="sd">&quot;&quot;&quot;A dictionary type that implements :class:`.Mutable`.</span>
+</span><span data-line="792">
+</span><span data-line="793"><span class="sd">    The :class:`.MutableDict` object implements a dictionary that will</span>
+</span><span data-line="794"><span class="sd">    emit change events to the underlying mapping when the contents of</span>
+</span><span data-line="795"><span class="sd">    the dictionary are altered, including when values are added or removed.</span>
+</span><span data-line="796">
+</span><span data-line="797"><span class="sd">    Note that :class:`.MutableDict` does **not** apply mutable tracking to  the</span>
+</span><span data-line="798"><span class="sd">    *values themselves* inside the dictionary. Therefore it is not a sufficient</span>
+</span><span data-line="799"><span class="sd">    solution for the use case of tracking deep changes to a *recursive*</span>
+</span><span data-line="800"><span class="sd">    dictionary structure, such as a JSON structure.  To support this use case,</span>
+</span><span data-line="801"><span class="sd">    build a subclass of  :class:`.MutableDict` that provides appropriate</span>
+</span><span data-line="802"><span class="sd">    coercion to the values placed in the dictionary so that they too are</span>
+</span><span data-line="803"><span class="sd">    &quot;mutable&quot;, and emit events up to their parent structure.</span>
+</span><span data-line="804">
+</span><span data-line="805"><span class="sd">    .. seealso::</span>
+</span><span data-line="806">
+</span><span data-line="807"><span class="sd">        :class:`.MutableList`</span>
+</span><span data-line="808">
+</span><span data-line="809"><span class="sd">        :class:`.MutableSet`</span>
+</span><span data-line="810">
+</span><span data-line="811"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="812">
+</span><span data-line="813">    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">_KT</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">_VT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="814"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect dictionary set events and emit change events.&quot;&quot;&quot;</span>
+</span><span data-line="815">        <span class="nb">dict</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span data-line="816">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="817">
+</span><span data-line="818">    <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+</span><span data-line="819">        <span class="c1"># from https://github.com/python/mypy/issues/14858</span>
+</span><span data-line="820">
+</span><span data-line="821">        <span class="nd">@overload</span>
+</span><span data-line="822">        <span class="k">def</span><span class="w"> </span><span class="nf">setdefault</span><span class="p">(</span>
+</span><span data-line="823">            <span class="bp">self</span><span class="p">:</span> <span class="n">MutableDict</span><span class="p">[</span><span class="n">_KT</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">_T</span><span class="p">]],</span> <span class="n">key</span><span class="p">:</span> <span class="n">_KT</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="824">        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">_T</span><span class="p">]:</span> <span class="o">...</span>
+</span><span data-line="825">
+</span><span data-line="826">        <span class="nd">@overload</span>
+</span><span data-line="827">        <span class="k">def</span><span class="w"> </span><span class="nf">setdefault</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">_KT</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">_VT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_VT</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="828">
+</span><span data-line="829">        <span class="k">def</span><span class="w"> </span><span class="nf">setdefault</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">_KT</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="830">
+</span><span data-line="831">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="832">
+</span><span data-line="833">        <span class="k">def</span><span class="w"> </span><span class="nf">setdefault</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">):</span>  <span class="c1"># noqa: F811</span>
+</span><span data-line="834">            <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</span><span data-line="835">            <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="836">            <span class="k">return</span> <span class="n">result</span>
+</span><span data-line="837">
+</span><span data-line="838">    <span class="k">def</span><span class="w"> </span><span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">_KT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="839"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect dictionary del events and emit change events.&quot;&quot;&quot;</span>
+</span><span data-line="840">        <span class="nb">dict</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+</span><span data-line="841">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="842">
+</span><span data-line="843">    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">:</span> <span class="n">_VT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="844">        <span class="nb">dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+</span><span data-line="845">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="846">
+</span><span data-line="847">    <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+</span><span data-line="848">
+</span><span data-line="849">        <span class="nd">@overload</span>
+</span><span data-line="850">        <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__key</span><span class="p">:</span> <span class="n">_KT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_VT</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="851">
+</span><span data-line="852">        <span class="nd">@overload</span>
+</span><span data-line="853">        <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__key</span><span class="p">:</span> <span class="n">_KT</span><span class="p">,</span> <span class="n">__default</span><span class="p">:</span> <span class="n">_VT</span> <span class="o">|</span> <span class="n">_T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_VT</span> <span class="o">|</span> <span class="n">_T</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="854">
+</span><span data-line="855">        <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span>
+</span><span data-line="856">            <span class="bp">self</span><span class="p">,</span> <span class="n">__key</span><span class="p">:</span> <span class="n">_KT</span><span class="p">,</span> <span class="n">__default</span><span class="p">:</span> <span class="n">_VT</span> <span class="o">|</span> <span class="n">_T</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="857">        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_VT</span> <span class="o">|</span> <span class="n">_T</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="858">
+</span><span data-line="859">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="860">
+</span><span data-line="861">        <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">):</span>  <span class="c1"># noqa: F811</span>
+</span><span data-line="862">            <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</span><span data-line="863">            <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="864">            <span class="k">return</span> <span class="n">result</span>
+</span><span data-line="865">
+</span><span data-line="866">    <span class="k">def</span><span class="w"> </span><span class="nf">popitem</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">_KT</span><span class="p">,</span> <span class="n">_VT</span><span class="p">]:</span>
+</span><span data-line="867">        <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">popitem</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span data-line="868">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="869">        <span class="k">return</span> <span class="n">result</span>
+</span><span data-line="870">
+</span><span data-line="871">    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="872">        <span class="nb">dict</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span data-line="873">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="874">
+</span><span data-line="875">    <span class="nd">@classmethod</span>
+</span><span data-line="876">    <span class="k">def</span><span class="w"> </span><span class="nf">coerce</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MutableDict</span><span class="p">[</span><span class="n">_KT</span><span class="p">,</span> <span class="n">_VT</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="877"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert plain dictionary to instance of this class.&quot;&quot;&quot;</span>
+</span><span data-line="878">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+</span><span data-line="879">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+</span><span data-line="880">                <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="881">            <span class="k">return</span> <span class="n">Mutable</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span data-line="882">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="883">            <span class="k">return</span> <span class="n">value</span>
+</span><span data-line="884">
+</span><span data-line="885">    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">_KT</span><span class="p">,</span> <span class="n">_VT</span><span class="p">]:</span>
+</span><span data-line="886">        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span data-line="887">
+</span><span data-line="888">    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span>
+</span><span data-line="889">        <span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
+</span><span data-line="890">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="891">        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+</span><span data-line="892">
+</span><span data-line="893">
+</span><span data-line="894"><span class="k">class</span><span class="w"> </span><span class="nc">MutableList</span><span class="p">(</span><span class="n">Mutable</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">_T</span><span class="p">]):</span>
+</span><span data-line="895"><span class="w">    </span><span class="sd">&quot;&quot;&quot;A list type that implements :class:`.Mutable`.</span>
+</span><span data-line="896">
+</span><span data-line="897"><span class="sd">    The :class:`.MutableList` object implements a list that will</span>
+</span><span data-line="898"><span class="sd">    emit change events to the underlying mapping when the contents of</span>
+</span><span data-line="899"><span class="sd">    the list are altered, including when values are added or removed.</span>
+</span><span data-line="900">
+</span><span data-line="901"><span class="sd">    Note that :class:`.MutableList` does **not** apply mutable tracking to  the</span>
+</span><span data-line="902"><span class="sd">    *values themselves* inside the list. Therefore it is not a sufficient</span>
+</span><span data-line="903"><span class="sd">    solution for the use case of tracking deep changes to a *recursive*</span>
+</span><span data-line="904"><span class="sd">    mutable structure, such as a JSON structure.  To support this use case,</span>
+</span><span data-line="905"><span class="sd">    build a subclass of  :class:`.MutableList` that provides appropriate</span>
+</span><span data-line="906"><span class="sd">    coercion to the values placed in the dictionary so that they too are</span>
+</span><span data-line="907"><span class="sd">    &quot;mutable&quot;, and emit events up to their parent structure.</span>
+</span><span data-line="908">
+</span><span data-line="909"><span class="sd">    .. seealso::</span>
+</span><span data-line="910">
+</span><span data-line="911"><span class="sd">        :class:`.MutableDict`</span>
+</span><span data-line="912">
+</span><span data-line="913"><span class="sd">        :class:`.MutableSet`</span>
+</span><span data-line="914">
+</span><span data-line="915"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="916">
+</span><span data-line="917">    <span class="k">def</span><span class="w"> </span><span class="nf">__reduce_ex__</span><span class="p">(</span>
+</span><span data-line="918">        <span class="bp">self</span><span class="p">,</span> <span class="n">proto</span><span class="p">:</span> <span class="n">SupportsIndex</span>
+</span><span data-line="919">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
+</span><span data-line="920">        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">),))</span>
+</span><span data-line="921">
+</span><span data-line="922">    <span class="c1"># needed for backwards compatibility with</span>
+</span><span data-line="923">    <span class="c1"># older pickles</span>
+</span><span data-line="924">    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="925">        <span class="bp">self</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">state</span>
+</span><span data-line="926">
+</span><span data-line="927">    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span>
+</span><span data-line="928">        <span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">SupportsIndex</span> <span class="o">|</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">_T</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">_T</span><span class="p">]</span>
+</span><span data-line="929">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="930"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect list set events and emit change events.&quot;&quot;&quot;</span>
+</span><span data-line="931">        <span class="nb">list</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span data-line="932">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="933">
+</span><span data-line="934">    <span class="k">def</span><span class="w"> </span><span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">SupportsIndex</span> <span class="o">|</span> <span class="nb">slice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="935"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect list del events and emit change events.&quot;&quot;&quot;</span>
+</span><span data-line="936">        <span class="nb">list</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+</span><span data-line="937">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="938">
+</span><span data-line="939">    <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">:</span> <span class="n">SupportsIndex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_T</span><span class="p">:</span>
+</span><span data-line="940">        <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</span><span data-line="941">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="942">        <span class="k">return</span> <span class="n">result</span>
+</span><span data-line="943">
+</span><span data-line="944">    <span class="k">def</span><span class="w"> </span><span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">_T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="945">        <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</span><span data-line="946">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="947">
+</span><span data-line="948">    <span class="k">def</span><span class="w"> </span><span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="949">        <span class="nb">list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</span><span data-line="950">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="951">
+</span><span data-line="952">    <span class="k">def</span><span class="w"> </span><span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">MutableList</span><span class="p">[</span><span class="n">_T</span><span class="p">]:</span>  <span class="c1"># type: ignore[override,misc] # noqa: E501</span>
+</span><span data-line="953">        <span class="bp">self</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span><span data-line="954">        <span class="k">return</span> <span class="bp">self</span>
+</span><span data-line="955">
+</span><span data-line="956">    <span class="k">def</span><span class="w"> </span><span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="n">SupportsIndex</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">_T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="957">        <span class="nb">list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</span><span data-line="958">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="959">
+</span><span data-line="960">    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="n">_T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="961">        <span class="nb">list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</span><span data-line="962">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="963">
+</span><span data-line="964">    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="965">        <span class="nb">list</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span data-line="966">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="967">
+</span><span data-line="968">    <span class="k">def</span><span class="w"> </span><span class="nf">sort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="969">        <span class="nb">list</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+</span><span data-line="970">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="971">
+</span><span data-line="972">    <span class="k">def</span><span class="w"> </span><span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="973">        <span class="nb">list</span><span class="o">.</span><span class="n">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span data-line="974">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="975">
+</span><span data-line="976">    <span class="nd">@classmethod</span>
+</span><span data-line="977">    <span class="k">def</span><span class="w"> </span><span class="nf">coerce</span><span class="p">(</span>
+</span><span data-line="978">        <span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">MutableList</span><span class="p">[</span><span class="n">_T</span><span class="p">]</span> <span class="o">|</span> <span class="n">_T</span>
+</span><span data-line="979">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MutableList</span><span class="p">[</span><span class="n">_T</span><span class="p">]]:</span>
+</span><span data-line="980"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert plain list to instance of this class.&quot;&quot;&quot;</span>
+</span><span data-line="981">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+</span><span data-line="982">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</span><span data-line="983">                <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="984">            <span class="k">return</span> <span class="n">Mutable</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span data-line="985">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="986">            <span class="k">return</span> <span class="n">value</span>
+</span><span data-line="987">
+</span><span data-line="988">
+</span><span data-line="989"><span class="k">class</span><span class="w"> </span><span class="nc">MutableSet</span><span class="p">(</span><span class="n">Mutable</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="n">_T</span><span class="p">]):</span>
+</span><span data-line="990"><span class="w">    </span><span class="sd">&quot;&quot;&quot;A set type that implements :class:`.Mutable`.</span>
+</span><span data-line="991">
+</span><span data-line="992"><span class="sd">    The :class:`.MutableSet` object implements a set that will</span>
+</span><span data-line="993"><span class="sd">    emit change events to the underlying mapping when the contents of</span>
+</span><span data-line="994"><span class="sd">    the set are altered, including when values are added or removed.</span>
+</span><span data-line="995">
+</span><span data-line="996"><span class="sd">    Note that :class:`.MutableSet` does **not** apply mutable tracking to  the</span>
+</span><span data-line="997"><span class="sd">    *values themselves* inside the set. Therefore it is not a sufficient</span>
+</span><span data-line="998"><span class="sd">    solution for the use case of tracking deep changes to a *recursive*</span>
+</span><span data-line="999"><span class="sd">    mutable structure.  To support this use case,</span>
+</span><span data-line="1000"><span class="sd">    build a subclass of  :class:`.MutableSet` that provides appropriate</span>
+</span><span data-line="1001"><span class="sd">    coercion to the values placed in the dictionary so that they too are</span>
+</span><span data-line="1002"><span class="sd">    &quot;mutable&quot;, and emit events up to their parent structure.</span>
+</span><span data-line="1003">
+</span><span data-line="1004"><span class="sd">    .. seealso::</span>
+</span><span data-line="1005">
+</span><span data-line="1006"><span class="sd">        :class:`.MutableDict`</span>
+</span><span data-line="1007">
+</span><span data-line="1008"><span class="sd">        :class:`.MutableList`</span>
+</span><span data-line="1009">
+</span><span data-line="1010">
+</span><span data-line="1011"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="1012">
+</span><span data-line="1013">    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="1014">        <span class="nb">set</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</span><span data-line="1015">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="1016">
+</span><span data-line="1017">    <span class="k">def</span><span class="w"> </span><span class="nf">intersection_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="1018">        <span class="nb">set</span><span class="o">.</span><span class="n">intersection_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</span><span data-line="1019">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="1020">
+</span><span data-line="1021">    <span class="k">def</span><span class="w"> </span><span class="nf">difference_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="1022">        <span class="nb">set</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</span><span data-line="1023">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="1024">
+</span><span data-line="1025">    <span class="k">def</span><span class="w"> </span><span class="nf">symmetric_difference_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="1026">        <span class="nb">set</span><span class="o">.</span><span class="n">symmetric_difference_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</span><span data-line="1027">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="1028">
+</span><span data-line="1029">    <span class="k">def</span><span class="w"> </span><span class="fm">__ior__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">AbstractSet</span><span class="p">[</span><span class="n">_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">MutableSet</span><span class="p">[</span><span class="n">_T</span><span class="p">]:</span>  <span class="c1"># type: ignore[override,misc] # noqa: E501</span>
+</span><span data-line="1030">        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span data-line="1031">        <span class="k">return</span> <span class="bp">self</span>
+</span><span data-line="1032">
+</span><span data-line="1033">    <span class="k">def</span><span class="w"> </span><span class="fm">__iand__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">AbstractSet</span><span class="p">[</span><span class="nb">object</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">MutableSet</span><span class="p">[</span><span class="n">_T</span><span class="p">]:</span>
+</span><span data-line="1034">        <span class="bp">self</span><span class="o">.</span><span class="n">intersection_update</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span data-line="1035">        <span class="k">return</span> <span class="bp">self</span>
+</span><span data-line="1036">
+</span><span data-line="1037">    <span class="k">def</span><span class="w"> </span><span class="fm">__ixor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">AbstractSet</span><span class="p">[</span><span class="n">_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">MutableSet</span><span class="p">[</span><span class="n">_T</span><span class="p">]:</span>  <span class="c1"># type: ignore[override,misc] # noqa: E501</span>
+</span><span data-line="1038">        <span class="bp">self</span><span class="o">.</span><span class="n">symmetric_difference_update</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span data-line="1039">        <span class="k">return</span> <span class="bp">self</span>
+</span><span data-line="1040">
+</span><span data-line="1041">    <span class="k">def</span><span class="w"> </span><span class="fm">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">AbstractSet</span><span class="p">[</span><span class="nb">object</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">MutableSet</span><span class="p">[</span><span class="n">_T</span><span class="p">]:</span>  <span class="c1"># type: ignore[misc] # noqa: E501</span>
+</span><span data-line="1042">        <span class="bp">self</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span data-line="1043">        <span class="k">return</span> <span class="bp">self</span>
+</span><span data-line="1044">
+</span><span data-line="1045">    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elem</span><span class="p">:</span> <span class="n">_T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="1046">        <span class="nb">set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span>
+</span><span data-line="1047">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="1048">
+</span><span data-line="1049">    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elem</span><span class="p">:</span> <span class="n">_T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="1050">        <span class="nb">set</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span>
+</span><span data-line="1051">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="1052">
+</span><span data-line="1053">    <span class="k">def</span><span class="w"> </span><span class="nf">discard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elem</span><span class="p">:</span> <span class="n">_T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="1054">        <span class="nb">set</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span>
+</span><span data-line="1055">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="1056">
+</span><span data-line="1057">    <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_T</span><span class="p">:</span>
+</span><span data-line="1058">        <span class="n">result</span> <span class="o">=</span> <span class="nb">set</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</span><span data-line="1059">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="1060">        <span class="k">return</span> <span class="n">result</span>
+</span><span data-line="1061">
+</span><span data-line="1062">    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="1063">        <span class="nb">set</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span data-line="1064">        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+</span><span data-line="1065">
+</span><span data-line="1066">    <span class="nd">@classmethod</span>
+</span><span data-line="1067">    <span class="k">def</span><span class="w"> </span><span class="nf">coerce</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MutableSet</span><span class="p">[</span><span class="n">_T</span><span class="p">]]:</span>
+</span><span data-line="1068"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert plain set to instance of this class.&quot;&quot;&quot;</span>
+</span><span data-line="1069">        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+</span><span data-line="1070">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+</span><span data-line="1071">                <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="1072">            <span class="k">return</span> <span class="n">Mutable</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span data-line="1073">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="1074">            <span class="k">return</span> <span class="n">value</span>
+</span><span data-line="1075">
+</span><span data-line="1076">    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="n">_T</span><span class="p">]:</span>
+</span><span data-line="1077">        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span data-line="1078">
+</span><span data-line="1079">    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="1080">        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+</span><span data-line="1081">
+</span><span data-line="1082">    <span class="k">def</span><span class="w"> </span><span class="nf">__reduce_ex__</span><span class="p">(</span>
+</span><span data-line="1083">        <span class="bp">self</span><span class="p">,</span> <span class="n">proto</span><span class="p">:</span> <span class="n">SupportsIndex</span>
+</span><span data-line="1084">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
+</span><span data-line="1085">        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">),))</span>
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2025, Litestar Organization</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a>
+<a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+  <iconify-icon icon="simple-icons:discord"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../_static/documentation_options.js?v=6f8f3740"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=a56c686a"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../../_static/shibuya.js?v=e730760c"></script></body>
+</html>

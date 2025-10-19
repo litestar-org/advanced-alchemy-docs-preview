@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="amber" data-content_root="../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Advanced - Advanced Alchemy</title><link rel="shortcut icon" href="../../_static/favicon.png"/><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Custom Types" href="../types/index.html" /><link rel="prev" title="Schema Integration" href="schemas.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=3270565a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/shibuya.css?v=bb284d7b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx_paramlinks.css" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=118d83bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/syntax-highlighting.css?v=70fc3471" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="Advanced"/>
+<meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="/">
+      <img class="light-logo" src="../../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
+      <img class="dark-logo" src="../../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
+      <strong>advanced_alchemy</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul><li class="link"><a href="../../index.html">Home</a></li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-2" aria-controls="nav-children-2">
+            <span>About</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-2" aria-labelledby="nav-trigger-2"><li><a href="../../changelog.html">
+                <span>Changelog</span>
+                <small>All changes for Advanced Alchemy</small>
+              </a></li><li><a href="https://litestar.dev/about/organization">
+                <span>Litestar Organization</span>
+                <small>Details about the Litestar organization, the team behind Advanced Alchemy</small>
+              </a></li><li><a href="../../releases.html">
+                <span>Releases</span>
+                <small>Explore the release process, versioning, and deprecation policy for Advanced Alchemy</small>
+              </a></li><li><a href="../../contribution-guide.html">
+                <span>Contributing</span>
+                <small>Learn how to contribute to the Advanced Alchemy project</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file">
+                <span>Code of Conduct</span>
+                <small>Review the etiquette for interacting with the Advanced Alchemy community</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file#security-ov-file">
+                <span>Security</span>
+                <small>Overview of Advanced Alchemy's security protocols</small>
+              </a></li><li><a href="https://github.com/sponsors/Litestar-Org">Sponsor</a></li></ul>
+      </li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-3" aria-controls="nav-children-3">
+            <span>Help</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-3" aria-labelledby="nav-trigger-3"><li><a href="https://discord.gg/dSDXd4mKhp">
+                <span>Discord Help Forum</span>
+                <small>Dedicated Discord help forum</small>
+              </a></li><li><a href="https://github.com/litestar-org/advanced-alchemy/discussions">
+                <span>GitHub Discussions</span>
+                <small>GitHub Discussions</small>
+              </a></li></ul>
+      </li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6"><div class="sidebar-links">
+  <ul>
+    <li><a class="icon-link" href="https://discord.gg/dSDXd4mKhp">
+  <span class="icon">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path fill="var(--accent-9)" fill-rule="evenodd" clip-rule="evenodd" d="M11 5a6 6 0 0 0-4.687 9.746c.215.27.315.62.231.954l-.514 2.058a1 1 0 0 0 1.485 1.1l2.848-1.71c.174-.104.374-.15.576-.148H13a6 6 0 0 0 0-12h-2Z"/>
+      <circle fill="white" cx="12" cy="11" r="1"/>
+      <circle fill="white" cx="9" cy="11" r="1"/>
+      <circle fill="white" cx="15" cy="11" r="1"/>
+    </svg>
+  </span>
+  <span class="text">Discussion</span>
+</a></li>
+  </ul>
+</div>
+        <div class="globaltoc" data-expand-depth="2"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Usage</a><ul class="current">
+<li class="toctree-l2 _expand"><a class="reference internal" href="../modeling/index.html">Modeling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../modeling/basics.html">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modeling/relationships.html">Relationships</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modeling/advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../repositories/index.html">Repositories</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../repositories/basics.html">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../repositories/filtering.html">Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../repositories/advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Services</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="basics.html">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="schemas.html">Schema Integration</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../types/index.html">Custom Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../types/basic-types.html">Basic Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../types/security-types.html">Security Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../types/file-storage.html">File Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../types/advanced-types.html">Advanced Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../storage/index.html">Storage Backends</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../storage/fsspec.html">FSSpec Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../storage/obstore.html">Obstore Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../storage/configuration.html">Storage Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../cli/index.html">CLI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli/migrations.html">Migrations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/commands.html">Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../database_seeding.html">Database Seeding and Fixture Loading</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../frameworks/index.html">Framework Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../frameworks/litestar.html">Litestar Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../frameworks/fastapi.html">FastAPI Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../frameworks/flask.html">Flask Integration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../reference/index.html">API Reference</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/base.html">base</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/mixins/index.html">mixins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/unique.html">unique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/nanoid.html">nanoid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/uuid.html">uuid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/sentinel.html">sentinel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/bigint.html">bigint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/audit.html">audit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/slug.html">slug</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/config/index.html">config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/config/asyncio.html">asyncio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/config/common.html">common</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/config/engine.html">engine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/config/sync.html">sync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/config/types.html">types</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/operations.html">operations</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/types.html">types</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/exceptions.html">exceptions</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/utils.html">utils</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/cli.html">cli</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/repository.html">repositories</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/filters.html">filters</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/service.html">services</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/extensions/index.html">Extensions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/litestar/index.html">litestar</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/dto.html">dto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/plugins.html">plugin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/cli.html">cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/session.html">Session Backends</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/flask/index.html">flask</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/sanic/index.html">sanic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/starlette/index.html">starlette</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/fastapi/index.html">fastapi</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/alembic/index.html">alembic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/alembic/commands.html">commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/alembic/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../changelog.html">1.x Changelog</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../contribution-guide.html">Contribution guide</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/search?q=user%3Alitestar-org+state%3Aopen+label%3A%22good+first+issue%22+++no%3Aassignee+repo%3A%22advanced-alchemy%22&amp;type=issues">Available Issues</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/litestar-org/.github?tab=coc-ov-file#readme">Code of Conduct</a></li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#complex-operations">Complex Operations</a><ul>
+<li><a class="reference internal" href="#overriding-crud-methods">Overriding CRUD Methods</a></li>
+<li><a class="reference internal" href="#custom-business-operations">Custom Business Operations</a></li>
+<li><a class="reference internal" href="#overriding-to-model">Overriding to_model</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#multi-model-coordination">Multi-Model Coordination</a></li>
+<li><a class="reference internal" href="#implementation-patterns">Implementation Patterns</a><ul>
+<li><a class="reference internal" href="#service-composition">Service Composition</a></li>
+<li><a class="reference internal" href="#error-handling">Error Handling</a></li>
+<li><a class="reference internal" href="#to-model-hooks">to_model Hooks</a><ul>
+<li><a class="reference internal" href="#basic-pattern">Basic Pattern</a></li>
+<li><a class="reference internal" href="#field-extraction">Field Extraction</a></li>
+<li><a class="reference internal" href="#conditional-field-population">Conditional Field Population</a></li>
+<li><a class="reference internal" href="#helper-method-pattern">Helper Method Pattern</a></li>
+<li><a class="reference internal" href="#working-with-model-instances">Working with Model Instances</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#custom-hooks">Custom Hooks</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#query-service">Query Service</a><ul>
+<li><a class="reference internal" href="#basic-query-service">Basic Query Service</a></li>
+<li><a class="reference internal" href="#query-service-characteristics">Query Service Characteristics</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sample-repository-and-service">Sample Repository and Service</a><ul>
+<li><a class="reference internal" href="#author-repository-and-service">Author Repository and Service</a></li>
+<li><a class="reference internal" href="#post-repository-and-service">Post Repository and Service</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#technical-constraints">Technical Constraints</a><ul>
+<li><a class="reference internal" href="#service-transaction-boundaries">Service Transaction Boundaries</a></li>
+<li><a class="reference internal" href="#override-method-signatures">Override Method Signatures</a></li>
+<li><a class="reference internal" href="#circular-service-dependencies">Circular Service Dependencies</a></li>
+<li><a class="reference internal" href="#service-coordinators">Service Coordinators</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#next-steps">Next Steps</a></li>
+<li><a class="reference internal" href="#related-topics">Related Topics</a></li>
+</ul>
+</div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
+  data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
+  <span class="w-8 flex items-center justify-around shrink-0 text-3xl">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </span>
+  <span class="flex-grow px-2 break-all">
+    
+    
+      <span>advanced-alchemy</span>
+    
+    <span class="flex text-sm repo-stats-count">
+      <span class="flex items-center pr-3">
+        <iconify-icon icon="lucide:star"></iconify-icon>
+        <strong class="js-repo-stars ml-1">0</strong>
+      </span>
+      <span class="flex items-center">
+        <iconify-icon icon="lucide:git-fork"></iconify-icon>
+        <strong class="js-repo-forks ml-1">0</strong>
+      </span>
+    </span>
+  </span>
+</a><div class="edit-this-page">
+  <a href="https://github.com/litestar-org/advanced-alchemy/blob/main/docs/usage/services/advanced.rst">Edit this page</a>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">advanced_alchemy</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Usage</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">Services</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="3" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Advanced</strong>
+        <meta itemprop="position" content="4" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+        <article class="yue" role="main">
+          <section id="advanced">
+<h1>Advanced<a class="headerlink" href="#advanced" title="Link to this heading">¶</a></h1>
+<p>Advanced service patterns handle complex business logic, custom operations, and multi-repository coordination.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
+<p>Familiarity with <a class="reference internal" href="basics.html"><span class="doc">Basics</span></a> and <a class="reference internal" href="schemas.html"><span class="doc">Schema Integration</span></a> recommended.</p>
+</section>
+<section id="complex-operations">
+<h2>Complex Operations<a class="headerlink" href="#complex-operations" title="Link to this heading">¶</a></h2>
+<p>Services coordinate operations across multiple repositories and enforce business rules.</p>
+<section id="overriding-crud-methods">
+<h3>Overriding CRUD Methods<a class="headerlink" href="#overriding-crud-methods" title="Link to this heading">¶</a></h3>
+<p>Customize create/update behavior:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The following example assumes the existence of the
+<code class="docutils literal notranslate"><span class="pre">Post</span></code> model defined in <a class="reference internal" href="../modeling/relationships.html#many-to-many-relationships"><span class="std std-ref">Many-to-Many Relationships</span></a> and the
+<code class="docutils literal notranslate"><span class="pre">Tag</span></code> model defined in <a class="reference internal" href="../modeling/advanced.html#using-unique-mixin"><span class="std std-ref">Using UniqueMixin</span></a>.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid4</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepositoryService</span>
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelDictT</span>
+</span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">slugify</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="k">class</span><span class="w"> </span><span class="nc">PostService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">Post</span><span class="p">,</span> <span class="n">PostRepository</span><span class="p">]):</span>
+</span><span data-line="9"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Post service with tag handling.&quot;&quot;&quot;</span>
+</span><span data-line="10">
+</span><span data-line="11">    <span class="n">default_load_options</span> <span class="o">=</span> <span class="p">[</span><span class="n">Post</span><span class="o">.</span><span class="n">tags</span><span class="p">]</span>
+</span><span data-line="12">    <span class="n">repository_type</span> <span class="o">=</span> <span class="n">PostRepository</span>
+</span><span data-line="13">    <span class="n">match_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+</span><span data-line="14">
+</span><span data-line="15">    <span class="c1"># Override creation behavior to handle tags</span>
+</span><span data-line="16">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">ModelDictT</span><span class="p">[</span><span class="n">Post</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
+</span><span data-line="17"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new post with tags, if provided.&quot;&quot;&quot;</span>
+</span><span data-line="18">        <span class="n">tags_added</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="19">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+</span><span data-line="20">            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">uuid4</span><span class="p">())</span>
+</span><span data-line="21">            <span class="n">tags_added</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;tags&quot;</span><span class="p">,</span> <span class="p">[])</span>
+</span><span data-line="22">        <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;create&quot;</span><span class="p">)</span>
+</span><span data-line="23">        <span class="k">if</span> <span class="n">tags_added</span><span class="p">:</span>
+</span><span data-line="24">            <span class="n">data</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+</span><span data-line="25">                <span class="p">[</span>
+</span><span data-line="26">                    <span class="k">await</span> <span class="n">Tag</span><span class="o">.</span><span class="n">as_unique_async</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">session</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">tag_text</span><span class="p">,</span> <span class="n">slug</span><span class="o">=</span><span class="n">slugify</span><span class="p">(</span><span class="n">tag_text</span><span class="p">))</span>
+</span><span data-line="27">                    <span class="k">for</span> <span class="n">tag_text</span> <span class="ow">in</span> <span class="n">tags_added</span>
+</span><span data-line="28">                <span class="p">],</span>
+</span><span data-line="29">            <span class="p">)</span>
+</span><span data-line="30">        <span class="k">return</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="31">
+</span><span data-line="32">    <span class="c1"># Override update behavior to handle tags</span>
+</span><span data-line="33">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span>
+</span><span data-line="34">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="35">        <span class="n">data</span><span class="p">:</span> <span class="n">ModelDictT</span><span class="p">[</span><span class="n">Post</span><span class="p">],</span>
+</span><span data-line="36">        <span class="n">item_id</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="37">        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span data-line="38">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
+</span><span data-line="39"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Update a post with tags, if provided.&quot;&quot;&quot;</span>
+</span><span data-line="40">        <span class="n">tags_updated</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="41">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+</span><span data-line="42">            <span class="n">tags_updated</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;tags&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[])</span>
+</span><span data-line="43">            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">item_id</span>
+</span><span data-line="44">            <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;update&quot;</span><span class="p">)</span>
+</span><span data-line="45">            <span class="n">existing_tags</span> <span class="o">=</span> <span class="p">[</span><span class="n">tag</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">tags</span><span class="p">]</span>
+</span><span data-line="46">            <span class="n">tags_to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="n">tag</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">tags</span> <span class="k">if</span> <span class="n">tag</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tags_updated</span><span class="p">]</span>
+</span><span data-line="47">            <span class="n">tags_to_add</span> <span class="o">=</span> <span class="p">[</span><span class="n">tag</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags_updated</span> <span class="k">if</span> <span class="n">tag</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">existing_tags</span><span class="p">]</span>
+</span><span data-line="48">            <span class="k">for</span> <span class="n">tag_rm</span> <span class="ow">in</span> <span class="n">tags_to_remove</span><span class="p">:</span>
+</span><span data-line="49">                <span class="n">data</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tag_rm</span><span class="p">)</span>
+</span><span data-line="50">            <span class="n">data</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+</span><span data-line="51">                <span class="p">[</span>
+</span><span data-line="52">                    <span class="k">await</span> <span class="n">Tag</span><span class="o">.</span><span class="n">as_unique_async</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">session</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">tag_text</span><span class="p">,</span> <span class="n">slug</span><span class="o">=</span><span class="n">slugify</span><span class="p">(</span><span class="n">tag_text</span><span class="p">))</span>
+</span><span data-line="53">                    <span class="k">for</span> <span class="n">tag_text</span> <span class="ow">in</span> <span class="n">tags_to_add</span>
+</span><span data-line="54">                <span class="p">],</span>
+</span><span data-line="55">            <span class="p">)</span>
+</span><span data-line="56">        <span class="k">return</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+</span><span data-line="57">            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+</span><span data-line="58">            <span class="n">item_id</span><span class="o">=</span><span class="n">item_id</span><span class="p">,</span>
+</span><span data-line="59">            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span data-line="60">        <span class="p">)</span>
+</span></pre></div>
+</div>
+<p>This pattern:</p>
+<ul class="simple">
+<li><p>Extracts tags from input data</p></li>
+<li><p>Uses <code class="docutils literal notranslate"><span class="pre">UniqueMixin</span></code> for get-or-create</p></li>
+<li><p>Updates relationships</p></li>
+<li><p>Calls parent method for database operation</p></li>
+</ul>
+</section>
+<section id="custom-business-operations">
+<h3>Custom Business Operations<a class="headerlink" href="#custom-business-operations" title="Link to this heading">¶</a></h3>
+<p>Add domain-specific methods:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">timedelta</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">PostService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">Post</span><span class="p">]):</span>
+</span><span data-line="5">    <span class="n">repository_type</span> <span class="o">=</span> <span class="n">PostRepository</span>
+</span><span data-line="6">
+</span><span data-line="7">    <span class="c1"># Custom write operation</span>
+</span><span data-line="8">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">publish_post</span><span class="p">(</span>
+</span><span data-line="9">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="10">        <span class="n">post_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span data-line="11">        <span class="n">publish</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="12">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
+</span><span data-line="13"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Publish or unpublish a post with timestamp.&quot;&quot;&quot;</span>
+</span><span data-line="14">        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="15">            <span class="s2">&quot;published&quot;</span><span class="p">:</span> <span class="n">publish</span><span class="p">,</span>
+</span><span data-line="16">            <span class="s2">&quot;published_at&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="k">if</span> <span class="n">publish</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="17">        <span class="p">}</span>
+</span><span data-line="18">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+</span><span data-line="19">            <span class="n">item_id</span><span class="o">=</span><span class="n">post_id</span><span class="p">,</span>
+</span><span data-line="20">            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+</span><span data-line="21">            <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="22">        <span class="p">)</span>
+</span><span data-line="23">
+</span><span data-line="24">    <span class="c1"># Custom read operation</span>
+</span><span data-line="25">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_trending_posts</span><span class="p">(</span>
+</span><span data-line="26">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="27">        <span class="n">days</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">7</span><span class="p">,</span>
+</span><span data-line="28">        <span class="n">min_views</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+</span><span data-line="29">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="30"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get trending posts based on view count and recency.&quot;&quot;&quot;</span>
+</span><span data-line="31">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
+</span><span data-line="32">            <span class="n">Post</span><span class="o">.</span><span class="n">published</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="33">            <span class="n">Post</span><span class="o">.</span><span class="n">created_at</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">days</span><span class="p">)),</span>
+</span><span data-line="34">            <span class="n">Post</span><span class="o">.</span><span class="n">view_count</span> <span class="o">&gt;=</span> <span class="n">min_views</span><span class="p">,</span>
+</span><span data-line="35">            <span class="n">order_by</span><span class="o">=</span><span class="p">[</span><span class="n">Post</span><span class="o">.</span><span class="n">view_count</span><span class="o">.</span><span class="n">desc</span><span class="p">()],</span>
+</span><span data-line="36">        <span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Custom methods encapsulate business logic.</p>
+</section>
+<section id="overriding-to-model">
+<h3>Overriding to_model<a class="headerlink" href="#overriding-to-model" title="Link to this heading">¶</a></h3>
+<p>Customize schema-to-model conversion:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.dataclass</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_dict</span><span class="p">,</span> <span class="n">is_msgspec_struct</span><span class="p">,</span> <span class="n">is_pydantic_model</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">class</span><span class="w"> </span><span class="nc">PostService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">Post</span><span class="p">,</span> <span class="n">PostRepository</span><span class="p">]):</span>
+</span><span data-line="4">    <span class="n">repository_type</span> <span class="o">=</span> <span class="n">PostRepository</span>
+</span><span data-line="5">
+</span><span data-line="6">    <span class="c1"># Override the default `to_model` to handle slugs</span>
+</span><span data-line="7">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">to_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">ModelDictT</span><span class="p">[</span><span class="n">Post</span><span class="p">],</span> <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
+</span><span data-line="8"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a dictionary, msgspec Struct, or Pydantic model to a Post model.&quot;&quot;&quot;</span>
+</span><span data-line="9">        <span class="k">if</span> <span class="p">(</span><span class="n">is_msgspec_struct</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">or</span> <span class="n">is_pydantic_model</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="ow">and</span> <span class="n">operation</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;create&quot;</span><span class="p">,</span> <span class="s2">&quot;update&quot;</span><span class="p">}</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">slug</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="10">            <span class="n">data</span><span class="o">.</span><span class="n">slug</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_available_slug</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span><span data-line="11">        <span class="k">if</span> <span class="n">is_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;slug&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">operation</span> <span class="o">==</span> <span class="s2">&quot;create&quot;</span><span class="p">:</span>
+</span><span data-line="12">            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;slug&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_available_slug</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+</span><span data-line="13">        <span class="k">if</span> <span class="n">is_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;slug&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="s2">&quot;name&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">operation</span> <span class="o">==</span> <span class="s2">&quot;update&quot;</span><span class="p">:</span>
+</span><span data-line="14">            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;slug&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_available_slug</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+</span><span data-line="15">        <span class="k">return</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">operation</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>This pattern generates slugs automatically during conversion.</p>
+</section>
+</section>
+<section id="multi-model-coordination">
+<h2>Multi-Model Coordination<a class="headerlink" href="#multi-model-coordination" title="Link to this heading">¶</a></h2>
+<p>Services handle relationships across models using UniqueMixin and model instance manipulation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid4</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">service</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepositoryService</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">slugify</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="k">class</span><span class="w"> </span><span class="nc">TeamService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">Team</span><span class="p">,</span> <span class="n">TeamRepository</span><span class="p">]):</span>
+</span><span data-line="7"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Team service handling owner and tag relationships.&quot;&quot;&quot;</span>
+</span><span data-line="8">
+</span><span data-line="9">    <span class="n">repository_type</span> <span class="o">=</span> <span class="n">TeamRepository</span>
+</span><span data-line="10">    <span class="n">match_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+</span><span data-line="11">
+</span><span data-line="12">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">to_model_on_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">Team</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">Team</span><span class="p">]:</span>
+</span><span data-line="13"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create team with owner and tags.&quot;&quot;&quot;</span>
+</span><span data-line="14">        <span class="k">if</span> <span class="n">service</span><span class="o">.</span><span class="n">is_dict</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span data-line="15">            <span class="c1"># Extract relationship data</span>
+</span><span data-line="16">            <span class="n">owner_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;owner_id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="17">            <span class="n">tag_names</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;tags&quot;</span><span class="p">,</span> <span class="p">[])</span>
+</span><span data-line="18">            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">uuid4</span><span class="p">())</span>
+</span><span data-line="19">
+</span><span data-line="20">            <span class="c1"># Convert to model instance</span>
+</span><span data-line="21">            <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="22">
+</span><span data-line="23">            <span class="c1"># Handle tags using UniqueMixin (get or create)</span>
+</span><span data-line="24">            <span class="k">if</span> <span class="n">tag_names</span><span class="p">:</span>
+</span><span data-line="25">                <span class="n">data</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
+</span><span data-line="26">                    <span class="k">await</span> <span class="n">Tag</span><span class="o">.</span><span class="n">as_unique_async</span><span class="p">(</span>
+</span><span data-line="27">                        <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+</span><span data-line="28">                        <span class="n">name</span><span class="o">=</span><span class="n">tag_name</span><span class="p">,</span>
+</span><span data-line="29">                        <span class="n">slug</span><span class="o">=</span><span class="n">slugify</span><span class="p">(</span><span class="n">tag_name</span><span class="p">)</span>
+</span><span data-line="30">                    <span class="p">)</span>
+</span><span data-line="31">                    <span class="k">for</span> <span class="n">tag_name</span> <span class="ow">in</span> <span class="n">tag_names</span>
+</span><span data-line="32">                <span class="p">])</span>
+</span><span data-line="33">
+</span><span data-line="34">            <span class="c1"># Add owner as team member</span>
+</span><span data-line="35">            <span class="k">if</span> <span class="n">owner_id</span><span class="p">:</span>
+</span><span data-line="36">                <span class="n">data</span><span class="o">.</span><span class="n">members</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+</span><span data-line="37">                    <span class="n">TeamMember</span><span class="p">(</span>
+</span><span data-line="38">                        <span class="n">user_id</span><span class="o">=</span><span class="n">owner_id</span><span class="p">,</span>
+</span><span data-line="39">                        <span class="n">role</span><span class="o">=</span><span class="n">TeamRoles</span><span class="o">.</span><span class="n">ADMIN</span><span class="p">,</span>
+</span><span data-line="40">                        <span class="n">is_owner</span><span class="o">=</span><span class="kc">True</span>
+</span><span data-line="41">                    <span class="p">)</span>
+</span><span data-line="42">                <span class="p">)</span>
+</span><span data-line="43">
+</span><span data-line="44">        <span class="k">return</span> <span class="n">data</span>
+</span></pre></div>
+</div>
+<p>This pattern:</p>
+<ul class="simple">
+<li><p>Extracts relationship data from input using <code class="docutils literal notranslate"><span class="pre">pop()</span></code></p></li>
+<li><p>Converts to model instance with <code class="docutils literal notranslate"><span class="pre">await</span> <span class="pre">super().to_model(data)</span></code></p></li>
+<li><p>Uses <code class="docutils literal notranslate"><span class="pre">UniqueMixin.as_unique_async()</span></code> for get-or-create pattern</p></li>
+<li><p>Manipulates relationships directly on model instance</p></li>
+</ul>
+</section>
+<section id="implementation-patterns">
+<h2>Implementation Patterns<a class="headerlink" href="#implementation-patterns" title="Link to this heading">¶</a></h2>
+<section id="service-composition">
+<h3>Service Composition<a class="headerlink" href="#service-composition" title="Link to this heading">¶</a></h3>
+<p>Compose services for complex operations. When using framework dependency injection, services receive sessions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">class</span><span class="w"> </span><span class="nc">AnalyticsService</span><span class="p">:</span>
+</span><span data-line="4"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Analytics service using multiple domain services.&quot;&quot;&quot;</span>
+</span><span data-line="5">
+</span><span data-line="6">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">):</span>
+</span><span data-line="7">        <span class="bp">self</span><span class="o">.</span><span class="n">post_service</span> <span class="o">=</span> <span class="n">PostService</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="8">        <span class="bp">self</span><span class="o">.</span><span class="n">author_service</span> <span class="o">=</span> <span class="n">AuthorService</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="9">
+</span><span data-line="10">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_author_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">author_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="11"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get comprehensive author statistics.&quot;&quot;&quot;</span>
+</span><span data-line="12">        <span class="n">author</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">author_service</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">author_id</span><span class="p">)</span>
+</span><span data-line="13">        <span class="n">posts</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_service</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">author_id</span> <span class="o">==</span> <span class="n">author_id</span><span class="p">)</span>
+</span><span data-line="14">
+</span><span data-line="15">        <span class="k">return</span> <span class="p">{</span>
+</span><span data-line="16">            <span class="s2">&quot;author&quot;</span><span class="p">:</span> <span class="n">author</span><span class="p">,</span>
+</span><span data-line="17">            <span class="s2">&quot;total_posts&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">posts</span><span class="p">),</span>
+</span><span data-line="18">            <span class="s2">&quot;published_posts&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">([</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">posts</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">published</span><span class="p">]),</span>
+</span><span data-line="19">            <span class="s2">&quot;total_views&quot;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">view_count</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">posts</span><span class="p">),</span>
+</span><span data-line="20">        <span class="p">}</span>
+</span></pre></div>
+</div>
+<p>Outside frameworks, use <code class="docutils literal notranslate"><span class="pre">.new()</span></code> for session management:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncConfig</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">class</span><span class="w"> </span><span class="nc">AnalyticsService</span><span class="p">:</span>
+</span><span data-line="4"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Analytics service using .new() for session management.&quot;&quot;&quot;</span>
+</span><span data-line="5">
+</span><span data-line="6">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">):</span>
+</span><span data-line="7">        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+</span><span data-line="8">
+</span><span data-line="9">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_author_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">author_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="10"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get comprehensive author statistics.&quot;&quot;&quot;</span>
+</span><span data-line="11">        <span class="k">async</span> <span class="k">with</span> <span class="n">AuthorService</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span> <span class="k">as</span> <span class="n">author_service</span><span class="p">,</span> \
+</span><span data-line="12">                   <span class="n">PostService</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span> <span class="k">as</span> <span class="n">post_service</span><span class="p">:</span>
+</span><span data-line="13">            <span class="n">author</span> <span class="o">=</span> <span class="k">await</span> <span class="n">author_service</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">author_id</span><span class="p">)</span>
+</span><span data-line="14">            <span class="n">posts</span> <span class="o">=</span> <span class="k">await</span> <span class="n">post_service</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">author_id</span> <span class="o">==</span> <span class="n">author_id</span><span class="p">)</span>
+</span><span data-line="15">
+</span><span data-line="16">            <span class="k">return</span> <span class="p">{</span>
+</span><span data-line="17">                <span class="s2">&quot;author&quot;</span><span class="p">:</span> <span class="n">author</span><span class="p">,</span>
+</span><span data-line="18">                <span class="s2">&quot;total_posts&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">posts</span><span class="p">),</span>
+</span><span data-line="19">                <span class="s2">&quot;published_posts&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">([</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">posts</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">published</span><span class="p">]),</span>
+</span><span data-line="20">                <span class="s2">&quot;total_views&quot;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">view_count</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">posts</span><span class="p">),</span>
+</span><span data-line="21">            <span class="p">}</span>
+</span></pre></div>
+</div>
+<p>Composition enables complex analytics without coupling services.</p>
+</section>
+<section id="error-handling">
+<h3>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading">¶</a></h3>
+<p>Services handle errors consistently:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotFoundError</span><span class="p">,</span> <span class="n">ConflictError</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">class</span><span class="w"> </span><span class="nc">PostService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">Post</span><span class="p">]):</span>
+</span><span data-line="4">    <span class="n">repository_type</span> <span class="o">=</span> <span class="n">PostRepository</span>
+</span><span data-line="5">
+</span><span data-line="6">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">publish_post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">post_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
+</span><span data-line="7"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Publish a post, ensuring it exists and isn&#39;t already published.&quot;&quot;&quot;</span>
+</span><span data-line="8">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="9">            <span class="n">post</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">post_id</span><span class="p">)</span>
+</span><span data-line="10">        <span class="k">except</span> <span class="n">NotFoundError</span><span class="p">:</span>
+</span><span data-line="11">            <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;post not found with id: </span><span class="si">{</span><span class="n">post_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="12">
+</span><span data-line="13">        <span class="k">if</span> <span class="n">post</span><span class="o">.</span><span class="n">published</span><span class="p">:</span>
+</span><span data-line="14">            <span class="k">raise</span> <span class="n">ConflictError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;post already published: </span><span class="si">{</span><span class="n">post_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="15">
+</span><span data-line="16">        <span class="n">post</span><span class="o">.</span><span class="n">published</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="17">        <span class="n">post</span><span class="o">.</span><span class="n">published_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+</span><span data-line="18">
+</span><span data-line="19">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Specific exceptions provide clear error handling.</p>
+</section>
+<section id="to-model-hooks">
+<h3>to_model Hooks<a class="headerlink" href="#to-model-hooks" title="Link to this heading">¶</a></h3>
+<p>Override <code class="docutils literal notranslate"><span class="pre">to_model_on_create</span></code>, <code class="docutils literal notranslate"><span class="pre">to_model_on_update</span></code>, and <code class="docutils literal notranslate"><span class="pre">to_model_on_upsert</span></code> to transform data before model creation:</p>
+<section id="basic-pattern">
+<h4>Basic Pattern<a class="headerlink" href="#basic-pattern" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">,</span> <span class="n">schema_dump</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelDictT</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">UserService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">User</span><span class="p">]):</span>
+</span><span data-line="5">
+</span><span data-line="6">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">to_model_on_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">ModelDictT</span><span class="p">[</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ModelDictT</span><span class="p">[</span><span class="n">User</span><span class="p">]:</span>
+</span><span data-line="7"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Transform data before creating user.&quot;&quot;&quot;</span>
+</span><span data-line="8">        <span class="n">data</span> <span class="o">=</span> <span class="n">schema_dump</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># Convert schema to dict</span>
+</span><span data-line="9">        <span class="c1"># Custom transformation logic</span>
+</span><span data-line="10">        <span class="k">return</span> <span class="n">data</span>
+</span></pre></div>
+</div>
+<p>All <code class="docutils literal notranslate"><span class="pre">to_model_on_*</span></code> hooks receive <code class="docutils literal notranslate"><span class="pre">ModelDictT</span></code> (schema or dict) and return <code class="docutils literal notranslate"><span class="pre">ModelDictT</span></code>.</p>
+</section>
+<section id="field-extraction">
+<h4>Field Extraction<a class="headerlink" href="#field-extraction" title="Link to this heading">¶</a></h4>
+<p>Extract fields from input and transform:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">service</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">class</span><span class="w"> </span><span class="nc">UserService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">User</span><span class="p">]):</span>
+</span><span data-line="4">
+</span><span data-line="5">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">to_model_on_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">User</span><span class="p">]:</span>
+</span><span data-line="6"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Hash password before creating user.&quot;&quot;&quot;</span>
+</span><span data-line="7">        <span class="n">data</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">schema_dump</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="8">        <span class="k">if</span> <span class="n">service</span><span class="o">.</span><span class="n">is_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">password</span> <span class="o">:=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="9">            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;hashed_password&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="n">hash_password</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+</span><span data-line="10">        <span class="k">return</span> <span class="n">data</span>
+</span></pre></div>
+</div>
+<p>Use <code class="docutils literal notranslate"><span class="pre">data.pop()</span></code> to extract and remove fields from input.</p>
+</section>
+<section id="conditional-field-population">
+<h4>Conditional Field Population<a class="headerlink" href="#conditional-field-population" title="Link to this heading">¶</a></h4>
+<p>Generate fields conditionally:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">class</span><span class="w"> </span><span class="nc">TagService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">Tag</span><span class="p">]):</span>
+</span><span data-line="2">
+</span><span data-line="3">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">to_model_on_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">Tag</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">Tag</span><span class="p">]:</span>
+</span><span data-line="4"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate slug if not provided.&quot;&quot;&quot;</span>
+</span><span data-line="5">        <span class="n">data</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">schema_dump</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="6">        <span class="k">if</span> <span class="n">service</span><span class="o">.</span><span class="n">is_dict_without_field</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;slug&quot;</span><span class="p">):</span>
+</span><span data-line="7">            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;slug&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_available_slug</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+</span><span data-line="8">        <span class="k">return</span> <span class="n">data</span>
+</span><span data-line="9">
+</span><span data-line="10">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">to_model_on_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">Tag</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">Tag</span><span class="p">]:</span>
+</span><span data-line="11"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Regenerate slug if name changed.&quot;&quot;&quot;</span>
+</span><span data-line="12">        <span class="n">data</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">schema_dump</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="13">        <span class="k">if</span> <span class="n">service</span><span class="o">.</span><span class="n">is_dict_without_field</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;slug&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">service</span><span class="o">.</span><span class="n">is_dict_with_field</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">):</span>
+</span><span data-line="14">            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;slug&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_available_slug</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+</span><span data-line="15">        <span class="k">return</span> <span class="n">data</span>
+</span></pre></div>
+</div>
+<p>Helper functions:
+- <code class="docutils literal notranslate"><span class="pre">service.is_dict(data)</span></code> - Check if data is dict
+- <code class="docutils literal notranslate"><span class="pre">service.is_dict_with_field(data,</span> <span class="pre">&quot;field&quot;)</span></code> - Check dict has field
+- <code class="docutils literal notranslate"><span class="pre">service.is_dict_without_field(data,</span> <span class="pre">&quot;field&quot;)</span></code> - Check dict missing field</p>
+</section>
+<section id="helper-method-pattern">
+<h4>Helper Method Pattern<a class="headerlink" href="#helper-method-pattern" title="Link to this heading">¶</a></h4>
+<p>Delegate to helper methods for complex logic:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">class</span><span class="w"> </span><span class="nc">UserService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">User</span><span class="p">]):</span>
+</span><span data-line="2">
+</span><span data-line="3">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">to_model_on_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">User</span><span class="p">]:</span>
+</span><span data-line="4">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_populate_model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="5">
+</span><span data-line="6">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">to_model_on_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">User</span><span class="p">]:</span>
+</span><span data-line="7">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_populate_model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="8">
+</span><span data-line="9">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_populate_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">User</span><span class="p">]:</span>
+</span><span data-line="10"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Shared transformation logic.&quot;&quot;&quot;</span>
+</span><span data-line="11">        <span class="n">data</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">schema_dump</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="12">        <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_populate_password</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="13">        <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_populate_role</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="14">        <span class="k">return</span> <span class="n">data</span>
+</span><span data-line="15">
+</span><span data-line="16">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_populate_password</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">User</span><span class="p">]:</span>
+</span><span data-line="17">        <span class="k">if</span> <span class="n">service</span><span class="o">.</span><span class="n">is_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">password</span> <span class="o">:=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="18">            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;hashed_password&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="n">hash_password</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+</span><span data-line="19">        <span class="k">return</span> <span class="n">data</span>
+</span></pre></div>
+</div>
+<p>Reuse transformation logic across create/update/upsert hooks.</p>
+</section>
+<section id="working-with-model-instances">
+<h4>Working with Model Instances<a class="headerlink" href="#working-with-model-instances" title="Link to this heading">¶</a></h4>
+<p>Convert to model instance for relationship manipulation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">class</span><span class="w"> </span><span class="nc">TeamService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">Team</span><span class="p">]):</span>
+</span><span data-line="2">
+</span><span data-line="3">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">to_model_on_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">Team</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">Team</span><span class="p">]:</span>
+</span><span data-line="4">        <span class="k">if</span> <span class="n">service</span><span class="o">.</span><span class="n">is_dict</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span data-line="5">            <span class="n">owner_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;owner_id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="6">            <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># Convert to Team instance</span>
+</span><span data-line="7">
+</span><span data-line="8">            <span class="c1"># Now work with model relationships</span>
+</span><span data-line="9">            <span class="k">if</span> <span class="n">owner_id</span><span class="p">:</span>
+</span><span data-line="10">                <span class="n">data</span><span class="o">.</span><span class="n">members</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+</span><span data-line="11">                    <span class="n">TeamMember</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">owner_id</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">TeamRoles</span><span class="o">.</span><span class="n">ADMIN</span><span class="p">,</span> <span class="n">is_owner</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="12">                <span class="p">)</span>
+</span><span data-line="13">        <span class="k">return</span> <span class="n">data</span>
+</span></pre></div>
+</div>
+<p>Call <code class="docutils literal notranslate"><span class="pre">await</span> <span class="pre">super().to_model(data)</span></code> to convert dict to model instance, then manipulate relationships.</p>
+</section>
+</section>
+<section id="custom-hooks">
+<h3>Custom Hooks<a class="headerlink" href="#custom-hooks" title="Link to this heading">¶</a></h3>
+<p>Add custom pre/post hooks for side effects:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">class</span><span class="w"> </span><span class="nc">PostService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">Post</span><span class="p">,</span> <span class="n">PostRepository</span><span class="p">]):</span>
+</span><span data-line="2">
+</span><span data-line="3">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">ModelDictT</span><span class="p">[</span><span class="n">Post</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
+</span><span data-line="4"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create with pre/post hooks.&quot;&quot;&quot;</span>
+</span><span data-line="5">        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_before_create</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># Pre-creation hook</span>
+</span><span data-line="6">        <span class="n">post</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="7">        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_after_create</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>  <span class="c1"># Post-creation hook</span>
+</span><span data-line="8">        <span class="k">return</span> <span class="n">post</span>
+</span><span data-line="9">
+</span><span data-line="10">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_before_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">ModelDictT</span><span class="p">[</span><span class="n">Post</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="11"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate business rules, log operations.&quot;&quot;&quot;</span>
+</span><span data-line="12">        <span class="k">pass</span>
+</span><span data-line="13">
+</span><span data-line="14">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_after_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">post</span><span class="p">:</span> <span class="n">Post</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="15"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Index in search, send webhooks, update caches.&quot;&quot;&quot;</span>
+</span><span data-line="16">        <span class="k">pass</span>
+</span></pre></div>
+</div>
+<p>Custom hooks separate concerns and enable extensibility.</p>
+</section>
+</section>
+<section id="query-service">
+<h2>Query Service<a class="headerlink" href="#query-service" title="Link to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncQueryService</span></code> provides direct SQL query execution for analytics and reporting without requiring a model.</p>
+<section id="basic-query-service">
+<h3>Basic Query Service<a class="headerlink" href="#basic-query-service" title="Link to this heading">¶</a></h3>
+<p>Execute raw SQL queries and return results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">exceptions</span> <span class="k">as</span> <span class="n">exc</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">service</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">RowMapping</span><span class="p">,</span> <span class="n">text</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="k">class</span><span class="w"> </span><span class="nc">StatsService</span><span class="p">(</span><span class="n">service</span><span class="o">.</span><span class="n">SQLAlchemyAsyncQueryService</span><span class="p">):</span>
+</span><span data-line="6"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Stats service for analytics queries.&quot;&quot;&quot;</span>
+</span><span data-line="7">
+</span><span data-line="8">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">users_by_week</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">RowMapping</span><span class="p">]:</span>
+</span><span data-line="9"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get user signup counts by week.&quot;&quot;&quot;</span>
+</span><span data-line="10">        <span class="n">statement</span> <span class="o">=</span> <span class="n">text</span><span class="p">(</span>
+</span><span data-line="11"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="12"><span class="sd">                select a.week, count(a.user_id) as new_users</span>
+</span><span data-line="13"><span class="sd">                from (</span>
+</span><span data-line="14"><span class="sd">                    select date_trunc(&#39;week&#39;, user_account.joined_at) as week,</span>
+</span><span data-line="15"><span class="sd">                           user_account.id as user_id</span>
+</span><span data-line="16"><span class="sd">                    from user_account</span>
+</span><span data-line="17"><span class="sd">                ) a</span>
+</span><span data-line="18"><span class="sd">                group by a.week</span>
+</span><span data-line="19"><span class="sd">                order by a.week</span>
+</span><span data-line="20"><span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span data-line="21">        <span class="p">)</span>
+</span><span data-line="22">        <span class="k">with</span> <span class="n">exc</span><span class="o">.</span><span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
+</span><span data-line="23">            <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
+</span><span data-line="24">            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">mappings</span><span class="p">())</span>
+</span><span data-line="25">
+</span><span data-line="26">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">current_totals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">RowMapping</span><span class="p">]:</span>
+</span><span data-line="27"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get current total counts.&quot;&quot;&quot;</span>
+</span><span data-line="28">        <span class="n">statement</span> <span class="o">=</span> <span class="n">text</span><span class="p">(</span>
+</span><span data-line="29"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="30"><span class="sd">                select count(user_account.id) as total_users,</span>
+</span><span data-line="31"><span class="sd">                       date_trunc(&#39;hour&#39;, current_timestamp) as as_of</span>
+</span><span data-line="32"><span class="sd">                from user_account</span>
+</span><span data-line="33"><span class="sd">                group by as_of</span>
+</span><span data-line="34"><span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span data-line="35">        <span class="p">)</span>
+</span><span data-line="36">        <span class="k">with</span> <span class="n">exc</span><span class="o">.</span><span class="n">wrap_sqlalchemy_exception</span><span class="p">():</span>
+</span><span data-line="37">            <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
+</span><span data-line="38">            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">mappings</span><span class="p">())</span>
+</span></pre></div>
+</div>
+<p>This pattern:</p>
+<ul class="simple">
+<li><p>Extends <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncQueryService</span></code> (no model required)</p></li>
+<li><p>Uses <code class="docutils literal notranslate"><span class="pre">text()</span></code> for raw SQL queries</p></li>
+<li><p>Wraps queries with <code class="docutils literal notranslate"><span class="pre">exc.wrap_sqlalchemy_exception()</span></code> for consistent error handling</p></li>
+<li><p>Returns <code class="docutils literal notranslate"><span class="pre">list[RowMapping]</span></code> for dictionary-like result access</p></li>
+<li><p>Accesses session via <code class="docutils literal notranslate"><span class="pre">self.repository.session</span></code></p></li>
+</ul>
+</section>
+<section id="query-service-characteristics">
+<h3>Query Service Characteristics<a class="headerlink" href="#query-service-characteristics" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncQueryService</span></code> differs from <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepositoryService</span></code>:</p>
+<ul class="simple">
+<li><p>No model type parameter (works with raw SQL)</p></li>
+<li><p>No CRUD operations (create, update, delete)</p></li>
+<li><p>Direct session access for complex queries</p></li>
+<li><p>Returns <code class="docutils literal notranslate"><span class="pre">RowMapping</span></code> instead of model instances</p></li>
+<li><p>Useful for analytics, reporting, and aggregations</p></li>
+</ul>
+</section>
+</section>
+<section id="sample-repository-and-service">
+<h2>Sample Repository and Service<a class="headerlink" href="#sample-repository-and-service" title="Link to this heading">¶</a></h2>
+<p>Complete example showing Author and Post models with repositories and services.</p>
+<section id="author-repository-and-service">
+<h3>Author Repository and Service<a class="headerlink" href="#author-repository-and-service" title="Link to this heading">¶</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The following examples use the <code class="docutils literal notranslate"><span class="pre">Author</span></code> and <code class="docutils literal notranslate"><span class="pre">Post</span></code> models from <a class="reference internal" href="../modeling/relationships.html#one-to-many-relationships"><span class="std std-ref">One-to-Many Relationships</span></a>.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">service</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepository</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepositoryService</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="k">class</span><span class="w"> </span><span class="nc">AuthorRepository</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepository</span><span class="p">[</span><span class="n">Author</span><span class="p">]):</span>
+</span><span data-line="6"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Author repository with custom queries.&quot;&quot;&quot;</span>
+</span><span data-line="7">
+</span><span data-line="8">    <span class="n">model_type</span> <span class="o">=</span> <span class="n">Author</span>
+</span><span data-line="9">
+</span><span data-line="10">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_by_email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Author</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="11"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get author by email address.&quot;&quot;&quot;</span>
+</span><span data-line="12">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_one_or_none</span><span class="p">(</span><span class="n">Author</span><span class="o">.</span><span class="n">email</span> <span class="o">==</span> <span class="n">email</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+</span><span data-line="13">
+</span><span data-line="14">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_top_authors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Author</span><span class="p">]:</span>
+</span><span data-line="15"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get authors with most posts.&quot;&quot;&quot;</span>
+</span><span data-line="16">        <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">func</span><span class="p">,</span> <span class="n">select</span>
+</span><span data-line="17">        <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">selectinload</span>
+</span><span data-line="18">
+</span><span data-line="19">        <span class="n">stmt</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="20">            <span class="n">select</span><span class="p">(</span><span class="n">Author</span><span class="p">)</span>
+</span><span data-line="21">            <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Author</span><span class="o">.</span><span class="n">posts</span><span class="p">)</span>
+</span><span data-line="22">            <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="n">Author</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</span><span data-line="23">            <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+</span><span data-line="24">            <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
+</span><span data-line="25">            <span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">selectinload</span><span class="p">(</span><span class="n">Author</span><span class="o">.</span><span class="n">posts</span><span class="p">))</span>
+</span><span data-line="26">        <span class="p">)</span>
+</span><span data-line="27">        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+</span><span data-line="28">        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">scalars</span><span class="p">())</span>
+</span><span data-line="29">
+</span><span data-line="30"><span class="k">class</span><span class="w"> </span><span class="nc">AuthorService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">Author</span><span class="p">,</span> <span class="n">AuthorRepository</span><span class="p">]):</span>
+</span><span data-line="31"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Author service with email normalization.&quot;&quot;&quot;</span>
+</span><span data-line="32">
+</span><span data-line="33">    <span class="n">repository_type</span> <span class="o">=</span> <span class="n">AuthorRepository</span>
+</span><span data-line="34">    <span class="n">match_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span>
+</span><span data-line="35">
+</span><span data-line="36">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">to_model_on_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">Author</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">Author</span><span class="p">]:</span>
+</span><span data-line="37"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize email before creating author.&quot;&quot;&quot;</span>
+</span><span data-line="38">        <span class="n">data</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">schema_dump</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="39">        <span class="k">if</span> <span class="n">service</span><span class="o">.</span><span class="n">is_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">and</span> <span class="n">service</span><span class="o">.</span><span class="n">is_dict_with_field</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">):</span>
+</span><span data-line="40">            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span data-line="41">        <span class="k">return</span> <span class="n">data</span>
+</span><span data-line="42">
+</span><span data-line="43">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">to_model_on_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">Author</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">Author</span><span class="p">]:</span>
+</span><span data-line="44"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize email before updating author.&quot;&quot;&quot;</span>
+</span><span data-line="45">        <span class="n">data</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">schema_dump</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="46">        <span class="k">if</span> <span class="n">service</span><span class="o">.</span><span class="n">is_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">and</span> <span class="n">service</span><span class="o">.</span><span class="n">is_dict_with_field</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">):</span>
+</span><span data-line="47">            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span data-line="48">        <span class="k">return</span> <span class="n">data</span>
+</span></pre></div>
+</div>
+</section>
+<section id="post-repository-and-service">
+<h3>Post Repository and Service<a class="headerlink" href="#post-repository-and-service" title="Link to this heading">¶</a></h3>
+<div class="sd-tab-set docutils">
+<input id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-0">
+Python 3.9+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid4</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">service</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepository</span>
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepositoryService</span>
+</span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConflictError</span>
+</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">slugify</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="k">class</span><span class="w"> </span><span class="nc">PostRepository</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepository</span><span class="p">[</span><span class="n">Post</span><span class="p">]):</span>
+</span><span data-line="10"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Post repository with custom queries.&quot;&quot;&quot;</span>
+</span><span data-line="11">
+</span><span data-line="12">    <span class="n">model_type</span> <span class="o">=</span> <span class="n">Post</span>
+</span><span data-line="13">
+</span><span data-line="14">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_published</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="15"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get published posts.&quot;&quot;&quot;</span>
+</span><span data-line="16">        <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">selectinload</span>
+</span><span data-line="17">
+</span><span data-line="18">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
+</span><span data-line="19">            <span class="n">Post</span><span class="o">.</span><span class="n">published</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="20">            <span class="n">Post</span><span class="o">.</span><span class="n">published_at</span><span class="o">.</span><span class="n">is_not</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+</span><span data-line="21">            <span class="n">order_by</span><span class="o">=</span><span class="p">[</span><span class="n">Post</span><span class="o">.</span><span class="n">published_at</span><span class="o">.</span><span class="n">desc</span><span class="p">()],</span>
+</span><span data-line="22">            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+</span><span data-line="23">            <span class="n">load</span><span class="o">=</span><span class="p">[</span><span class="n">selectinload</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">author</span><span class="p">),</span> <span class="n">selectinload</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">tags</span><span class="p">)],</span>
+</span><span data-line="24">        <span class="p">)</span>
+</span><span data-line="25">
+</span><span data-line="26">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_by_author</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">author_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="27"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all posts by author.&quot;&quot;&quot;</span>
+</span><span data-line="28">        <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">selectinload</span>
+</span><span data-line="29">
+</span><span data-line="30">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
+</span><span data-line="31">            <span class="n">Post</span><span class="o">.</span><span class="n">author_id</span> <span class="o">==</span> <span class="n">author_id</span><span class="p">,</span>
+</span><span data-line="32">            <span class="n">order_by</span><span class="o">=</span><span class="p">[</span><span class="n">Post</span><span class="o">.</span><span class="n">created_at</span><span class="o">.</span><span class="n">desc</span><span class="p">()],</span>
+</span><span data-line="33">            <span class="n">load</span><span class="o">=</span><span class="p">[</span><span class="n">selectinload</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">tags</span><span class="p">)],</span>
+</span><span data-line="34">        <span class="p">)</span>
+</span><span data-line="35">
+</span><span data-line="36"><span class="k">class</span><span class="w"> </span><span class="nc">PostService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">Post</span><span class="p">,</span> <span class="n">PostRepository</span><span class="p">]):</span>
+</span><span data-line="37"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Post service with tag handling and publishing logic.&quot;&quot;&quot;</span>
+</span><span data-line="38">
+</span><span data-line="39">    <span class="n">repository_type</span> <span class="o">=</span> <span class="n">PostRepository</span>
+</span><span data-line="40">    <span class="n">match_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
+</span><span data-line="41">    <span class="n">default_load_options</span> <span class="o">=</span> <span class="p">[</span><span class="n">Post</span><span class="o">.</span><span class="n">author</span><span class="p">,</span> <span class="n">Post</span><span class="o">.</span><span class="n">tags</span><span class="p">]</span>
+</span><span data-line="42">
+</span><span data-line="43">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">to_model_on_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">Post</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="44"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle tags when creating post.&quot;&quot;&quot;</span>
+</span><span data-line="45">        <span class="k">if</span> <span class="n">service</span><span class="o">.</span><span class="n">is_dict</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span data-line="46">            <span class="c1"># Extract and process tags</span>
+</span><span data-line="47">            <span class="n">tag_names</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;tags&quot;</span><span class="p">,</span> <span class="p">[])</span>
+</span><span data-line="48">            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">uuid4</span><span class="p">())</span>
+</span><span data-line="49">
+</span><span data-line="50">            <span class="c1"># Convert to model instance</span>
+</span><span data-line="51">            <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="52">
+</span><span data-line="53">            <span class="c1"># Add tags using UniqueMixin</span>
+</span><span data-line="54">            <span class="k">if</span> <span class="n">tag_names</span><span class="p">:</span>
+</span><span data-line="55">                <span class="n">data</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
+</span><span data-line="56">                    <span class="k">await</span> <span class="n">Tag</span><span class="o">.</span><span class="n">as_unique_async</span><span class="p">(</span>
+</span><span data-line="57">                        <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+</span><span data-line="58">                        <span class="n">name</span><span class="o">=</span><span class="n">tag_name</span><span class="p">,</span>
+</span><span data-line="59">                        <span class="n">slug</span><span class="o">=</span><span class="n">slugify</span><span class="p">(</span><span class="n">tag_name</span><span class="p">)</span>
+</span><span data-line="60">                    <span class="p">)</span>
+</span><span data-line="61">                    <span class="k">for</span> <span class="n">tag_name</span> <span class="ow">in</span> <span class="n">tag_names</span>
+</span><span data-line="62">                <span class="p">])</span>
+</span><span data-line="63">
+</span><span data-line="64">        <span class="k">return</span> <span class="n">data</span>
+</span><span data-line="65">
+</span><span data-line="66">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">publish_post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">post_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
+</span><span data-line="67"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Publish a post with timestamp.&quot;&quot;&quot;</span>
+</span><span data-line="68">        <span class="n">post</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">post_id</span><span class="p">)</span>
+</span><span data-line="69">
+</span><span data-line="70">        <span class="k">if</span> <span class="n">post</span><span class="o">.</span><span class="n">published</span><span class="p">:</span>
+</span><span data-line="71">            <span class="k">raise</span> <span class="n">ConflictError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;post already published: </span><span class="si">{</span><span class="n">post_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="72">
+</span><span data-line="73">        <span class="n">post</span><span class="o">.</span><span class="n">published</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="74">        <span class="n">post</span><span class="o">.</span><span class="n">published_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+</span><span data-line="75">
+</span><span data-line="76">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="77">
+</span><span data-line="78">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">unpublish_post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">post_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
+</span><span data-line="79"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Unpublish a post.&quot;&quot;&quot;</span>
+</span><span data-line="80">        <span class="n">post</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">post_id</span><span class="p">)</span>
+</span><span data-line="81">
+</span><span data-line="82">        <span class="k">if</span> <span class="ow">not</span> <span class="n">post</span><span class="o">.</span><span class="n">published</span><span class="p">:</span>
+</span><span data-line="83">            <span class="k">raise</span> <span class="n">ConflictError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;post not published: </span><span class="si">{</span><span class="n">post_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="84">
+</span><span data-line="85">        <span class="n">post</span><span class="o">.</span><span class="n">published</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="86">        <span class="n">post</span><span class="o">.</span><span class="n">published_at</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="87">
+</span><span data-line="88">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+<input checked="checked" id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.11" for="sd-tab-item-1">
+Python 3.11+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">UTC</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid4</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">service</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepository</span>
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepositoryService</span>
+</span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConflictError</span>
+</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">slugify</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="k">class</span><span class="w"> </span><span class="nc">PostRepository</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepository</span><span class="p">[</span><span class="n">Post</span><span class="p">]):</span>
+</span><span data-line="10"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Post repository with custom queries.&quot;&quot;&quot;</span>
+</span><span data-line="11">
+</span><span data-line="12">    <span class="n">model_type</span> <span class="o">=</span> <span class="n">Post</span>
+</span><span data-line="13">
+</span><span data-line="14">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_published</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="15"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get published posts.&quot;&quot;&quot;</span>
+</span><span data-line="16">        <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">selectinload</span>
+</span><span data-line="17">
+</span><span data-line="18">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
+</span><span data-line="19">            <span class="n">Post</span><span class="o">.</span><span class="n">published</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="20">            <span class="n">Post</span><span class="o">.</span><span class="n">published_at</span><span class="o">.</span><span class="n">is_not</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+</span><span data-line="21">            <span class="n">order_by</span><span class="o">=</span><span class="p">[</span><span class="n">Post</span><span class="o">.</span><span class="n">published_at</span><span class="o">.</span><span class="n">desc</span><span class="p">()],</span>
+</span><span data-line="22">            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+</span><span data-line="23">            <span class="n">load</span><span class="o">=</span><span class="p">[</span><span class="n">selectinload</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">author</span><span class="p">),</span> <span class="n">selectinload</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">tags</span><span class="p">)],</span>
+</span><span data-line="24">        <span class="p">)</span>
+</span><span data-line="25">
+</span><span data-line="26">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_by_author</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">author_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="27"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all posts by author.&quot;&quot;&quot;</span>
+</span><span data-line="28">        <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">selectinload</span>
+</span><span data-line="29">
+</span><span data-line="30">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
+</span><span data-line="31">            <span class="n">Post</span><span class="o">.</span><span class="n">author_id</span> <span class="o">==</span> <span class="n">author_id</span><span class="p">,</span>
+</span><span data-line="32">            <span class="n">order_by</span><span class="o">=</span><span class="p">[</span><span class="n">Post</span><span class="o">.</span><span class="n">created_at</span><span class="o">.</span><span class="n">desc</span><span class="p">()],</span>
+</span><span data-line="33">            <span class="n">load</span><span class="o">=</span><span class="p">[</span><span class="n">selectinload</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">tags</span><span class="p">)],</span>
+</span><span data-line="34">        <span class="p">)</span>
+</span><span data-line="35">
+</span><span data-line="36"><span class="k">class</span><span class="w"> </span><span class="nc">PostService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">Post</span><span class="p">,</span> <span class="n">PostRepository</span><span class="p">]):</span>
+</span><span data-line="37"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Post service with tag handling and publishing logic.&quot;&quot;&quot;</span>
+</span><span data-line="38">
+</span><span data-line="39">    <span class="n">repository_type</span> <span class="o">=</span> <span class="n">PostRepository</span>
+</span><span data-line="40">    <span class="n">match_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
+</span><span data-line="41">    <span class="n">default_load_options</span> <span class="o">=</span> <span class="p">[</span><span class="n">Post</span><span class="o">.</span><span class="n">author</span><span class="p">,</span> <span class="n">Post</span><span class="o">.</span><span class="n">tags</span><span class="p">]</span>
+</span><span data-line="42">
+</span><span data-line="43">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">to_model_on_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">Post</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">ModelDictT</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="44"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle tags when creating post.&quot;&quot;&quot;</span>
+</span><span data-line="45">        <span class="k">if</span> <span class="n">service</span><span class="o">.</span><span class="n">is_dict</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span data-line="46">            <span class="c1"># Extract and process tags</span>
+</span><span data-line="47">            <span class="n">tag_names</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;tags&quot;</span><span class="p">,</span> <span class="p">[])</span>
+</span><span data-line="48">            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">uuid4</span><span class="p">())</span>
+</span><span data-line="49">
+</span><span data-line="50">            <span class="c1"># Convert to model instance</span>
+</span><span data-line="51">            <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="52">
+</span><span data-line="53">            <span class="c1"># Add tags using UniqueMixin</span>
+</span><span data-line="54">            <span class="k">if</span> <span class="n">tag_names</span><span class="p">:</span>
+</span><span data-line="55">                <span class="n">data</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
+</span><span data-line="56">                    <span class="k">await</span> <span class="n">Tag</span><span class="o">.</span><span class="n">as_unique_async</span><span class="p">(</span>
+</span><span data-line="57">                        <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
+</span><span data-line="58">                        <span class="n">name</span><span class="o">=</span><span class="n">tag_name</span><span class="p">,</span>
+</span><span data-line="59">                        <span class="n">slug</span><span class="o">=</span><span class="n">slugify</span><span class="p">(</span><span class="n">tag_name</span><span class="p">)</span>
+</span><span data-line="60">                    <span class="p">)</span>
+</span><span data-line="61">                    <span class="k">for</span> <span class="n">tag_name</span> <span class="ow">in</span> <span class="n">tag_names</span>
+</span><span data-line="62">                <span class="p">])</span>
+</span><span data-line="63">
+</span><span data-line="64">        <span class="k">return</span> <span class="n">data</span>
+</span><span data-line="65">
+</span><span data-line="66">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">publish_post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">post_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
+</span><span data-line="67"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Publish a post with timestamp.&quot;&quot;&quot;</span>
+</span><span data-line="68">        <span class="n">post</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">post_id</span><span class="p">)</span>
+</span><span data-line="69">
+</span><span data-line="70">        <span class="k">if</span> <span class="n">post</span><span class="o">.</span><span class="n">published</span><span class="p">:</span>
+</span><span data-line="71">            <span class="k">raise</span> <span class="n">ConflictError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;post already published: </span><span class="si">{</span><span class="n">post_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="72">
+</span><span data-line="73">        <span class="n">post</span><span class="o">.</span><span class="n">published</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="74">        <span class="n">post</span><span class="o">.</span><span class="n">published_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">)</span>
+</span><span data-line="75">
+</span><span data-line="76">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="77">
+</span><span data-line="78">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">unpublish_post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">post_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
+</span><span data-line="79"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Unpublish a post.&quot;&quot;&quot;</span>
+</span><span data-line="80">        <span class="n">post</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">post_id</span><span class="p">)</span>
+</span><span data-line="81">
+</span><span data-line="82">        <span class="k">if</span> <span class="ow">not</span> <span class="n">post</span><span class="o">.</span><span class="n">published</span><span class="p">:</span>
+</span><span data-line="83">            <span class="k">raise</span> <span class="n">ConflictError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;post not published: </span><span class="si">{</span><span class="n">post_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="84">
+</span><span data-line="85">        <span class="n">post</span><span class="o">.</span><span class="n">published</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="86">        <span class="n">post</span><span class="o">.</span><span class="n">published_at</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="87">
+</span><span data-line="88">        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="technical-constraints">
+<h2>Technical Constraints<a class="headerlink" href="#technical-constraints" title="Link to this heading">¶</a></h2>
+<section id="service-transaction-boundaries">
+<h3>Service Transaction Boundaries<a class="headerlink" href="#service-transaction-boundaries" title="Link to this heading">¶</a></h3>
+<p>Services should not manage session lifecycle:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># ✅ Correct - use .new() context manager</span>
+</span><span data-line="2"><span class="k">async</span> <span class="k">with</span> <span class="n">PostService</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span> <span class="k">as</span> <span class="n">post_service</span><span class="p">,</span> \
+</span><span data-line="3">           <span class="n">AuthorService</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span> <span class="k">as</span> <span class="n">author_service</span><span class="p">:</span>
+</span><span data-line="4">    <span class="n">author</span> <span class="o">=</span> <span class="k">await</span> <span class="n">author_service</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">author_data</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="5">    <span class="n">post</span> <span class="o">=</span> <span class="k">await</span> <span class="n">post_service</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">post_data</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="6">
+</span><span data-line="7"><span class="c1"># ❌ Incorrect - service manages session</span>
+</span><span data-line="8"><span class="k">class</span><span class="w"> </span><span class="nc">PostService</span><span class="p">:</span>
+</span><span data-line="9">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_with_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+</span><span data-line="10">        <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncSession</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span data-line="11">            <span class="c1"># Don&#39;t create sessions in services</span>
+</span><span data-line="12">            <span class="k">pass</span>
+</span></pre></div>
+</div>
+<p>Services use <code class="docutils literal notranslate"><span class="pre">.new()</span></code> for session management or receive sessions from framework dependency injection.</p>
+</section>
+<section id="override-method-signatures">
+<h3>Override Method Signatures<a class="headerlink" href="#override-method-signatures" title="Link to this heading">¶</a></h3>
+<p>Overridden methods must match parent signatures:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># ✅ Correct - matches parent signature</span>
+</span><span data-line="2"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">ModelDictT</span><span class="p">[</span><span class="n">Post</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
+</span><span data-line="3">    <span class="c1"># Custom logic</span>
+</span><span data-line="4">    <span class="k">return</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="c1"># ❌ Incorrect - signature mismatch</span>
+</span><span data-line="7"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
+</span><span data-line="8">    <span class="c1"># Missing **kwargs, return type too specific</span>
+</span><span data-line="9">    <span class="k">pass</span>
+</span></pre></div>
+</div>
+<p>Maintain signature compatibility for framework integration.</p>
+</section>
+<section id="circular-service-dependencies">
+<h3>Circular Service Dependencies<a class="headerlink" href="#circular-service-dependencies" title="Link to this heading">¶</a></h3>
+<p>Avoid circular dependencies between services:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># ❌ Incorrect - circular dependency</span>
+</span><span data-line="2"><span class="k">class</span><span class="w"> </span><span class="nc">PostService</span><span class="p">:</span>
+</span><span data-line="3">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">author_service</span><span class="p">):</span>
+</span><span data-line="4">        <span class="bp">self</span><span class="o">.</span><span class="n">author_service</span> <span class="o">=</span> <span class="n">author_service</span>  <span class="c1"># PostService depends on AuthorService</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="k">class</span><span class="w"> </span><span class="nc">AuthorService</span><span class="p">:</span>
+</span><span data-line="7">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">post_service</span><span class="p">):</span>
+</span><span data-line="8">        <span class="bp">self</span><span class="o">.</span><span class="n">post_service</span> <span class="o">=</span> <span class="n">post_service</span>  <span class="c1"># AuthorService depends on PostService</span>
+</span><span data-line="9">
+</span><span data-line="10"><span class="c1"># ✅ Correct - services use repositories directly</span>
+</span><span data-line="11"><span class="k">class</span><span class="w"> </span><span class="nc">PostService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">Post</span><span class="p">,</span> <span class="n">PostRepository</span><span class="p">]):</span>
+</span><span data-line="12">    <span class="n">repository_type</span> <span class="o">=</span> <span class="n">PostRepository</span>
+</span><span data-line="13">    <span class="c1"># Access Author data through repository queries, not AuthorService</span>
+</span><span data-line="14">
+</span><span data-line="15"><span class="k">class</span><span class="w"> </span><span class="nc">AuthorService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">Author</span><span class="p">,</span> <span class="n">AuthorRepository</span><span class="p">]):</span>
+</span><span data-line="16">    <span class="n">repository_type</span> <span class="o">=</span> <span class="n">AuthorRepository</span>
+</span><span data-line="17">    <span class="c1"># Access Post data through repository queries, not PostService</span>
+</span></pre></div>
+</div>
+<p>Services should not depend on each other. Use repository queries to access related data.</p>
+</section>
+<section id="service-coordinators">
+<h3>Service Coordinators<a class="headerlink" href="#service-coordinators" title="Link to this heading">¶</a></h3>
+<p>Use coordinator services to orchestrate multiple services in a single unit of work:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncConfig</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">class</span><span class="w"> </span><span class="nc">BlogCoordinator</span><span class="p">:</span>
+</span><span data-line="4"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Coordinates author and post operations in transactions.&quot;&quot;&quot;</span>
+</span><span data-line="5">
+</span><span data-line="6">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">):</span>
+</span><span data-line="7">        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+</span><span data-line="8">
+</span><span data-line="9">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_author_with_posts</span><span class="p">(</span>
+</span><span data-line="10">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="11">        <span class="n">author_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+</span><span data-line="12">        <span class="n">posts_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+</span><span data-line="13">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Author</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]]:</span>
+</span><span data-line="14"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create author and their posts in single transaction.&quot;&quot;&quot;</span>
+</span><span data-line="15">        <span class="c1"># Services manage session lifecycle with .new()</span>
+</span><span data-line="16">        <span class="k">async</span> <span class="k">with</span> <span class="n">AuthorService</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span> <span class="k">as</span> <span class="n">author_service</span><span class="p">,</span> \
+</span><span data-line="17">                   <span class="n">PostService</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span> <span class="k">as</span> <span class="n">post_service</span><span class="p">:</span>
+</span><span data-line="18">            <span class="c1"># Create author</span>
+</span><span data-line="19">            <span class="n">author</span> <span class="o">=</span> <span class="k">await</span> <span class="n">author_service</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">author_data</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="20">
+</span><span data-line="21">            <span class="c1"># Create posts linked to author</span>
+</span><span data-line="22">            <span class="n">posts</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="23">            <span class="k">for</span> <span class="n">post_data</span> <span class="ow">in</span> <span class="n">posts_data</span><span class="p">:</span>
+</span><span data-line="24">                <span class="n">post_data</span><span class="p">[</span><span class="s2">&quot;author_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">author</span><span class="o">.</span><span class="n">id</span>
+</span><span data-line="25">                <span class="n">post</span> <span class="o">=</span> <span class="k">await</span> <span class="n">post_service</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">post_data</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="26">                <span class="n">posts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
+</span><span data-line="27">
+</span><span data-line="28">            <span class="k">return</span> <span class="n">author</span><span class="p">,</span> <span class="n">posts</span>
+</span></pre></div>
+</div>
+<p>Coordinator characteristics:</p>
+<ul class="simple">
+<li><p>Uses <code class="docutils literal notranslate"><span class="pre">.new()</span></code> context manager for proper session handling</p></li>
+<li><p>Orchestrates multiple services in one transaction</p></li>
+<li><p>Contains cross-service business logic</p></li>
+<li><p>Ensures data consistency across services</p></li>
+<li><p>Does not duplicate service methods</p></li>
+</ul>
+</section>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">¶</a></h2>
+<p>With service patterns in place, explore framework integration.</p>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../frameworks/index.html"><span class="doc">Framework Integration</span></a> - Litestar, FastAPI, Flask integration</p></li>
+<li><p><a class="reference internal" href="basics.html"><span class="doc">Basics</span></a> - Service fundamentals</p></li>
+<li><p><a class="reference internal" href="schemas.html"><span class="doc">Schema Integration</span></a> - Schema validation and transformation</p></li>
+<li><p><a class="reference internal" href="../repositories/advanced.html"><span class="doc">Advanced</span></a> - Advanced repository patterns</p></li>
+</ul>
+</section>
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="schemas.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Schema Integration</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="../types/index.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Custom Types</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2025, Litestar Organization</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a>
+<a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+  <iconify-icon icon="simple-icons:discord"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../_static/documentation_options.js?v=6f8f3740"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=a56c686a"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../_static/shibuya.js?v=e730760c"></script></body>
+</html>
