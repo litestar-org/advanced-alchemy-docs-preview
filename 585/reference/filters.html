@@ -404,34 +404,16 @@ interface across different filter types.</p>
 <dt class="sig sig-object py" id="advanced_alchemy.filters.BeforeAfter">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">BeforeAfter</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#BeforeAfter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.BeforeAfter" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.filters.StatementFilter" title="advanced_alchemy.filters.StatementFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">StatementFilter</span></code></a></p>
-<p>DateTime range filter with exclusive bounds.</p>
-<p>This filter creates date/time range conditions using &lt; and &gt; operators,
-excluding the boundary values. Supports string field names, instrumented
-attributes, and SQLAlchemy func expressions.</p>
-<p>If either <cite>before</cite> or <cite>after</cite> is None, that boundary condition is not applied.</p>
-<div class="admonition-examples admonition">
-<p class="admonition-title">Examples</p>
-<p>Using date function expressions:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">func</span>
-</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">BeforeAfter</span>
-</span><span data-line="3">
-</span><span data-line="4"><span class="c1"># Filter by current timestamp</span>
-</span><span data-line="5"><span class="n">recent</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
-</span><span data-line="6">    <span class="n">BeforeAfter</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">current_timestamp</span><span class="p">(),</span> <span class="n">after</span><span class="o">=</span><span class="n">cutoff_date</span><span class="p">)</span>
-</span><span data-line="7"><span class="p">)</span>
-</span></pre></div>
+<p>DateTime range filter with exclusive bounds (&lt; and &gt;).</p>
+<p>If either <cite>before</cite> or <cite>after</cite> is None, that boundary is not applied.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#advanced_alchemy.filters.OnBeforeAfter" title="advanced_alchemy.filters.OnBeforeAfter"><code class="xref py py-class docutils literal notranslate"><span class="pre">OnBeforeAfter</span></code></a>: Inclusive datetime range filtering</p>
 </div>
-</div>
-<section id="see-also">
-<h2>See Also:<a class="headerlink" href="#see-also" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p><a class="reference internal" href="#advanced_alchemy.filters.OnBeforeAfter" title="advanced_alchemy.filters.OnBeforeAfter"><code class="xref py py-class docutils literal notranslate"><span class="pre">OnBeforeAfter</span></code></a> : Inclusive datetime range filtering</p>
-</div></blockquote>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.filters.BeforeAfter.field_name">
 <span class="sig-name descname"><span class="pre">field_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union[str,</span> <span class="pre">ColumnElement[Any],</span> <span class="pre">InstrumentedAttribute[Any]]</span></em><a class="headerlink" href="#advanced_alchemy.filters.BeforeAfter.field_name" title="Link to this definition">¶</a></dt>
-<dd><p>Name of the model attribute to filter on, a SQLAlchemy column expression,
-or an instrumented attribute.</p>
+<dd><p>Field name, model attribute, or func expression.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -473,30 +455,24 @@ or an instrumented attribute.</p>
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">before</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">after</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.filters.BeforeAfter.__init__" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</section>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="advanced_alchemy.filters.CollectionFilter">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">CollectionFilter</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#CollectionFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.CollectionFilter" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.filters.InAnyFilter" title="advanced_alchemy.filters.InAnyFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">InAnyFilter</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code>]</p>
-<p>Data required to construct a WHERE … IN (…) clause.</p>
-<p>This filter restricts records based on a field’s presence in a collection of values.
-Supports string field names, instrumented attributes, and SQLAlchemy func expressions.</p>
-<p>The filter supports both <code class="docutils literal notranslate"><span class="pre">IN</span></code> and <code class="docutils literal notranslate"><span class="pre">ANY</span></code> operators for collection membership testing.
-Use <code class="docutils literal notranslate"><span class="pre">prefer_any=True</span></code> in <code class="docutils literal notranslate"><span class="pre">append_to_statement</span></code> to use the <code class="docutils literal notranslate"><span class="pre">ANY</span></code> operator.</p>
+<p>WHERE … IN (…) clause filter.</p>
+<p>Supports both <code class="docutils literal notranslate"><span class="pre">IN</span></code> and <code class="docutils literal notranslate"><span class="pre">ANY</span></code> operators via <code class="docutils literal notranslate"><span class="pre">prefer_any</span></code> parameter.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.filters.CollectionFilter.field_name">
 <span class="sig-name descname"><span class="pre">field_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union[str,</span> <span class="pre">ColumnElement[Any],</span> <span class="pre">InstrumentedAttribute[Any]]</span></em><a class="headerlink" href="#advanced_alchemy.filters.CollectionFilter.field_name" title="Link to this definition">¶</a></dt>
-<dd><p>Name of the model attribute to filter on, a SQLAlchemy column expression,
-or an instrumented attribute.</p>
+<dd><p>Field name, model attribute, or func expression.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.filters.CollectionFilter.values">
 <span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a><span class="pre">(</span><code class="docutils literal notranslate"><span class="pre">T</span></code><span class="pre">)]]</span></em><a class="headerlink" href="#advanced_alchemy.filters.CollectionFilter.values" title="Link to this definition">¶</a></dt>
-<dd><p>Values for the <code class="docutils literal notranslate"><span class="pre">IN</span></code> clause. If this is None, no filter is applied.
-An empty list will force an empty result set (WHERE 1=-1)</p>
+<dd><p>Values for IN clause. None = no filter, empty list = empty result set.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -535,34 +511,17 @@ An empty list will force an empty result set (WHERE 1=-1)</p>
 <dt class="sig sig-object py" id="advanced_alchemy.filters.ComparisonFilter">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">ComparisonFilter</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#ComparisonFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.ComparisonFilter" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.filters.StatementFilter" title="advanced_alchemy.filters.StatementFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">StatementFilter</span></code></a></p>
-<p>Simple comparison filter for equality and inequality operations.</p>
-<p>This filter applies basic comparison operators (=, !=, &gt;, &gt;=, &lt;, &lt;=) to a field.
-It provides a generic way to perform common comparison operations. Supports
-string field names, instrumented attributes, and SQLAlchemy func expressions.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><span class="target" id="advanced_alchemy.filters.ComparisonFilter.params.field_name"></span><strong>field_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.ComparisonFilter.params.field_name">¶</a> – Name of the model attribute to filter on, a SQLAlchemy column
-expression, or an instrumented attribute</p></li>
-<li><p><span class="target" id="advanced_alchemy.filters.ComparisonFilter.params.operator"></span><strong>operator</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.ComparisonFilter.params.operator">¶</a> – Comparison operator to use (must be one of: ‘eq’, ‘ne’, ‘gt’, ‘ge’, ‘lt’, ‘le’, ‘in’, ‘notin’, ‘between’, ‘like’, ‘ilike’, ‘startswith’, ‘istartswith’, ‘endswith’, ‘iendswith’, ‘dateeq’)</p></li>
-<li><p><span class="target" id="advanced_alchemy.filters.ComparisonFilter.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.ComparisonFilter.params.value">¶</a> – Value to compare against</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If an invalid operator is provided</p>
-</dd>
-</dl>
+<p>Comparison filter for standard operators (=, !=, &gt;, &lt;, &gt;=, &lt;=, etc.).</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.filters.ComparisonFilter.field_name">
 <span class="sig-name descname"><span class="pre">field_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union[str,</span> <span class="pre">ColumnElement[Any],</span> <span class="pre">InstrumentedAttribute[Any]]</span></em><a class="headerlink" href="#advanced_alchemy.filters.ComparisonFilter.field_name" title="Link to this definition">¶</a></dt>
-<dd><p>Name of the model attribute to filter on, a SQLAlchemy column expression,
-or an instrumented attribute.</p>
+<dd><p>Field name, model attribute, or func expression.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.filters.ComparisonFilter.operator">
 <span class="sig-name descname"><span class="pre">operator</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></em><a class="headerlink" href="#advanced_alchemy.filters.ComparisonFilter.operator" title="Link to this definition">¶</a></dt>
-<dd><p>Comparison operator to use (one of ‘eq’, ‘ne’, ‘gt’, ‘ge’, ‘lt’, ‘le’).</p>
+<dd><p>Comparison operator (‘eq’, ‘ne’, ‘gt’, ‘ge’, ‘lt’, ‘le’, etc.).</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1135,32 +1094,18 @@ The SQLAlchemy model class</p></li>
 <dt class="sig sig-object py" id="advanced_alchemy.filters.NotInCollectionFilter">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">NotInCollectionFilter</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#NotInCollectionFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.NotInCollectionFilter" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.filters.InAnyFilter" title="advanced_alchemy.filters.InAnyFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">InAnyFilter</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code>]</p>
-<p>Data required to construct a WHERE … NOT IN (…) clause.</p>
-<p>This filter restricts records based on a field’s absence in a collection of values.
-Supports string field names, instrumented attributes, and SQLAlchemy func expressions.</p>
-<p>The filter supports both <code class="docutils literal notranslate"><span class="pre">NOT</span> <span class="pre">IN</span></code> and <code class="docutils literal notranslate"><span class="pre">!=</span> <span class="pre">ANY</span></code> operators for collection exclusion.
-Use <code class="docutils literal notranslate"><span class="pre">prefer_any=True</span></code> in <code class="docutils literal notranslate"><span class="pre">append_to_statement</span></code> to use the <code class="docutils literal notranslate"><span class="pre">ANY</span></code> operator.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><span class="target" id="advanced_alchemy.filters.NotInCollectionFilter.params.field_name"></span><strong>field_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.NotInCollectionFilter.params.field_name">¶</a> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> | </em><em>ColumnElement</em><em> | </em><em>InstrumentedAttribute</em>) – Name of the model attribute to filter on, a SQLAlchemy column expression,
-or an instrumented attribute</p></li>
-<li><p><span class="target" id="advanced_alchemy.filters.NotInCollectionFilter.params.values"></span><strong>values</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.NotInCollectionFilter.params.values">¶</a> (<em>abc.Collection</em><em>[</em><em>T</em><em>] </em><em>| </em><em>None</em>) – Values for the <code class="docutils literal notranslate"><span class="pre">NOT</span> <span class="pre">IN</span></code> clause. If this is None or empty,
-the filter is not applied.</p></li>
-</ul>
-</dd>
-</dl>
+<p>WHERE … NOT IN (…) clause filter.</p>
+<p>Supports both <code class="docutils literal notranslate"><span class="pre">NOT</span> <span class="pre">IN</span></code> and <code class="docutils literal notranslate"><span class="pre">!=</span> <span class="pre">ANY</span></code> operators via <code class="docutils literal notranslate"><span class="pre">prefer_any</span></code> parameter.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.filters.NotInCollectionFilter.field_name">
 <span class="sig-name descname"><span class="pre">field_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union[str,</span> <span class="pre">ColumnElement[Any],</span> <span class="pre">InstrumentedAttribute[Any]]</span></em><a class="headerlink" href="#advanced_alchemy.filters.NotInCollectionFilter.field_name" title="Link to this definition">¶</a></dt>
-<dd><p>Name of the model attribute to filter on, a SQLAlchemy column expression,
-or an instrumented attribute.</p>
+<dd><p>Field name, model attribute, or func expression.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.filters.NotInCollectionFilter.values">
 <span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Collection</span></code></a><span class="pre">[</span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a><span class="pre">(</span><code class="docutils literal notranslate"><span class="pre">T</span></code><span class="pre">)]]</span></em><a class="headerlink" href="#advanced_alchemy.filters.NotInCollectionFilter.values" title="Link to this definition">¶</a></dt>
-<dd><p>Values for the <code class="docutils literal notranslate"><span class="pre">NOT</span> <span class="pre">IN</span></code> clause. If None or empty, no filter is applied.</p>
+<dd><p>Values for NOT IN clause. None or empty = no filter.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1246,22 +1191,16 @@ Can exclude across multiple fields using AND conditions.</p>
 <dt class="sig sig-object py" id="advanced_alchemy.filters.OnBeforeAfter">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">OnBeforeAfter</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#OnBeforeAfter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.OnBeforeAfter" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.filters.StatementFilter" title="advanced_alchemy.filters.StatementFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">StatementFilter</span></code></a></p>
-<p>DateTime range filter with inclusive bounds.</p>
-<p>This filter creates date/time range conditions using &lt;= and &gt;= operators,
-including the boundary values. Supports string field names, instrumented
-attributes, and SQLAlchemy func expressions.</p>
-<p>If either <cite>on_or_before</cite> or <cite>on_or_after</cite> is None, that boundary condition
-is not applied.</p>
-<section id="id1">
-<h2>See Also:<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p><a class="reference internal" href="#advanced_alchemy.filters.BeforeAfter" title="advanced_alchemy.filters.BeforeAfter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BeforeAfter</span></code></a> : Exclusive datetime range filtering</p>
-</div></blockquote>
+<p>DateTime range filter with inclusive bounds (&lt;= and &gt;=).</p>
+<p>If either <cite>on_or_before</cite> or <cite>on_or_after</cite> is None, that boundary is not applied.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#advanced_alchemy.filters.BeforeAfter" title="advanced_alchemy.filters.BeforeAfter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BeforeAfter</span></code></a>: Exclusive datetime range filtering</p>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.filters.OnBeforeAfter.field_name">
 <span class="sig-name descname"><span class="pre">field_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union[str,</span> <span class="pre">ColumnElement[Any],</span> <span class="pre">InstrumentedAttribute[Any]]</span></em><a class="headerlink" href="#advanced_alchemy.filters.OnBeforeAfter.field_name" title="Link to this definition">¶</a></dt>
-<dd><p>Name of the model attribute to filter on, a SQLAlchemy column expression,
-or an instrumented attribute.</p>
+<dd><p>Field name, model attribute, or func expression.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1303,7 +1242,6 @@ or an instrumented attribute.</p>
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_or_before</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_or_after</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.filters.OnBeforeAfter.__init__" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</section>
 </dd></dl>
 
 <dl class="py class">
@@ -1311,56 +1249,11 @@ or an instrumented attribute.</p>
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">OrderBy</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#OrderBy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.OrderBy" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.filters.StatementFilter" title="advanced_alchemy.filters.StatementFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">StatementFilter</span></code></a></p>
 <p>Order by a specific field or SQLAlchemy function expression.</p>
-<p>Appends an ORDER BY clause to SELECT statements, sorting records by the
-specified field in ascending or descending order. Supports string field names,
-instrumented attributes, and SQLAlchemy func expressions.</p>
+<p>Supports string field names, model attributes, and func expressions (e.g., <code class="docutils literal notranslate"><span class="pre">func.random()</span></code>).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This filter only modifies SELECT statements. For other statement types,
 the statement is returned unchanged.</p>
-</div>
-<div class="admonition-examples admonition">
-<p class="admonition-title">Examples</p>
-<p>Random ordering (database-specific functions):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">func</span>
-</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderBy</span>
-</span><span data-line="3">
-</span><span data-line="4"><span class="c1"># PostgreSQL, SQLite, DuckDB</span>
-</span><span data-line="5"><span class="n">users</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">OrderBy</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">random</span><span class="p">()))</span>
-</span><span data-line="6">
-</span><span data-line="7"><span class="c1"># MySQL</span>
-</span><span data-line="8"><span class="n">users</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">OrderBy</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">rand</span><span class="p">()))</span>
-</span><span data-line="9">
-</span><span data-line="10"><span class="c1"># SQL Server</span>
-</span><span data-line="11"><span class="n">users</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">OrderBy</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">newid</span><span class="p">()))</span>
-</span></pre></div>
-</div>
-<p>Computed field sorting:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">func</span>
-</span><span data-line="2">
-</span><span data-line="3"><span class="c1"># Case-insensitive alphabetical order</span>
-</span><span data-line="4"><span class="n">users</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
-</span><span data-line="5">    <span class="n">OrderBy</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
-</span><span data-line="6"><span class="p">)</span>
-</span><span data-line="7">
-</span><span data-line="8"><span class="c1"># Sort by string length</span>
-</span><span data-line="9"><span class="n">posts</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
-</span><span data-line="10">    <span class="n">OrderBy</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">title</span><span class="p">),</span> <span class="n">sort_order</span><span class="o">=</span><span class="s2">&quot;desc&quot;</span><span class="p">)</span>
-</span><span data-line="11"><span class="p">)</span>
-</span></pre></div>
-</div>
-<p>Traditional string field name (backward compatible):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">users</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
-</span><span data-line="2">    <span class="n">OrderBy</span><span class="p">(</span><span class="s2">&quot;created_at&quot;</span><span class="p">,</span> <span class="n">sort_order</span><span class="o">=</span><span class="s2">&quot;desc&quot;</span><span class="p">)</span>
-</span><span data-line="3"><span class="p">)</span>
-</span></pre></div>
-</div>
-<p>Instrumented attribute:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">users</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
-</span><span data-line="2">    <span class="n">OrderBy</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">created_at</span><span class="p">,</span> <span class="n">sort_order</span><span class="o">=</span><span class="s2">&quot;asc&quot;</span><span class="p">)</span>
-</span><span data-line="3"><span class="p">)</span>
-</span></pre></div>
-</div>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -1374,8 +1267,7 @@ the statement is returned unchanged.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.filters.OrderBy.field_name">
 <span class="sig-name descname"><span class="pre">field_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union[str,</span> <span class="pre">ColumnElement[Any],</span> <span class="pre">InstrumentedAttribute[Any]]</span></em><a class="headerlink" href="#advanced_alchemy.filters.OrderBy.field_name" title="Link to this definition">¶</a></dt>
-<dd><p>Name of the model attribute to sort on, a SQLAlchemy column expression
-(e.g., <code class="docutils literal notranslate"><span class="pre">func.random()</span></code>), or an instrumented attribute (e.g., <code class="docutils literal notranslate"><span class="pre">User.name</span></code>).</p>
+<dd><p>Field name, model attribute, or func expression (e.g., <code class="docutils literal notranslate"><span class="pre">func.random()</span></code>).</p>
 </dd></dl>
 
 <dl class="py attribute">
