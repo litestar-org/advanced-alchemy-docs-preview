@@ -2,7 +2,8 @@
 <html lang="en" data-accent-color="amber" data-content_root="../">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>types - Advanced Alchemy</title><link rel="shortcut icon" href="../_static/favicon.png"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="exceptions" href="exceptions.html" /><link rel="prev" title="operations" href="operations.html" /><script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>types - Advanced Alchemy</title><link rel="shortcut icon" href="../_static/favicon.png"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="exceptions" href="exceptions.html" /><link rel="prev" title="operations" href="operations.html" />
+      <link rel="canonical" href="https://litestar-org.github.io/advanced-alchemy-docs-preview/586/reference/types.html" /><script>
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3270565a" />
@@ -23,7 +24,9 @@
   --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
 }
 </style>
-    <meta property="og:type" content="website"/><meta property="og:title" content="types"/>
+    <meta property="og:type" content="website"/>
+<meta property="og:url" content="https://litestar-org.github.io/advanced-alchemy-docs-preview/586/reference/types.html"/>
+<meta property="og:title" content="types"/>
 <meta name="twitter:card" content="summary"/>
   </head>
 <body><div class="sy-head">
@@ -344,6 +347,11 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.types.EncryptedText.load_dialect_impl"><code class="docutils literal notranslate">load_dialect_impl()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.base.HashedPassword"><code class="docutils literal notranslate"><span class="pre">HashedPassword</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.base.HashedPassword.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.base.HashedPassword.verify"><code class="docutils literal notranslate">verify()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#advanced_alchemy.types.PasswordHash"><code class="docutils literal notranslate"><span class="pre">PasswordHash</span></code></a><ul>
 <li><a class="reference internal" href="#advanced_alchemy.types.PasswordHash.impl"><code class="docutils literal notranslate">impl</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.PasswordHash.cache_ok"><code class="docutils literal notranslate">cache_ok</span></code></a></li>
@@ -374,9 +382,39 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.types.FernetBackend.decrypt"><code class="docutils literal notranslate">decrypt()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend"><code class="docutils literal notranslate"><span class="pre">PGCryptoBackend</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.passphrase"><code class="docutils literal notranslate">passphrase</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.init_engine"><code class="docutils literal notranslate">init_engine()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.encrypt"><code class="docutils literal notranslate">encrypt()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.decrypt"><code class="docutils literal notranslate">decrypt()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#password-hashers">Password Hashers</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#password-hashers">Password Hashers</a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher"><code class="docutils literal notranslate"><span class="pre">Argon2Hasher</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher.hash"><code class="docutils literal notranslate">hash()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher.verify"><code class="docutils literal notranslate">verify()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher.compare_expression"><code class="docutils literal notranslate">compare_expression()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher"><code class="docutils literal notranslate"><span class="pre">PasslibHasher</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher.hash"><code class="docutils literal notranslate">hash()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher.verify"><code class="docutils literal notranslate">verify()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher.compare_expression"><code class="docutils literal notranslate">compare_expression()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher"><code class="docutils literal notranslate"><span class="pre">PwdlibHasher</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.hash"><code class="docutils literal notranslate">hash()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.verify"><code class="docutils literal notranslate">verify()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.compare_expression"><code class="docutils literal notranslate">compare_expression()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#mutable-types">Mutable Types</a><ul>
 <li><a class="reference internal" href="#advanced_alchemy.types.MutableList"><code class="docutils literal notranslate"><span class="pre">MutableList</span></code></a><ul>
 <li><a class="reference internal" href="#advanced_alchemy.types.MutableList.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
@@ -2705,6 +2743,53 @@ and <code class="xref py py-class docutils literal notranslate"><span class="pre
 </dd></dl>
 
 <p>SQLAlchemy type for encrypted text storage (longer content).</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.base.HashedPassword">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.types.password_hash.base.</span></span><span class="sig-name descname"><span class="pre">HashedPassword</span></span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/base.html#HashedPassword"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.base.HashedPassword" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Wrapper class for a hashed password.</p>
+<p>This class holds the hash string and provides a method to verify a plain text password against it.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.base.HashedPassword.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hash_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/base.html#HashedPassword.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.base.HashedPassword.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize a HashedPassword object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.base.HashedPassword.params.hash_string"></span><strong>hash_string</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.base.HashedPassword.params.hash_string">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The hash string.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.base.HashedPassword.params.backend"></span><strong>backend</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.base.HashedPassword.params.backend">¶</a> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">HashingBackend</span></code></span>) – The hashing backend to use for verification.</p></li>
+<li><p><strong>hash_string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>backend</strong> (<em>HashingBackend</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.base.HashedPassword.verify">
+<span class="sig-name descname"><span class="pre">verify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plain_password</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/base.html#HashedPassword.verify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.base.HashedPassword.verify" title="Link to this definition">¶</a></dt>
+<dd><p>Verify a plain text password against this hash.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.base.HashedPassword.verify.params.plain_password"></span><strong>plain_password</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.base.HashedPassword.verify.params.plain_password">¶</a> – The plain text password to verify.</p></li>
+<li><p><strong>plain_password</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the password matches the hash, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <p>SQLAlchemy type for password hashing with pluggable hashers.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="advanced_alchemy.types.PasswordHash">
@@ -2926,7 +3011,7 @@ it is returned directly. Otherwise, the hashed string is returned.</p>
 <dd class="field-even"><p>A HashedPassword object or None if the input is None.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Union[HashedPassword, None]</p>
+<dd class="field-odd"><p>Union[<a class="reference internal" href="#advanced_alchemy.types.password_hash.base.HashedPassword" title="advanced_alchemy.types.password_hash.base.HashedPassword">HashedPassword</a>, None]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3169,9 +3254,348 @@ built-in rotation support.</p>
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.types.encrypted_string.PGCryptoBackend">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.types.encrypted_string.</span></span><span class="sig-name descname"><span class="pre">PGCryptoBackend</span></span><a class="reference internal" href="../_modules/advanced_alchemy/types/encrypted_string.html#PGCryptoBackend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.types.EncryptionBackend" title="advanced_alchemy.types.encrypted_string.EncryptionBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">EncryptionBackend</span></code></a></p>
+<p>PostgreSQL pgcrypto-based encryption backend.</p>
+<p>This backend uses PostgreSQL’s pgcrypto extension for encryption/decryption operations.
+Requires the pgcrypto extension to be installed in the database.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.types.encrypted_string.PGCryptoBackend.passphrase">
+<span class="sig-name descname"><span class="pre">passphrase</span></span><a class="headerlink" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.passphrase" title="Link to this definition">¶</a></dt>
+<dd><p>The base64-encoded passphrase used for encryption and decryption.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)">bytes</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.encrypted_string.PGCryptoBackend.init_engine">
+<span class="sig-name descname"><span class="pre">init_engine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/encrypted_string.html#PGCryptoBackend.init_engine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.init_engine" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes the pgcrypto engine with the provided key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.encrypted_string.PGCryptoBackend.init_engine.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.init_engine.params.key">¶</a> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The encryption key.</p></li>
+<li><p><strong>key</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.encrypted_string.PGCryptoBackend.encrypt">
+<span class="sig-name descname"><span class="pre">encrypt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/encrypted_string.html#PGCryptoBackend.encrypt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.encrypt" title="Link to this definition">¶</a></dt>
+<dd><p>Encrypts the given value using pgcrypto.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.encrypted_string.PGCryptoBackend.encrypt.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.encrypt.params.value">¶</a> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="advanced_alchemy.config.types.Any"><em>Any</em></a>) – The value to encrypt.</p></li>
+<li><p><strong>value</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The encrypted value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.encrypted_string.PGCryptoBackend.decrypt">
+<span class="sig-name descname"><span class="pre">decrypt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/encrypted_string.html#PGCryptoBackend.decrypt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.decrypt" title="Link to this definition">¶</a></dt>
+<dd><p>Decrypts the given value using pgcrypto.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.encrypted_string.PGCryptoBackend.decrypt.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.decrypt.params.value">¶</a> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="advanced_alchemy.config.types.Any"><em>Any</em></a>) – The value to decrypt.</p></li>
+<li><p><strong>value</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The decrypted value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="password-hashers">
 <h2>Password Hashers<a class="headerlink" href="#password-hashers" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.argon2.Argon2Hasher">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.types.password_hash.argon2.</span></span><span class="sig-name descname"><span class="pre">Argon2Hasher</span></span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/argon2.html#Argon2Hasher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">HashingBackend</span></code></p>
+<p>Hashing backend using Argon2 via the argon2-cffi library.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.argon2.Argon2Hasher.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/argon2.html#Argon2Hasher.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize Argon2Backend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.argon2.Argon2Hasher.params.**kwargs"></span><strong>**kwargs</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher.params.**kwargs">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Optional keyword arguments to pass to the argon2.PasswordHasher constructor.
+See argon2-cffi documentation for available parameters (e.g., time_cost,
+memory_cost, parallelism, hash_len, salt_len, type).</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.argon2.Argon2Hasher.hash">
+<span class="sig-name descname"><span class="pre">hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/argon2.html#Argon2Hasher.hash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher.hash" title="Link to this definition">¶</a></dt>
+<dd><p>Hash the password using Argon2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.argon2.Argon2Hasher.hash.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher.hash.params.value">¶</a> – The plain text password (will be encoded to UTF-8 if string).</p></li>
+<li><p><strong>value</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Argon2 hash string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.argon2.Argon2Hasher.verify">
+<span class="sig-name descname"><span class="pre">verify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hashed</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/argon2.html#Argon2Hasher.verify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher.verify" title="Link to this definition">¶</a></dt>
+<dd><p>Verify a plain text password against an Argon2 hash.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.argon2.Argon2Hasher.verify.params.plain"></span><strong>plain</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher.verify.params.plain">¶</a> – The plain text password (will be encoded to UTF-8 if string).</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.argon2.Argon2Hasher.verify.params.hashed"></span><strong>hashed</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher.verify.params.hashed">¶</a> – The Argon2 hash string to verify against.</p></li>
+<li><p><strong>plain</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a><em>]</em>)</p></li>
+<li><p><strong>hashed</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the password matches the hash, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.argon2.Argon2Hasher.compare_expression">
+<span class="sig-name descname"><span class="pre">compare_expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/argon2.html#Argon2Hasher.compare_expression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher.compare_expression" title="Link to this definition">¶</a></dt>
+<dd><p>Direct SQL comparison is not supported for Argon2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – Always raised.</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>column</strong> (<em>ColumnElement</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>]</em>)</p></li>
+<li><p><strong>plain</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>BinaryExpression[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.passlib.PasslibHasher">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.types.password_hash.passlib.</span></span><span class="sig-name descname"><span class="pre">PasslibHasher</span></span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/passlib.html#PasslibHasher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">HashingBackend</span></code></p>
+<p>Hashing backend using Passlib.</p>
+<p>Relies on the <cite>passlib</cite> package being installed.
+Install with <cite>pip install passlib</cite> or <cite>uv pip install passlib</cite>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.passlib.PasslibHasher.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/passlib.html#PasslibHasher.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize PasslibBackend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.passlib.PasslibHasher.params.context"></span><strong>context</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher.params.context">¶</a> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">CryptContext</span></code></span>) – The Passlib CryptContext to use for hashing and verification.</p></li>
+<li><p><strong>context</strong> (<em>CryptContext</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.passlib.PasslibHasher.hash">
+<span class="sig-name descname"><span class="pre">hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/passlib.html#PasslibHasher.hash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher.hash" title="Link to this definition">¶</a></dt>
+<dd><p>Hash the given value using the Passlib context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.passlib.PasslibHasher.hash.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher.hash.params.value">¶</a> – The plain text value to hash. Will be converted to string.</p></li>
+<li><p><strong>value</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The hashed string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.passlib.PasslibHasher.verify">
+<span class="sig-name descname"><span class="pre">verify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hashed</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/passlib.html#PasslibHasher.verify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher.verify" title="Link to this definition">¶</a></dt>
+<dd><p>Verify a plain text value against a hash using the Passlib context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.passlib.PasslibHasher.verify.params.plain"></span><strong>plain</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher.verify.params.plain">¶</a> – The plain text value to verify. Will be converted to string.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.passlib.PasslibHasher.verify.params.hashed"></span><strong>hashed</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher.verify.params.hashed">¶</a> – The hash to verify against.</p></li>
+<li><p><strong>plain</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a><em>]</em>)</p></li>
+<li><p><strong>hashed</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the plain text matches the hash, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.passlib.PasslibHasher.compare_expression">
+<span class="sig-name descname"><span class="pre">compare_expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/passlib.html#PasslibHasher.compare_expression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher.compare_expression" title="Link to this definition">¶</a></dt>
+<dd><p>Direct SQL comparison is not supported for Passlib.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – Always raised.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.BinaryExpression" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryExpression</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column</strong> (<a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.ColumnElement" title="(in SQLAlchemy v2.0)"><em>ColumnElement</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>]</em>)</p></li>
+<li><p><strong>plain</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.types.password_hash.pwdlib.</span></span><span class="sig-name descname"><span class="pre">PwdlibHasher</span></span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/pwdlib.html#PwdlibHasher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">HashingBackend</span></code></p>
+<p>Hashing backend using Pwdlib.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hasher</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/pwdlib.html#PwdlibHasher.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize PwdlibBackend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.params.hasher"></span><strong>hasher</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.params.hasher">¶</a> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasherProtocol</span></code></span>) – The Pwdlib hasher to use for hashing and verification.</p></li>
+<li><p><strong>hasher</strong> (<em>HasherProtocol</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.hash">
+<span class="sig-name descname"><span class="pre">hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/pwdlib.html#PwdlibHasher.hash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.hash" title="Link to this definition">¶</a></dt>
+<dd><p>Hash the given value using the Pwdlib context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.hash.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.hash.params.value">¶</a> – The plain text value to hash. Will be converted to string.</p></li>
+<li><p><strong>value</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The hashed string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.verify">
+<span class="sig-name descname"><span class="pre">verify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hashed</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/pwdlib.html#PwdlibHasher.verify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.verify" title="Link to this definition">¶</a></dt>
+<dd><p>Verify a plain text value against a hash using the Pwdlib context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.verify.params.plain"></span><strong>plain</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.verify.params.plain">¶</a> – The plain text value to verify. Will be converted to string.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.verify.params.hashed"></span><strong>hashed</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.verify.params.hashed">¶</a> – The hash to verify against.</p></li>
+<li><p><strong>plain</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a><em>]</em>)</p></li>
+<li><p><strong>hashed</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the plain text matches the hash, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.compare_expression">
+<span class="sig-name descname"><span class="pre">compare_expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/pwdlib.html#PwdlibHasher.compare_expression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.pwdlib.PwdlibHasher.compare_expression" title="Link to this definition">¶</a></dt>
+<dd><p>Direct SQL comparison is not supported for Pwdlib.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – Always raised.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.BinaryExpression" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryExpression</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column</strong> (<a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.ColumnElement" title="(in SQLAlchemy v2.0)"><em>ColumnElement</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>]</em>)</p></li>
+<li><p><strong>plain</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="mutable-types">
 <h2>Mutable Types<a class="headerlink" href="#mutable-types" title="Link to this heading">¶</a></h2>
