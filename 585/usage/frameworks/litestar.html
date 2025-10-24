@@ -821,23 +821,22 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="18">
 </span><span data-line="19"><span class="c1"># 3. Configure session backend</span>
 </span><span data-line="20"><span class="n">session_config</span> <span class="o">=</span> <span class="n">ServerSideSessionConfig</span><span class="p">(</span>
-</span><span data-line="21">    <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your-secret-key-here&quot;</span><span class="p">,</span>  <span class="c1"># Use a secure secret in production</span>
-</span><span data-line="22">    <span class="n">max_age</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>  <span class="c1"># 1 hour</span>
-</span><span data-line="23"><span class="p">)</span>
-</span><span data-line="24">
-</span><span data-line="25"><span class="c1"># 4. Create the session backend</span>
-</span><span data-line="26"><span class="n">session_backend</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncSessionBackend</span><span class="p">(</span>
-</span><span data-line="27">    <span class="n">config</span><span class="o">=</span><span class="n">session_config</span><span class="p">,</span>
-</span><span data-line="28">    <span class="n">alchemy_config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">,</span>
-</span><span data-line="29">    <span class="n">model</span><span class="o">=</span><span class="n">UserSession</span><span class="p">,</span>
-</span><span data-line="30"><span class="p">)</span>
-</span><span data-line="31">
-</span><span data-line="32"><span class="c1"># 5. Create your Litestar app</span>
-</span><span data-line="33"><span class="n">app</span> <span class="o">=</span> <span class="n">Litestar</span><span class="p">(</span>
-</span><span data-line="34">    <span class="n">route_handlers</span><span class="o">=</span><span class="p">[],</span>
-</span><span data-line="35">    <span class="n">plugins</span><span class="o">=</span><span class="p">[</span><span class="n">SQLAlchemyPlugin</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">)],</span>
-</span><span data-line="36">    <span class="n">middleware</span><span class="o">=</span><span class="p">[</span><span class="n">session_config</span><span class="o">.</span><span class="n">middleware</span><span class="p">],</span>
-</span><span data-line="37"><span class="p">)</span>
+</span><span data-line="21">    <span class="n">max_age</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>  <span class="c1"># 1 hour</span>
+</span><span data-line="22"><span class="p">)</span>
+</span><span data-line="23">
+</span><span data-line="24"><span class="c1"># 4. Create the session backend</span>
+</span><span data-line="25"><span class="n">session_backend</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncSessionBackend</span><span class="p">(</span>
+</span><span data-line="26">    <span class="n">config</span><span class="o">=</span><span class="n">session_config</span><span class="p">,</span>
+</span><span data-line="27">    <span class="n">alchemy_config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">,</span>
+</span><span data-line="28">    <span class="n">model</span><span class="o">=</span><span class="n">UserSession</span><span class="p">,</span>
+</span><span data-line="29"><span class="p">)</span>
+</span><span data-line="30">
+</span><span data-line="31"><span class="c1"># 5. Create your Litestar app</span>
+</span><span data-line="32"><span class="n">app</span> <span class="o">=</span> <span class="n">Litestar</span><span class="p">(</span>
+</span><span data-line="33">    <span class="n">route_handlers</span><span class="o">=</span><span class="p">[],</span>
+</span><span data-line="34">    <span class="n">plugins</span><span class="o">=</span><span class="p">[</span><span class="n">SQLAlchemyPlugin</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">)],</span>
+</span><span data-line="35">    <span class="n">middleware</span><span class="o">=</span><span class="p">[</span><span class="n">session_config</span><span class="o">.</span><span class="n">middleware</span><span class="p">],</span>
+</span><span data-line="36"><span class="p">)</span>
 </span></pre></div>
 </div>
 </section>
@@ -980,28 +979,14 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </section>
 <section id="security-considerations">
 <h3>Security Considerations<a class="headerlink" href="#security-considerations" title="Link to this heading">¶</a></h3>
-<p><strong>Secret Key Management</strong></p>
-<p>Always use a secure secret key for session encryption:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">secrets</span>
-</span><span data-line="2">
-</span><span data-line="3"><span class="c1"># Generate a secure random secret</span>
-</span><span data-line="4"><span class="n">secret_key</span> <span class="o">=</span> <span class="n">secrets</span><span class="o">.</span><span class="n">token_urlsafe</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
-</span><span data-line="5">
-</span><span data-line="6"><span class="n">session_config</span> <span class="o">=</span> <span class="n">ServerSideSessionConfig</span><span class="p">(</span>
-</span><span data-line="7">    <span class="n">secret</span><span class="o">=</span><span class="n">secret_key</span><span class="p">,</span>
-</span><span data-line="8">    <span class="n">max_age</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>
-</span><span data-line="9">    <span class="n">https_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Require HTTPS in production</span>
-</span><span data-line="10">    <span class="n">samesite</span><span class="o">=</span><span class="s2">&quot;strict&quot;</span><span class="p">,</span>  <span class="c1"># CSRF protection</span>
-</span><span data-line="11"><span class="p">)</span>
-</span></pre></div>
-</div>
 <p><strong>Session Expiration</strong></p>
 <p>Configure appropriate session timeouts:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">session_config</span> <span class="o">=</span> <span class="n">ServerSideSessionConfig</span><span class="p">(</span>
-</span><span data-line="2">    <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your-secret-key&quot;</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># Sessions are automatically renewed on each request</span>
+</span><span data-line="2"><span class="n">session_config</span> <span class="o">=</span> <span class="n">ServerSideSessionConfig</span><span class="p">(</span>
 </span><span data-line="3">    <span class="n">max_age</span><span class="o">=</span><span class="mi">1800</span><span class="p">,</span>  <span class="c1"># 30 minutes</span>
-</span><span data-line="4">    <span class="c1"># Sessions are automatically renewed on each request</span>
-</span><span data-line="5"><span class="p">)</span>
+</span><span data-line="4">    <span class="n">https_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Require HTTPS in production</span>
+</span><span data-line="5">    <span class="n">samesite</span><span class="o">=</span><span class="s2">&quot;strict&quot;</span><span class="p">,</span>  <span class="c1"># CSRF protection</span>
+</span><span data-line="6"><span class="p">)</span>
 </span></pre></div>
 </div>
 <p><strong>Database Security</strong></p>
@@ -1087,45 +1072,44 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="25">
 </span><span data-line="26"><span class="c1"># Session configuration</span>
 </span><span data-line="27"><span class="n">session_config</span> <span class="o">=</span> <span class="n">ServerSideSessionConfig</span><span class="p">(</span>
-</span><span data-line="28">    <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your-super-secret-key-change-in-production&quot;</span><span class="p">,</span>
-</span><span data-line="29">    <span class="n">max_age</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>  <span class="c1"># 1 hour</span>
-</span><span data-line="30"><span class="p">)</span>
-</span><span data-line="31">
-</span><span data-line="32"><span class="c1"># Session backend</span>
-</span><span data-line="33"><span class="n">session_backend</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncSessionBackend</span><span class="p">(</span>
-</span><span data-line="34">    <span class="n">config</span><span class="o">=</span><span class="n">session_config</span><span class="p">,</span>
-</span><span data-line="35">    <span class="n">alchemy_config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">,</span>
-</span><span data-line="36">    <span class="n">model</span><span class="o">=</span><span class="n">WebSession</span><span class="p">,</span>
-</span><span data-line="37"><span class="p">)</span>
-</span><span data-line="38">
-</span><span data-line="39"><span class="c1"># Routes</span>
-</span><span data-line="40"><span class="nd">@get</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-</span><span data-line="41"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">home</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">ASGIConnection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span data-line="42">    <span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;username&quot;</span><span class="p">)</span>
-</span><span data-line="43">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">!&quot;</span> <span class="k">if</span> <span class="n">username</span> <span class="k">else</span> <span class="s2">&quot;Hello stranger!&quot;</span><span class="p">}</span>
-</span><span data-line="44">
-</span><span data-line="45"><span class="nd">@post</span><span class="p">(</span><span class="s2">&quot;/login&quot;</span><span class="p">)</span>
-</span><span data-line="46"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">login</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">ASGIConnection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span data-line="47">    <span class="n">form</span> <span class="o">=</span> <span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">()</span>
-</span><span data-line="48">    <span class="n">username</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;username&quot;</span><span class="p">)</span>
-</span><span data-line="49">
-</span><span data-line="50">    <span class="k">if</span> <span class="n">username</span><span class="p">:</span>
-</span><span data-line="51">        <span class="n">request</span><span class="o">.</span><span class="n">set_session</span><span class="p">({</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span> <span class="s2">&quot;login_time&quot;</span><span class="p">:</span> <span class="s2">&quot;now&quot;</span><span class="p">})</span>
-</span><span data-line="52">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Welcome </span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">}</span>
-</span><span data-line="53">
-</span><span data-line="54">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Username required&quot;</span><span class="p">}</span>
-</span><span data-line="55">
-</span><span data-line="56"><span class="nd">@post</span><span class="p">(</span><span class="s2">&quot;/logout&quot;</span><span class="p">)</span>
-</span><span data-line="57"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">logout</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">ASGIConnection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span data-line="58">    <span class="n">request</span><span class="o">.</span><span class="n">clear_session</span><span class="p">()</span>
-</span><span data-line="59">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Logged out successfully&quot;</span><span class="p">}</span>
-</span><span data-line="60">
-</span><span data-line="61"><span class="c1"># Application</span>
-</span><span data-line="62"><span class="n">app</span> <span class="o">=</span> <span class="n">Litestar</span><span class="p">(</span>
-</span><span data-line="63">    <span class="n">route_handlers</span><span class="o">=</span><span class="p">[</span><span class="n">home</span><span class="p">,</span> <span class="n">login</span><span class="p">,</span> <span class="n">logout</span><span class="p">],</span>
-</span><span data-line="64">    <span class="n">plugins</span><span class="o">=</span><span class="p">[</span><span class="n">SQLAlchemyPlugin</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">)],</span>
-</span><span data-line="65">    <span class="n">middleware</span><span class="o">=</span><span class="p">[</span><span class="n">session_config</span><span class="o">.</span><span class="n">middleware</span><span class="p">],</span>
-</span><span data-line="66"><span class="p">)</span>
+</span><span data-line="28">    <span class="n">max_age</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>  <span class="c1"># 1 hour</span>
+</span><span data-line="29"><span class="p">)</span>
+</span><span data-line="30">
+</span><span data-line="31"><span class="c1"># Session backend</span>
+</span><span data-line="32"><span class="n">session_backend</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncSessionBackend</span><span class="p">(</span>
+</span><span data-line="33">    <span class="n">config</span><span class="o">=</span><span class="n">session_config</span><span class="p">,</span>
+</span><span data-line="34">    <span class="n">alchemy_config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">,</span>
+</span><span data-line="35">    <span class="n">model</span><span class="o">=</span><span class="n">WebSession</span><span class="p">,</span>
+</span><span data-line="36"><span class="p">)</span>
+</span><span data-line="37">
+</span><span data-line="38"><span class="c1"># Routes</span>
+</span><span data-line="39"><span class="nd">@get</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+</span><span data-line="40"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">home</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">ASGIConnection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="41">    <span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;username&quot;</span><span class="p">)</span>
+</span><span data-line="42">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">!&quot;</span> <span class="k">if</span> <span class="n">username</span> <span class="k">else</span> <span class="s2">&quot;Hello stranger!&quot;</span><span class="p">}</span>
+</span><span data-line="43">
+</span><span data-line="44"><span class="nd">@post</span><span class="p">(</span><span class="s2">&quot;/login&quot;</span><span class="p">)</span>
+</span><span data-line="45"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">login</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">ASGIConnection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="46">    <span class="n">form</span> <span class="o">=</span> <span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">()</span>
+</span><span data-line="47">    <span class="n">username</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;username&quot;</span><span class="p">)</span>
+</span><span data-line="48">
+</span><span data-line="49">    <span class="k">if</span> <span class="n">username</span><span class="p">:</span>
+</span><span data-line="50">        <span class="n">request</span><span class="o">.</span><span class="n">set_session</span><span class="p">({</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span> <span class="s2">&quot;login_time&quot;</span><span class="p">:</span> <span class="s2">&quot;now&quot;</span><span class="p">})</span>
+</span><span data-line="51">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Welcome </span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">}</span>
+</span><span data-line="52">
+</span><span data-line="53">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Username required&quot;</span><span class="p">}</span>
+</span><span data-line="54">
+</span><span data-line="55"><span class="nd">@post</span><span class="p">(</span><span class="s2">&quot;/logout&quot;</span><span class="p">)</span>
+</span><span data-line="56"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">logout</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">ASGIConnection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="57">    <span class="n">request</span><span class="o">.</span><span class="n">clear_session</span><span class="p">()</span>
+</span><span data-line="58">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Logged out successfully&quot;</span><span class="p">}</span>
+</span><span data-line="59">
+</span><span data-line="60"><span class="c1"># Application</span>
+</span><span data-line="61"><span class="n">app</span> <span class="o">=</span> <span class="n">Litestar</span><span class="p">(</span>
+</span><span data-line="62">    <span class="n">route_handlers</span><span class="o">=</span><span class="p">[</span><span class="n">home</span><span class="p">,</span> <span class="n">login</span><span class="p">,</span> <span class="n">logout</span><span class="p">],</span>
+</span><span data-line="63">    <span class="n">plugins</span><span class="o">=</span><span class="p">[</span><span class="n">SQLAlchemyPlugin</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">)],</span>
+</span><span data-line="64">    <span class="n">middleware</span><span class="o">=</span><span class="p">[</span><span class="n">session_config</span><span class="o">.</span><span class="n">middleware</span><span class="p">],</span>
+</span><span data-line="65"><span class="p">)</span>
 </span></pre></div>
 </div>
 <p>This example provides a complete session-enabled application using SQLAlchemy for session storage.</p>
