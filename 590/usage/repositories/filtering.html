@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="amber" data-content_root="../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Filtering - Advanced Alchemy</title><link rel="shortcut icon" href="../../_static/favicon.png"/><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Advanced" href="advanced.html" /><link rel="prev" title="Basics" href="basics.html" />
+      <link rel="canonical" href="https://litestar-org.github.io/advanced-alchemy-docs-preview/590/usage/repositories/filtering.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=3270565a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/shibuya.css?v=bb284d7b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx_paramlinks.css" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=118d83bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/syntax-highlighting.css?v=70fc3471" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/>
+<meta property="og:url" content="https://litestar-org.github.io/advanced-alchemy-docs-preview/590/usage/repositories/filtering.html"/>
+<meta property="og:title" content="Filtering"/>
+<meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="/">
+      <img class="light-logo" src="../../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
+      <img class="dark-logo" src="../../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
+      <strong>advanced_alchemy</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul><li class="link"><a href="../../index.html">Home</a></li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-2" aria-controls="nav-children-2">
+            <span>About</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-2" aria-labelledby="nav-trigger-2"><li><a href="../../changelog.html">
+                <span>Changelog</span>
+                <small>All changes for Advanced Alchemy</small>
+              </a></li><li><a href="https://litestar.dev/about/organization">
+                <span>Litestar Organization</span>
+                <small>Details about the Litestar organization, the team behind Advanced Alchemy</small>
+              </a></li><li><a href="../../releases.html">
+                <span>Releases</span>
+                <small>Explore the release process, versioning, and deprecation policy for Advanced Alchemy</small>
+              </a></li><li><a href="../../contribution-guide.html">
+                <span>Contributing</span>
+                <small>Learn how to contribute to the Advanced Alchemy project</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file">
+                <span>Code of Conduct</span>
+                <small>Review the etiquette for interacting with the Advanced Alchemy community</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file#security-ov-file">
+                <span>Security</span>
+                <small>Overview of Advanced Alchemy's security protocols</small>
+              </a></li><li><a href="https://github.com/sponsors/Litestar-Org">Sponsor</a></li></ul>
+      </li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-3" aria-controls="nav-children-3">
+            <span>Help</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-3" aria-labelledby="nav-trigger-3"><li><a href="https://discord.gg/dSDXd4mKhp">
+                <span>Discord Help Forum</span>
+                <small>Dedicated Discord help forum</small>
+              </a></li><li><a href="https://github.com/litestar-org/advanced-alchemy/discussions">
+                <span>GitHub Discussions</span>
+                <small>GitHub Discussions</small>
+              </a></li></ul>
+      </li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6"><div class="sidebar-links">
+  <ul>
+    <li><a class="icon-link" href="https://discord.gg/dSDXd4mKhp">
+  <span class="icon">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path fill="var(--accent-9)" fill-rule="evenodd" clip-rule="evenodd" d="M11 5a6 6 0 0 0-4.687 9.746c.215.27.315.62.231.954l-.514 2.058a1 1 0 0 0 1.485 1.1l2.848-1.71c.174-.104.374-.15.576-.148H13a6 6 0 0 0 0-12h-2Z"/>
+      <circle fill="white" cx="12" cy="11" r="1"/>
+      <circle fill="white" cx="9" cy="11" r="1"/>
+      <circle fill="white" cx="15" cy="11" r="1"/>
+    </svg>
+  </span>
+  <span class="text">Discussion</span>
+</a></li>
+  </ul>
+</div>
+        <div class="globaltoc" data-expand-depth="2"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Usage</a><ul class="current">
+<li class="toctree-l2 _expand"><a class="reference internal" href="../modeling/index.html">Modeling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../modeling/basics.html">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modeling/relationships.html">Relationships</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modeling/advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Repositories</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="basics.html">Basics</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../services/index.html">Services</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../services/basics.html">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../services/schemas.html">Schema Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../services/advanced.html">Advanced</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../types/index.html">Custom Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../types/basic-types.html">Basic Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../types/security-types.html">Security Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../types/file-storage.html">File Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../types/advanced-types.html">Advanced Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../storage/index.html">Storage Backends</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../storage/fsspec.html">FSSpec Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../storage/obstore.html">Obstore Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../storage/configuration.html">Storage Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../cli/index.html">CLI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli/migrations.html">Migrations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/commands.html">Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../database_seeding.html">Database Seeding and Fixture Loading</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../frameworks/index.html">Framework Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../frameworks/litestar.html">Litestar Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../frameworks/fastapi.html">FastAPI Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../frameworks/flask.html">Flask Integration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../reference/index.html">API Reference</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/base.html">base</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/mixins/index.html">mixins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/unique.html">unique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/nanoid.html">nanoid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/uuid.html">uuid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/sentinel.html">sentinel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/bigint.html">bigint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/audit.html">audit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/slug.html">slug</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/config/index.html">config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/config/asyncio.html">asyncio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/config/common.html">common</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/config/engine.html">engine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/config/sync.html">sync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/config/types.html">types</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/operations.html">operations</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/types.html">types</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/exceptions.html">exceptions</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/utils.html">utils</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/cli.html">cli</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/repository.html">repositories</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/filters.html">filters</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/service.html">services</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/extensions/index.html">Extensions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/litestar/index.html">litestar</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/dto.html">dto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/plugins.html">plugin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/cli.html">cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/session.html">Session Backends</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/flask/index.html">flask</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/sanic/index.html">sanic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/starlette/index.html">starlette</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/fastapi/index.html">fastapi</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/alembic/index.html">alembic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/alembic/commands.html">commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/alembic/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../changelog.html">1.x Changelog</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../contribution-guide.html">Contribution guide</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/search?q=user%3Alitestar-org+state%3Aopen+label%3A%22good+first+issue%22+++no%3Aassignee+repo%3A%22advanced-alchemy%22&amp;type=issues">Available Issues</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/litestar-org/.github?tab=coc-ov-file#readme">Code of Conduct</a></li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#understanding-filters">Understanding Filters</a></li>
+<li><a class="reference internal" href="#pagination">Pagination</a><ul>
+<li><a class="reference internal" href="#limitoffset-filter"><code class="docutils literal notranslate"><span class="pre">LimitOffset</span></code> Filter</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#date-range-filtering">Date Range Filtering</a><ul>
+<li><a class="reference internal" href="#beforeafter-filter"><code class="docutils literal notranslate"><span class="pre">BeforeAfter</span></code> Filter</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#search-filtering">Search Filtering</a><ul>
+<li><a class="reference internal" href="#searchfilter"><code class="docutils literal notranslate"><span class="pre">SearchFilter</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#order-by-filtering">Order By Filtering</a><ul>
+<li><a class="reference internal" href="#orderby-filter"><code class="docutils literal notranslate"><span class="pre">OrderBy</span></code> Filter</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#collection-filtering">Collection Filtering</a><ul>
+<li><a class="reference internal" href="#collectionfilter"><code class="docutils literal notranslate"><span class="pre">CollectionFilter</span></code></a></li>
+<li><a class="reference internal" href="#not-filter">Not Filter</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#filter-configuration-options">Filter Configuration Options</a></li>
+<li><a class="reference internal" href="#implementation-patterns">Implementation Patterns</a><ul>
+<li><a class="reference internal" href="#combining-filters">Combining Filters</a></li>
+<li><a class="reference internal" href="#custom-filter-logic">Custom Filter Logic</a></li>
+<li><a class="reference internal" href="#building-dynamic-queries">Building Dynamic Queries</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#technical-constraints">Technical Constraints</a><ul>
+<li><a class="reference internal" href="#pagination-limitations">Pagination Limitations</a></li>
+<li><a class="reference internal" href="#search-filter-behavior">Search Filter Behavior</a></li>
+<li><a class="reference internal" href="#filter-order-dependency">Filter Order Dependency</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#next-steps">Next Steps</a></li>
+<li><a class="reference internal" href="#related-topics">Related Topics</a></li>
+</ul>
+</div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
+  data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
+  <span class="w-8 flex items-center justify-around shrink-0 text-3xl">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </span>
+  <span class="flex-grow px-2 break-all">
+    
+    
+      <span>advanced-alchemy</span>
+    
+    <span class="flex text-sm repo-stats-count">
+      <span class="flex items-center pr-3">
+        <iconify-icon icon="lucide:star"></iconify-icon>
+        <strong class="js-repo-stars ml-1">0</strong>
+      </span>
+      <span class="flex items-center">
+        <iconify-icon icon="lucide:git-fork"></iconify-icon>
+        <strong class="js-repo-forks ml-1">0</strong>
+      </span>
+    </span>
+  </span>
+</a><div class="edit-this-page">
+  <a href="https://github.com/litestar-org/advanced-alchemy/blob/main/docs/usage/repositories/filtering.rst">Edit this page</a>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">advanced_alchemy</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Usage</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">Repositories</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="3" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Filtering</strong>
+        <meta itemprop="position" content="4" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+        <article class="yue" role="main">
+          <section id="filtering">
+<h1>Filtering<a class="headerlink" href="#filtering" title="Link to this heading">¶</a></h1>
+<p>Advanced Alchemy provides powerful filtering capabilities for queries, including pagination, sorting, date ranges, and full-text search.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
+<p>This section builds on <a class="reference internal" href="basics.html"><span class="doc">Basics</span></a>.</p>
+</section>
+<section id="understanding-filters">
+<h2>Understanding Filters<a class="headerlink" href="#understanding-filters" title="Link to this heading">¶</a></h2>
+<p>Advanced Alchemy filter objects provide reusable, composable query filters. Filters encapsulate common query patterns like pagination, date ranges, and search.</p>
+</section>
+<section id="pagination">
+<h2>Pagination<a class="headerlink" href="#pagination" title="Link to this heading">¶</a></h2>
+<section id="limitoffset-filter">
+<h3><code class="docutils literal notranslate"><span class="pre">LimitOffset</span></code> Filter<a class="headerlink" href="#limitoffset-filter" title="Link to this heading">¶</a></h3>
+<p>Standard offset-based pagination:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">LimitOffset</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_paginated_posts</span><span class="p">(</span>
+</span><span data-line="4">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
+</span><span data-line="5">    <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span data-line="6">    <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span>
+</span><span data-line="7"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span data-line="8">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="9">
+</span><span data-line="10">    <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="n">page</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">page_size</span>
+</span><span data-line="11">
+</span><span data-line="12">    <span class="c1"># Get page of results and total count</span>
+</span><span data-line="13">    <span class="n">results</span><span class="p">,</span> <span class="n">total</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list_and_count</span><span class="p">(</span>
+</span><span data-line="14">        <span class="n">LimitOffset</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">page_size</span><span class="p">)</span>
+</span><span data-line="15">    <span class="p">)</span>
+</span><span data-line="16">
+</span><span data-line="17">    <span class="k">return</span> <span class="n">results</span><span class="p">,</span> <span class="n">total</span>
+</span></pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">list_and_count</span></code> returns:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">results</span></code>: List of records for the current page</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">total</span></code>: Total count of records matching filters</p></li>
+</ul>
+<p>Characteristics:</p>
+<ul class="simple">
+<li><p>Offset-based pagination</p></li>
+<li><p>Total count in single query</p></li>
+<li><p>Supports jumping to arbitrary pages</p></li>
+<li><p>Page numbers calculated client-side</p></li>
+</ul>
+</section>
+</section>
+<section id="date-range-filtering">
+<h2>Date Range Filtering<a class="headerlink" href="#date-range-filtering" title="Link to this heading">¶</a></h2>
+<section id="beforeafter-filter">
+<h3><code class="docutils literal notranslate"><span class="pre">BeforeAfter</span></code> Filter<a class="headerlink" href="#beforeafter-filter" title="Link to this heading">¶</a></h3>
+<p>Filter records by date range:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">BeforeAfter</span>
+</span><span data-line="2"><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_posts_in_range</span><span class="p">(</span>
+</span><span data-line="5">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
+</span><span data-line="6">    <span class="n">start_date</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
+</span><span data-line="7">    <span class="n">end_date</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span>
+</span><span data-line="8"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="9">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="10">
+</span><span data-line="11">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
+</span><span data-line="12">        <span class="n">BeforeAfter</span><span class="p">(</span>
+</span><span data-line="13">            <span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;created_at&quot;</span><span class="p">,</span>
+</span><span data-line="14">            <span class="n">before</span><span class="o">=</span><span class="n">end_date</span><span class="p">,</span>
+</span><span data-line="15">            <span class="n">after</span><span class="o">=</span><span class="n">start_date</span>
+</span><span data-line="16">        <span class="p">)</span>
+</span><span data-line="17">    <span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">field_name</span></code>: Column name to filter (e.g., “created_at”, “updated_at”)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">before</span></code>: Upper bound (inclusive)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">after</span></code>: Lower bound (inclusive)</p></li>
+</ul>
+</section>
+</section>
+<section id="search-filtering">
+<h2>Search Filtering<a class="headerlink" href="#search-filtering" title="Link to this heading">¶</a></h2>
+<section id="searchfilter">
+<h3><code class="docutils literal notranslate"><span class="pre">SearchFilter</span></code><a class="headerlink" href="#searchfilter" title="Link to this heading">¶</a></h3>
+<p>Full-text search across columns:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">SearchFilter</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">search_posts</span><span class="p">(</span>
+</span><span data-line="4">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
+</span><span data-line="5">    <span class="n">search_term</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="6"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="7">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="8">
+</span><span data-line="9">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
+</span><span data-line="10">        <span class="n">SearchFilter</span><span class="p">(</span>
+</span><span data-line="11">            <span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;title&quot;</span><span class="p">,</span>
+</span><span data-line="12">            <span class="n">value</span><span class="o">=</span><span class="n">search_term</span><span class="p">,</span>
+</span><span data-line="13">            <span class="n">ignore_case</span><span class="o">=</span><span class="kc">True</span>
+</span><span data-line="14">        <span class="p">)</span>
+</span><span data-line="15">    <span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">field_name</span></code>: Column to search</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code>: Search term</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ignore_case</span></code>: Case-insensitive search (default: True)</p></li>
+</ul>
+<p>Characteristics:</p>
+<ul class="simple">
+<li><p>Uses SQL LIKE operator</p></li>
+<li><p>Wildcard matching (<code class="docutils literal notranslate"><span class="pre">%search_term%</span></code>)</p></li>
+<li><p>Case-insensitive option</p></li>
+<li><p>Works with string columns</p></li>
+</ul>
+</section>
+</section>
+<section id="order-by-filtering">
+<h2>Order By Filtering<a class="headerlink" href="#order-by-filtering" title="Link to this heading">¶</a></h2>
+<section id="orderby-filter">
+<h3><code class="docutils literal notranslate"><span class="pre">OrderBy</span></code> Filter<a class="headerlink" href="#orderby-filter" title="Link to this heading">¶</a></h3>
+<p>Sort query results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderBy</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_recent_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="4">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="5">
+</span><span data-line="6">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
+</span><span data-line="7">        <span class="n">OrderBy</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;created_at&quot;</span><span class="p">,</span> <span class="n">sort_order</span><span class="o">=</span><span class="s2">&quot;desc&quot;</span><span class="p">)</span>
+</span><span data-line="8">    <span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">field_name</span></code>: Column name to sort by</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sort_order</span></code>: “asc” (ascending) or “desc” (descending)</p></li>
+</ul>
+</section>
+</section>
+<section id="collection-filtering">
+<h2>Collection Filtering<a class="headerlink" href="#collection-filtering" title="Link to this heading">¶</a></h2>
+<section id="collectionfilter">
+<h3><code class="docutils literal notranslate"><span class="pre">CollectionFilter</span></code><a class="headerlink" href="#collectionfilter" title="Link to this heading">¶</a></h3>
+<p>Filter by column values in a collection:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollectionFilter</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_posts_by_ids</span><span class="p">(</span>
+</span><span data-line="4">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
+</span><span data-line="5">    <span class="n">post_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+</span><span data-line="6"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="7">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="8">
+</span><span data-line="9">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
+</span><span data-line="10">        <span class="n">CollectionFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">post_ids</span><span class="p">)</span>
+</span><span data-line="11">    <span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">field_name</span></code>: Column name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">values</span></code>: List of values to match</p></li>
+</ul>
+<p>Equivalent to SQLAlchemy’s <code class="docutils literal notranslate"><span class="pre">Post.id.in_(post_ids)</span></code>.</p>
+</section>
+<section id="not-filter">
+<h3>Not Filter<a class="headerlink" href="#not-filter" title="Link to this heading">¶</a></h3>
+<p>Negate other filters:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotFilter</span><span class="p">,</span> <span class="n">CollectionFilter</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_posts_except_ids</span><span class="p">(</span>
+</span><span data-line="4">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
+</span><span data-line="5">    <span class="n">excluded_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+</span><span data-line="6"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="7">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="8">
+</span><span data-line="9">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
+</span><span data-line="10">        <span class="n">NotFilter</span><span class="p">(</span><span class="n">CollectionFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">excluded_ids</span><span class="p">))</span>
+</span><span data-line="11">    <span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>Wraps any other filter type</p></li>
+<li><p>Negates the filter condition</p></li>
+</ul>
+<p>Equivalent to SQLAlchemy’s <code class="docutils literal notranslate"><span class="pre">~</span></code> (NOT) operator.</p>
+</section>
+</section>
+<section id="filter-configuration-options">
+<h2>Filter Configuration Options<a class="headerlink" href="#filter-configuration-options" title="Link to this heading">¶</a></h2>
+<p>When using Advanced Alchemy with web frameworks, filters can be configured declaratively. Complete reference of options:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">filter_config</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="2">    <span class="c1"># ID filtering</span>
+</span><span data-line="3">    <span class="s2">&quot;id_filter&quot;</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>  <span class="c1"># Enable filtering by primary key type</span>
+</span><span data-line="4">
+</span><span data-line="5">    <span class="c1"># Search configuration</span>
+</span><span data-line="6">    <span class="s2">&quot;search&quot;</span><span class="p">:</span> <span class="s2">&quot;name,email&quot;</span><span class="p">,</span>  <span class="c1"># Comma-separated fields to search</span>
+</span><span data-line="7">    <span class="s2">&quot;search_ignore_case&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Case-insensitive search</span>
+</span><span data-line="8">
+</span><span data-line="9">    <span class="c1"># Pagination</span>
+</span><span data-line="10">    <span class="s2">&quot;pagination_type&quot;</span><span class="p">:</span> <span class="s2">&quot;limit_offset&quot;</span><span class="p">,</span>  <span class="c1"># &quot;limit_offset&quot; or &quot;cursor&quot;</span>
+</span><span data-line="11">    <span class="s2">&quot;pagination_size&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>  <span class="c1"># Default page size</span>
+</span><span data-line="12">
+</span><span data-line="13">    <span class="c1"># Date range filters</span>
+</span><span data-line="14">    <span class="s2">&quot;created_at&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Enable created_at field filtering</span>
+</span><span data-line="15">    <span class="s2">&quot;updated_at&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Enable updated_at field filtering</span>
+</span><span data-line="16">
+</span><span data-line="17">    <span class="c1"># Sorting</span>
+</span><span data-line="18">    <span class="s2">&quot;sort_field&quot;</span><span class="p">:</span> <span class="s2">&quot;created_at&quot;</span><span class="p">,</span>  <span class="c1"># Default sort field</span>
+</span><span data-line="19">    <span class="s2">&quot;sort_order&quot;</span><span class="p">:</span> <span class="s2">&quot;desc&quot;</span><span class="p">,</span>  <span class="c1"># Default sort order (&quot;asc&quot; or &quot;desc&quot;)</span>
+</span><span data-line="20"><span class="p">}</span>
+</span></pre></div>
+</div>
+<p>Option descriptions:</p>
+<ul class="simple">
+<li><p><strong>id_filter</strong>: Type hint for primary key filtering</p></li>
+<li><p><strong>search</strong>: Comma-separated field names for search</p></li>
+<li><p><strong>search_ignore_case</strong>: Case-sensitive or case-insensitive search</p></li>
+<li><p><strong>pagination_type</strong>: Pagination strategy (offset or cursor-based)</p></li>
+<li><p><strong>pagination_size</strong>: Default number of items per page</p></li>
+<li><p><strong>created_at</strong>: Enable date range filtering on created_at field</p></li>
+<li><p><strong>updated_at</strong>: Enable date range filtering on updated_at field</p></li>
+<li><p><strong>sort_field</strong>: Default field for sorting results</p></li>
+<li><p><strong>sort_order</strong>: Default sort direction (“asc” for ascending, “desc” for descending)</p></li>
+</ul>
+</section>
+<section id="implementation-patterns">
+<h2>Implementation Patterns<a class="headerlink" href="#implementation-patterns" title="Link to this heading">¶</a></h2>
+<section id="combining-filters">
+<h3>Combining Filters<a class="headerlink" href="#combining-filters" title="Link to this heading">¶</a></h3>
+<p>Multiple filters compose naturally:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">LimitOffset</span><span class="p">,</span> <span class="n">BeforeAfter</span><span class="p">,</span> <span class="n">SearchFilter</span><span class="p">,</span> <span class="n">OrderBy</span>
+</span><span data-line="2"><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">search_recent_posts</span><span class="p">(</span>
+</span><span data-line="5">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
+</span><span data-line="6">    <span class="n">search_term</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="7">    <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span data-line="8">    <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span>
+</span><span data-line="9"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span data-line="10">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="11">
+</span><span data-line="12">    <span class="n">week_ago</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+</span><span data-line="13">
+</span><span data-line="14">    <span class="n">results</span><span class="p">,</span> <span class="n">total</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list_and_count</span><span class="p">(</span>
+</span><span data-line="15">        <span class="n">SearchFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">search_term</span><span class="p">),</span>
+</span><span data-line="16">        <span class="n">BeforeAfter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;created_at&quot;</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">week_ago</span><span class="p">),</span>
+</span><span data-line="17">        <span class="n">OrderBy</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;created_at&quot;</span><span class="p">,</span> <span class="n">sort_order</span><span class="o">=</span><span class="s2">&quot;desc&quot;</span><span class="p">),</span>
+</span><span data-line="18">        <span class="n">LimitOffset</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="n">page</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">page_size</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">page_size</span><span class="p">)</span>
+</span><span data-line="19">    <span class="p">)</span>
+</span><span data-line="20">
+</span><span data-line="21">    <span class="k">return</span> <span class="n">results</span><span class="p">,</span> <span class="n">total</span>
+</span></pre></div>
+</div>
+<p>This query:</p>
+<ul class="simple">
+<li><p>Searches titles for search_term</p></li>
+<li><p>Filters to posts from last 7 days</p></li>
+<li><p>Orders by created_at descending</p></li>
+<li><p>Paginates results</p></li>
+</ul>
+<p>Filters are ANDed together automatically.</p>
+</section>
+<section id="custom-filter-logic">
+<h3>Custom Filter Logic<a class="headerlink" href="#custom-filter-logic" title="Link to this heading">¶</a></h3>
+<p>Combine filters with raw SQLAlchemy expressions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">LimitOffset</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_published_posts</span><span class="p">(</span>
+</span><span data-line="4">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
+</span><span data-line="5">    <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span data-line="6">    <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span>
+</span><span data-line="7"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span data-line="8">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="9">
+</span><span data-line="10">    <span class="n">results</span><span class="p">,</span> <span class="n">total</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list_and_count</span><span class="p">(</span>
+</span><span data-line="11">        <span class="n">Post</span><span class="o">.</span><span class="n">published</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Raw SQLAlchemy filter</span>
+</span><span data-line="12">        <span class="n">Post</span><span class="o">.</span><span class="n">published_at</span><span class="o">.</span><span class="n">isnot</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>  <span class="c1"># Another raw filter</span>
+</span><span data-line="13">        <span class="n">LimitOffset</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="n">page</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">page_size</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">page_size</span><span class="p">)</span>  <span class="c1"># Filter object</span>
+</span><span data-line="14">    <span class="p">)</span>
+</span><span data-line="15">
+</span><span data-line="16">    <span class="k">return</span> <span class="n">results</span><span class="p">,</span> <span class="n">total</span>
+</span></pre></div>
+</div>
+<p>Mix filter objects with SQLAlchemy column expressions.</p>
+</section>
+<section id="building-dynamic-queries">
+<h3>Building Dynamic Queries<a class="headerlink" href="#building-dynamic-queries" title="Link to this heading">¶</a></h3>
+<p>Construct filters dynamically based on input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">SearchFilter</span><span class="p">,</span> <span class="n">BeforeAfter</span><span class="p">,</span> <span class="n">OrderBy</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">dynamic_post_search</span><span class="p">(</span>
+</span><span data-line="4">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
+</span><span data-line="5">    <span class="n">search</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="6">    <span class="n">start_date</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="7">    <span class="n">end_date</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="8">    <span class="n">sort_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;created_at&quot;</span><span class="p">,</span>
+</span><span data-line="9">    <span class="n">sort_order</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;desc&quot;</span>
+</span><span data-line="10"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="11">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="12">
+</span><span data-line="13">    <span class="n">filters</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="14">
+</span><span data-line="15">    <span class="k">if</span> <span class="n">search</span><span class="p">:</span>
+</span><span data-line="16">        <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SearchFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">search</span><span class="p">))</span>
+</span><span data-line="17">
+</span><span data-line="18">    <span class="k">if</span> <span class="n">start_date</span> <span class="ow">or</span> <span class="n">end_date</span><span class="p">:</span>
+</span><span data-line="19">        <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+</span><span data-line="20">            <span class="n">BeforeAfter</span><span class="p">(</span>
+</span><span data-line="21">                <span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;created_at&quot;</span><span class="p">,</span>
+</span><span data-line="22">                <span class="n">before</span><span class="o">=</span><span class="n">end_date</span><span class="p">,</span>
+</span><span data-line="23">                <span class="n">after</span><span class="o">=</span><span class="n">start_date</span>
+</span><span data-line="24">            <span class="p">)</span>
+</span><span data-line="25">        <span class="p">)</span>
+</span><span data-line="26">
+</span><span data-line="27">    <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">OrderBy</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="n">sort_by</span><span class="p">,</span> <span class="n">sort_order</span><span class="o">=</span><span class="n">sort_order</span><span class="p">))</span>
+</span><span data-line="28">
+</span><span data-line="29">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="o">*</span><span class="n">filters</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>This pattern enables flexible query construction.</p>
+</section>
+</section>
+<section id="technical-constraints">
+<h2>Technical Constraints<a class="headerlink" href="#technical-constraints" title="Link to this heading">¶</a></h2>
+<section id="pagination-limitations">
+<h3>Pagination Limitations<a class="headerlink" href="#pagination-limitations" title="Link to this heading">¶</a></h3>
+<p>Offset-based pagination has performance characteristics:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># Performance degrades with large offsets</span>
+</span><span data-line="2"><span class="n">results</span><span class="p">,</span> <span class="n">total</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list_and_count</span><span class="p">(</span>
+</span><span data-line="3">    <span class="n">LimitOffset</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># Skips 10000 rows</span>
+</span><span data-line="4"><span class="p">)</span>
+</span><span data-line="5"><span class="c1"># Database must scan and skip 10000 rows</span>
+</span></pre></div>
+</div>
+<p>Characteristics:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">OFFSET</span></code> clause scans skipped rows</p></li>
+<li><p>Performance degrades with high offset values</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LIMIT</span></code> clause is efficient</p></li>
+<li><p>Total count requires full table scan</p></li>
+</ul>
+<p>For very large datasets, consider cursor-based pagination.</p>
+</section>
+<section id="search-filter-behavior">
+<h3>Search Filter Behavior<a class="headerlink" href="#search-filter-behavior" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">SearchFilter</span></code> uses SQL LIKE with wildcards:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># SearchFilter behavior</span>
+</span><span data-line="2"><span class="n">SearchFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;python&quot;</span><span class="p">)</span>
+</span><span data-line="3"><span class="c1"># Generates: title LIKE &#39;%python%&#39;</span>
+</span></pre></div>
+</div>
+<p>Characteristics:</p>
+<ul class="simple">
+<li><p>Substring matching</p></li>
+<li><p>Cannot use indexes efficiently (leading wildcard)</p></li>
+<li><p>Case-sensitive or insensitive depending on database collation</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">ignore_case=True</span></code> for explicit case-insensitive search</p></li>
+</ul>
+<p>For full-text search, consider database-specific features (PostgreSQL’s <code class="docutils literal notranslate"><span class="pre">tsvector</span></code>, MySQL’s <code class="docutils literal notranslate"><span class="pre">FULLTEXT</span></code>).</p>
+</section>
+<section id="filter-order-dependency">
+<h3>Filter Order Dependency<a class="headerlink" href="#filter-order-dependency" title="Link to this heading">¶</a></h3>
+<p>Filter application order can affect results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># ✅ Correct - limit applies after filtering</span>
+</span><span data-line="2"><span class="n">results</span><span class="p">,</span> <span class="n">total</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list_and_count</span><span class="p">(</span>
+</span><span data-line="3">    <span class="n">Post</span><span class="o">.</span><span class="n">published</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Filter first</span>
+</span><span data-line="4">    <span class="n">LimitOffset</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># Then limit</span>
+</span><span data-line="5"><span class="p">)</span>
+</span><span data-line="6"><span class="c1"># Returns 20 published posts, total counts all published posts</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="c1"># ✅ Also correct - order doesn&#39;t matter for these filters</span>
+</span><span data-line="9"><span class="n">results</span><span class="p">,</span> <span class="n">total</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list_and_count</span><span class="p">(</span>
+</span><span data-line="10">    <span class="n">LimitOffset</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">20</span><span class="p">),</span>  <span class="c1"># Limit position doesn&#39;t matter</span>
+</span><span data-line="11">    <span class="n">Post</span><span class="o">.</span><span class="n">published</span> <span class="o">==</span> <span class="kc">True</span>
+</span><span data-line="12"><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Advanced Alchemy applies filters in logical order regardless of position.</p>
+</section>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">¶</a></h2>
+<p>For bulk operations and specialized repositories, see <a class="reference internal" href="advanced.html"><span class="doc">Advanced</span></a>.</p>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="advanced.html"><span class="doc">Advanced</span></a> - Bulk operations and custom queries</p></li>
+<li><p><a class="reference internal" href="basics.html"><span class="doc">Basics</span></a> - Basic CRUD operations</p></li>
+<li><p><a class="reference internal" href="../modeling/relationships.html"><span class="doc">Relationships</span></a> - Filtering relationships</p></li>
+</ul>
+</section>
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="basics.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Basics</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="advanced.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Advanced</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2025, Litestar Organization</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a>
+<a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+  <iconify-icon icon="simple-icons:discord"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../_static/documentation_options.js?v=6f8f3740"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=a56c686a"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../_static/shibuya.js?v=e730760c"></script></body>
+</html>
