@@ -234,6 +234,11 @@ data-aria-dark="Switch to auto color mode">
       <i class="i-lucide close"></i>
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#1.8.0">1.8.0</a><ul>
+<li><a class="reference internal" href="#1.8.0-feature">Features</a></li>
+<li><a class="reference internal" href="#1.8.0-bugfix">Bugfixes</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#1.7.0">1.7.0</a><ul>
 <li><a class="reference internal" href="#1.7.0-feature">Features</a></li>
 <li><a class="reference internal" href="#1.7.0-bugfix">Bugfixes</a></li>
@@ -489,6 +494,71 @@ data-aria-dark="Switch to auto color mode">
         <article class="yue" role="main">
           <section id="x-changelog">
 <h1>1.x Changelog<a class="headerlink" href="#x-changelog" title="Link to this heading">¶</a></h1>
+<section id="1.8.0">
+<h2>1.8.0<a class="headerlink" href="#1.8.0" title="Link to this heading">¶</a></h2>
+<strong>Released: </strong>2025-10-28<section id="1.8.0-feature">
+<h3>Features<a class="headerlink" href="#1.8.0-feature" title="Link to this heading">¶</a></h3>
+<dl>
+<dt>add <cite>sort_order</cite> to mixin columns for consistent table layout<a class="headerlink reference internal" href="#1.8.0-add" id="1.8.0-add">#</a></dt><dd><div class="changelog-change docutils container">
+<ul class="simple">
+<li><p>Add sort_order=-100 to primary key columns (id) across all mixins</p></li>
+<li><p>Add sort_order=3001 to sentinel column</p></li>
+<li><p>Add sort_order=3002 to created_at audit column</p></li>
+<li><p>Add sort_order=3003 to updated_at audit column</p></li>
+</ul>
+<p>This ensures consistent column ordering in generated tables:
+primary keys first, user columns in middle, audit/sentinel columns last.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/581">https://github.com/litestar-org/advanced-alchemy/pull/581</a></span></p>
+</div>
+</dd>
+<dt>use <cite>property</cite> in <cite>SQLAlchemyDTO</cite> with <cite>MappedAsDataclass</cite><a class="headerlink reference internal" href="#1.8.0-use" id="1.8.0-use">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Allow better compatibility with <cite>MappedAsDataclass</cite> and the <cite>SQLALchemyDTO</cite></p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/447">https://github.com/litestar-org/advanced-alchemy/pull/447</a></span></p>
+</div>
+</dd>
+<dt>add support for SQLAlchemy func expressions in filter classes<a class="headerlink reference internal" href="#1.8.0-add support for sqlalchemy func expressions in filter classes" id="1.8.0-add support for sqlalchemy func expressions in filter classes">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds support for SQLAlchemy func() expressions in filter classes to eliminate type checker errors when using database functions like <cite>func.random()</cite> or <cite>func.lower()</cite></p>
+<p><strong>Changes</strong></p>
+<ul class="simple">
+<li><p>Updated <cite>OrderBy</cite>, <cite>BeforeAfter</cite>, <cite>OnBeforeAfter</cite>, <cite>CollectionFilter</cite>, <cite>NotInCollectionFilter</cite>, <cite>ComparisonFilter</cite></p></li>
+<li><p>Enhanced <cite>_get_instrumented_attr()</cite> to handle new types</p></li>
+<li><p>Mock repositories extract field names from <cite>InstrumentedAttribute</cite>, raise helpful error for func expressions (can’t execute SQL in-memory)</p></li>
+<li><p>Added integration tests for func expressions</p></li>
+</ul>
+<p>Note: Different databases use different function names (PostgreSQL: <cite>func.random()</cite>, MySQL: <cite>func.rand()</cite>, SQL Server: <cite>func.newid()</cite>)</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/519">https://github.com/litestar-org/advanced-alchemy/issues/519</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/585">https://github.com/litestar-org/advanced-alchemy/pull/585</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
+<section id="1.8.0-bugfix">
+<h3>Bugfixes<a class="headerlink" href="#1.8.0-bugfix" title="Link to this heading">¶</a></h3>
+<dl>
+<dt>ensure <cite>has_dict_attribute</cite> checks for <cite>__dict__</cite> attribute<a class="headerlink reference internal" href="#1.8.0-ensure" id="1.8.0-ensure">#</a></dt><dd><div class="changelog-change docutils container">
+<p>The previous implementation used <cite>isinstance</cite> against the <cite>DictProtocol</cite> type returned <cite>True</cite> for any object.
+The <cite>isinstance</cite> call is replaced with <cite>hasattr</cite> (which should also be faster). With this change, I believe the <cite>DictProtocol</cite> class could also be removed, but I kept the changes to a minimum.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/579">https://github.com/litestar-org/advanced-alchemy/pull/579</a></span></p>
+</div>
+</dd>
+<dt>adding string representation to StoredObject<a class="headerlink reference internal" href="#1.8.0-adding string representation to storedobject" id="1.8.0-adding string representation to storedobject">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Issues running migration created for <cite>advanced_alchemy.types.FileObject</cite> column on a model.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/582">https://github.com/litestar-org/advanced-alchemy/pull/582</a></span></p>
+</div>
+</dd>
+<dt>surface FileObject session errors; align commit/rollback semantics<a class="headerlink reference internal" href="#1.8.0-surface fileobject session errors; align commit/rollback semantics" id="1.8.0-surface fileobject session errors; align commit/rollback semantics">#</a></dt><dd><div class="changelog-change docutils container">
+<ul class="simple">
+<li><p>Previously save/delete failures were only logged, so callers believed commits succeeded when storage ops had already failed.</p></li>
+<li><p>Sync commit: processes saves sequentially, then deletes. Logs failures with tracebacks and re-raises. Ignores FileNotFoundError on delete. Stops on first save error. Clears internal state only on full success.</p></li>
+<li><p>Async commit: runs saves and deletes concurrently via asyncio.gather. Logs each failure with exc_info. Raises the first real Exception, and lets BaseException (e.g., CancelledError) bubble. Attempts deletes even if a save fails. Clears state only on full success.</p></li>
+<li><p>Rollback (sync/async): deletes only files saved during the current transaction. Ignores FileNotFoundError. Logs and re-raises other errors. Clears state after processing.</p></li>
+<li><p>Tracking: records successful saves in _saved_in_transaction for targeted rollback cleanup; state is retained on error to allow inspection/retry.</p></li>
+</ul>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/543">https://github.com/litestar-org/advanced-alchemy/issues/543</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/580">https://github.com/litestar-org/advanced-alchemy/pull/580</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
+</section>
 <section id="1.7.0">
 <h2>1.7.0<a class="headerlink" href="#1.7.0" title="Link to this heading">¶</a></h2>
 <strong>Released: </strong>2025-10-13<section id="1.7.0-feature">
