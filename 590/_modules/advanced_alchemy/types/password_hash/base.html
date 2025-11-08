@@ -411,79 +411,86 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="108">        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span></div>
 
 </span><span data-line="109">
-</span><span data-line="110">    <span class="nd">@property</span>
-</span><span data-line="111">    <span class="k">def</span><span class="w"> </span><span class="nf">python_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;type[str]&quot;</span><span class="p">:</span>
-</span><span data-line="112"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the Python type for this type decorator.</span>
+<div class="viewcode-block" id="PasswordHash.__repr__">
+<a class="viewcode-back" href="../../../../reference/types.html#advanced_alchemy.types.password_hash.base.PasswordHash.__repr__">[docs]</a>
+</span><span data-line="110">    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="111"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a string representation of the PasswordHash.&quot;&quot;&quot;</span>
+</span><span data-line="112">        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;PasswordHash(backend=sa.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(), length=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
 </span><span data-line="113">
-</span><span data-line="114"><span class="sd">        Returns:</span>
-</span><span data-line="115"><span class="sd">            The Python string type.</span>
-</span><span data-line="116"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="117">        <span class="k">return</span> <span class="nb">str</span>
-</span><span data-line="118">
+</span><span data-line="114">    <span class="nd">@property</span>
+</span><span data-line="115">    <span class="k">def</span><span class="w"> </span><span class="nf">python_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;type[str]&quot;</span><span class="p">:</span>
+</span><span data-line="116"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the Python type for this type decorator.</span>
+</span><span data-line="117">
+</span><span data-line="118"><span class="sd">        Returns:</span>
+</span><span data-line="119"><span class="sd">            The Python string type.</span>
+</span><span data-line="120"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="121">        <span class="k">return</span> <span class="nb">str</span>
+</span><span data-line="122">
 <div class="viewcode-block" id="PasswordHash.process_bind_param">
 <a class="viewcode-back" href="../../../../reference/types.html#advanced_alchemy.types.password_hash.base.PasswordHash.process_bind_param">[docs]</a>
-</span><span data-line="119">    <span class="k">def</span><span class="w"> </span><span class="nf">process_bind_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, FunctionElement[str], None]&quot;</span><span class="p">:</span>
-</span><span data-line="120"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Process the value before binding it to the SQL statement.</span>
-</span><span data-line="121">
-</span><span data-line="122"><span class="sd">        This method hashes the value using the specified backend.</span>
-</span><span data-line="123"><span class="sd">        If the backend returns a SQLAlchemy FunctionElement (for DB-side hashing),</span>
-</span><span data-line="124"><span class="sd">        it is returned directly. Otherwise, the hashed string is returned.</span>
+</span><span data-line="123">    <span class="k">def</span><span class="w"> </span><span class="nf">process_bind_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, FunctionElement[str], None]&quot;</span><span class="p">:</span>
+</span><span data-line="124"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Process the value before binding it to the SQL statement.</span>
 </span><span data-line="125">
-</span><span data-line="126"><span class="sd">        Args:</span>
-</span><span data-line="127"><span class="sd">            value: The value to process.</span>
-</span><span data-line="128"><span class="sd">            dialect: The SQLAlchemy dialect.</span>
+</span><span data-line="126"><span class="sd">        This method hashes the value using the specified backend.</span>
+</span><span data-line="127"><span class="sd">        If the backend returns a SQLAlchemy FunctionElement (for DB-side hashing),</span>
+</span><span data-line="128"><span class="sd">        it is returned directly. Otherwise, the hashed string is returned.</span>
 </span><span data-line="129">
-</span><span data-line="130"><span class="sd">        Returns:</span>
-</span><span data-line="131"><span class="sd">            The hashed string, a SQLAlchemy FunctionElement, or None.</span>
-</span><span data-line="132"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="133">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="134">            <span class="k">return</span> <span class="n">value</span>
-</span><span data-line="135">
-</span><span data-line="136">        <span class="n">hashed_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-</span><span data-line="137">
-</span><span data-line="138">        <span class="c1"># Check if the backend returned a SQL function for DB-side hashing</span>
-</span><span data-line="139">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hashed_value</span><span class="p">,</span> <span class="n">FunctionElement</span><span class="p">):</span>
-</span><span data-line="140">            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;FunctionElement[str]&quot;</span><span class="p">,</span> <span class="n">hashed_value</span><span class="p">)</span>
+</span><span data-line="130"><span class="sd">        Args:</span>
+</span><span data-line="131"><span class="sd">            value: The value to process.</span>
+</span><span data-line="132"><span class="sd">            dialect: The SQLAlchemy dialect.</span>
+</span><span data-line="133">
+</span><span data-line="134"><span class="sd">        Returns:</span>
+</span><span data-line="135"><span class="sd">            The hashed string, a SQLAlchemy FunctionElement, or None.</span>
+</span><span data-line="136"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="137">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="138">            <span class="k">return</span> <span class="n">value</span>
+</span><span data-line="139">
+</span><span data-line="140">        <span class="n">hashed_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 </span><span data-line="141">
-</span><span data-line="142">        <span class="c1"># Otherwise, assume it&#39;s a string or HashedPassword object (convert to string)</span>
-</span><span data-line="143">        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">hashed_value</span><span class="p">)</span></div>
+</span><span data-line="142">        <span class="c1"># Check if the backend returned a SQL function for DB-side hashing</span>
+</span><span data-line="143">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hashed_value</span><span class="p">,</span> <span class="n">FunctionElement</span><span class="p">):</span>
+</span><span data-line="144">            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;FunctionElement[str]&quot;</span><span class="p">,</span> <span class="n">hashed_value</span><span class="p">)</span>
+</span><span data-line="145">
+</span><span data-line="146">        <span class="c1"># Otherwise, assume it&#39;s a string or HashedPassword object (convert to string)</span>
+</span><span data-line="147">        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">hashed_value</span><span class="p">)</span></div>
 
-</span><span data-line="144">
+</span><span data-line="148">
 <div class="viewcode-block" id="PasswordHash.process_result_value">
 <a class="viewcode-back" href="../../../../reference/types.html#advanced_alchemy.types.password_hash.base.PasswordHash.process_result_value">[docs]</a>
-</span><span data-line="145">    <span class="k">def</span><span class="w"> </span><span class="nf">process_result_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[HashedPassword, None]&quot;</span><span class="p">:</span>  <span class="c1"># type: ignore[override]</span>
-</span><span data-line="146"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Process the value after retrieving it from the database.</span>
-</span><span data-line="147">
-</span><span data-line="148"><span class="sd">        This method wraps the hash string in a HashedPassword object.</span>
-</span><span data-line="149">
-</span><span data-line="150"><span class="sd">        Args:</span>
-</span><span data-line="151"><span class="sd">            value: The value to process.</span>
-</span><span data-line="152"><span class="sd">            dialect: The SQLAlchemy dialect.</span>
+</span><span data-line="149">    <span class="k">def</span><span class="w"> </span><span class="nf">process_result_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[HashedPassword, None]&quot;</span><span class="p">:</span>  <span class="c1"># type: ignore[override]</span>
+</span><span data-line="150"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Process the value after retrieving it from the database.</span>
+</span><span data-line="151">
+</span><span data-line="152"><span class="sd">        This method wraps the hash string in a HashedPassword object.</span>
 </span><span data-line="153">
-</span><span data-line="154"><span class="sd">        Returns:</span>
-</span><span data-line="155"><span class="sd">            A HashedPassword object or None if the input is None.</span>
-</span><span data-line="156"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="157">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="158">            <span class="k">return</span> <span class="n">value</span>
-</span><span data-line="159">        <span class="c1"># Ensure the retrieved value is a string before passing to HashedPassword</span>
-</span><span data-line="160">        <span class="k">return</span> <span class="n">HashedPassword</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">)</span></div>
+</span><span data-line="154"><span class="sd">        Args:</span>
+</span><span data-line="155"><span class="sd">            value: The value to process.</span>
+</span><span data-line="156"><span class="sd">            dialect: The SQLAlchemy dialect.</span>
+</span><span data-line="157">
+</span><span data-line="158"><span class="sd">        Returns:</span>
+</span><span data-line="159"><span class="sd">            A HashedPassword object or None if the input is None.</span>
+</span><span data-line="160"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="161">        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="162">            <span class="k">return</span> <span class="n">value</span>
+</span><span data-line="163">        <span class="c1"># Ensure the retrieved value is a string before passing to HashedPassword</span>
+</span><span data-line="164">        <span class="k">return</span> <span class="n">HashedPassword</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">)</span></div>
 
-</span><span data-line="161">
+</span><span data-line="165">
 <div class="viewcode-block" id="PasswordHash.compare_value">
 <a class="viewcode-back" href="../../../../reference/types.html#advanced_alchemy.types.password_hash.base.PasswordHash.compare_value">[docs]</a>
-</span><span data-line="162">    <span class="k">def</span><span class="w"> </span><span class="nf">compare_value</span><span class="p">(</span>
-</span><span data-line="163">        <span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="s2">&quot;ColumnElement[str]&quot;</span><span class="p">,</span> <span class="n">plain_password</span><span class="p">:</span> <span class="s2">&quot;Union[str, bytes]&quot;</span>
-</span><span data-line="164">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BinaryExpression[bool]&quot;</span><span class="p">:</span>
-</span><span data-line="165"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a SQLAlchemy expression for comparing a column with a plain text password.</span>
-</span><span data-line="166">
-</span><span data-line="167"><span class="sd">        Args:</span>
-</span><span data-line="168"><span class="sd">            column: The SQLAlchemy column to compare.</span>
-</span><span data-line="169"><span class="sd">            plain_password: The plain text password to compare against.</span>
+</span><span data-line="166">    <span class="k">def</span><span class="w"> </span><span class="nf">compare_value</span><span class="p">(</span>
+</span><span data-line="167">        <span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="s2">&quot;ColumnElement[str]&quot;</span><span class="p">,</span> <span class="n">plain_password</span><span class="p">:</span> <span class="s2">&quot;Union[str, bytes]&quot;</span>
+</span><span data-line="168">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BinaryExpression[bool]&quot;</span><span class="p">:</span>
+</span><span data-line="169"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a SQLAlchemy expression for comparing a column with a plain text password.</span>
 </span><span data-line="170">
-</span><span data-line="171"><span class="sd">        Returns:</span>
-</span><span data-line="172"><span class="sd">            A SQLAlchemy binary expression for the comparison.</span>
-</span><span data-line="173"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="174">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">compare_expression</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">plain_password</span><span class="p">)</span></div>
+</span><span data-line="171"><span class="sd">        Args:</span>
+</span><span data-line="172"><span class="sd">            column: The SQLAlchemy column to compare.</span>
+</span><span data-line="173"><span class="sd">            plain_password: The plain text password to compare against.</span>
+</span><span data-line="174">
+</span><span data-line="175"><span class="sd">        Returns:</span>
+</span><span data-line="176"><span class="sd">            A SQLAlchemy binary expression for the comparison.</span>
+</span><span data-line="177"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="178">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">compare_expression</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">plain_password</span><span class="p">)</span></div>
 </div>
 
 </span></pre></div>
