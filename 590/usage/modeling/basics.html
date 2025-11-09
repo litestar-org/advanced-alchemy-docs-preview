@@ -248,7 +248,6 @@ data-aria-dark="Switch to auto color mode">
 </ul>
 </li>
 <li><a class="reference internal" href="#next-steps">Next Steps</a></li>
-<li><a class="reference internal" href="#related-topics">Related Topics</a></li>
 </ul>
 </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
   data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
@@ -342,19 +341,19 @@ data-aria-dark="Switch to auto color mode">
 <td><p>Primary keys using database IDENTITY feature, Automatic created_at/updated_at timestamps</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDBase</span></code></p></td>
-<td><p>UUID primary keys</p></td>
+<td><p>UUID (v4) primary keys</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDv6Base</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDAuditBase</span></code></p></td>
+<td><p>UUID (v4) primary keys, Automatic created_at/updated_at timestamps</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDv6Base</span></code></p></td>
 <td><p>UUIDv6 primary keys</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDv6AuditBase</span></code></p></td>
+<td><p>UUIDv6 primary keys, Automatic created_at/updated_at timestamps</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDv7Base</span></code></p></td>
 <td><p>UUIDv7 primary keys</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDAuditBase</span></code></p></td>
-<td><p>UUID primary keys, Automatic created_at/updated_at timestamps</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDv6AuditBase</span></code></p></td>
-<td><p>UUIDv6 primary keys, Automatic created_at/updated_at timestamps</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDv7AuditBase</span></code></p></td>
 <td><p>Time-sortable UUIDv7 primary keys, Automatic created_at/updated_at timestamps</p></td>
@@ -364,6 +363,9 @@ data-aria-dark="Switch to auto color mode">
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NanoIDAuditBase</span></code></p></td>
 <td><p>URL-friendly IDs with audit timestamps, Combines Nanoid benefits with audit trails</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DefaultBase</span></code></p></td>
+<td><p>Basic declarative base without primary key or audit fields</p></td>
 </tr>
 </tbody>
 </table>
@@ -385,29 +387,63 @@ data-aria-dark="Switch to auto color mode">
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SlugKey</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AuditColumns</span></code></p></td>
 <td><div class="line-block">
-<div class="line">Adds URL-friendly slug field</div>
+<div class="line">Adds created_at/updated_at timestamps</div>
 </div>
 </td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">AuditColumns</span></code></p></td>
-<td><div class="line-block">
-<div class="line">Automatic created_at/updated_at timestamps</div>
-<div class="line">Tracks record modifications</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">updated_at</span></code> refreshes during flush when any mapped column value changes, while preserving explicit timestamp overrides</div>
-</div>
-</td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">BigIntPrimaryKey</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">BigIntPrimaryKey</span></code></p></td>
 <td><div class="line-block">
 <div class="line">Adds BigInt primary key with sequence</div>
 </div>
 </td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">IdentityPrimaryKey</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">IdentityPrimaryKey</span></code></p></td>
 <td><div class="line-block">
 <div class="line">Adds primary key using database IDENTITY feature</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NanoIDPrimaryKey</span></code></p></td>
+<td><div class="line-block">
+<div class="line">Adds NanoID primary key (URL-friendly unique identifier)</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SentinelMixin</span></code></p></td>
+<td><div class="line-block">
+<div class="line">Adds sentinel column for optimistic locking and change detection</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SlugKey</span></code></p></td>
+<td><div class="line-block">
+<div class="line">Adds URL-friendly slug field</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UniqueMixin</span></code></p></td>
+<td><div class="line-block">
+<div class="line">Provides methods for unique constraint handling</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDPrimaryKey</span></code></p></td>
+<td><div class="line-block">
+<div class="line">Adds UUID (v4) primary key</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDv6PrimaryKey</span></code></p></td>
+<td><div class="line-block">
+<div class="line">Adds UUIDv6 primary key</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDv7PrimaryKey</span></code></p></td>
+<td><div class="line-block">
+<div class="line">Adds time-sortable UUIDv7 primary key</div>
 </div>
 </td>
 </tr>
@@ -546,7 +582,7 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 <li><p>Shorter than UUIDs (21 characters vs 36)</p></li>
 <li><p>Collision resistant</p></li>
 <li><p>Generated client-side</p></li>
-<li><p>Requires <code class="docutils literal notranslate"><span class="pre">nanoid</span></code> extra: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">advanced-alchemy[nanoid]</span></code></p></li>
+<li><p>Requires <code class="docutils literal notranslate"><span class="pre">nanoid</span></code> dependency: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">advanced-alchemy[nanoid]</span></code></p></li>
 </ul>
 </section>
 <section id="using-mixins">
@@ -576,16 +612,17 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 <section id="audit-field-behavior">
 <h3>Audit Field Behavior<a class="headerlink" href="#audit-field-behavior" title="Link to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">AuditColumns</span></code> mixin provides automatic timestamps:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># ✅ Correct - updated_at refreshes automatically</span>
-</span><span data-line="2"><span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">user_id</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># === Automatic updated_at refresh ===</span>
+</span><span data-line="2"><span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
 </span><span data-line="3"><span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="s2">&quot;new@example.com&quot;</span>
 </span><span data-line="4"><span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </span><span data-line="5"><span class="c1"># user.updated_at is automatically updated</span>
 </span><span data-line="6">
-</span><span data-line="7"><span class="c1"># ✅ Correct - explicit override is preserved</span>
-</span><span data-line="8"><span class="n">user</span><span class="o">.</span><span class="n">updated_at</span> <span class="o">=</span> <span class="n">specific_timestamp</span>
-</span><span data-line="9"><span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-</span><span data-line="10"><span class="c1"># user.updated_at retains the explicit value</span>
+</span><span data-line="7"><span class="c1"># === Explicit override of updated_at ===</span>
+</span><span data-line="8"><span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+</span><span data-line="9"><span class="n">user</span><span class="o">.</span><span class="n">updated_at</span> <span class="o">=</span> <span class="n">specific_timestamp</span>
+</span><span data-line="10"><span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span><span data-line="11"><span class="c1"># user.updated_at retains the explicit value</span>
 </span></pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">updated_at</span></code> field refreshes during flush when any mapped column changes, but preserves explicitly set values.</p>
@@ -593,19 +630,23 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 <section id="primary-key-generation">
 <h3>Primary Key Generation<a class="headerlink" href="#primary-key-generation" title="Link to this heading">¶</a></h3>
 <p>Primary key generation differs by type:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># BigInt - database generates via sequence</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># === BigInt - Database generates via sequence ===</span>
 </span><span data-line="2"><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s2">&quot;alice&quot;</span><span class="p">)</span>  <span class="c1"># No id needed</span>
 </span><span data-line="3"><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
 </span><span data-line="4"><span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 </span><span data-line="5"><span class="c1"># user.id is populated by database</span>
 </span><span data-line="6">
-</span><span data-line="7"><span class="c1"># UUID - Python generates client-side</span>
+</span><span data-line="7"><span class="c1"># === UUID - Python generates client-side ===</span>
 </span><span data-line="8"><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s2">&quot;bob&quot;</span><span class="p">)</span>  <span class="c1"># UUID generated automatically</span>
-</span><span data-line="9"><span class="c1"># user.id is populated before flush</span>
-</span><span data-line="10">
-</span><span data-line="11"><span class="c1"># NanoID - Python generates client-side</span>
-</span><span data-line="12"><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s2">&quot;charlie&quot;</span><span class="p">)</span>  <span class="c1"># NanoID generated automatically</span>
-</span><span data-line="13"><span class="c1"># user.id is populated before flush</span>
+</span><span data-line="9"><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span data-line="10"><span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span data-line="11"><span class="c1"># user.id is populated before flush</span>
+</span><span data-line="12">
+</span><span data-line="13"><span class="c1"># === NanoID - Python generates client-side ===</span>
+</span><span data-line="14"><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s2">&quot;charlie&quot;</span><span class="p">)</span>  <span class="c1"># NanoID generated automatically</span>
+</span><span data-line="15"><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span data-line="16"><span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</span><span data-line="17"><span class="c1"># user.id is populated before flush</span>
 </span></pre></div>
 </div>
 </section>
@@ -614,14 +655,6 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">¶</a></h2>
 <p>Once you have basic models, you can add relationships between them.</p>
 <p>See <a class="reference internal" href="relationships.html"><span class="doc">Relationships</span></a> for foreign keys and many-to-many patterns.</p>
-</section>
-<section id="related-topics">
-<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="../repositories/basics.html"><span class="doc">Basics</span></a> - Using models with repositories</p></li>
-<li><p><a class="reference internal" href="../types/index.html"><span class="doc">Custom Types</span></a> - Custom column types</p></li>
-<li><p><a class="reference internal" href="advanced.html"><span class="doc">Advanced</span></a> - Advanced patterns and mixins</p></li>
-</ul>
 </section>
 </section>
 
