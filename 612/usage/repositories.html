@@ -210,9 +210,9 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#transaction-management">Transaction Management</a></li>
 <li><a class="reference internal" href="#specialized-repositories">Specialized Repositories</a><ul>
 <li><a class="reference internal" href="#slug-repository">Slug Repository</a></li>
+<li><a class="reference internal" href="#query-repository">Query Repository</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#query-repository">Query Repository</a></li>
 </ul>
 </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
   data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
@@ -370,56 +370,78 @@ type-safe operations.</p>
 <p>Let’s implement a basic repository for our blog post model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepository</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
-</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
-</span><span data-line="4">
-</span><span data-line="5"><span class="k">class</span><span class="w"> </span><span class="nc">PostRepository</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepository</span><span class="p">[</span><span class="n">Post</span><span class="p">]):</span>
-</span><span data-line="6"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Repository for managing blog posts.&quot;&quot;&quot;</span>
-</span><span data-line="7">    <span class="n">model_type</span> <span class="o">=</span> <span class="n">Post</span>
-</span><span data-line="8">
-</span><span data-line="9"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_post</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">author_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
-</span><span data-line="10">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
-</span><span data-line="11">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-</span><span data-line="12">        <span class="n">Post</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span> <span class="n">author_id</span><span class="o">=</span><span class="n">author_id</span><span class="p">),</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span>
-</span><span data-line="13">    <span class="p">)</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">PostRepository</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepository</span><span class="p">[</span><span class="n">Post</span><span class="p">]):</span>
+</span><span data-line="5"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Repository for managing blog posts.&quot;&quot;&quot;</span>
+</span><span data-line="6">    <span class="n">model_type</span> <span class="o">=</span> <span class="n">Post</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_post</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Post</span><span class="p">:</span>
+</span><span data-line="9">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="10">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Post</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">),</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></pre></div>
 </div>
 </section>
 <section id="filtering-and-querying">
 <h2>Filtering and Querying<a class="headerlink" href="#filtering-and-querying" title="Link to this heading">¶</a></h2>
 <p>Advanced Alchemy provides powerful filtering capabilities:</p>
+<div class="sd-tab-set docutils">
+<input id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-0">
+Python 3.9+</label><div class="sd-tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
-</span><span data-line="2">
-</span><span data-line="3"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_recent_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
-</span><span data-line="4">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
-</span><span data-line="5">
-</span><span data-line="6">    <span class="c1"># Create filter for posts from last week</span>
-</span><span data-line="7">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
-</span><span data-line="8">        <span class="n">Post</span><span class="o">.</span><span class="n">published</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span>
-</span><span data-line="9">        <span class="n">Post</span><span class="o">.</span><span class="n">created_at</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">))</span>
-</span><span data-line="10">    <span class="p">)</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_recent_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="5">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="6">
+</span><span data-line="7">    <span class="c1"># Create filter for posts from last week</span>
+</span><span data-line="8">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
+</span><span data-line="9">        <span class="n">Post</span><span class="o">.</span><span class="n">published</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span>
+</span><span data-line="10">        <span class="n">Post</span><span class="o">.</span><span class="n">created_at</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">))</span>
+</span><span data-line="11">    <span class="p">)</span>
 </span></pre></div>
+</div>
+</div>
+<input checked="checked" id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.11" for="sd-tab-item-1">
+Python 3.11+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_recent_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="5">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="6">
+</span><span data-line="7">    <span class="c1"># Create filter for posts from last week</span>
+</span><span data-line="8">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
+</span><span data-line="9">        <span class="n">Post</span><span class="o">.</span><span class="n">published</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span>
+</span><span data-line="10">        <span class="n">Post</span><span class="o">.</span><span class="n">created_at</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">))</span>
+</span><span data-line="11">    <span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
 </div>
 </section>
 <section id="pagination">
 <h2>Pagination<a class="headerlink" href="#pagination" title="Link to this heading">¶</a></h2>
 <p><cite>list_and_count</cite> enables us to quickly create paginated queries that include a total count of rows.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">LimitOffset</span>
-</span><span data-line="2">
-</span><span data-line="3"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_paginated_posts</span><span class="p">(</span>
-</span><span data-line="4">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
-</span><span data-line="5">    <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-</span><span data-line="6">    <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span>
-</span><span data-line="7"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span data-line="8">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
-</span><span data-line="9">
-</span><span data-line="10">    <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="n">page</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">page_size</span>
-</span><span data-line="11">
-</span><span data-line="12">    <span class="c1"># Get page of results and total count</span>
-</span><span data-line="13">    <span class="n">results</span><span class="p">,</span> <span class="n">total</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list_and_count</span><span class="p">(</span>
-</span><span data-line="14">        <span class="n">LimitOffset</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">page_size</span><span class="p">)</span>
-</span><span data-line="15">    <span class="p">)</span>
-</span><span data-line="16">
-</span><span data-line="17">    <span class="k">return</span> <span class="n">results</span><span class="p">,</span> <span class="n">total</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_paginated_posts</span><span class="p">(</span>
+</span><span data-line="5">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
+</span><span data-line="6">    <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span data-line="7">    <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span>
+</span><span data-line="8"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span data-line="9">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="10">
+</span><span data-line="11">    <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="n">page</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">page_size</span>
+</span><span data-line="12">
+</span><span data-line="13">    <span class="c1"># Get page of results and total count</span>
+</span><span data-line="14">    <span class="n">results</span><span class="p">,</span> <span class="n">total</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list_and_count</span><span class="p">(</span>
+</span><span data-line="15">        <span class="n">LimitOffset</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">page_size</span><span class="p">)</span>
+</span><span data-line="16">    <span class="p">)</span>
+</span><span data-line="17">
+</span><span data-line="18">    <span class="k">return</span> <span class="n">results</span><span class="p">,</span> <span class="n">total</span>
 </span></pre></div>
 </div>
 </section>
@@ -429,48 +451,59 @@ type-safe operations.</p>
 </section>
 <section id="add-many">
 <h2>Add Many<a class="headerlink" href="#add-many" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">UUID</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
-</span><span data-line="2">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
 </span><span data-line="3">
-</span><span data-line="4">    <span class="c1"># Create posts</span>
-</span><span data-line="5">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">add_many</span><span class="p">(</span>
-</span><span data-line="6">        <span class="p">[</span><span class="n">Post</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span> <span class="n">author_id</span><span class="o">=</span><span class="n">author_id</span><span class="p">)</span> <span class="k">for</span> <span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">author_id</span> <span class="ow">in</span> <span class="n">data</span><span class="p">],</span>
-</span><span data-line="7">        <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span>
-</span><span data-line="8">    <span class="p">)</span>
+</span><span data-line="4"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="5">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="6">
+</span><span data-line="7">    <span class="c1"># Create posts</span>
+</span><span data-line="8">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">add_many</span><span class="p">(</span>
+</span><span data-line="9">        <span class="p">[</span><span class="n">Post</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)</span> <span class="k">for</span> <span class="n">title</span><span class="p">,</span> <span class="n">content</span> <span class="ow">in</span> <span class="n">data</span><span class="p">],</span>
+</span><span data-line="10">        <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="11">    <span class="p">)</span>
 </span></pre></div>
 </div>
 </section>
 <section id="update-many">
 <h2>Update Many<a class="headerlink" href="#update-many" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">publish_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">post_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
-</span><span data-line="2">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
-</span><span data-line="3">
-</span><span data-line="4">    <span class="c1"># Fetch posts to update</span>
-</span><span data-line="5">    <span class="n">posts</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">post_ids</span><span class="p">),</span> <span class="n">published</span> <span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span data-line="6">
-</span><span data-line="7">    <span class="c1"># Update all posts</span>
-</span><span data-line="8">    <span class="k">for</span> <span class="n">post</span> <span class="ow">in</span> <span class="n">posts</span><span class="p">:</span>
-</span><span data-line="9">        <span class="n">post</span><span class="o">.</span><span class="n">published</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span data-line="10">
-</span><span data-line="11">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span><span class="n">posts</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">publish_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">post_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="4">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="5">
+</span><span data-line="6">    <span class="c1"># Fetch posts to update</span>
+</span><span data-line="7">    <span class="n">posts</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">post_ids</span><span class="p">),</span> <span class="n">published</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="8">
+</span><span data-line="9">    <span class="c1"># Update all posts</span>
+</span><span data-line="10">    <span class="k">for</span> <span class="n">post</span> <span class="ow">in</span> <span class="n">posts</span><span class="p">:</span>
+</span><span data-line="11">        <span class="n">post</span><span class="o">.</span><span class="n">published</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="12">
+</span><span data-line="13">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span><span class="n">posts</span><span class="p">)</span>
 </span></pre></div>
 </div>
 </section>
 <section id="delete-many">
 <h2>Delete Many<a class="headerlink" href="#delete-many" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">delete_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">post_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
-</span><span data-line="2">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
 </span><span data-line="3">
-</span><span data-line="4">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">delete_many</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">post_ids</span><span class="p">))</span>
+</span><span data-line="4"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">delete_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">post_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="5">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="6">
+</span><span data-line="7">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">delete_many</span><span class="p">(</span><span class="n">post_ids</span><span class="p">)</span>
 </span></pre></div>
 </div>
 </section>
 <section id="delete-where">
 <h2>Delete Where<a class="headerlink" href="#delete-where" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">delete_unpublished_posts</span> <span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
-</span><span data-line="2">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
 </span><span data-line="3">
-</span><span data-line="4">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">delete_where</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">published</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span>
+</span><span data-line="4"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">delete_unpublished_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Post</span><span class="p">]:</span>
+</span><span data-line="5">    <span class="n">repository</span> <span class="o">=</span> <span class="n">PostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="6">
+</span><span data-line="7">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">delete_where</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">published</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
 </span></pre></div>
 </div>
 </section>
@@ -496,12 +529,7 @@ type-safe operations.</p>
 </span><span data-line="18">            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
 </span><span data-line="19">
 </span><span data-line="20">        <span class="c1"># Create post with tags</span>
-</span><span data-line="21">        <span class="n">post</span> <span class="o">=</span> <span class="k">await</span> <span class="n">post_repo</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-</span><span data-line="22">            <span class="n">Post</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="n">tags</span><span class="p">),</span>
-</span><span data-line="23">            <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span>
-</span><span data-line="24">        <span class="p">)</span>
-</span><span data-line="25">
-</span><span data-line="26">        <span class="k">return</span> <span class="n">post</span>
+</span><span data-line="21">        <span class="k">return</span> <span class="k">await</span> <span class="n">post_repo</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Post</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="n">tags</span><span class="p">))</span>
 </span></pre></div>
 </div>
 <div class="admonition seealso">
@@ -517,31 +545,34 @@ should be used to handle this lookup even more easily.  See <a class="reference 
 <h3>Slug Repository<a class="headerlink" href="#slug-repository" title="Link to this heading">¶</a></h3>
 <p>For models using the <a class="reference internal" href="../reference/mixins/slug.html#advanced_alchemy.mixins.slug.SlugKey" title="advanced_alchemy.mixins.slug.SlugKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">SlugKey</span></code></a> mixin, there is a specialized Slug repository that adds a <code class="docutils literal notranslate"><span class="pre">get_by_slug</span></code> method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncSlugRepository</span>
-</span><span data-line="2">
-</span><span data-line="3"><span class="k">class</span><span class="w"> </span><span class="nc">ArticleRepository</span><span class="p">(</span><span class="n">SQLAlchemyAsyncSlugRepository</span><span class="p">[</span><span class="n">Article</span><span class="p">]):</span>
-</span><span data-line="4"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Repository for articles with slug-based lookups.&quot;&quot;&quot;</span>
-</span><span data-line="5">    <span class="n">model_type</span> <span class="o">=</span> <span class="n">Article</span>
-</span><span data-line="6">
-</span><span data-line="7"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_article_by_slug</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">slug</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Article</span><span class="p">:</span>
-</span><span data-line="8">    <span class="n">repository</span> <span class="o">=</span> <span class="n">ArticleRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
-</span><span data-line="9">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">get_by_slug</span><span class="p">(</span><span class="n">slug</span><span class="p">)</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">TagRepository</span><span class="p">(</span><span class="n">SQLAlchemyAsyncSlugRepository</span><span class="p">[</span><span class="n">Tag</span><span class="p">]):</span>
+</span><span data-line="5"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Repository for tags with slug-based lookups.&quot;&quot;&quot;</span>
+</span><span data-line="6">    <span class="n">model_type</span> <span class="o">=</span> <span class="n">Tag</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_tag_by_slug</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">slug</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tag</span><span class="p">:</span>
+</span><span data-line="9">    <span class="n">repository</span> <span class="o">=</span> <span class="n">TagRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="10">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">get_by_slug</span><span class="p">(</span><span class="n">slug</span><span class="p">)</span>
 </span></pre></div>
 </div>
 </section>
-</section>
 <section id="query-repository">
-<h2>Query Repository<a class="headerlink" href="#query-repository" title="Link to this heading">¶</a></h2>
+<h3>Query Repository<a class="headerlink" href="#query-repository" title="Link to this heading">¶</a></h3>
 <p>For complex custom queries:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncQueryRepository</span>
-</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">select</span><span class="p">,</span> <span class="n">func</span>
-</span><span data-line="3">
-</span><span data-line="4"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_posts_per_author</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-</span><span data-line="5">    <span class="n">repository</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncQueryRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
-</span><span data-line="6">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">author_id</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">id</span><span class="p">))</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">author_id</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncQueryRepository</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">select</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">Row</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_posts_count_by_status</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Row</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+</span><span data-line="7">    <span class="n">repository</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncQueryRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="8">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">published</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">id</span><span class="p">))</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">published</span><span class="p">))</span>
 </span></pre></div>
 </div>
 <p>This covers the core functionality of repositories. The next section will explore services,
 which build upon repositories to provide higher-level business logic and data transformation.</p>
+</section>
 </section>
 </section>
 
