@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="amber" data-content_root="../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Cache - Advanced Alchemy</title><link rel="shortcut icon" href="../_static/favicon.png"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="operations" href="operations.html" /><link rel="prev" title="types" href="config/types.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=f087ae94" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=44020203" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_paramlinks.css" />
+    <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=118d83bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/syntax-highlighting.css?v=70fc3471" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="Cache"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="/">
+      <img class="light-logo" src="../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
+      <img class="dark-logo" src="../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
+      <strong>advanced_alchemy</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul><li class="link"><a href="../index.html">Home</a></li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-2" aria-controls="nav-children-2">
+            <span>About</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-2" aria-labelledby="nav-trigger-2"><li><a href="../changelog.html">
+                <span>Changelog</span>
+                <small>All changes for Advanced Alchemy</small>
+              </a></li><li><a href="https://litestar.dev/about/organization">
+                <span>Litestar Organization</span>
+                <small>Details about the Litestar organization, the team behind Advanced Alchemy</small>
+              </a></li><li><a href="../releases.html">
+                <span>Releases</span>
+                <small>Explore the release process, versioning, and deprecation policy for Advanced Alchemy</small>
+              </a></li><li><a href="../contribution-guide.html">
+                <span>Contributing</span>
+                <small>Learn how to contribute to the Advanced Alchemy project</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file">
+                <span>Code of Conduct</span>
+                <small>Review the etiquette for interacting with the Advanced Alchemy community</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file#security-ov-file">
+                <span>Security</span>
+                <small>Overview of Advanced Alchemy's security protocols</small>
+              </a></li><li><a href="https://github.com/sponsors/Litestar-Org">Sponsor</a></li></ul>
+      </li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-3" aria-controls="nav-children-3">
+            <span>Help</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-3" aria-labelledby="nav-trigger-3"><li><a href="https://discord.gg/dSDXd4mKhp">
+                <span>Discord Help Forum</span>
+                <small>Dedicated Discord help forum</small>
+              </a></li><li><a href="https://github.com/litestar-org/advanced-alchemy/discussions">
+                <span>GitHub Discussions</span>
+                <small>GitHub Discussions</small>
+              </a></li></ul>
+      </li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6"><div class="sidebar-links">
+  <ul>
+    <li><a class="icon-link" href="https://discord.gg/dSDXd4mKhp">
+  <span class="icon">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path fill="var(--accent-9)" fill-rule="evenodd" clip-rule="evenodd" d="M11 5a6 6 0 0 0-4.687 9.746c.215.27.315.62.231.954l-.514 2.058a1 1 0 0 0 1.485 1.1l2.848-1.71c.174-.104.374-.15.576-.148H13a6 6 0 0 0 0-12h-2Z"/>
+      <circle fill="white" cx="12" cy="11" r="1"/>
+      <circle fill="white" cx="9" cy="11" r="1"/>
+      <circle fill="white" cx="15" cy="11" r="1"/>
+    </svg>
+  </span>
+  <span class="text">Discussion</span>
+</a></li>
+  </ul>
+</div>
+        <div class="globaltoc" data-expand-depth="2"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 _expand"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/index.html">Usage</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/index.html">Modeling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage/modeling/basics.html">Modeling Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage/modeling/inheritance.html">Inheritance Patterns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage/modeling/sqlmodel.html">SQLModel Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage/modeling/types.html">Advanced Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/repositories/index.html">Repositories</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../usage/repositories/basics.html">Repository Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage/repositories/filtering.html">Filtering and Pagination</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usage/repositories/advanced.html">Advanced Repository</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/services.html">Services</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/routing.html">Read/Write Routing</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/caching.html">Caching</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/cli.html">Command Line Tool</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/database_seeding.html">Database Seeding and Fixture Loading</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/litestar.html">Litestar Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/flask.html">Flask Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/fastapi.html">FastAPI Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/sanic.html">Sanic Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/starlette.html">Starlette Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 _expand"><a class="reference internal" href="base.html">base</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/index.html">mixins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mixins/unique.html">unique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins/nanoid.html">nanoid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins/uuid.html">uuid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins/sentinel.html">sentinel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins/bigint.html">bigint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins/audit.html">audit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins/slug.html">slug</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/index.html">config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="config/asyncio.html">asyncio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config/common.html">common</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config/engine.html">engine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config/routing.html">routing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config/sync.html">sync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config/types.html">types</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Cache</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="operations.html">operations</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="types.html">types</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="exceptions.html">exceptions</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="utils.html">utils</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="repository.html">repositories</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="filters.html">filters</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="service.html">services</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="routing.html">routing</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/index.html">Extensions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/index.html">litestar</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="extensions/litestar/dto.html">dto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="extensions/litestar/plugins.html">plugin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="extensions/litestar/cli.html">cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="extensions/litestar/session.html">Session Backends</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/flask/index.html">flask</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/sanic/index.html">sanic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/starlette/index.html">starlette</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/fastapi/index.html">fastapi</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="alembic/index.html">alembic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="alembic/commands.html">commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="alembic/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../changelog.html">1.x Changelog</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../contribution-guide.html">Contribution guide</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/search?q=user%3Alitestar-org+state%3Aopen+label%3A%22good+first+issue%22+++no%3Aassignee+repo%3A%22advanced-alchemy%22&amp;type=issues">Available Issues</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/litestar-org/.github?tab=coc-ov-file#readme">Code of Conduct</a></li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheConfig"><code class="docutils literal notranslate"><span class="pre">CacheConfig</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheConfig.backend"><code class="docutils literal notranslate">backend</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheConfig.expiration_time"><code class="docutils literal notranslate">expiration_time</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheConfig.arguments"><code class="docutils literal notranslate">arguments</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheConfig.key_prefix"><code class="docutils literal notranslate">key_prefix</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheConfig.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheConfig.enabled"><code class="docutils literal notranslate">enabled</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheConfig.serializer"><code class="docutils literal notranslate">serializer</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheConfig.deserializer"><code class="docutils literal notranslate">deserializer</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheConfig.region_factory"><code class="docutils literal notranslate">region_factory</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cache-manager">Cache Manager</a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager"><code class="docutils literal notranslate"><span class="pre">CacheManager</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.region"><code class="docutils literal notranslate">region</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_sync"><code class="docutils literal notranslate">get_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.set_sync"><code class="docutils literal notranslate">set_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.delete_sync"><code class="docutils literal notranslate">delete_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_or_create_sync"><code class="docutils literal notranslate">get_or_create_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_entity_sync"><code class="docutils literal notranslate">get_entity_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.set_entity_sync"><code class="docutils literal notranslate">set_entity_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.invalidate_entity_sync"><code class="docutils literal notranslate">invalidate_entity_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.bump_model_version_sync"><code class="docutils literal notranslate">bump_model_version_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_model_version_sync"><code class="docutils literal notranslate">get_model_version_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_many_sync"><code class="docutils literal notranslate">get_many_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.set_many_sync"><code class="docutils literal notranslate">set_many_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_many_and_count_sync"><code class="docutils literal notranslate">get_many_and_count_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.set_many_and_count_sync"><code class="docutils literal notranslate">set_many_and_count_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_list_sync"><code class="docutils literal notranslate">get_list_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.set_list_sync"><code class="docutils literal notranslate">set_list_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_list_and_count_sync"><code class="docutils literal notranslate">get_list_and_count_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.set_list_and_count_sync"><code class="docutils literal notranslate">set_list_and_count_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.singleflight_sync"><code class="docutils literal notranslate">singleflight_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.invalidate_all_sync"><code class="docutils literal notranslate">invalidate_all_sync()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_async"><code class="docutils literal notranslate">get_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.set_async"><code class="docutils literal notranslate">set_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.delete_async"><code class="docutils literal notranslate">delete_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_or_create_async"><code class="docutils literal notranslate">get_or_create_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_entity_async"><code class="docutils literal notranslate">get_entity_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.set_entity_async"><code class="docutils literal notranslate">set_entity_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.invalidate_entity_async"><code class="docutils literal notranslate">invalidate_entity_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.bump_model_version_async"><code class="docutils literal notranslate">bump_model_version_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_model_version_async"><code class="docutils literal notranslate">get_model_version_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_many_async"><code class="docutils literal notranslate">get_many_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.set_many_async"><code class="docutils literal notranslate">set_many_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_many_and_count_async"><code class="docutils literal notranslate">get_many_and_count_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.set_many_and_count_async"><code class="docutils literal notranslate">set_many_and_count_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_list_async"><code class="docutils literal notranslate">get_list_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.set_list_async"><code class="docutils literal notranslate">set_list_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_list_and_count_async"><code class="docutils literal notranslate">get_list_and_count_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.set_list_and_count_async"><code class="docutils literal notranslate">set_list_and_count_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.singleflight_async"><code class="docutils literal notranslate">singleflight_async()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.CacheManager.invalidate_all_async"><code class="docutils literal notranslate">invalidate_all_async()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#serialization">Serialization</a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.cache.default_serializer"><code class="docutils literal notranslate"><span class="pre">default_serializer()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.cache.default_deserializer"><code class="docutils literal notranslate"><span class="pre">default_deserializer()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#setup">Setup</a><ul>
+<li><a class="reference internal" href="#advanced_alchemy._listeners.setup_cache_listeners"><code class="docutils literal notranslate"><span class="pre">setup_cache_listeners()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#constants">Constants</a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.cache.DOGPILE_CACHE_INSTALLED"><code class="docutils literal notranslate"><span class="pre">DOGPILE_CACHE_INSTALLED</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
+  data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
+  <span class="w-8 flex items-center justify-around shrink-0 text-3xl">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </span>
+  <span class="flex-grow px-2 break-all">
+    
+    
+      <span>advanced-alchemy</span>
+    
+    <span class="flex text-sm repo-stats-count">
+      <span class="flex items-center pr-3">
+        <iconify-icon icon="lucide:star"></iconify-icon>
+        <strong class="js-repo-stars ml-1">0</strong>
+      </span>
+      <span class="flex items-center">
+        <iconify-icon icon="lucide:git-fork"></iconify-icon>
+        <strong class="js-repo-forks ml-1">0</strong>
+      </span>
+    </span>
+  </span>
+</a><div class="edit-this-page">
+  <a href="https://github.com/litestar-org/advanced-alchemy/blob/main/docs/reference/cache.rst">Edit this page</a>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">advanced_alchemy</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">API Reference</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Cache</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <div class="copy-page-wrapper relative pb-4 lg:absolute lg:top-8 lg:right-6 xl:right-12">
+  <div id="copy-page-trigger">
+    <button
+      type="button"
+      class="js-copy px-3 py-1 inline-flex items-center gap-1"
+      data-url="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/cache.rst.txt"
+    >
+      <i class="i-lucide" data-icon="copy"></i>
+      <span>Copy page</span>
+    </button>
+    <button class="js-menu px-2 py-1" type="button" aria-label="More actions"
+      aria-haspopup="menu" aria-expanded="false" aria-controls="copy-page-content">
+      <i class="i-lucide chevron-down"></i>
+    </button>
+  </div>
+  <div id="copy-page-content" role="menu" aria-orientation="vertical" aria-hidden="true">
+    <div role="presentation">
+      <div class="flex flex-col" role="group">
+        <button class="js-copy" type="button" role="menuitem"
+          data-url="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/cache.rst.txt">
+          <span class="iconify-icon">
+            <i class="i-lucide" data-icon="copy"></i>
+          </span>
+          <span>Copy page</span>
+        </button>
+        <a role="menuitem" href="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/cache.rst.txt" target="_blank" rel="nofollow"><iconify-icon icon="bi:code-slash"></iconify-icon>
+            <span>View Source</span></a><a role="menuitem" href="https://chatgpt.com/?hints=search&q=Read%20https%3A//raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/cache.rst.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:openai"></iconify-icon>
+          <span>Open in ChatGPT</span>
+        </a><a role="menuitem" href="https://claude.ai/new?q=Read%20https%3A//raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/cache.rst.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:claude"></iconify-icon>
+          <span>Open in Claude</span>
+        </a></div>
+    </div>
+  </div>
+</div><article class="yue" role="main">
+          <section id="module-advanced_alchemy.cache">
+<span id="cache"></span><h1>Cache<a class="headerlink" href="#module-advanced_alchemy.cache" title="Link to this heading">¶</a></h1>
+<p>The cache module provides optional integration with <a class="reference external" href="https://dogpilecache.sqlalchemy.org/">dogpile.cache</a> for caching
+SQLAlchemy model instances. It supports multiple backends and provides automatic
+cache invalidation when models are modified.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
+<p>The cache module requires the optional <code class="docutils literal notranslate"><span class="pre">dogpile.cache</span></code> dependency:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">pip<span class="w"> </span>install<span class="w"> </span>advanced-alchemy<span class="o">[</span>dogpile<span class="o">]</span>
+</span></pre></div>
+</div>
+<p>Without this dependency, the cache manager will use a <code class="docutils literal notranslate"><span class="pre">NullRegion</span></code> that provides
+the same interface but doesn’t actually cache anything.</p>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheConfig">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.cache.</span></span><span class="sig-name descname"><span class="pre">CacheConfig</span></span><a class="reference internal" href="../_modules/advanced_alchemy/cache/config.html#CacheConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Configuration for a dogpile.cache region.</p>
+<p>This dataclass holds configuration options for setting up a cache region
+using dogpile.cache. It supports multiple backends (Redis, Memcached, file, memory)
+and provides sensible defaults for getting started quickly.</p>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<p>Basic memory cache configuration:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">config</span> <span class="o">=</span> <span class="n">CacheConfig</span><span class="p">(</span>
+</span><span data-line="2">    <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;dogpile.cache.memory&quot;</span><span class="p">,</span>
+</span><span data-line="3">    <span class="n">expiration_time</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+</span><span data-line="4"><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Redis cache configuration:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">config</span> <span class="o">=</span> <span class="n">CacheConfig</span><span class="p">(</span>
+</span><span data-line="2">    <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;dogpile.cache.redis&quot;</span><span class="p">,</span>
+</span><span data-line="3">    <span class="n">expiration_time</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>
+</span><span data-line="4">    <span class="n">arguments</span><span class="o">=</span><span class="p">{</span>
+</span><span data-line="5">        <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+</span><span data-line="6">        <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">6379</span><span class="p">,</span>
+</span><span data-line="7">        <span class="s2">&quot;db&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span data-line="8">    <span class="p">},</span>
+</span><span data-line="9"><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheConfig.backend">
+<span class="sig-name descname"><span class="pre">backend</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'dogpile.cache.null'</span></span><a class="headerlink" href="#advanced_alchemy.cache.CacheConfig.backend" title="Link to this definition">¶</a></dt>
+<dd><p>Cache backend identifier.</p>
+<p>Common backends:
+- <code class="docutils literal notranslate"><span class="pre">dogpile.cache.null</span></code>: No-op cache (default, for development)
+- <code class="docutils literal notranslate"><span class="pre">dogpile.cache.memory</span></code>: In-process memory cache
+- <code class="docutils literal notranslate"><span class="pre">dogpile.cache.redis</span></code>: Redis backend
+- <code class="docutils literal notranslate"><span class="pre">dogpile.cache.memcached</span></code>: Memcached backend
+- <code class="docutils literal notranslate"><span class="pre">dogpile.cache.dbm</span></code>: DBM file-based cache</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheConfig.expiration_time">
+<span class="sig-name descname"><span class="pre">expiration_time</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3600</span></span><a class="headerlink" href="#advanced_alchemy.cache.CacheConfig.expiration_time" title="Link to this definition">¶</a></dt>
+<dd><p>Default TTL (time-to-live) in seconds for cached items.</p>
+<p>Set to <code class="docutils literal notranslate"><span class="pre">-1</span></code> for no expiration. Default is 3600 (1 hour).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheConfig.arguments">
+<span class="sig-name descname"><span class="pre">arguments</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#advanced_alchemy.cache.CacheConfig.arguments" title="Link to this definition">¶</a></dt>
+<dd><p>Backend-specific configuration arguments.</p>
+<p>These are passed directly to the dogpile.cache backend.
+See dogpile.cache documentation for backend-specific options.</p>
+<p>Example for Redis:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="p">{</span><span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">6379</span><span class="p">,</span> <span class="s2">&quot;db&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+</span></pre></div>
+</div>
+<p>Example for Memcached:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="p">{</span><span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;127.0.0.1:11211&quot;</span><span class="p">]}</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheConfig.key_prefix">
+<span class="sig-name descname"><span class="pre">key_prefix</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'aa:'</span></span><a class="headerlink" href="#advanced_alchemy.cache.CacheConfig.key_prefix" title="Link to this definition">¶</a></dt>
+<dd><p>Prefix for all cache keys.</p>
+<p>This helps avoid key collisions when sharing a cache backend
+with other applications. Default is <code class="docutils literal notranslate"><span class="pre">aa:</span></code> (advanced-alchemy).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheConfig.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dogpile.cache.null'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3600</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arguments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'aa:'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serializer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deserializer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_factory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.cache.CacheConfig.__init__" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>expiration_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>)</p></li>
+<li><p><strong>arguments</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a><em>]</em>)</p></li>
+<li><p><strong>key_prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>enabled</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>)</p></li>
+<li><p><strong>serializer</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>deserializer</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><em>type</em></a><em>[</em><em>TypeAliasForwardRef</em><em>(</em><em>'typing.Any'</em><em>)</em><em>]</em><em>]</em><em>, </em><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>region_factory</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference internal" href="#advanced_alchemy.cache.CacheConfig" title="advanced_alchemy.cache.config.CacheConfig"><em>CacheConfig</em></a><em>]</em><em>, </em><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheConfig.enabled">
+<span class="sig-name descname"><span class="pre">enabled</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></span><a class="headerlink" href="#advanced_alchemy.cache.CacheConfig.enabled" title="Link to this definition">¶</a></dt>
+<dd><p>Enable or disable caching globally.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">False</span></code>, all cache operations are bypassed and
+data is always fetched from the database. Useful for
+debugging or testing.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheConfig.serializer">
+<span class="sig-name descname"><span class="pre">serializer</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#advanced_alchemy.cache.CacheConfig.serializer" title="Link to this definition">¶</a></dt>
+<dd><p>Custom serializer function.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the default JSON serializer which handles
+SQLAlchemy models, datetime objects, and UUIDs.</p>
+<p>The function should accept any value and return bytes.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheConfig.deserializer">
+<span class="sig-name descname"><span class="pre">deserializer</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="advanced_alchemy.config.types.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#advanced_alchemy.cache.CacheConfig.deserializer" title="Link to this definition">¶</a></dt>
+<dd><p>Custom deserializer function.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the default JSON deserializer.</p>
+<p>The function should accept bytes and a model class,
+returning an instance of that class.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheConfig.region_factory">
+<span class="sig-name descname"><span class="pre">region_factory</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#advanced_alchemy.cache.CacheConfig" title="advanced_alchemy.cache.CacheConfig"><span class="pre">CacheConfig</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#advanced_alchemy.cache.CacheConfig.region_factory" title="Link to this definition">¶</a></dt>
+<dd><p>Optional hook to construct a cache region instance.</p>
+<p>This exists to keep the repository/service integration stable even if
+Advanced Alchemy swaps the underlying cache backend in the future.</p>
+<p>If provided, <a class="reference internal" href="#advanced_alchemy.cache.CacheManager" title="advanced_alchemy.cache.CacheManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">CacheManager</span></code></a> will call this
+factory instead of using <code class="docutils literal notranslate"><span class="pre">dogpile.cache.make_region()</span></code>.</p>
+<p>The returned object must implement the subset of dogpile’s region API that
+AA relies on (e.g. <code class="docutils literal notranslate"><span class="pre">get()</span></code>, <code class="docutils literal notranslate"><span class="pre">set()</span></code>, <code class="docutils literal notranslate"><span class="pre">delete()</span></code>, <code class="docutils literal notranslate"><span class="pre">invalidate()</span></code>,
+and optionally <code class="docutils literal notranslate"><span class="pre">get_or_create()</span></code>).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="cache-manager">
+<h2>Cache Manager<a class="headerlink" href="#cache-manager" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.cache.</span></span><span class="sig-name descname"><span class="pre">CacheManager</span></span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Manages dogpile.cache regions with model-aware invalidation.</p>
+<p>This class provides a high-level interface for caching SQLAlchemy model
+instances using dogpile.cache. It handles serialization, cache key
+generation, and model-version-based invalidation for list queries.</p>
+<p>All cache operations are available in both sync and async variants:
+- Sync methods end with <code class="docutils literal notranslate"><span class="pre">_sync</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">get_sync</span></code>, <code class="docutils literal notranslate"><span class="pre">set_sync</span></code>)
+- Async methods end with <code class="docutils literal notranslate"><span class="pre">_async</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">get_async</span></code>, <code class="docutils literal notranslate"><span class="pre">set_async</span></code>)</p>
+<p>Async methods use <code class="docutils literal notranslate"><span class="pre">asyncio.to_thread()</span></code> with capacity limiting to
+prevent blocking the event loop when using network-based backends
+like Redis or Memcached.</p>
+<p>Features:
+- Lazy initialization of cache regions
+- Model-aware cache key generation
+- Version-based invalidation for list queries
+- Graceful degradation when dogpile.cache is not installed
+- Support for custom serializers
+- Both sync and async operation support</p>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<p>Sync usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">CacheConfig</span><span class="p">,</span> <span class="n">CacheManager</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="n">config</span> <span class="o">=</span> <span class="n">CacheConfig</span><span class="p">(</span>
+</span><span data-line="4">    <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;dogpile.cache.memory&quot;</span><span class="p">,</span>
+</span><span data-line="5">    <span class="n">expiration_time</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+</span><span data-line="6"><span class="p">)</span>
+</span><span data-line="7"><span class="n">manager</span> <span class="o">=</span> <span class="n">CacheManager</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="c1"># Cache a value (sync)</span>
+</span><span data-line="10"><span class="n">result</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">get_or_create_sync</span><span class="p">(</span>
+</span><span data-line="11">    <span class="s2">&quot;users:1&quot;</span><span class="p">,</span>
+</span><span data-line="12">    <span class="k">lambda</span><span class="p">:</span> <span class="n">fetch_user_from_db</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+</span><span data-line="13"><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Async usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># Cache a value (async)</span>
+</span><span data-line="2"><span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">manager</span><span class="o">.</span><span class="n">get_or_create_async</span><span class="p">(</span>
+</span><span data-line="3">    <span class="s2">&quot;users:1&quot;</span><span class="p">,</span>
+</span><span data-line="4">    <span class="k">lambda</span><span class="p">:</span> <span class="n">fetch_user_from_db</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+</span><span data-line="5"><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the cache manager.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.params.config"></span><strong>config</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.params.config">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#advanced_alchemy.cache.CacheConfig" title="advanced_alchemy.cache.config.CacheConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">CacheConfig</span></code></a></span>) – Configuration for the cache region.</p></li>
+<li><p><strong>config</strong> (<a class="reference internal" href="#advanced_alchemy.cache.CacheConfig" title="advanced_alchemy.cache.config.CacheConfig"><em>CacheConfig</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Model version tokens are stored in-cache for cross-process consistency.
+A random token is used per commit to avoid lost updates without requiring
+backend-specific atomic increment support.</p>
+<p>Per-process singleflight registries (async and sync) are best-effort;
+they reduce stampedes within a single process but do not provide
+cross-process locking.</p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.region">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">region</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">SyncCacheRegionProtocol</span></span><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.region" title="Link to this definition">¶</a></dt>
+<dd><p>Get the cache region, creating it if necessary.</p>
+<p>The region is lazily initialized on first access. If dogpile.cache
+is not installed or initialization fails, returns a NullRegion that
+provides the same interface but doesn’t actually cache anything.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The configured cache region or a NullRegion fallback.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.get_sync">
+<span class="sig-name descname"><span class="pre">get_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.get_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.get_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Get a value from the cache (sync).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_sync.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_sync.params.key">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The cache key (without prefix).</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The cached value or NO_VALUE if not found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.set_sync">
+<span class="sig-name descname"><span class="pre">set_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.set_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.set_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Set a value in the cache (sync).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.set_sync.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.set_sync.params.key">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The cache key (without prefix).</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.set_sync.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.set_sync.params.value">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The value to cache.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>value</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.delete_sync">
+<span class="sig-name descname"><span class="pre">delete_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.delete_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.delete_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Delete a value from the cache (sync).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.delete_sync.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.delete_sync.params.key">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The cache key (without prefix).</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.get_or_create_sync">
+<span class="sig-name descname"><span class="pre">get_or_create_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.get_or_create_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.get_or_create_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Get a value from cache or create it using the creator function (sync).</p>
+<p>This method uses dogpile.cache’s get_or_create which provides
+mutex-based protection against the “thundering herd” problem
+when multiple requests try to create the same value simultaneously.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The creator function must be synchronous. For async creators,
+you must await them before passing to this method.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_or_create_sync.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_or_create_sync.params.key">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The cache key (without prefix).</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_or_create_sync.params.creator"></span><strong>creator</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_or_create_sync.params.creator">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)]</span>) – A synchronous callable that returns the value to cache on miss.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_or_create_sync.params.expiration_time"></span><strong>expiration_time</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_or_create_sync.params.expiration_time">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – Optional override for the default TTL.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>creator</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><em>Callable</em></a><em>[</em><em>[</em><em>]</em><em>, </em><em>T</em><em>]</em>)</p></li>
+<li><p><strong>expiration_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The cached or newly created value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.get_entity_sync">
+<span class="sig-name descname"><span class="pre">get_entity_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.get_entity_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.get_entity_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Get a cached entity by model name and ID (sync).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_entity_sync.params.model_name"></span><strong>model_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_entity_sync.params.model_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The model/table name.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_entity_sync.params.entity_id"></span><strong>entity_id</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_entity_sync.params.entity_id">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The entity’s primary key value.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_entity_sync.params.model_class"></span><strong>model_class</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_entity_sync.params.model_class">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)]</span>) – The SQLAlchemy model class for deserialization.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_entity_sync.params.bind_group"></span><strong>bind_group</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_entity_sync.params.bind_group">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – Optional routing group for multi-master configurations.
+When provided, entity caches are namespaced by bind_group to
+prevent data leaks between database shards/replicas.</p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>entity_id</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+<li><p><strong>model_class</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><em>type</em></a><em>[</em><em>T</em><em>]</em>)</p></li>
+<li><p><strong>bind_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The cached model instance or None if not found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.set_entity_sync">
+<span class="sig-name descname"><span class="pre">set_entity_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.set_entity_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.set_entity_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Cache an entity (sync).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.set_entity_sync.params.model_name"></span><strong>model_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.set_entity_sync.params.model_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The model/table name.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.set_entity_sync.params.entity_id"></span><strong>entity_id</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.set_entity_sync.params.entity_id">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The entity’s primary key value.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.set_entity_sync.params.entity"></span><strong>entity</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.set_entity_sync.params.entity">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The SQLAlchemy model instance to cache.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.set_entity_sync.params.bind_group"></span><strong>bind_group</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.set_entity_sync.params.bind_group">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – Optional routing group for multi-master configurations.
+When provided, entity caches are namespaced by bind_group to
+prevent data leaks between database shards/replicas.</p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>entity_id</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+<li><p><strong>entity</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+<li><p><strong>bind_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.invalidate_entity_sync">
+<span class="sig-name descname"><span class="pre">invalidate_entity_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.invalidate_entity_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.invalidate_entity_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Invalidate the cache for a specific entity (sync).</p>
+<p>This should be called after an entity is created, updated, or deleted
+to ensure the cache doesn’t serve stale data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.invalidate_entity_sync.params.model_name"></span><strong>model_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.invalidate_entity_sync.params.model_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The model/table name.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.invalidate_entity_sync.params.entity_id"></span><strong>entity_id</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.invalidate_entity_sync.params.entity_id">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The entity’s primary key value.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.invalidate_entity_sync.params.bind_group"></span><strong>bind_group</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.invalidate_entity_sync.params.bind_group">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – Optional routing group for multi-master configurations.
+When provided, only the cache entry for that bind_group is
+invalidated.</p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>entity_id</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+<li><p><strong>bind_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.bump_model_version_sync">
+<span class="sig-name descname"><span class="pre">bump_model_version_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.bump_model_version_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.bump_model_version_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Bump the version token for a model (sync).</p>
+<p>This is used for version-based invalidation of list queries.
+When a model is created, updated, or deleted, the version is
+bumped to a new random token, which effectively invalidates all
+list query caches that include that token in their cache key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.bump_model_version_sync.params.model_name"></span><strong>model_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.bump_model_version_sync.params.model_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The model/table name.</p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The new version token.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.get_model_version_sync">
+<span class="sig-name descname"><span class="pre">get_model_version_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.get_model_version_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.get_model_version_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Get the current version token for a model (sync).</p>
+<p>This is used to include the version in list query cache keys,
+ensuring that list caches are invalidated when models change.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_model_version_sync.params.model_name"></span><strong>model_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_model_version_sync.params.model_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The model/table name.</p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The current version token (“0” if not set).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.get_many_sync">
+<span class="sig-name descname"><span class="pre">get_many_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_class</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.get_many_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.get_many_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Get a cached list of entities (sync).</p>
+<p>The list is stored as base64-encoded serialized entity payloads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_many_sync.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_many_sync.params.key">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Cache key (without prefix).</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_many_sync.params.model_class"></span><strong>model_class</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_many_sync.params.model_class">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)]</span>) – Model class for deserialization.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>model_class</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><em>type</em></a><em>[</em><em>T</em><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)]]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of detached model instances or None if not found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.set_many_sync">
+<span class="sig-name descname"><span class="pre">set_many_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.set_many_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.set_many_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Cache a list of entities (sync).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.set_many_sync.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.set_many_sync.params.key">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Cache key (without prefix).</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.set_many_sync.params.items"></span><strong>items</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.set_many_sync.params.items">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span>) – List of entities to cache.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>items</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.get_many_and_count_sync">
+<span class="sig-name descname"><span class="pre">get_many_and_count_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_class</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.get_many_and_count_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.get_many_and_count_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Get a cached list+count payload (sync).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)], <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>model_class</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><em>type</em></a><em>[</em><em>T</em><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.set_many_and_count_sync">
+<span class="sig-name descname"><span class="pre">set_many_and_count_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.set_many_and_count_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.set_many_and_count_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Cache a list+count payload (sync).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>items</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a><em>]</em>)</p></li>
+<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.get_list_sync">
+<span class="sig-name descname"><span class="pre">get_list_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_class</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.get_list_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.get_list_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Get a cached list of entities (sync).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.10.0: </span>Use <a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_many_sync" title="advanced_alchemy.cache.CacheManager.get_many_sync"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_many_sync()</span></code></a> instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)]]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>model_class</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><em>type</em></a><em>[</em><em>T</em><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.set_list_sync">
+<span class="sig-name descname"><span class="pre">set_list_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.set_list_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.set_list_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Cache a list of entities (sync).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.10.0: </span>Use <a class="reference internal" href="#advanced_alchemy.cache.CacheManager.set_many_sync" title="advanced_alchemy.cache.CacheManager.set_many_sync"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_many_sync()</span></code></a> instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>items</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.get_list_and_count_sync">
+<span class="sig-name descname"><span class="pre">get_list_and_count_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_class</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.get_list_and_count_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.get_list_and_count_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Get a cached list+count payload (sync).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.10.0: </span>Use <a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_many_and_count_sync" title="advanced_alchemy.cache.CacheManager.get_many_and_count_sync"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_many_and_count_sync()</span></code></a> instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)], <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>model_class</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><em>type</em></a><em>[</em><em>T</em><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.set_list_and_count_sync">
+<span class="sig-name descname"><span class="pre">set_list_and_count_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.set_list_and_count_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.set_list_and_count_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Cache a list+count payload (sync).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.10.0: </span>Use <a class="reference internal" href="#advanced_alchemy.cache.CacheManager.set_many_and_count_sync" title="advanced_alchemy.cache.CacheManager.set_many_and_count_sync"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_many_and_count_sync()</span></code></a> instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>items</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a><em>]</em>)</p></li>
+<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.singleflight_sync">
+<span class="sig-name descname"><span class="pre">singleflight_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.singleflight_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.singleflight_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Coalesce concurrent sync cache misses per-process.</p>
+<p>This reduces stampedes in thread-based sync apps. It does not provide
+cross-process locking.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>creator</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><em>Callable</em></a><em>[</em><em>[</em><em>]</em><em>, </em><em>T</em><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.invalidate_all_sync">
+<span class="sig-name descname"><span class="pre">invalidate_all_sync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.invalidate_all_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.invalidate_all_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Invalidate all cached values (sync).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This invalidates the entire region, not just keys with
+the configured prefix. Use with caution in shared cache
+environments.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.get_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.get_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.get_async" title="Link to this definition">¶</a></dt>
+<dd><p>Get a value from the cache (async).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_async.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_async.params.key">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The cache key (without prefix).</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The cached value or NO_VALUE if not found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.set_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">set_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.set_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.set_async" title="Link to this definition">¶</a></dt>
+<dd><p>Set a value in the cache (async).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.set_async.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.set_async.params.key">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The cache key (without prefix).</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.set_async.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.set_async.params.value">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The value to cache.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>value</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.delete_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">delete_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.delete_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.delete_async" title="Link to this definition">¶</a></dt>
+<dd><p>Delete a value from the cache (async).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.delete_async.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.delete_async.params.key">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The cache key (without prefix).</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.get_or_create_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_or_create_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.get_or_create_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.get_or_create_async" title="Link to this definition">¶</a></dt>
+<dd><p>Get a value from cache or create it using the creator function (async).</p>
+<p>This method uses dogpile.cache’s get_or_create which provides
+mutex-based protection against the “thundering herd” problem
+when multiple requests try to create the same value simultaneously.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The creator function must be synchronous since dogpile.cache
+runs in a thread pool. For async creators, you must await
+them and wrap the result before passing to this method.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_or_create_async.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_or_create_async.params.key">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The cache key (without prefix).</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_or_create_async.params.creator"></span><strong>creator</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_or_create_async.params.creator">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)]</span>) – A synchronous callable that returns the value to cache on miss.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_or_create_async.params.expiration_time"></span><strong>expiration_time</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_or_create_async.params.expiration_time">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – Optional override for the default TTL.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>creator</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><em>Callable</em></a><em>[</em><em>[</em><em>]</em><em>, </em><em>T</em><em>]</em>)</p></li>
+<li><p><strong>expiration_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The cached or newly created value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.get_entity_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_entity_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.get_entity_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.get_entity_async" title="Link to this definition">¶</a></dt>
+<dd><p>Get a cached entity by model name and ID (async).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_entity_async.params.model_name"></span><strong>model_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_entity_async.params.model_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The model/table name.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_entity_async.params.entity_id"></span><strong>entity_id</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_entity_async.params.entity_id">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The entity’s primary key value.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_entity_async.params.model_class"></span><strong>model_class</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_entity_async.params.model_class">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)]</span>) – The SQLAlchemy model class for deserialization.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_entity_async.params.bind_group"></span><strong>bind_group</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_entity_async.params.bind_group">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – Optional routing group for multi-master configurations.
+When provided, entity caches are namespaced by bind_group to
+prevent data leaks between database shards/replicas.</p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>entity_id</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+<li><p><strong>model_class</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><em>type</em></a><em>[</em><em>T</em><em>]</em>)</p></li>
+<li><p><strong>bind_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The cached model instance or None if not found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.set_entity_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">set_entity_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.set_entity_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.set_entity_async" title="Link to this definition">¶</a></dt>
+<dd><p>Cache an entity (async).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.set_entity_async.params.model_name"></span><strong>model_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.set_entity_async.params.model_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The model/table name.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.set_entity_async.params.entity_id"></span><strong>entity_id</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.set_entity_async.params.entity_id">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The entity’s primary key value.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.set_entity_async.params.entity"></span><strong>entity</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.set_entity_async.params.entity">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The SQLAlchemy model instance to cache.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.set_entity_async.params.bind_group"></span><strong>bind_group</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.set_entity_async.params.bind_group">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – Optional routing group for multi-master configurations.
+When provided, entity caches are namespaced by bind_group to
+prevent data leaks between database shards/replicas.</p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>entity_id</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+<li><p><strong>entity</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+<li><p><strong>bind_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.invalidate_entity_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">invalidate_entity_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.invalidate_entity_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.invalidate_entity_async" title="Link to this definition">¶</a></dt>
+<dd><p>Invalidate the cache for a specific entity (async).</p>
+<p>This should be called after an entity is created, updated, or deleted
+to ensure the cache doesn’t serve stale data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.invalidate_entity_async.params.model_name"></span><strong>model_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.invalidate_entity_async.params.model_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The model/table name.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.invalidate_entity_async.params.entity_id"></span><strong>entity_id</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.invalidate_entity_async.params.entity_id">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The entity’s primary key value.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.invalidate_entity_async.params.bind_group"></span><strong>bind_group</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.invalidate_entity_async.params.bind_group">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – Optional routing group for multi-master configurations.
+When provided, only the cache entry for that bind_group is
+invalidated.</p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>entity_id</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+<li><p><strong>bind_group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.bump_model_version_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">bump_model_version_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.bump_model_version_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.bump_model_version_async" title="Link to this definition">¶</a></dt>
+<dd><p>Bump the version token for a model (async).</p>
+<p>This is used for version-based invalidation of list queries.
+When a model is created, updated, or deleted, the version is
+bumped, which effectively invalidates all list query caches
+that include that model’s version in their cache key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.bump_model_version_async.params.model_name"></span><strong>model_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.bump_model_version_async.params.model_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The model/table name.</p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The new version token.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.get_model_version_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_model_version_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.get_model_version_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.get_model_version_async" title="Link to this definition">¶</a></dt>
+<dd><p>Get the current version token for a model (async).</p>
+<p>This is used to include the version in list query cache keys,
+ensuring that list caches are invalidated when models change.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.CacheManager.get_model_version_async.params.model_name"></span><strong>model_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.CacheManager.get_model_version_async.params.model_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The model/table name.</p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The current version token (“0” if not set).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.get_many_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_many_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_class</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.get_many_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.get_many_async" title="Link to this definition">¶</a></dt>
+<dd><p>Get a cached list of entities (async).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)]]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>model_class</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><em>type</em></a><em>[</em><em>T</em><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.set_many_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">set_many_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.set_many_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.set_many_async" title="Link to this definition">¶</a></dt>
+<dd><p>Cache a list of entities (async).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>items</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.get_many_and_count_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_many_and_count_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_class</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.get_many_and_count_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.get_many_and_count_async" title="Link to this definition">¶</a></dt>
+<dd><p>Get a cached list+count payload (async).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)], <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>model_class</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><em>type</em></a><em>[</em><em>T</em><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.set_many_and_count_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">set_many_and_count_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.set_many_and_count_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.set_many_and_count_async" title="Link to this definition">¶</a></dt>
+<dd><p>Cache a list+count payload (async).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>items</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a><em>]</em>)</p></li>
+<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.get_list_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_list_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_class</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.get_list_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.get_list_async" title="Link to this definition">¶</a></dt>
+<dd><p>Get a cached list of entities (async).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.10.0: </span>Use <a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_many_async" title="advanced_alchemy.cache.CacheManager.get_many_async"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_many_async()</span></code></a> instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)]]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>model_class</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><em>type</em></a><em>[</em><em>T</em><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.set_list_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">set_list_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.set_list_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.set_list_async" title="Link to this definition">¶</a></dt>
+<dd><p>Cache a list of entities (async).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.10.0: </span>Use <a class="reference internal" href="#advanced_alchemy.cache.CacheManager.set_many_async" title="advanced_alchemy.cache.CacheManager.set_many_async"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_many_async()</span></code></a> instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>items</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.get_list_and_count_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_list_and_count_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_class</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.get_list_and_count_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.get_list_and_count_async" title="Link to this definition">¶</a></dt>
+<dd><p>Get a cached list+count payload (async).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.10.0: </span>Use <a class="reference internal" href="#advanced_alchemy.cache.CacheManager.get_many_and_count_async" title="advanced_alchemy.cache.CacheManager.get_many_and_count_async"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_many_and_count_async()</span></code></a> instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)], <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>model_class</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><em>type</em></a><em>[</em><em>T</em><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.set_list_and_count_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">set_list_and_count_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.set_list_and_count_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.set_list_and_count_async" title="Link to this definition">¶</a></dt>
+<dd><p>Cache a list+count payload (async).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.10.0: </span>Use <a class="reference internal" href="#advanced_alchemy.cache.CacheManager.set_many_and_count_async" title="advanced_alchemy.cache.CacheManager.set_many_and_count_async"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_many_and_count_async()</span></code></a> instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>items</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a><em>]</em>)</p></li>
+<li><p><strong>count</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.singleflight_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">singleflight_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.singleflight_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.singleflight_async" title="Link to this definition">¶</a></dt>
+<dd><p>Coalesce concurrent async cache misses per-process.</p>
+<p>The creator is invoked once per key at a time; concurrent callers
+await the same in-flight task. This does not provide cross-process
+locking.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>creator</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><em>Callable</em></a><em>[</em><em>[</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Coroutine" title="(in Python v3.14)"><em>Coroutine</em></a><em>[</em><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a><em>, </em><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a><em>, </em><em>T</em><em>]</em><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.invalidate_all_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">invalidate_all_async</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/manager.html#CacheManager.invalidate_all_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.invalidate_all_async" title="Link to this definition">¶</a></dt>
+<dd><p>Invalidate all cached values (async).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This invalidates the entire region, not just keys with
+the configured prefix. Use with caution in shared cache
+environments.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="serialization">
+<h2>Serialization<a class="headerlink" href="#serialization" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.default_serializer">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.cache.</span></span><span class="sig-name descname"><span class="pre">default_serializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/serializers.html#default_serializer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.default_serializer" title="Link to this definition">¶</a></dt>
+<dd><p>Serialize a SQLAlchemy model instance to JSON bytes.</p>
+<p>This function extracts column values from a SQLAlchemy model and
+serializes them to JSON format. The serialized data includes metadata
+about the model class for validation during deserialization.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Relationships are NOT serialized. Only column values are included.
+The deserialized object will be a detached instance without
+relationship data loaded.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.default_serializer.params.model"></span><strong>model</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.default_serializer.params.model">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The SQLAlchemy model instance to serialize.</p></li>
+<li><p><strong>model</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>JSON-encoded bytes representation of the model.</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<p>Serializing a model:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;John&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;john@example.com&quot;</span><span class="p">)</span>
+</span><span data-line="2"><span class="n">data</span> <span class="o">=</span> <span class="n">default_serializer</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span data-line="3"><span class="c1"># b&#39;{&quot;__aa_model__&quot;: &quot;User&quot;, &quot;__aa_table__&quot;: &quot;users&quot;, &quot;id&quot;: 1, ...}&#39;</span>
+</span></pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.default_deserializer">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.cache.</span></span><span class="sig-name descname"><span class="pre">default_deserializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_class</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cache/serializers.html#default_deserializer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cache.default_deserializer" title="Link to this definition">¶</a></dt>
+<dd><p>Deserialize JSON bytes to a SQLAlchemy model instance.</p>
+<p>Creates a new, detached instance of the model class populated with
+the serialized column values. The instance is NOT attached to any
+session and should be treated as a read-only snapshot.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The returned instance is detached and does not have relationships
+loaded. Accessing lazy-loaded relationships will raise
+DetachedInstanceError. Use <code class="docutils literal notranslate"><span class="pre">session.merge()</span></code> if you need to
+work with relationships.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.cache.default_deserializer.params.data"></span><strong>data</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.default_deserializer.params.data">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a></span>) – JSON bytes to deserialize.</p></li>
+<li><p><span class="target" id="advanced_alchemy.cache.default_deserializer.params.model_class"></span><strong>model_class</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.cache.default_deserializer.params.model_class">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)]</span>) – The SQLAlchemy model class to instantiate.</p></li>
+<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a>)</p></li>
+<li><p><strong>model_class</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><em>type</em></a><em>[</em><em>T</em><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">T</span></code>)</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A new, detached instance of the model class.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the serialized data is for a different model class.</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<p>Deserializing data:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;{&quot;__aa_model__&quot;: &quot;User&quot;, &quot;id&quot;: 1, &quot;name&quot;: &quot;John&quot;}&#39;</span>
+</span><span data-line="2"><span class="n">user</span> <span class="o">=</span> <span class="n">default_deserializer</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">User</span><span class="p">)</span>
+</span><span data-line="3"><span class="c1"># user is a detached User instance</span>
+</span></pre></div>
+</div>
+</div>
+</dd></dl>
+
+</section>
+<section id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy._listeners.setup_cache_listeners">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy._listeners.</span></span><span class="sig-name descname"><span class="pre">setup_cache_listeners</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/_listeners.html#setup_cache_listeners"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy._listeners.setup_cache_listeners" title="Link to this definition">¶</a></dt>
+<dd><p>Register cache invalidation event listeners globally.</p>
+<p>This registers the unified listener on Session, which handles both sync
+and async contexts by detecting a running event loop at commit time.
+For more control, prefer using scoped listeners via SQLAlchemyConfig.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="constants">
+<h2>Constants<a class="headerlink" href="#constants" title="Link to this heading">¶</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.DOGPILE_CACHE_INSTALLED">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.cache.</span></span><span class="sig-name descname"><span class="pre">DOGPILE_CACHE_INSTALLED</span></span><a class="headerlink" href="#advanced_alchemy.cache.DOGPILE_CACHE_INSTALLED" title="Link to this definition">¶</a></dt>
+<dd><p>Returns True when the argument is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.</p>
+</dd></dl>
+
+</section>
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="config/types.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">types</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="operations.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">operations</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Litestar Organization</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a>
+<a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+  <iconify-icon icon="simple-icons:discord"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../_static/documentation_options.js?v=6f8f3740"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=a56c686a"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=b8b12719"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/shibuya.js?v=cac61aee"></script></body>
+</html>
