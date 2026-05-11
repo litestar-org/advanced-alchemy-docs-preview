@@ -963,7 +963,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="627"><span class="sd">    type encoder merging and enc_hook creation.</span>
 </span><span data-line="628"><span class="sd">    &quot;&quot;&quot;</span>
 </span><span data-line="629">
-</span><span data-line="630">    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_type_encoders&quot;</span><span class="p">,)</span>
+</span><span data-line="630">    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_custom_type_encoders&quot;</span><span class="p">,</span> <span class="s2">&quot;_type_encoders&quot;</span><span class="p">)</span>
 </span><span data-line="631">
 </span><span data-line="632">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_encoders</span><span class="p">:</span> <span class="s2">&quot;Optional[TypeEncodersMap]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span data-line="633"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize serializer with optional custom type encoders.</span>
@@ -972,549 +972,601 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="636"><span class="sd">            type_encoders: Custom type encoders to merge with defaults.</span>
 </span><span data-line="637"><span class="sd">                User-provided encoders take precedence over defaults.</span>
 </span><span data-line="638"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="639">        <span class="bp">self</span><span class="o">.</span><span class="n">_type_encoders</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
-</span><span data-line="640">            <span class="o">**</span><span class="n">DEFAULT_TYPE_ENCODERS</span><span class="p">,</span>
-</span><span data-line="641">            <span class="o">**</span><span class="p">(</span><span class="n">type_encoders</span> <span class="ow">or</span> <span class="p">{}),</span>
-</span><span data-line="642">        <span class="p">}</span>
-</span><span data-line="643">
-</span><span data-line="644">    <span class="k">def</span><span class="w"> </span><span class="nf">_create_enc_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Callable[[Any], Any]&quot;</span><span class="p">:</span>
-</span><span data-line="645"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an encoding hook function from type_encoders.</span>
-</span><span data-line="646">
-</span><span data-line="647"><span class="sd">        The hook walks the MRO of the value&#39;s type to find a matching</span>
-</span><span data-line="648"><span class="sd">        encoder, allowing encoders for parent classes to handle subclasses.</span>
-</span><span data-line="649">
-</span><span data-line="650"><span class="sd">        Returns:</span>
-</span><span data-line="651"><span class="sd">            Encoding hook function suitable for msgspec/orjson.</span>
-</span><span data-line="652"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="653">        <span class="n">type_encoders</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type_encoders</span>
-</span><span data-line="654">
-</span><span data-line="655">        <span class="k">def</span><span class="w"> </span><span class="nf">enc_hook</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span data-line="656">            <span class="c1"># Walk MRO to find encoder for value&#39;s type or parent class</span>
-</span><span data-line="657">            <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-</span><span data-line="658">                <span class="n">encoder</span> <span class="o">=</span> <span class="n">type_encoders</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
-</span><span data-line="659">                <span class="k">if</span> <span class="n">encoder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="660">                    <span class="k">return</span> <span class="n">encoder</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-</span><span data-line="661">            <span class="c1"># Fallback: try string conversion</span>
-</span><span data-line="662">            <span class="k">try</span><span class="p">:</span>
-</span><span data-line="663">                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-</span><span data-line="664">            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-</span><span data-line="665">                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Cannot serialize </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span data-line="666">                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
-</span><span data-line="667">
-</span><span data-line="668">        <span class="k">return</span> <span class="n">enc_hook</span>
+</span><span data-line="639">        <span class="bp">self</span><span class="o">.</span><span class="n">_custom_type_encoders</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">type_encoders</span> <span class="ow">or</span> <span class="p">{})</span>
+</span><span data-line="640">        <span class="bp">self</span><span class="o">.</span><span class="n">_type_encoders</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="641">            <span class="o">**</span><span class="n">DEFAULT_TYPE_ENCODERS</span><span class="p">,</span>
+</span><span data-line="642">            <span class="o">**</span><span class="p">(</span><span class="n">type_encoders</span> <span class="ow">or</span> <span class="p">{}),</span>
+</span><span data-line="643">        <span class="p">}</span>
+</span><span data-line="644">
+</span><span data-line="645">    <span class="nd">@staticmethod</span>
+</span><span data-line="646">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_type_encoder</span><span class="p">(</span>
+</span><span data-line="647">        <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="648">        <span class="n">type_encoders</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]],</span>
+</span><span data-line="649">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Optional[Callable[[Any], Any]]&quot;</span><span class="p">:</span>
+</span><span data-line="650"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the encoder matching ``value`` by exact type or MRO.&quot;&quot;&quot;</span>
+</span><span data-line="651">        <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+</span><span data-line="652">            <span class="n">encoder</span> <span class="o">=</span> <span class="n">type_encoders</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+</span><span data-line="653">            <span class="k">if</span> <span class="n">encoder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="654">                <span class="k">return</span> <span class="n">encoder</span>
+</span><span data-line="655">        <span class="k">return</span> <span class="kc">None</span>
+</span><span data-line="656">
+</span><span data-line="657">    <span class="k">def</span><span class="w"> </span><span class="nf">_encode_mapping_key_with_custom_type_encoder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="658">        <span class="n">encoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_type_encoder</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_type_encoders</span><span class="p">)</span>
+</span><span data-line="659">        <span class="k">return</span> <span class="n">encoder</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">if</span> <span class="n">encoder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">key</span>
+</span><span data-line="660">
+</span><span data-line="661">    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_custom_type_encoders_to_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">object</span><span class="p">,</span> <span class="nb">object</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+</span><span data-line="662">        <span class="k">return</span> <span class="p">{</span>
+</span><span data-line="663">            <span class="bp">self</span><span class="o">.</span><span class="n">_encode_mapping_key_with_custom_type_encoder</span><span class="p">(</span><span class="n">key</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_custom_type_encoders</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+</span><span data-line="664">            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+</span><span data-line="665">        <span class="p">}</span>
+</span><span data-line="666">
+</span><span data-line="667">    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_custom_type_encoders_to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">object</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+</span><span data-line="668">        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_apply_custom_type_encoders</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]</span>
 </span><span data-line="669">
-</span><span data-line="670">    <span class="nd">@overload</span>
-</span><span data-line="671">    <span class="nd">@abstractmethod</span>
-</span><span data-line="672">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="673">
-</span><span data-line="674">    <span class="nd">@overload</span>
-</span><span data-line="675">    <span class="nd">@abstractmethod</span>
-</span><span data-line="676">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="677">
-</span><span data-line="678">    <span class="nd">@overload</span>
-</span><span data-line="679">    <span class="nd">@abstractmethod</span>
-</span><span data-line="680">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="670">    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_custom_type_encoders_to_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">object</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+</span><span data-line="671">        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_apply_custom_type_encoders</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span>
+</span><span data-line="672">
+</span><span data-line="673">    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_custom_type_encoders_to_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">object</span><span class="p">],</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">object</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+</span><span data-line="674">        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_apply_custom_type_encoders</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]</span>
+</span><span data-line="675">
+</span><span data-line="676">    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_custom_type_encoders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="677"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply user-provided type encoders before backend-native encoding.&quot;&quot;&quot;</span>
+</span><span data-line="678">        <span class="n">encoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_type_encoder</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_type_encoders</span><span class="p">)</span>
+</span><span data-line="679">        <span class="k">if</span> <span class="n">encoder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="680">            <span class="k">return</span> <span class="n">encoder</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 </span><span data-line="681">
-</span><span data-line="682">    <span class="nd">@abstractmethod</span>
-</span><span data-line="683">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span>
-</span><span data-line="684"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Encode data to JSON.&quot;&quot;&quot;</span>
-</span><span data-line="685">        <span class="o">...</span>
-</span><span data-line="686">
-</span><span data-line="687">    <span class="nd">@abstractmethod</span>
-</span><span data-line="688">    <span class="k">def</span><span class="w"> </span><span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">decode_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span data-line="689"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode JSON to Python object.&quot;&quot;&quot;</span>
-</span><span data-line="690">        <span class="o">...</span>
+</span><span data-line="682">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+</span><span data-line="683">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_custom_type_encoders_to_mapping</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;Mapping[object, object]&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+</span><span data-line="684">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</span><span data-line="685">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_custom_type_encoders_to_list</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;list[object]&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+</span><span data-line="686">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+</span><span data-line="687">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_custom_type_encoders_to_tuple</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;tuple[object, ...]&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+</span><span data-line="688">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">set</span><span class="p">,</span> <span class="nb">frozenset</span><span class="p">)):</span>
+</span><span data-line="689">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_custom_type_encoders_to_set</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;Union[set[object], frozenset[object]]&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+</span><span data-line="690">        <span class="k">return</span> <span class="n">value</span>
 </span><span data-line="691">
-</span><span data-line="692">
-</span><span data-line="693"><span class="c1"># ============================================================================</span>
-</span><span data-line="694"><span class="c1"># Serializer implementations</span>
-</span><span data-line="695"><span class="c1"># ============================================================================</span>
+</span><span data-line="692">    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_data_for_encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="693">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_type_encoders</span><span class="p">:</span>
+</span><span data-line="694">            <span class="k">return</span> <span class="n">data</span>
+</span><span data-line="695">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_custom_type_encoders</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </span><span data-line="696">
-</span><span data-line="697">
-</span><span data-line="698"><span class="k">class</span><span class="w"> </span><span class="nc">MsgspecSerializer</span><span class="p">(</span><span class="n">BaseJSONSerializer</span><span class="p">):</span>
-</span><span data-line="699"><span class="w">    </span><span class="sd">&quot;&quot;&quot;High-performance JSON serializer using msgspec.</span>
-</span><span data-line="700">
-</span><span data-line="701"><span class="sd">    This is the preferred serializer when msgspec is available, offering</span>
-</span><span data-line="702"><span class="sd">    the best performance for JSON encoding/decoding.</span>
-</span><span data-line="703">
-</span><span data-line="704"><span class="sd">    Example:</span>
-</span><span data-line="705"><span class="sd">        &gt;&gt;&gt; serializer = MsgspecSerializer()</span>
-</span><span data-line="706"><span class="sd">        &gt;&gt;&gt; serializer.encode({&quot;key&quot;: &quot;value&quot;})</span>
-</span><span data-line="707"><span class="sd">        &#39;{&quot;key&quot;:&quot;value&quot;}&#39;</span>
-</span><span data-line="708">
-</span><span data-line="709"><span class="sd">        &gt;&gt;&gt; # With custom type encoders</span>
-</span><span data-line="710"><span class="sd">        &gt;&gt;&gt; serializer = MsgspecSerializer(type_encoders={set: sorted})</span>
-</span><span data-line="711"><span class="sd">        &gt;&gt;&gt; serializer.encode({&quot;items&quot;: {3, 1, 2}})</span>
-</span><span data-line="712"><span class="sd">        &#39;{&quot;items&quot;:[1,2,3]}&#39;</span>
-</span><span data-line="713"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="714">
-</span><span data-line="715">    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_decoder&quot;</span><span class="p">,</span> <span class="s2">&quot;_enc_hook&quot;</span><span class="p">,</span> <span class="s2">&quot;_encoder&quot;</span><span class="p">)</span>
-</span><span data-line="716">
-</span><span data-line="717">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-</span><span data-line="718">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="719">        <span class="n">type_encoders</span><span class="p">:</span> <span class="s2">&quot;Optional[TypeEncodersMap]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="720">        <span class="n">enc_hook</span><span class="p">:</span> <span class="s2">&quot;Optional[Callable[[Any], Any]]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="721">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="722"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize msgspec serializer.</span>
-</span><span data-line="723">
-</span><span data-line="724"><span class="sd">        Args:</span>
-</span><span data-line="725"><span class="sd">            type_encoders: Custom type encoders to merge with defaults.</span>
-</span><span data-line="726"><span class="sd">            enc_hook: Optional custom encoding hook. If provided, type_encoders</span>
-</span><span data-line="727"><span class="sd">                is ignored and this hook is used directly for complete control.</span>
-</span><span data-line="728"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="729">        <span class="kn">from</span><span class="w"> </span><span class="nn">msgspec.json</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decoder</span><span class="p">,</span> <span class="n">Encoder</span>
-</span><span data-line="730">
-</span><span data-line="731">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">type_encoders</span><span class="p">)</span>
+</span><span data-line="697">    <span class="k">def</span><span class="w"> </span><span class="nf">_create_enc_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Callable[[Any], Any]&quot;</span><span class="p">:</span>
+</span><span data-line="698"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an encoding hook function from type_encoders.</span>
+</span><span data-line="699">
+</span><span data-line="700"><span class="sd">        The hook walks the MRO of the value&#39;s type to find a matching</span>
+</span><span data-line="701"><span class="sd">        encoder, allowing encoders for parent classes to handle subclasses.</span>
+</span><span data-line="702">
+</span><span data-line="703"><span class="sd">        Returns:</span>
+</span><span data-line="704"><span class="sd">            Encoding hook function suitable for msgspec/orjson.</span>
+</span><span data-line="705"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="706">        <span class="n">type_encoders</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type_encoders</span>
+</span><span data-line="707">
+</span><span data-line="708">        <span class="k">def</span><span class="w"> </span><span class="nf">enc_hook</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="709">            <span class="n">encoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_type_encoder</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">type_encoders</span><span class="p">)</span>
+</span><span data-line="710">            <span class="k">if</span> <span class="n">encoder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="711">                <span class="k">return</span> <span class="n">encoder</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="712">            <span class="c1"># Fallback: try string conversion</span>
+</span><span data-line="713">            <span class="k">try</span><span class="p">:</span>
+</span><span data-line="714">                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="715">            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+</span><span data-line="716">                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Cannot serialize </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="717">                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+</span><span data-line="718">
+</span><span data-line="719">        <span class="k">return</span> <span class="n">enc_hook</span>
+</span><span data-line="720">
+</span><span data-line="721">    <span class="nd">@overload</span>
+</span><span data-line="722">    <span class="nd">@abstractmethod</span>
+</span><span data-line="723">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="724">
+</span><span data-line="725">    <span class="nd">@overload</span>
+</span><span data-line="726">    <span class="nd">@abstractmethod</span>
+</span><span data-line="727">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="728">
+</span><span data-line="729">    <span class="nd">@overload</span>
+</span><span data-line="730">    <span class="nd">@abstractmethod</span>
+</span><span data-line="731">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span> <span class="o">...</span>
 </span><span data-line="732">
-</span><span data-line="733">        <span class="bp">self</span><span class="o">.</span><span class="n">_enc_hook</span> <span class="o">=</span> <span class="n">enc_hook</span> <span class="k">if</span> <span class="n">enc_hook</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_enc_hook</span><span class="p">()</span>
-</span><span data-line="734">        <span class="bp">self</span><span class="o">.</span><span class="n">_encoder</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">Encoder</span><span class="p">(</span><span class="n">enc_hook</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_enc_hook</span><span class="p">)</span>
-</span><span data-line="735">        <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">Decoder</span><span class="p">()</span>
-</span><span data-line="736">
-</span><span data-line="737">    <span class="nd">@overload</span>
-</span><span data-line="738">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="739">
-</span><span data-line="740">    <span class="nd">@overload</span>
-</span><span data-line="741">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="733">    <span class="nd">@abstractmethod</span>
+</span><span data-line="734">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span>
+</span><span data-line="735"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Encode data to JSON.&quot;&quot;&quot;</span>
+</span><span data-line="736">        <span class="o">...</span>
+</span><span data-line="737">
+</span><span data-line="738">    <span class="nd">@abstractmethod</span>
+</span><span data-line="739">    <span class="k">def</span><span class="w"> </span><span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">decode_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="740"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode JSON to Python object.&quot;&quot;&quot;</span>
+</span><span data-line="741">        <span class="o">...</span>
 </span><span data-line="742">
-</span><span data-line="743">    <span class="nd">@overload</span>
-</span><span data-line="744">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="745">
-</span><span data-line="746">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span>
-</span><span data-line="747"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Encode data to JSON using msgspec.</span>
+</span><span data-line="743">
+</span><span data-line="744"><span class="c1"># ============================================================================</span>
+</span><span data-line="745"><span class="c1"># Serializer implementations</span>
+</span><span data-line="746"><span class="c1"># ============================================================================</span>
+</span><span data-line="747">
 </span><span data-line="748">
-</span><span data-line="749"><span class="sd">        Args:</span>
-</span><span data-line="750"><span class="sd">            data: Data to encode.</span>
-</span><span data-line="751"><span class="sd">            as_bytes: If True, return bytes; otherwise return UTF-8 string.</span>
-</span><span data-line="752">
-</span><span data-line="753"><span class="sd">        Returns:</span>
-</span><span data-line="754"><span class="sd">            JSON representation as string or bytes.</span>
-</span><span data-line="755"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="756">        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_encoder</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span data-line="757">        <span class="k">return</span> <span class="n">result</span> <span class="k">if</span> <span class="n">as_bytes</span> <span class="k">else</span> <span class="n">result</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
-</span><span data-line="758">
-</span><span data-line="759">    <span class="k">def</span><span class="w"> </span><span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">decode_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span data-line="760"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode JSON using msgspec.</span>
-</span><span data-line="761">
-</span><span data-line="762"><span class="sd">        Args:</span>
-</span><span data-line="763"><span class="sd">            data: JSON string or bytes to decode.</span>
-</span><span data-line="764"><span class="sd">            decode_bytes: If True, decode bytes input; otherwise return as-is.</span>
+</span><span data-line="749"><span class="k">class</span><span class="w"> </span><span class="nc">MsgspecSerializer</span><span class="p">(</span><span class="n">BaseJSONSerializer</span><span class="p">):</span>
+</span><span data-line="750"><span class="w">    </span><span class="sd">&quot;&quot;&quot;High-performance JSON serializer using msgspec.</span>
+</span><span data-line="751">
+</span><span data-line="752"><span class="sd">    This is the preferred serializer when msgspec is available, offering</span>
+</span><span data-line="753"><span class="sd">    the best performance for JSON encoding/decoding.</span>
+</span><span data-line="754">
+</span><span data-line="755"><span class="sd">    Example:</span>
+</span><span data-line="756"><span class="sd">        &gt;&gt;&gt; serializer = MsgspecSerializer()</span>
+</span><span data-line="757"><span class="sd">        &gt;&gt;&gt; serializer.encode({&quot;key&quot;: &quot;value&quot;})</span>
+</span><span data-line="758"><span class="sd">        &#39;{&quot;key&quot;:&quot;value&quot;}&#39;</span>
+</span><span data-line="759">
+</span><span data-line="760"><span class="sd">        &gt;&gt;&gt; # With custom type encoders</span>
+</span><span data-line="761"><span class="sd">        &gt;&gt;&gt; serializer = MsgspecSerializer(type_encoders={set: sorted})</span>
+</span><span data-line="762"><span class="sd">        &gt;&gt;&gt; serializer.encode({&quot;items&quot;: {3, 1, 2}})</span>
+</span><span data-line="763"><span class="sd">        &#39;{&quot;items&quot;:[1,2,3]}&#39;</span>
+</span><span data-line="764"><span class="sd">    &quot;&quot;&quot;</span>
 </span><span data-line="765">
-</span><span data-line="766"><span class="sd">        Returns:</span>
-</span><span data-line="767"><span class="sd">            Decoded Python object.</span>
-</span><span data-line="768"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="769">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-</span><span data-line="770">            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
-</span><span data-line="771">        <span class="k">elif</span> <span class="ow">not</span> <span class="n">decode_bytes</span><span class="p">:</span>
-</span><span data-line="772">            <span class="k">return</span> <span class="n">data</span>
-</span><span data-line="773">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="766">    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_decoder&quot;</span><span class="p">,</span> <span class="s2">&quot;_enc_hook&quot;</span><span class="p">,</span> <span class="s2">&quot;_encoder&quot;</span><span class="p">)</span>
+</span><span data-line="767">
+</span><span data-line="768">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="769">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="770">        <span class="n">type_encoders</span><span class="p">:</span> <span class="s2">&quot;Optional[TypeEncodersMap]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="771">        <span class="n">enc_hook</span><span class="p">:</span> <span class="s2">&quot;Optional[Callable[[Any], Any]]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="772">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="773"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize msgspec serializer.</span>
 </span><span data-line="774">
-</span><span data-line="775">
-</span><span data-line="776"><span class="k">class</span><span class="w"> </span><span class="nc">OrjsonSerializer</span><span class="p">(</span><span class="n">BaseJSONSerializer</span><span class="p">):</span>
-</span><span data-line="777"><span class="w">    </span><span class="sd">&quot;&quot;&quot;High-performance JSON serializer using orjson.</span>
-</span><span data-line="778">
-</span><span data-line="779"><span class="sd">    Provides excellent performance with native support for datetime,</span>
-</span><span data-line="780"><span class="sd">    UUID, and numpy serialization.</span>
+</span><span data-line="775"><span class="sd">        Args:</span>
+</span><span data-line="776"><span class="sd">            type_encoders: Custom type encoders to merge with defaults.</span>
+</span><span data-line="777"><span class="sd">            enc_hook: Optional custom encoding hook. If provided, type_encoders</span>
+</span><span data-line="778"><span class="sd">                is ignored and this hook is used directly for complete control.</span>
+</span><span data-line="779"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="780">        <span class="kn">from</span><span class="w"> </span><span class="nn">msgspec.json</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decoder</span><span class="p">,</span> <span class="n">Encoder</span>
 </span><span data-line="781">
-</span><span data-line="782"><span class="sd">    Example:</span>
-</span><span data-line="783"><span class="sd">        &gt;&gt;&gt; serializer = OrjsonSerializer()</span>
-</span><span data-line="784"><span class="sd">        &gt;&gt;&gt; serializer.encode({&quot;key&quot;: &quot;value&quot;})</span>
-</span><span data-line="785"><span class="sd">        &#39;{&quot;key&quot;:&quot;value&quot;}&#39;</span>
-</span><span data-line="786"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="782">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span> <span class="k">if</span> <span class="n">enc_hook</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">type_encoders</span><span class="p">)</span>
+</span><span data-line="783">
+</span><span data-line="784">        <span class="bp">self</span><span class="o">.</span><span class="n">_enc_hook</span> <span class="o">=</span> <span class="n">enc_hook</span> <span class="k">if</span> <span class="n">enc_hook</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_enc_hook</span><span class="p">()</span>
+</span><span data-line="785">        <span class="bp">self</span><span class="o">.</span><span class="n">_encoder</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">Encoder</span><span class="p">(</span><span class="n">enc_hook</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_enc_hook</span><span class="p">)</span>
+</span><span data-line="786">        <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">Decoder</span><span class="p">()</span>
 </span><span data-line="787">
-</span><span data-line="788">    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_enc_hook&quot;</span><span class="p">,)</span>
-</span><span data-line="789">
-</span><span data-line="790">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_encoders</span><span class="p">:</span> <span class="s2">&quot;Optional[TypeEncodersMap]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="791"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize orjson serializer.</span>
-</span><span data-line="792">
-</span><span data-line="793"><span class="sd">        Args:</span>
-</span><span data-line="794"><span class="sd">            type_encoders: Custom type encoders to merge with defaults.</span>
-</span><span data-line="795"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="796">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">type_encoders</span><span class="p">)</span>
-</span><span data-line="797">        <span class="bp">self</span><span class="o">.</span><span class="n">_enc_hook</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_enc_hook</span><span class="p">()</span>
-</span><span data-line="798">
-</span><span data-line="799">    <span class="nd">@overload</span>
-</span><span data-line="800">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="801">
-</span><span data-line="802">    <span class="nd">@overload</span>
-</span><span data-line="803">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="804">
-</span><span data-line="805">    <span class="nd">@overload</span>
-</span><span data-line="806">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="807">
-</span><span data-line="808">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span>
-</span><span data-line="809"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Encode data to JSON using orjson.</span>
-</span><span data-line="810">
-</span><span data-line="811"><span class="sd">        Args:</span>
-</span><span data-line="812"><span class="sd">            data: Data to encode.</span>
-</span><span data-line="813"><span class="sd">            as_bytes: If True, return bytes; otherwise return UTF-8 string.</span>
-</span><span data-line="814">
-</span><span data-line="815"><span class="sd">        Returns:</span>
-</span><span data-line="816"><span class="sd">            JSON representation as string or bytes.</span>
-</span><span data-line="817"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="818">        <span class="kn">import</span><span class="w"> </span><span class="nn">orjson</span>  <span class="c1"># type: ignore[import-not-found]  # pyright: ignore[reportMissingImports]</span>
-</span><span data-line="819">
-</span><span data-line="820">        <span class="n">orjson_module</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">orjson</span>
-</span><span data-line="821">        <span class="n">options</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">orjson_module</span><span class="o">.</span><span class="n">OPT_NAIVE_UTC</span> <span class="o">|</span> <span class="n">orjson_module</span><span class="o">.</span><span class="n">OPT_SERIALIZE_UUID</span>
-</span><span data-line="822">        <span class="k">if</span> <span class="n">NUMPY_INSTALLED</span><span class="p">:</span>
-</span><span data-line="823">            <span class="n">options</span> <span class="o">|=</span> <span class="n">orjson_module</span><span class="o">.</span><span class="n">OPT_SERIALIZE_NUMPY</span>
-</span><span data-line="824">
-</span><span data-line="825">        <span class="n">result</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">=</span> <span class="n">orjson_module</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_enc_hook</span><span class="p">,</span> <span class="n">option</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
-</span><span data-line="826">        <span class="k">return</span> <span class="n">result</span> <span class="k">if</span> <span class="n">as_bytes</span> <span class="k">else</span> <span class="n">result</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
-</span><span data-line="827">
-</span><span data-line="828">    <span class="k">def</span><span class="w"> </span><span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">decode_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span data-line="829"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode JSON using orjson.</span>
-</span><span data-line="830">
-</span><span data-line="831"><span class="sd">        Args:</span>
-</span><span data-line="832"><span class="sd">            data: JSON string or bytes to decode.</span>
-</span><span data-line="833"><span class="sd">            decode_bytes: If True, decode bytes input; otherwise return as-is.</span>
-</span><span data-line="834">
-</span><span data-line="835"><span class="sd">        Returns:</span>
-</span><span data-line="836"><span class="sd">            Decoded Python object.</span>
-</span><span data-line="837"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="838">        <span class="kn">import</span><span class="w"> </span><span class="nn">orjson</span>  <span class="c1"># type: ignore[import-not-found]  # pyright: ignore[reportMissingImports]</span>
-</span><span data-line="839">
-</span><span data-line="840">        <span class="n">orjson_module</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">orjson</span>
-</span><span data-line="841">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">decode_bytes</span><span class="p">:</span>
-</span><span data-line="842">            <span class="k">return</span> <span class="n">data</span>
-</span><span data-line="843">        <span class="k">return</span> <span class="n">orjson_module</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span data-line="844">
-</span><span data-line="845">
-</span><span data-line="846"><span class="k">class</span><span class="w"> </span><span class="nc">StandardLibSerializer</span><span class="p">(</span><span class="n">BaseJSONSerializer</span><span class="p">):</span>
-</span><span data-line="847"><span class="w">    </span><span class="sd">&quot;&quot;&quot;JSON serializer using Python&#39;s standard library.</span>
-</span><span data-line="848">
-</span><span data-line="849"><span class="sd">    Fallback serializer when neither msgspec nor orjson is available.</span>
-</span><span data-line="850"><span class="sd">    Slower than the alternatives but always available.</span>
-</span><span data-line="851">
-</span><span data-line="852"><span class="sd">    Example:</span>
-</span><span data-line="853"><span class="sd">        &gt;&gt;&gt; serializer = StandardLibSerializer()</span>
-</span><span data-line="854"><span class="sd">        &gt;&gt;&gt; serializer.encode({&quot;key&quot;: &quot;value&quot;})</span>
-</span><span data-line="855"><span class="sd">        &#39;{&quot;key&quot;: &quot;value&quot;}&#39;</span>
-</span><span data-line="856"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="857">
-</span><span data-line="858">    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_enc_hook&quot;</span><span class="p">,)</span>
-</span><span data-line="859">
-</span><span data-line="860">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_encoders</span><span class="p">:</span> <span class="s2">&quot;Optional[TypeEncodersMap]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="861"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize standard library serializer.</span>
-</span><span data-line="862">
-</span><span data-line="863"><span class="sd">        Args:</span>
-</span><span data-line="864"><span class="sd">            type_encoders: Custom type encoders to merge with defaults.</span>
-</span><span data-line="865"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="866">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">type_encoders</span><span class="p">)</span>
-</span><span data-line="867">        <span class="bp">self</span><span class="o">.</span><span class="n">_enc_hook</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_enc_hook</span><span class="p">()</span>
-</span><span data-line="868">
-</span><span data-line="869">    <span class="nd">@overload</span>
-</span><span data-line="870">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="871">
-</span><span data-line="872">    <span class="nd">@overload</span>
-</span><span data-line="873">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="874">
-</span><span data-line="875">    <span class="nd">@overload</span>
-</span><span data-line="876">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="877">
-</span><span data-line="878">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span>
-</span><span data-line="879"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Encode data to JSON using standard library.</span>
-</span><span data-line="880">
-</span><span data-line="881"><span class="sd">        Args:</span>
-</span><span data-line="882"><span class="sd">            data: Data to encode.</span>
-</span><span data-line="883"><span class="sd">            as_bytes: If True, return bytes; otherwise return string.</span>
-</span><span data-line="884">
-</span><span data-line="885"><span class="sd">        Returns:</span>
-</span><span data-line="886"><span class="sd">            JSON representation as string or bytes.</span>
-</span><span data-line="887"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="888">        <span class="n">result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_enc_hook</span><span class="p">)</span>
-</span><span data-line="889">        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">as_bytes</span> <span class="k">else</span> <span class="n">result</span>
+</span><span data-line="788">    <span class="nd">@overload</span>
+</span><span data-line="789">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="790">
+</span><span data-line="791">    <span class="nd">@overload</span>
+</span><span data-line="792">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="793">
+</span><span data-line="794">    <span class="nd">@overload</span>
+</span><span data-line="795">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="796">
+</span><span data-line="797">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span>
+</span><span data-line="798"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Encode data to JSON using msgspec.</span>
+</span><span data-line="799">
+</span><span data-line="800"><span class="sd">        Args:</span>
+</span><span data-line="801"><span class="sd">            data: Data to encode.</span>
+</span><span data-line="802"><span class="sd">            as_bytes: If True, return bytes; otherwise return UTF-8 string.</span>
+</span><span data-line="803">
+</span><span data-line="804"><span class="sd">        Returns:</span>
+</span><span data-line="805"><span class="sd">            JSON representation as string or bytes.</span>
+</span><span data-line="806"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="807">        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_encoder</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prepare_data_for_encode</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+</span><span data-line="808">        <span class="k">return</span> <span class="n">result</span> <span class="k">if</span> <span class="n">as_bytes</span> <span class="k">else</span> <span class="n">result</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+</span><span data-line="809">
+</span><span data-line="810">    <span class="k">def</span><span class="w"> </span><span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">decode_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="811"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode JSON using msgspec.</span>
+</span><span data-line="812">
+</span><span data-line="813"><span class="sd">        Args:</span>
+</span><span data-line="814"><span class="sd">            data: JSON string or bytes to decode.</span>
+</span><span data-line="815"><span class="sd">            decode_bytes: If True, decode bytes input; otherwise return as-is.</span>
+</span><span data-line="816">
+</span><span data-line="817"><span class="sd">        Returns:</span>
+</span><span data-line="818"><span class="sd">            Decoded Python object.</span>
+</span><span data-line="819"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="820">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+</span><span data-line="821">            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+</span><span data-line="822">        <span class="k">elif</span> <span class="ow">not</span> <span class="n">decode_bytes</span><span class="p">:</span>
+</span><span data-line="823">            <span class="k">return</span> <span class="n">data</span>
+</span><span data-line="824">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="825">
+</span><span data-line="826">
+</span><span data-line="827"><span class="k">class</span><span class="w"> </span><span class="nc">OrjsonSerializer</span><span class="p">(</span><span class="n">BaseJSONSerializer</span><span class="p">):</span>
+</span><span data-line="828"><span class="w">    </span><span class="sd">&quot;&quot;&quot;High-performance JSON serializer using orjson.</span>
+</span><span data-line="829">
+</span><span data-line="830"><span class="sd">    Provides excellent performance with native support for datetime,</span>
+</span><span data-line="831"><span class="sd">    UUID, and numpy serialization.</span>
+</span><span data-line="832">
+</span><span data-line="833"><span class="sd">    Example:</span>
+</span><span data-line="834"><span class="sd">        &gt;&gt;&gt; serializer = OrjsonSerializer()</span>
+</span><span data-line="835"><span class="sd">        &gt;&gt;&gt; serializer.encode({&quot;key&quot;: &quot;value&quot;})</span>
+</span><span data-line="836"><span class="sd">        &#39;{&quot;key&quot;:&quot;value&quot;}&#39;</span>
+</span><span data-line="837"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="838">
+</span><span data-line="839">    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_enc_hook&quot;</span><span class="p">,)</span>
+</span><span data-line="840">
+</span><span data-line="841">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_encoders</span><span class="p">:</span> <span class="s2">&quot;Optional[TypeEncodersMap]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="842"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize orjson serializer.</span>
+</span><span data-line="843">
+</span><span data-line="844"><span class="sd">        Args:</span>
+</span><span data-line="845"><span class="sd">            type_encoders: Custom type encoders to merge with defaults.</span>
+</span><span data-line="846"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="847">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">type_encoders</span><span class="p">)</span>
+</span><span data-line="848">        <span class="bp">self</span><span class="o">.</span><span class="n">_enc_hook</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_enc_hook</span><span class="p">()</span>
+</span><span data-line="849">
+</span><span data-line="850">    <span class="nd">@overload</span>
+</span><span data-line="851">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="852">
+</span><span data-line="853">    <span class="nd">@overload</span>
+</span><span data-line="854">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="855">
+</span><span data-line="856">    <span class="nd">@overload</span>
+</span><span data-line="857">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="858">
+</span><span data-line="859">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span>
+</span><span data-line="860"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Encode data to JSON using orjson.</span>
+</span><span data-line="861">
+</span><span data-line="862"><span class="sd">        Args:</span>
+</span><span data-line="863"><span class="sd">            data: Data to encode.</span>
+</span><span data-line="864"><span class="sd">            as_bytes: If True, return bytes; otherwise return UTF-8 string.</span>
+</span><span data-line="865">
+</span><span data-line="866"><span class="sd">        Returns:</span>
+</span><span data-line="867"><span class="sd">            JSON representation as string or bytes.</span>
+</span><span data-line="868"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="869">        <span class="kn">import</span><span class="w"> </span><span class="nn">orjson</span>  <span class="c1"># type: ignore[import-not-found]  # pyright: ignore[reportMissingImports]</span>
+</span><span data-line="870">
+</span><span data-line="871">        <span class="n">orjson_module</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">orjson</span>
+</span><span data-line="872">        <span class="n">options</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">orjson_module</span><span class="o">.</span><span class="n">OPT_NAIVE_UTC</span> <span class="o">|</span> <span class="n">orjson_module</span><span class="o">.</span><span class="n">OPT_SERIALIZE_UUID</span>
+</span><span data-line="873">        <span class="k">if</span> <span class="n">NUMPY_INSTALLED</span><span class="p">:</span>
+</span><span data-line="874">            <span class="n">options</span> <span class="o">|=</span> <span class="n">orjson_module</span><span class="o">.</span><span class="n">OPT_SERIALIZE_NUMPY</span>
+</span><span data-line="875">
+</span><span data-line="876">        <span class="n">result</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">=</span> <span class="n">orjson_module</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prepare_data_for_encode</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_enc_hook</span><span class="p">,</span> <span class="n">option</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
+</span><span data-line="877">        <span class="k">return</span> <span class="n">result</span> <span class="k">if</span> <span class="n">as_bytes</span> <span class="k">else</span> <span class="n">result</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+</span><span data-line="878">
+</span><span data-line="879">    <span class="k">def</span><span class="w"> </span><span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">decode_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="880"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode JSON using orjson.</span>
+</span><span data-line="881">
+</span><span data-line="882"><span class="sd">        Args:</span>
+</span><span data-line="883"><span class="sd">            data: JSON string or bytes to decode.</span>
+</span><span data-line="884"><span class="sd">            decode_bytes: If True, decode bytes input; otherwise return as-is.</span>
+</span><span data-line="885">
+</span><span data-line="886"><span class="sd">        Returns:</span>
+</span><span data-line="887"><span class="sd">            Decoded Python object.</span>
+</span><span data-line="888"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="889">        <span class="kn">import</span><span class="w"> </span><span class="nn">orjson</span>  <span class="c1"># type: ignore[import-not-found]  # pyright: ignore[reportMissingImports]</span>
 </span><span data-line="890">
-</span><span data-line="891">    <span class="k">def</span><span class="w"> </span><span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">decode_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span data-line="892"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode JSON using standard library.</span>
-</span><span data-line="893">
-</span><span data-line="894"><span class="sd">        Args:</span>
-</span><span data-line="895"><span class="sd">            data: JSON string or bytes to decode.</span>
-</span><span data-line="896"><span class="sd">            decode_bytes: If True, decode bytes input; otherwise return as-is.</span>
-</span><span data-line="897">
-</span><span data-line="898"><span class="sd">        Returns:</span>
-</span><span data-line="899"><span class="sd">            Decoded Python object.</span>
-</span><span data-line="900"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="901">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
-</span><span data-line="902">            <span class="k">if</span> <span class="ow">not</span> <span class="n">decode_bytes</span><span class="p">:</span>
-</span><span data-line="903">                <span class="k">return</span> <span class="n">data</span>
-</span><span data-line="904">            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
-</span><span data-line="905">        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span data-line="906">
-</span><span data-line="907">
-</span><span data-line="908"><span class="c1"># ============================================================================</span>
-</span><span data-line="909"><span class="c1"># Serializer factory with caching</span>
-</span><span data-line="910"><span class="c1"># ============================================================================</span>
-</span><span data-line="911">
-</span><span data-line="912"><span class="n">_serializer_cache</span><span class="p">:</span> <span class="s2">&quot;dict[frozenset[tuple[type, int]], JSONSerializer]&quot;</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span data-line="913"><span class="n">_cache_lock</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">]</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span>
-</span><span data-line="914"><span class="n">_default_serializer</span><span class="p">:</span> <span class="s2">&quot;Optional[JSONSerializer]&quot;</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="915">
-</span><span data-line="916">
-</span><span data-line="917"><span class="k">def</span><span class="w"> </span><span class="nf">_create_default_serializer</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s2">&quot;JSONSerializer&quot;</span><span class="p">:</span>
-</span><span data-line="918"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create the default serializer based on available libraries.</span>
+</span><span data-line="891">        <span class="n">orjson_module</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">orjson</span>
+</span><span data-line="892">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">decode_bytes</span><span class="p">:</span>
+</span><span data-line="893">            <span class="k">return</span> <span class="n">data</span>
+</span><span data-line="894">        <span class="k">return</span> <span class="n">orjson_module</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="895">
+</span><span data-line="896">
+</span><span data-line="897"><span class="k">class</span><span class="w"> </span><span class="nc">StandardLibSerializer</span><span class="p">(</span><span class="n">BaseJSONSerializer</span><span class="p">):</span>
+</span><span data-line="898"><span class="w">    </span><span class="sd">&quot;&quot;&quot;JSON serializer using Python&#39;s standard library.</span>
+</span><span data-line="899">
+</span><span data-line="900"><span class="sd">    Fallback serializer when neither msgspec nor orjson is available.</span>
+</span><span data-line="901"><span class="sd">    Slower than the alternatives but always available.</span>
+</span><span data-line="902">
+</span><span data-line="903"><span class="sd">    Example:</span>
+</span><span data-line="904"><span class="sd">        &gt;&gt;&gt; serializer = StandardLibSerializer()</span>
+</span><span data-line="905"><span class="sd">        &gt;&gt;&gt; serializer.encode({&quot;key&quot;: &quot;value&quot;})</span>
+</span><span data-line="906"><span class="sd">        &#39;{&quot;key&quot;: &quot;value&quot;}&#39;</span>
+</span><span data-line="907"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="908">
+</span><span data-line="909">    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_enc_hook&quot;</span><span class="p">,)</span>
+</span><span data-line="910">
+</span><span data-line="911">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_encoders</span><span class="p">:</span> <span class="s2">&quot;Optional[TypeEncodersMap]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="912"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize standard library serializer.</span>
+</span><span data-line="913">
+</span><span data-line="914"><span class="sd">        Args:</span>
+</span><span data-line="915"><span class="sd">            type_encoders: Custom type encoders to merge with defaults.</span>
+</span><span data-line="916"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="917">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">type_encoders</span><span class="p">)</span>
+</span><span data-line="918">        <span class="bp">self</span><span class="o">.</span><span class="n">_enc_hook</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_enc_hook</span><span class="p">()</span>
 </span><span data-line="919">
-</span><span data-line="920"><span class="sd">    Priority: msgspec &gt; orjson &gt; standard library</span>
-</span><span data-line="921">
-</span><span data-line="922"><span class="sd">    Returns:</span>
-</span><span data-line="923"><span class="sd">        Best available JSON serializer.</span>
-</span><span data-line="924"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="925">    <span class="k">if</span> <span class="n">MSGSPEC_INSTALLED</span><span class="p">:</span>
-</span><span data-line="926">        <span class="k">return</span> <span class="n">MsgspecSerializer</span><span class="p">()</span>
-</span><span data-line="927">    <span class="k">if</span> <span class="n">ORJSON_INSTALLED</span><span class="p">:</span>
-</span><span data-line="928">        <span class="k">return</span> <span class="n">OrjsonSerializer</span><span class="p">()</span>
-</span><span data-line="929">    <span class="k">return</span> <span class="n">StandardLibSerializer</span><span class="p">()</span>
-</span><span data-line="930">
+</span><span data-line="920">    <span class="nd">@overload</span>
+</span><span data-line="921">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="922">
+</span><span data-line="923">    <span class="nd">@overload</span>
+</span><span data-line="924">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="925">
+</span><span data-line="926">    <span class="nd">@overload</span>
+</span><span data-line="927">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="928">
+</span><span data-line="929">    <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span>
+</span><span data-line="930"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Encode data to JSON using standard library.</span>
 </span><span data-line="931">
-</span><span data-line="932"><span class="k">def</span><span class="w"> </span><span class="nf">_create_serializer</span><span class="p">(</span><span class="n">type_encoders</span><span class="p">:</span> <span class="s2">&quot;TypeEncodersMap&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;JSONSerializer&quot;</span><span class="p">:</span>
-</span><span data-line="933"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a serializer with custom type encoders.</span>
-</span><span data-line="934">
-</span><span data-line="935"><span class="sd">    Args:</span>
-</span><span data-line="936"><span class="sd">        type_encoders: Custom type encoders mapping.</span>
-</span><span data-line="937">
-</span><span data-line="938"><span class="sd">    Returns:</span>
-</span><span data-line="939"><span class="sd">        JSON serializer configured with the given encoders.</span>
-</span><span data-line="940"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="941">    <span class="k">if</span> <span class="n">MSGSPEC_INSTALLED</span><span class="p">:</span>
-</span><span data-line="942">        <span class="k">return</span> <span class="n">MsgspecSerializer</span><span class="p">(</span><span class="n">type_encoders</span><span class="o">=</span><span class="n">type_encoders</span><span class="p">)</span>
-</span><span data-line="943">    <span class="k">if</span> <span class="n">ORJSON_INSTALLED</span><span class="p">:</span>
-</span><span data-line="944">        <span class="k">return</span> <span class="n">OrjsonSerializer</span><span class="p">(</span><span class="n">type_encoders</span><span class="o">=</span><span class="n">type_encoders</span><span class="p">)</span>
-</span><span data-line="945">    <span class="k">return</span> <span class="n">StandardLibSerializer</span><span class="p">(</span><span class="n">type_encoders</span><span class="o">=</span><span class="n">type_encoders</span><span class="p">)</span>
-</span><span data-line="946">
-</span><span data-line="947">
-</span><span data-line="948"><span class="k">def</span><span class="w"> </span><span class="nf">get_serializer</span><span class="p">(</span><span class="n">type_encoders</span><span class="p">:</span> <span class="s2">&quot;Optional[TypeEncodersMap]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;JSONSerializer&quot;</span><span class="p">:</span>
-</span><span data-line="949"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a cached serializer instance.</span>
-</span><span data-line="950">
-</span><span data-line="951"><span class="sd">    This factory function returns cached serializer instances to avoid</span>
-</span><span data-line="952"><span class="sd">    recreating encoders for the same configuration. The default serializer</span>
-</span><span data-line="953"><span class="sd">    (no custom type_encoders) is a singleton for maximum performance.</span>
-</span><span data-line="954">
-</span><span data-line="955"><span class="sd">    Args:</span>
-</span><span data-line="956"><span class="sd">        type_encoders: Optional mapping of types to encoder functions.</span>
-</span><span data-line="957"><span class="sd">            If None, returns the default singleton serializer.</span>
+</span><span data-line="932"><span class="sd">        Args:</span>
+</span><span data-line="933"><span class="sd">            data: Data to encode.</span>
+</span><span data-line="934"><span class="sd">            as_bytes: If True, return bytes; otherwise return string.</span>
+</span><span data-line="935">
+</span><span data-line="936"><span class="sd">        Returns:</span>
+</span><span data-line="937"><span class="sd">            JSON representation as string or bytes.</span>
+</span><span data-line="938"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="939">        <span class="n">result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prepare_data_for_encode</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_enc_hook</span><span class="p">)</span>
+</span><span data-line="940">        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">as_bytes</span> <span class="k">else</span> <span class="n">result</span>
+</span><span data-line="941">
+</span><span data-line="942">    <span class="k">def</span><span class="w"> </span><span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">decode_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="943"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode JSON using standard library.</span>
+</span><span data-line="944">
+</span><span data-line="945"><span class="sd">        Args:</span>
+</span><span data-line="946"><span class="sd">            data: JSON string or bytes to decode.</span>
+</span><span data-line="947"><span class="sd">            decode_bytes: If True, decode bytes input; otherwise return as-is.</span>
+</span><span data-line="948">
+</span><span data-line="949"><span class="sd">        Returns:</span>
+</span><span data-line="950"><span class="sd">            Decoded Python object.</span>
+</span><span data-line="951"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="952">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+</span><span data-line="953">            <span class="k">if</span> <span class="ow">not</span> <span class="n">decode_bytes</span><span class="p">:</span>
+</span><span data-line="954">                <span class="k">return</span> <span class="n">data</span>
+</span><span data-line="955">            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+</span><span data-line="956">        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="957">
 </span><span data-line="958">
-</span><span data-line="959"><span class="sd">    Returns:</span>
-</span><span data-line="960"><span class="sd">        A JSONSerializer instance configured with the given type encoders.</span>
-</span><span data-line="961">
-</span><span data-line="962"><span class="sd">    Example:</span>
-</span><span data-line="963"><span class="sd">        &gt;&gt;&gt; # Default serializer (singleton)</span>
-</span><span data-line="964"><span class="sd">        &gt;&gt;&gt; s1 = get_serializer()</span>
-</span><span data-line="965"><span class="sd">        &gt;&gt;&gt; s2 = get_serializer()</span>
-</span><span data-line="966"><span class="sd">        &gt;&gt;&gt; s1 is s2</span>
-</span><span data-line="967"><span class="sd">        True</span>
-</span><span data-line="968">
-</span><span data-line="969"><span class="sd">        &gt;&gt;&gt; # Custom type encoders (cached by configuration)</span>
-</span><span data-line="970"><span class="sd">        &gt;&gt;&gt; encoders = {str: lambda s: s.upper()}</span>
-</span><span data-line="971"><span class="sd">        &gt;&gt;&gt; s3 = get_serializer(encoders)</span>
-</span><span data-line="972"><span class="sd">        &gt;&gt;&gt; s4 = get_serializer(encoders)</span>
-</span><span data-line="973"><span class="sd">        &gt;&gt;&gt; s3 is s4</span>
-</span><span data-line="974"><span class="sd">        True</span>
+</span><span data-line="959"><span class="c1"># ============================================================================</span>
+</span><span data-line="960"><span class="c1"># Serializer factory with caching</span>
+</span><span data-line="961"><span class="c1"># ============================================================================</span>
+</span><span data-line="962">
+</span><span data-line="963"><span class="n">_serializer_cache</span><span class="p">:</span> <span class="s2">&quot;dict[frozenset[tuple[type, int]], JSONSerializer]&quot;</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="964"><span class="n">_cache_lock</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">]</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span>
+</span><span data-line="965"><span class="n">_default_serializer</span><span class="p">:</span> <span class="s2">&quot;Optional[JSONSerializer]&quot;</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="966">
+</span><span data-line="967">
+</span><span data-line="968"><span class="k">def</span><span class="w"> </span><span class="nf">_create_default_serializer</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s2">&quot;JSONSerializer&quot;</span><span class="p">:</span>
+</span><span data-line="969"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create the default serializer based on available libraries.</span>
+</span><span data-line="970">
+</span><span data-line="971"><span class="sd">    Priority: msgspec &gt; orjson &gt; standard library</span>
+</span><span data-line="972">
+</span><span data-line="973"><span class="sd">    Returns:</span>
+</span><span data-line="974"><span class="sd">        Best available JSON serializer.</span>
 </span><span data-line="975"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="976">    <span class="k">global</span> <span class="n">_default_serializer</span>  <span class="c1"># noqa: PLW0603</span>
-</span><span data-line="977">
-</span><span data-line="978">    <span class="k">if</span> <span class="n">type_encoders</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="979">        <span class="k">if</span> <span class="n">_default_serializer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="980">            <span class="n">_default_serializer</span> <span class="o">=</span> <span class="n">_create_default_serializer</span><span class="p">()</span>
-</span><span data-line="981">        <span class="k">return</span> <span class="n">_default_serializer</span>
+</span><span data-line="976">    <span class="k">if</span> <span class="n">MSGSPEC_INSTALLED</span><span class="p">:</span>
+</span><span data-line="977">        <span class="k">return</span> <span class="n">MsgspecSerializer</span><span class="p">()</span>
+</span><span data-line="978">    <span class="k">if</span> <span class="n">ORJSON_INSTALLED</span><span class="p">:</span>
+</span><span data-line="979">        <span class="k">return</span> <span class="n">OrjsonSerializer</span><span class="p">()</span>
+</span><span data-line="980">    <span class="k">return</span> <span class="n">StandardLibSerializer</span><span class="p">()</span>
+</span><span data-line="981">
 </span><span data-line="982">
-</span><span data-line="983">    <span class="c1"># Create hashable cache key using type and function id</span>
-</span><span data-line="984">    <span class="c1"># Note: Different lambda objects create different keys even if equivalent</span>
-</span><span data-line="985">    <span class="k">try</span><span class="p">:</span>
-</span><span data-line="986">        <span class="n">cache_key</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">type_encoders</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-</span><span data-line="987">    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-</span><span data-line="988">        <span class="c1"># Fallback for unhashable keys - create without caching</span>
-</span><span data-line="989">        <span class="k">return</span> <span class="n">_create_serializer</span><span class="p">(</span><span class="n">type_encoders</span><span class="p">)</span>
-</span><span data-line="990">
-</span><span data-line="991">    <span class="k">with</span> <span class="n">_cache_lock</span><span class="p">:</span>
-</span><span data-line="992">        <span class="k">if</span> <span class="n">cache_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_serializer_cache</span><span class="p">:</span>
-</span><span data-line="993">            <span class="n">_serializer_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_create_serializer</span><span class="p">(</span><span class="n">type_encoders</span><span class="p">)</span>
-</span><span data-line="994">        <span class="k">return</span> <span class="n">_serializer_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span>
-</span><span data-line="995">
-</span><span data-line="996">
-</span><span data-line="997"><span class="c1"># ============================================================================</span>
-</span><span data-line="998"><span class="c1"># Public API functions</span>
-</span><span data-line="999"><span class="c1"># ============================================================================</span>
-</span><span data-line="1000">
+</span><span data-line="983"><span class="k">def</span><span class="w"> </span><span class="nf">_create_serializer</span><span class="p">(</span><span class="n">type_encoders</span><span class="p">:</span> <span class="s2">&quot;TypeEncodersMap&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;JSONSerializer&quot;</span><span class="p">:</span>
+</span><span data-line="984"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a serializer with custom type encoders.</span>
+</span><span data-line="985">
+</span><span data-line="986"><span class="sd">    Args:</span>
+</span><span data-line="987"><span class="sd">        type_encoders: Custom type encoders mapping.</span>
+</span><span data-line="988">
+</span><span data-line="989"><span class="sd">    Returns:</span>
+</span><span data-line="990"><span class="sd">        JSON serializer configured with the given encoders.</span>
+</span><span data-line="991"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="992">    <span class="k">if</span> <span class="n">MSGSPEC_INSTALLED</span><span class="p">:</span>
+</span><span data-line="993">        <span class="k">return</span> <span class="n">MsgspecSerializer</span><span class="p">(</span><span class="n">type_encoders</span><span class="o">=</span><span class="n">type_encoders</span><span class="p">)</span>
+</span><span data-line="994">    <span class="k">if</span> <span class="n">ORJSON_INSTALLED</span><span class="p">:</span>
+</span><span data-line="995">        <span class="k">return</span> <span class="n">OrjsonSerializer</span><span class="p">(</span><span class="n">type_encoders</span><span class="o">=</span><span class="n">type_encoders</span><span class="p">)</span>
+</span><span data-line="996">    <span class="k">return</span> <span class="n">StandardLibSerializer</span><span class="p">(</span><span class="n">type_encoders</span><span class="o">=</span><span class="n">type_encoders</span><span class="p">)</span>
+</span><span data-line="997">
+</span><span data-line="998">
+</span><span data-line="999"><span class="k">def</span><span class="w"> </span><span class="nf">get_serializer</span><span class="p">(</span><span class="n">type_encoders</span><span class="p">:</span> <span class="s2">&quot;Optional[TypeEncodersMap]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;JSONSerializer&quot;</span><span class="p">:</span>
+</span><span data-line="1000"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a cached serializer instance.</span>
 </span><span data-line="1001">
-</span><span data-line="1002"><span class="nd">@overload</span>
-</span><span data-line="1003"><span class="k">def</span><span class="w"> </span><span class="nf">encode_json</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="1004">
+</span><span data-line="1002"><span class="sd">    This factory function returns cached serializer instances to avoid</span>
+</span><span data-line="1003"><span class="sd">    recreating encoders for the same configuration. The default serializer</span>
+</span><span data-line="1004"><span class="sd">    (no custom type_encoders) is a singleton for maximum performance.</span>
 </span><span data-line="1005">
-</span><span data-line="1006"><span class="nd">@overload</span>
-</span><span data-line="1007"><span class="k">def</span><span class="w"> </span><span class="nf">encode_json</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="1008">
+</span><span data-line="1006"><span class="sd">    Args:</span>
+</span><span data-line="1007"><span class="sd">        type_encoders: Optional mapping of types to encoder functions.</span>
+</span><span data-line="1008"><span class="sd">            If None, returns the default singleton serializer.</span>
 </span><span data-line="1009">
-</span><span data-line="1010"><span class="nd">@overload</span>
-</span><span data-line="1011"><span class="k">def</span><span class="w"> </span><span class="nf">encode_json</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="1010"><span class="sd">    Returns:</span>
+</span><span data-line="1011"><span class="sd">        A JSONSerializer instance configured with the given type encoders.</span>
 </span><span data-line="1012">
-</span><span data-line="1013">
-</span><span data-line="1014"><span class="nd">@overload</span>
-</span><span data-line="1015"><span class="k">def</span><span class="w"> </span><span class="nf">encode_json</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">type_encoders</span><span class="p">:</span> <span class="s2">&quot;TypeEncodersMap&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="1016">
-</span><span data-line="1017">
-</span><span data-line="1018"><span class="nd">@overload</span>
-</span><span data-line="1019"><span class="k">def</span><span class="w"> </span><span class="nf">encode_json</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">type_encoders</span><span class="p">:</span> <span class="n">TypeEncodersMap</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="1020">
-</span><span data-line="1021">
-</span><span data-line="1022"><span class="nd">@overload</span>
-</span><span data-line="1023"><span class="k">def</span><span class="w"> </span><span class="nf">encode_json</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">type_encoders</span><span class="p">:</span> <span class="n">TypeEncodersMap</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span> <span class="o">...</span>
-</span><span data-line="1024">
-</span><span data-line="1025">
-</span><span data-line="1026"><span class="k">def</span><span class="w"> </span><span class="nf">encode_json</span><span class="p">(</span>
-</span><span data-line="1027">    <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="1028">    <span class="o">*</span><span class="p">,</span>
-</span><span data-line="1029">    <span class="n">type_encoders</span><span class="p">:</span> <span class="s2">&quot;Optional[TypeEncodersMap]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="1030">    <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span data-line="1031"><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span>
-</span><span data-line="1032"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Encode data to JSON with optional custom type encoders.</span>
-</span><span data-line="1033">
-</span><span data-line="1034"><span class="sd">    This is the primary interface for JSON encoding in Advanced Alchemy.</span>
-</span><span data-line="1035"><span class="sd">    It supports custom type encoders that can be passed per-call.</span>
-</span><span data-line="1036">
-</span><span data-line="1037"><span class="sd">    Args:</span>
-</span><span data-line="1038"><span class="sd">        data: Data to encode to JSON.</span>
-</span><span data-line="1039"><span class="sd">        type_encoders: Optional mapping of types to encoder functions.</span>
-</span><span data-line="1040"><span class="sd">            These are merged with DEFAULT_TYPE_ENCODERS, with user</span>
-</span><span data-line="1041"><span class="sd">            encoders taking precedence.</span>
-</span><span data-line="1042"><span class="sd">        as_bytes: If True, return bytes; otherwise return str.</span>
-</span><span data-line="1043">
-</span><span data-line="1044"><span class="sd">    Returns:</span>
-</span><span data-line="1045"><span class="sd">        JSON representation of data as string or bytes.</span>
-</span><span data-line="1046">
-</span><span data-line="1047"><span class="sd">    Example:</span>
-</span><span data-line="1048"><span class="sd">        &gt;&gt;&gt; import datetime</span>
-</span><span data-line="1049"><span class="sd">        &gt;&gt;&gt; encode_json({&quot;date&quot;: datetime.date(2025, 12, 17)})</span>
-</span><span data-line="1050"><span class="sd">        &#39;{&quot;date&quot;:&quot;2025-12-17&quot;}&#39;</span>
-</span><span data-line="1051">
-</span><span data-line="1052"><span class="sd">        &gt;&gt;&gt; # Custom type encoder</span>
-</span><span data-line="1053"><span class="sd">        &gt;&gt;&gt; class Point:</span>
-</span><span data-line="1054"><span class="sd">        ...     def __init__(self, x, y):</span>
-</span><span data-line="1055"><span class="sd">        ...         self.x, self.y = x, y</span>
-</span><span data-line="1056"><span class="sd">        &gt;&gt;&gt; encode_json(</span>
-</span><span data-line="1057"><span class="sd">        ...     {&quot;point&quot;: Point(1, 2)},</span>
-</span><span data-line="1058"><span class="sd">        ...     type_encoders={Point: lambda p: [p.x, p.y]},</span>
-</span><span data-line="1059"><span class="sd">        ... )</span>
-</span><span data-line="1060"><span class="sd">        &#39;{&quot;point&quot;:[1,2]}&#39;</span>
+</span><span data-line="1013"><span class="sd">    Example:</span>
+</span><span data-line="1014"><span class="sd">        &gt;&gt;&gt; # Default serializer (singleton)</span>
+</span><span data-line="1015"><span class="sd">        &gt;&gt;&gt; s1 = get_serializer()</span>
+</span><span data-line="1016"><span class="sd">        &gt;&gt;&gt; s2 = get_serializer()</span>
+</span><span data-line="1017"><span class="sd">        &gt;&gt;&gt; s1 is s2</span>
+</span><span data-line="1018"><span class="sd">        True</span>
+</span><span data-line="1019">
+</span><span data-line="1020"><span class="sd">        &gt;&gt;&gt; # Custom type encoders (cached by configuration)</span>
+</span><span data-line="1021"><span class="sd">        &gt;&gt;&gt; encoders = {str: lambda s: s.upper()}</span>
+</span><span data-line="1022"><span class="sd">        &gt;&gt;&gt; s3 = get_serializer(encoders)</span>
+</span><span data-line="1023"><span class="sd">        &gt;&gt;&gt; s4 = get_serializer(encoders)</span>
+</span><span data-line="1024"><span class="sd">        &gt;&gt;&gt; s3 is s4</span>
+</span><span data-line="1025"><span class="sd">        True</span>
+</span><span data-line="1026"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="1027">    <span class="k">global</span> <span class="n">_default_serializer</span>  <span class="c1"># noqa: PLW0603</span>
+</span><span data-line="1028">
+</span><span data-line="1029">    <span class="k">if</span> <span class="n">type_encoders</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="1030">        <span class="k">with</span> <span class="n">_cache_lock</span><span class="p">:</span>
+</span><span data-line="1031">            <span class="k">if</span> <span class="n">_default_serializer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="1032">                <span class="n">_default_serializer</span> <span class="o">=</span> <span class="n">_create_default_serializer</span><span class="p">()</span>
+</span><span data-line="1033">            <span class="k">return</span> <span class="n">_default_serializer</span>
+</span><span data-line="1034">
+</span><span data-line="1035">    <span class="c1"># Create hashable cache key using type and function id</span>
+</span><span data-line="1036">    <span class="c1"># Note: Different lambda objects create different keys even if equivalent</span>
+</span><span data-line="1037">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="1038">        <span class="n">cache_key</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">type_encoders</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+</span><span data-line="1039">    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+</span><span data-line="1040">        <span class="c1"># Fallback for unhashable keys - create without caching</span>
+</span><span data-line="1041">        <span class="k">return</span> <span class="n">_create_serializer</span><span class="p">(</span><span class="n">type_encoders</span><span class="p">)</span>
+</span><span data-line="1042">
+</span><span data-line="1043">    <span class="k">with</span> <span class="n">_cache_lock</span><span class="p">:</span>
+</span><span data-line="1044">        <span class="k">if</span> <span class="n">cache_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_serializer_cache</span><span class="p">:</span>
+</span><span data-line="1045">            <span class="n">_serializer_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_create_serializer</span><span class="p">(</span><span class="n">type_encoders</span><span class="p">)</span>
+</span><span data-line="1046">        <span class="k">return</span> <span class="n">_serializer_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span>
+</span><span data-line="1047">
+</span><span data-line="1048">
+</span><span data-line="1049"><span class="c1"># ============================================================================</span>
+</span><span data-line="1050"><span class="c1"># Public API functions</span>
+</span><span data-line="1051"><span class="c1"># ============================================================================</span>
+</span><span data-line="1052">
+</span><span data-line="1053">
+</span><span data-line="1054"><span class="nd">@overload</span>
+</span><span data-line="1055"><span class="k">def</span><span class="w"> </span><span class="nf">encode_json</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="1056">
+</span><span data-line="1057">
+</span><span data-line="1058"><span class="nd">@overload</span>
+</span><span data-line="1059"><span class="k">def</span><span class="w"> </span><span class="nf">encode_json</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="1060">
 </span><span data-line="1061">
-</span><span data-line="1062"><span class="sd">        &gt;&gt;&gt; # Return bytes</span>
-</span><span data-line="1063"><span class="sd">        &gt;&gt;&gt; encode_json({&quot;key&quot;: &quot;value&quot;}, as_bytes=True)</span>
-</span><span data-line="1064"><span class="sd">        b&#39;{&quot;key&quot;:&quot;value&quot;}&#39;</span>
-</span><span data-line="1065"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="1066">    <span class="n">serializer</span> <span class="o">=</span> <span class="n">get_serializer</span><span class="p">(</span><span class="n">type_encoders</span><span class="p">)</span>
-</span><span data-line="1067">    <span class="k">return</span> <span class="n">serializer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">as_bytes</span><span class="o">=</span><span class="n">as_bytes</span><span class="p">)</span>
+</span><span data-line="1062"><span class="nd">@overload</span>
+</span><span data-line="1063"><span class="k">def</span><span class="w"> </span><span class="nf">encode_json</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="1064">
+</span><span data-line="1065">
+</span><span data-line="1066"><span class="nd">@overload</span>
+</span><span data-line="1067"><span class="k">def</span><span class="w"> </span><span class="nf">encode_json</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">type_encoders</span><span class="p">:</span> <span class="s2">&quot;TypeEncodersMap&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
 </span><span data-line="1068">
 </span><span data-line="1069">
-</span><span data-line="1070"><span class="k">def</span><span class="w"> </span><span class="nf">decode_json</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">decode_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span data-line="1071"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Decode JSON string or bytes to Python object.</span>
+</span><span data-line="1070"><span class="nd">@overload</span>
+</span><span data-line="1071"><span class="k">def</span><span class="w"> </span><span class="nf">encode_json</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">type_encoders</span><span class="p">:</span> <span class="n">TypeEncodersMap</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
 </span><span data-line="1072">
-</span><span data-line="1073"><span class="sd">    Args:</span>
-</span><span data-line="1074"><span class="sd">        data: JSON string or bytes to decode.</span>
-</span><span data-line="1075"><span class="sd">        decode_bytes: If True, decode bytes input. If False, bytes</span>
-</span><span data-line="1076"><span class="sd">            are returned as-is without decoding.</span>
+</span><span data-line="1073">
+</span><span data-line="1074"><span class="nd">@overload</span>
+</span><span data-line="1075"><span class="k">def</span><span class="w"> </span><span class="nf">encode_json</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">type_encoders</span><span class="p">:</span> <span class="n">TypeEncodersMap</span><span class="p">,</span> <span class="n">as_bytes</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span> <span class="o">...</span>
+</span><span data-line="1076">
 </span><span data-line="1077">
-</span><span data-line="1078"><span class="sd">    Returns:</span>
-</span><span data-line="1079"><span class="sd">        Decoded Python object.</span>
-</span><span data-line="1080">
-</span><span data-line="1081"><span class="sd">    Example:</span>
-</span><span data-line="1082"><span class="sd">        &gt;&gt;&gt; decode_json(&#39;{&quot;key&quot;: &quot;value&quot;}&#39;)</span>
-</span><span data-line="1083"><span class="sd">        {&#39;key&#39;: &#39;value&#39;}</span>
-</span><span data-line="1084">
-</span><span data-line="1085"><span class="sd">        &gt;&gt;&gt; decode_json(b&#39;{&quot;key&quot;: &quot;value&quot;}&#39;)</span>
-</span><span data-line="1086"><span class="sd">        {&#39;key&#39;: &#39;value&#39;}</span>
-</span><span data-line="1087"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="1088">    <span class="n">serializer</span> <span class="o">=</span> <span class="n">get_serializer</span><span class="p">()</span>
-</span><span data-line="1089">    <span class="k">return</span> <span class="n">serializer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">decode_bytes</span><span class="o">=</span><span class="n">decode_bytes</span><span class="p">)</span>
-</span><span data-line="1090">
-</span><span data-line="1091">
-</span><span data-line="1092"><span class="k">def</span><span class="w"> </span><span class="nf">encode_complex_type</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># noqa: PLR0911</span>
-</span><span data-line="1093"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert an object to a JSON-serializable format if possible.</span>
-</span><span data-line="1094">
-</span><span data-line="1095"><span class="sd">    Handles types that are not natively JSON serializable:</span>
-</span><span data-line="1096"><span class="sd">    - datetime, date, time: ISO format strings</span>
-</span><span data-line="1097"><span class="sd">    - timedelta: total seconds as float</span>
-</span><span data-line="1098"><span class="sd">    - Decimal: string representation</span>
-</span><span data-line="1099"><span class="sd">    - bytes: hex string</span>
-</span><span data-line="1100"><span class="sd">    - UUID: string representation</span>
-</span><span data-line="1101"><span class="sd">    - set, frozenset: list</span>
-</span><span data-line="1102">
-</span><span data-line="1103"><span class="sd">    Args:</span>
-</span><span data-line="1104"><span class="sd">        obj: The object to encode.</span>
-</span><span data-line="1105">
-</span><span data-line="1106"><span class="sd">    Returns:</span>
-</span><span data-line="1107"><span class="sd">        A JSON-serializable representation of the object, or None if the type is not supported.</span>
-</span><span data-line="1108"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="1109">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
-</span><span data-line="1110">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;datetime&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()}</span>
-</span><span data-line="1111">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">):</span>
-</span><span data-line="1112">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()}</span>
-</span><span data-line="1113">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">):</span>
-</span><span data-line="1114">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()}</span>
-</span><span data-line="1115">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">):</span>
-</span><span data-line="1116">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;timedelta&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()}</span>
-</span><span data-line="1117">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Decimal</span><span class="p">):</span>
-</span><span data-line="1118">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;decimal&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">)}</span>
-</span><span data-line="1119">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
-</span><span data-line="1120">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;bytes&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">hex</span><span class="p">()}</span>
-</span><span data-line="1121">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">UUID</span><span class="p">):</span>
-</span><span data-line="1122">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;uuid&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">)}</span>
-</span><span data-line="1123">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">set</span><span class="p">,</span> <span class="nb">frozenset</span><span class="p">)):</span>
-</span><span data-line="1124">        <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;Union[set[Any], frozenset[Any]]&quot;</span><span class="p">,</span> <span class="n">obj</span><span class="p">))</span>  <span class="c1"># type: ignore[redundant-cast]</span>
-</span><span data-line="1125">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;set&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">items</span><span class="p">}</span>
-</span><span data-line="1126">    <span class="k">return</span> <span class="kc">None</span>
-</span><span data-line="1127">
-</span><span data-line="1128">
-</span><span data-line="1129"><span class="k">def</span><span class="w"> </span><span class="nf">decode_complex_type</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span data-line="1130"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively decode special type markers.</span>
-</span><span data-line="1131">
-</span><span data-line="1132"><span class="sd">    Decodes the special `{&quot;__type__&quot;: ..., &quot;value&quot;: ...}` structures.</span>
-</span><span data-line="1133"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="1134">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-</span><span data-line="1135">        <span class="n">value_list</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;list[Any]&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>  <span class="c1"># type: ignore[redundant-cast]</span>
-</span><span data-line="1136">        <span class="k">return</span> <span class="p">[</span><span class="n">decode_complex_type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value_list</span><span class="p">]</span>
-</span><span data-line="1137">
-</span><span data-line="1138">    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-</span><span data-line="1139">        <span class="k">return</span> <span class="n">value</span>
-</span><span data-line="1140">
-</span><span data-line="1141">    <span class="c1"># Decode any nested values first</span>
-</span><span data-line="1142">    <span class="n">value_dict</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;dict[Any, Any]&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>  <span class="c1"># type: ignore[redundant-cast]</span>
-</span><span data-line="1143">    <span class="n">decoded</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">decode_complex_type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-</span><span data-line="1144">
-</span><span data-line="1145">    <span class="c1"># Then decode &quot;typed&quot; marker dicts</span>
-</span><span data-line="1146">    <span class="k">if</span> <span class="s2">&quot;__type__&quot;</span> <span class="ow">in</span> <span class="n">decoded</span> <span class="ow">and</span> <span class="s2">&quot;value&quot;</span> <span class="ow">in</span> <span class="n">decoded</span><span class="p">:</span>
-</span><span data-line="1147">        <span class="k">return</span> <span class="n">_decode_typed_marker</span><span class="p">(</span><span class="n">decoded</span><span class="p">)</span>
-</span><span data-line="1148">
-</span><span data-line="1149">    <span class="k">return</span> <span class="n">decoded</span>
-</span><span data-line="1150">
-</span><span data-line="1151">
-</span><span data-line="1152"><span class="k">def</span><span class="w"> </span><span class="nf">_decode_typed_marker</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># noqa: PLR0911</span>
-</span><span data-line="1153"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom JSON decoder for special types.</span>
+</span><span data-line="1078"><span class="k">def</span><span class="w"> </span><span class="nf">encode_json</span><span class="p">(</span>
+</span><span data-line="1079">    <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="1080">    <span class="o">*</span><span class="p">,</span>
+</span><span data-line="1081">    <span class="n">type_encoders</span><span class="p">:</span> <span class="s2">&quot;Optional[TypeEncodersMap]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="1082">    <span class="n">as_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="1083"><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">:</span>
+</span><span data-line="1084"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Encode data to JSON with optional custom type encoders.</span>
+</span><span data-line="1085">
+</span><span data-line="1086"><span class="sd">    This is the primary interface for JSON encoding in Advanced Alchemy.</span>
+</span><span data-line="1087"><span class="sd">    It supports custom type encoders that can be passed per-call.</span>
+</span><span data-line="1088">
+</span><span data-line="1089"><span class="sd">    Args:</span>
+</span><span data-line="1090"><span class="sd">        data: Data to encode to JSON.</span>
+</span><span data-line="1091"><span class="sd">        type_encoders: Optional mapping of types to encoder functions.</span>
+</span><span data-line="1092"><span class="sd">            These are merged with DEFAULT_TYPE_ENCODERS, with user</span>
+</span><span data-line="1093"><span class="sd">            encoders taking precedence.</span>
+</span><span data-line="1094"><span class="sd">        as_bytes: If True, return bytes; otherwise return str.</span>
+</span><span data-line="1095">
+</span><span data-line="1096"><span class="sd">    Returns:</span>
+</span><span data-line="1097"><span class="sd">        JSON representation of data as string or bytes.</span>
+</span><span data-line="1098">
+</span><span data-line="1099"><span class="sd">    Example:</span>
+</span><span data-line="1100"><span class="sd">        &gt;&gt;&gt; import datetime</span>
+</span><span data-line="1101"><span class="sd">        &gt;&gt;&gt; encode_json({&quot;date&quot;: datetime.date(2025, 12, 17)})</span>
+</span><span data-line="1102"><span class="sd">        &#39;{&quot;date&quot;:&quot;2025-12-17&quot;}&#39;</span>
+</span><span data-line="1103">
+</span><span data-line="1104"><span class="sd">        &gt;&gt;&gt; # Custom type encoder</span>
+</span><span data-line="1105"><span class="sd">        &gt;&gt;&gt; class Point:</span>
+</span><span data-line="1106"><span class="sd">        ...     def __init__(self, x, y):</span>
+</span><span data-line="1107"><span class="sd">        ...         self.x, self.y = x, y</span>
+</span><span data-line="1108"><span class="sd">        &gt;&gt;&gt; encode_json(</span>
+</span><span data-line="1109"><span class="sd">        ...     {&quot;point&quot;: Point(1, 2)},</span>
+</span><span data-line="1110"><span class="sd">        ...     type_encoders={Point: lambda p: [p.x, p.y]},</span>
+</span><span data-line="1111"><span class="sd">        ... )</span>
+</span><span data-line="1112"><span class="sd">        &#39;{&quot;point&quot;:[1,2]}&#39;</span>
+</span><span data-line="1113">
+</span><span data-line="1114"><span class="sd">        &gt;&gt;&gt; # Return bytes</span>
+</span><span data-line="1115"><span class="sd">        &gt;&gt;&gt; encode_json({&quot;key&quot;: &quot;value&quot;}, as_bytes=True)</span>
+</span><span data-line="1116"><span class="sd">        b&#39;{&quot;key&quot;:&quot;value&quot;}&#39;</span>
+</span><span data-line="1117"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="1118">    <span class="n">serializer</span> <span class="o">=</span> <span class="n">get_serializer</span><span class="p">(</span><span class="n">type_encoders</span><span class="p">)</span>
+</span><span data-line="1119">    <span class="k">return</span> <span class="n">serializer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">as_bytes</span><span class="o">=</span><span class="n">as_bytes</span><span class="p">)</span>
+</span><span data-line="1120">
+</span><span data-line="1121">
+</span><span data-line="1122"><span class="k">def</span><span class="w"> </span><span class="nf">decode_json</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="s2">&quot;Union[str, bytes]&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">decode_bytes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="1123"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Decode JSON string or bytes to Python object.</span>
+</span><span data-line="1124">
+</span><span data-line="1125"><span class="sd">    Args:</span>
+</span><span data-line="1126"><span class="sd">        data: JSON string or bytes to decode.</span>
+</span><span data-line="1127"><span class="sd">        decode_bytes: If True, decode bytes input. If False, bytes</span>
+</span><span data-line="1128"><span class="sd">            are returned as-is without decoding.</span>
+</span><span data-line="1129">
+</span><span data-line="1130"><span class="sd">    Returns:</span>
+</span><span data-line="1131"><span class="sd">        Decoded Python object.</span>
+</span><span data-line="1132">
+</span><span data-line="1133"><span class="sd">    Example:</span>
+</span><span data-line="1134"><span class="sd">        &gt;&gt;&gt; decode_json(&#39;{&quot;key&quot;: &quot;value&quot;}&#39;)</span>
+</span><span data-line="1135"><span class="sd">        {&#39;key&#39;: &#39;value&#39;}</span>
+</span><span data-line="1136">
+</span><span data-line="1137"><span class="sd">        &gt;&gt;&gt; decode_json(b&#39;{&quot;key&quot;: &quot;value&quot;}&#39;)</span>
+</span><span data-line="1138"><span class="sd">        {&#39;key&#39;: &#39;value&#39;}</span>
+</span><span data-line="1139"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="1140">    <span class="n">serializer</span> <span class="o">=</span> <span class="n">get_serializer</span><span class="p">()</span>
+</span><span data-line="1141">    <span class="k">return</span> <span class="n">serializer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">decode_bytes</span><span class="o">=</span><span class="n">decode_bytes</span><span class="p">)</span>
+</span><span data-line="1142">
+</span><span data-line="1143">
+</span><span data-line="1144"><span class="k">def</span><span class="w"> </span><span class="nf">encode_complex_type</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># noqa: PLR0911</span>
+</span><span data-line="1145"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert an object to a JSON-serializable format if possible.</span>
+</span><span data-line="1146">
+</span><span data-line="1147"><span class="sd">    Handles types that are not natively JSON serializable:</span>
+</span><span data-line="1148"><span class="sd">    - datetime, date, time: ISO format strings</span>
+</span><span data-line="1149"><span class="sd">    - timedelta: total seconds as float</span>
+</span><span data-line="1150"><span class="sd">    - Decimal: string representation</span>
+</span><span data-line="1151"><span class="sd">    - bytes: hex string</span>
+</span><span data-line="1152"><span class="sd">    - UUID: string representation</span>
+</span><span data-line="1153"><span class="sd">    - set, frozenset: list</span>
 </span><span data-line="1154">
 </span><span data-line="1155"><span class="sd">    Args:</span>
-</span><span data-line="1156"><span class="sd">        obj: The dictionary to decode.</span>
+</span><span data-line="1156"><span class="sd">        obj: The object to encode.</span>
 </span><span data-line="1157">
 </span><span data-line="1158"><span class="sd">    Returns:</span>
-</span><span data-line="1159"><span class="sd">        The decoded object, or the original dict if not a special type.</span>
+</span><span data-line="1159"><span class="sd">        A JSON-serializable representation of the object, or None if the type is not supported.</span>
 </span><span data-line="1160"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="1161">    <span class="n">type_name</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;__type__&quot;</span><span class="p">]</span>
-</span><span data-line="1162">    <span class="n">value</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
-</span><span data-line="1163">
-</span><span data-line="1164">    <span class="k">if</span> <span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;datetime&quot;</span><span class="p">:</span>
-</span><span data-line="1165">        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-</span><span data-line="1166">    <span class="k">if</span> <span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;date&quot;</span><span class="p">:</span>
-</span><span data-line="1167">        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-</span><span data-line="1168">    <span class="k">if</span> <span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;time&quot;</span><span class="p">:</span>
-</span><span data-line="1169">        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-</span><span data-line="1170">    <span class="k">if</span> <span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;timedelta&quot;</span><span class="p">:</span>
-</span><span data-line="1171">        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
-</span><span data-line="1172">    <span class="k">if</span> <span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;decimal&quot;</span><span class="p">:</span>
-</span><span data-line="1173">        <span class="k">return</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-</span><span data-line="1174">    <span class="k">if</span> <span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;bytes&quot;</span><span class="p">:</span>
-</span><span data-line="1175">        <span class="k">return</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-</span><span data-line="1176">    <span class="k">if</span> <span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;uuid&quot;</span><span class="p">:</span>
-</span><span data-line="1177">        <span class="k">return</span> <span class="n">UUID</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-</span><span data-line="1178">    <span class="k">if</span> <span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;set&quot;</span><span class="p">:</span>
-</span><span data-line="1179">        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="1161">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
+</span><span data-line="1162">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;datetime&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()}</span>
+</span><span data-line="1163">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">):</span>
+</span><span data-line="1164">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()}</span>
+</span><span data-line="1165">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">):</span>
+</span><span data-line="1166">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()}</span>
+</span><span data-line="1167">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">):</span>
+</span><span data-line="1168">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;timedelta&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()}</span>
+</span><span data-line="1169">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Decimal</span><span class="p">):</span>
+</span><span data-line="1170">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;decimal&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">)}</span>
+</span><span data-line="1171">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+</span><span data-line="1172">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;bytes&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">hex</span><span class="p">()}</span>
+</span><span data-line="1173">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">UUID</span><span class="p">):</span>
+</span><span data-line="1174">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;uuid&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">)}</span>
+</span><span data-line="1175">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">set</span><span class="p">,</span> <span class="nb">frozenset</span><span class="p">)):</span>
+</span><span data-line="1176">        <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;Union[set[Any], frozenset[Any]]&quot;</span><span class="p">,</span> <span class="n">obj</span><span class="p">))</span>  <span class="c1"># type: ignore[redundant-cast]</span>
+</span><span data-line="1177">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;set&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">items</span><span class="p">}</span>
+</span><span data-line="1178">    <span class="k">return</span> <span class="kc">None</span>
+</span><span data-line="1179">
 </span><span data-line="1180">
-</span><span data-line="1181">    <span class="k">return</span> <span class="n">obj</span>
+</span><span data-line="1181"><span class="k">def</span><span class="w"> </span><span class="nf">decode_complex_type</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="1182"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively decode special type markers.</span>
+</span><span data-line="1183">
+</span><span data-line="1184"><span class="sd">    Decodes the special `{&quot;__type__&quot;: ..., &quot;value&quot;: ...}` structures.</span>
+</span><span data-line="1185"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="1186">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</span><span data-line="1187">        <span class="n">value_list</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;list[Any]&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>  <span class="c1"># type: ignore[redundant-cast]</span>
+</span><span data-line="1188">        <span class="k">return</span> <span class="p">[</span><span class="n">decode_complex_type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value_list</span><span class="p">]</span>
+</span><span data-line="1189">
+</span><span data-line="1190">    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+</span><span data-line="1191">        <span class="k">return</span> <span class="n">value</span>
+</span><span data-line="1192">
+</span><span data-line="1193">    <span class="c1"># Decode any nested values first</span>
+</span><span data-line="1194">    <span class="n">value_dict</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;dict[Any, Any]&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>  <span class="c1"># type: ignore[redundant-cast]</span>
+</span><span data-line="1195">    <span class="n">decoded</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">decode_complex_type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+</span><span data-line="1196">
+</span><span data-line="1197">    <span class="c1"># Then decode &quot;typed&quot; marker dicts</span>
+</span><span data-line="1198">    <span class="k">if</span> <span class="s2">&quot;__type__&quot;</span> <span class="ow">in</span> <span class="n">decoded</span> <span class="ow">and</span> <span class="s2">&quot;value&quot;</span> <span class="ow">in</span> <span class="n">decoded</span><span class="p">:</span>
+</span><span data-line="1199">        <span class="k">return</span> <span class="n">_decode_typed_marker</span><span class="p">(</span><span class="n">decoded</span><span class="p">)</span>
+</span><span data-line="1200">
+</span><span data-line="1201">    <span class="k">return</span> <span class="n">decoded</span>
+</span><span data-line="1202">
+</span><span data-line="1203">
+</span><span data-line="1204"><span class="k">def</span><span class="w"> </span><span class="nf">_decode_typed_marker</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># noqa: PLR0911</span>
+</span><span data-line="1205"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom JSON decoder for special types.</span>
+</span><span data-line="1206">
+</span><span data-line="1207"><span class="sd">    Args:</span>
+</span><span data-line="1208"><span class="sd">        obj: The dictionary to decode.</span>
+</span><span data-line="1209">
+</span><span data-line="1210"><span class="sd">    Returns:</span>
+</span><span data-line="1211"><span class="sd">        The decoded object, or the original dict if not a special type.</span>
+</span><span data-line="1212"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="1213">    <span class="n">type_name</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;__type__&quot;</span><span class="p">]</span>
+</span><span data-line="1214">    <span class="n">value</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+</span><span data-line="1215">
+</span><span data-line="1216">    <span class="k">if</span> <span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;datetime&quot;</span><span class="p">:</span>
+</span><span data-line="1217">        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="1218">    <span class="k">if</span> <span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;date&quot;</span><span class="p">:</span>
+</span><span data-line="1219">        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="1220">    <span class="k">if</span> <span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;time&quot;</span><span class="p">:</span>
+</span><span data-line="1221">        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="1222">    <span class="k">if</span> <span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;timedelta&quot;</span><span class="p">:</span>
+</span><span data-line="1223">        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="1224">    <span class="k">if</span> <span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;decimal&quot;</span><span class="p">:</span>
+</span><span data-line="1225">        <span class="k">return</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="1226">    <span class="k">if</span> <span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;bytes&quot;</span><span class="p">:</span>
+</span><span data-line="1227">        <span class="k">return</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="1228">    <span class="k">if</span> <span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;uuid&quot;</span><span class="p">:</span>
+</span><span data-line="1229">        <span class="k">return</span> <span class="n">UUID</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="1230">    <span class="k">if</span> <span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;set&quot;</span><span class="p">:</span>
+</span><span data-line="1231">        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="1232">
+</span><span data-line="1233">    <span class="k">return</span> <span class="n">obj</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
