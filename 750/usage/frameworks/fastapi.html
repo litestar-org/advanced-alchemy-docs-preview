@@ -182,6 +182,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/plugins.html">plugin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/cli.html">cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/session.html">Session Backends</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/store.html">Store</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/flask/index.html">flask</a></li>
@@ -466,6 +467,74 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="13">    <span class="k">return</span> <span class="n">filters</span><span class="o">.</span><span class="n">LimitOffset</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="n">page_size</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">page_size</span> <span class="o">*</span> <span class="p">(</span><span class="n">current_page</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
 </span></pre></div>
 </div>
+<p>Advanced Alchemy can also generate a combined filter dependency with OpenAPI query parameters:</p>
+<div class="sd-tab-set docutils">
+<input id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-2">
+Python 3.9+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">Status</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+</span><span data-line="5">    <span class="n">DRAFT</span> <span class="o">=</span> <span class="s2">&quot;draft&quot;</span>
+</span><span data-line="6">    <span class="n">PUBLISHED</span> <span class="o">=</span> <span class="s2">&quot;published&quot;</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="n">AuthorFilters</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span>
+</span><span data-line="9">    <span class="nb">list</span><span class="p">[</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterTypes</span><span class="p">],</span>
+</span><span data-line="10">    <span class="n">Depends</span><span class="p">(</span>
+</span><span data-line="11">        <span class="n">alchemy</span><span class="o">.</span><span class="n">provide_filters</span><span class="p">(</span>
+</span><span data-line="12">            <span class="p">{</span>
+</span><span data-line="13">                <span class="s2">&quot;id_filter&quot;</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
+</span><span data-line="14">                <span class="s2">&quot;pagination_type&quot;</span><span class="p">:</span> <span class="s2">&quot;limit_offset&quot;</span><span class="p">,</span>
+</span><span data-line="15">                <span class="s2">&quot;search&quot;</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+</span><span data-line="16">                <span class="s2">&quot;boolean_fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">],</span>
+</span><span data-line="17">                <span class="s2">&quot;choice_fields&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="18">                    <span class="p">(</span><span class="s2">&quot;visibility&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;public&quot;</span><span class="p">,</span> <span class="s2">&quot;private&quot;</span><span class="p">)),</span>
+</span><span data-line="19">                    <span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="n">Status</span><span class="p">),</span>
+</span><span data-line="20">                <span class="p">],</span>
+</span><span data-line="21">            <span class="p">}</span>
+</span><span data-line="22">        <span class="p">)</span>
+</span><span data-line="23">    <span class="p">),</span>
+</span><span data-line="24"><span class="p">]</span>
+</span></pre></div>
+</div>
+</div>
+<input checked="checked" id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.11" for="sd-tab-item-3">
+Python 3.11+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrEnum</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">Status</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+</span><span data-line="5">    <span class="n">DRAFT</span> <span class="o">=</span> <span class="s2">&quot;draft&quot;</span>
+</span><span data-line="6">    <span class="n">PUBLISHED</span> <span class="o">=</span> <span class="s2">&quot;published&quot;</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="n">AuthorFilters</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span>
+</span><span data-line="9">    <span class="nb">list</span><span class="p">[</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterTypes</span><span class="p">],</span>
+</span><span data-line="10">    <span class="n">Depends</span><span class="p">(</span>
+</span><span data-line="11">        <span class="n">alchemy</span><span class="o">.</span><span class="n">provide_filters</span><span class="p">(</span>
+</span><span data-line="12">            <span class="p">{</span>
+</span><span data-line="13">                <span class="s2">&quot;id_filter&quot;</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
+</span><span data-line="14">                <span class="s2">&quot;pagination_type&quot;</span><span class="p">:</span> <span class="s2">&quot;limit_offset&quot;</span><span class="p">,</span>
+</span><span data-line="15">                <span class="s2">&quot;search&quot;</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+</span><span data-line="16">                <span class="s2">&quot;boolean_fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">],</span>
+</span><span data-line="17">                <span class="s2">&quot;choice_fields&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="18">                    <span class="p">(</span><span class="s2">&quot;visibility&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;public&quot;</span><span class="p">,</span> <span class="s2">&quot;private&quot;</span><span class="p">)),</span>
+</span><span data-line="19">                    <span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="n">Status</span><span class="p">),</span>
+</span><span data-line="20">                <span class="p">],</span>
+</span><span data-line="21">            <span class="p">}</span>
+</span><span data-line="22">        <span class="p">)</span>
+</span><span data-line="23">    <span class="p">),</span>
+</span><span data-line="24"><span class="p">]</span>
+</span></pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">boolean_fields</span></code> emits a field-name query parameter such as <code class="docutils literal notranslate"><span class="pre">active</span></code> and creates a <code class="docutils literal notranslate"><span class="pre">BooleanFilter</span></code>.
+<code class="docutils literal notranslate"><span class="pre">choice_fields</span></code> emits repeated query parameters such as <code class="docutils literal notranslate"><span class="pre">visibility=public&amp;status=published</span></code> and creates
+<code class="docutils literal notranslate"><span class="pre">ChoicesFilter</span></code> instances. Use <code class="docutils literal notranslate"><span class="pre">ChoiceField</span></code> or <code class="docutils literal notranslate"><span class="pre">(field_name,</span> <span class="pre">choices)</span></code> when the generated OpenAPI
+schema should expose explicit allowed values, or <code class="docutils literal notranslate"><span class="pre">FieldNameType</span></code> / <code class="docutils literal notranslate"><span class="pre">(field_name,</span> <span class="pre">type_hint)</span></code> when the
+allowed values already live in an enum.</p>
 <p>The session providers accept an optional bind key when you configure multiple database connections:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">DatabaseSession</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">AsyncSession</span><span class="p">,</span> <span class="n">Depends</span><span class="p">(</span><span class="n">alchemy</span><span class="o">.</span><span class="n">provide_session</span><span class="p">())]</span>
 </span><span data-line="2"><span class="n">ReportingSession</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">AsyncSession</span><span class="p">,</span> <span class="n">Depends</span><span class="p">(</span><span class="n">alchemy</span><span class="o">.</span><span class="n">provide_session</span><span class="p">(</span><span class="s2">&quot;reporting&quot;</span><span class="p">))]</span>
