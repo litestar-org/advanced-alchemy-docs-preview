@@ -182,6 +182,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/plugins.html">plugin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/cli.html">cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/session.html">Session Backends</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/store.html">Store</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/flask/index.html">flask</a></li>
@@ -237,7 +238,8 @@ data-aria-dark="Switch to auto color mode">
 </li>
 <li><a class="reference internal" href="#server-side-session-backend">Server-Side Session Backend</a><ul>
 <li><a class="reference internal" href="#overview">Overview</a></li>
-<li><a class="reference internal" href="#quick-setup">Quick Setup</a></li>
+<li><a class="reference internal" href="#store-based-integration-recommended">Store-Based Integration (Recommended)</a></li>
+<li><a class="reference internal" href="#backend-based-integration">Backend-Based Integration</a></li>
 <li><a class="reference internal" href="#session-model-configuration">Session Model Configuration</a></li>
 <li><a class="reference internal" href="#advanced-configuration">Advanced Configuration</a></li>
 <li><a class="reference internal" href="#using-sessions-in-routes">Using Sessions in Routes</a></li>
@@ -868,11 +870,12 @@ the matching parameter in your handlers.</p>
 </section>
 <section id="server-side-session-backend">
 <h2>Server-Side Session Backend<a class="headerlink" href="#server-side-session-backend" title="Link to this heading">¶</a></h2>
-<p>Advanced Alchemy provides SQLAlchemy-based session backends for Litestar’s server-side session middleware. This allows you to store session data in your existing SQLAlchemy database instead of using external stores like Redis or file-based storage.</p>
-<p>If you need a general-purpose Litestar store outside the session middleware itself, the same
-extension package also exposes <code class="docutils literal notranslate"><span class="pre">advanced_alchemy.extensions.litestar.store.SQLAlchemyStore</span></code> and
-<code class="docutils literal notranslate"><span class="pre">StoreModelMixin</span></code>. The examples below focus on the session backend used with
-<code class="docutils literal notranslate"><span class="pre">ServerSideSessionConfig</span></code>.</p>
+<p>Advanced Alchemy can store Litestar server-side session data in your SQLAlchemy database instead of an external store such as Redis or the in-memory default. There are two integration styles, and it matters which one you pick.</p>
+<p>Litestar’s <code class="docutils literal notranslate"><span class="pre">ServerSideSessionConfig.middleware</span></code> always installs Litestar’s built-in <code class="docutils literal notranslate"><span class="pre">ServerSideSessionBackend</span></code>. That backend reads and writes session data through whichever <a class="reference external" href="https://docs.litestar.dev/latest/reference/stores/base.html#litestar.stores.base.Store" title="(in Litestar)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Store</span></code></a> is registered under <code class="docutils literal notranslate"><span class="pre">ServerSideSessionConfig.store</span></code> (<code class="docutils literal notranslate"><span class="pre">&quot;sessions&quot;</span></code> by default); it does not pick up a custom backend instance. This gives you two options:</p>
+<ul class="simple">
+<li><p><strong>Store-based integration (recommended).</strong> Register <a class="reference internal" href="../../reference/extensions/litestar/store.html#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore" title="advanced_alchemy.extensions.litestar.store.SQLAlchemyStore"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyStore</span></code></a> under the <code class="docutils literal notranslate"><span class="pre">&quot;sessions&quot;</span></code> store name and use <code class="docutils literal notranslate"><span class="pre">session_config.middleware</span></code> as usual. Litestar’s session backend then persists session data through the SQLAlchemy store.</p></li>
+<li><p><strong>Backend-based integration.</strong> Use a dedicated <a class="reference internal" href="../../reference/extensions/litestar/session.html#advanced_alchemy.extensions.litestar.session.SQLAlchemyAsyncSessionBackend" title="advanced_alchemy.extensions.litestar.session.SQLAlchemyAsyncSessionBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyAsyncSessionBackend</span></code></a> (or its sync variant) and wire it into <code class="docutils literal notranslate"><span class="pre">SessionMiddleware</span></code> yourself with <code class="docutils literal notranslate"><span class="pre">partial(SessionMiddleware,</span> <span class="pre">backend=...)</span></code>. Because <code class="docutils literal notranslate"><span class="pre">session_config.middleware</span></code> ignores custom backends, you must construct the middleware directly for this style.</p></li>
+</ul>
 <section id="overview">
 <h3>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h3>
 <p>The SQLAlchemy session backend provides:</p>
@@ -884,50 +887,81 @@ extension package also exposes <code class="docutils literal notranslate"><span 
 <li><p><strong>Timezone-aware timestamps</strong>: Proper handling of session expiration times</p></li>
 </ul>
 </section>
-<section id="quick-setup">
-<h3>Quick Setup<a class="headerlink" href="#quick-setup" title="Link to this heading">¶</a></h3>
-<p>To use the SQLAlchemy session backend, you need to:</p>
-<ol class="arabic simple">
-<li><p>Create a session model using the provided mixin</p></li>
-<li><p>Configure the SQLAlchemy session backend</p></li>
-<li><p>Register the session middleware with your Litestar application</p></li>
-</ol>
+<section id="store-based-integration-recommended">
+<h3>Store-Based Integration (Recommended)<a class="headerlink" href="#store-based-integration-recommended" title="Link to this heading">¶</a></h3>
+<p>Register a <a class="reference internal" href="../../reference/extensions/litestar/store.html#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore" title="advanced_alchemy.extensions.litestar.store.SQLAlchemyStore"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyStore</span></code></a> under the session store name and let Litestar’s middleware use it:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Litestar</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar.middleware.session.server_side</span><span class="w"> </span><span class="kn">import</span> <span class="n">ServerSideSessionConfig</span>
 </span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.extensions.litestar</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">,</span> <span class="n">SQLAlchemyPlugin</span>
-</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.extensions.litestar.session</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-</span><span data-line="5">    <span class="n">SessionModelMixin</span><span class="p">,</span>
-</span><span data-line="6">    <span class="n">SQLAlchemyAsyncSessionBackend</span><span class="p">,</span>
-</span><span data-line="7"><span class="p">)</span>
-</span><span data-line="8">
-</span><span data-line="9"><span class="c1"># 1. Create your session model</span>
-</span><span data-line="10"><span class="k">class</span><span class="w"> </span><span class="nc">UserSession</span><span class="p">(</span><span class="n">SessionModelMixin</span><span class="p">):</span>
-</span><span data-line="11">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;user_sessions&quot;</span>
-</span><span data-line="12">
-</span><span data-line="13"><span class="c1"># 2. Configure SQLAlchemy</span>
-</span><span data-line="14"><span class="n">alchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
-</span><span data-line="15">    <span class="n">connection_string</span><span class="o">=</span><span class="s2">&quot;postgresql+asyncpg://user:password@localhost/mydb&quot;</span><span class="p">,</span>
-</span><span data-line="16">    <span class="n">create_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span data-line="17"><span class="p">)</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.extensions.litestar.store</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyStore</span><span class="p">,</span> <span class="n">StoreModelMixin</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="c1"># 1. Create the model backing the store table</span>
+</span><span data-line="7"><span class="k">class</span><span class="w"> </span><span class="nc">SessionStore</span><span class="p">(</span><span class="n">StoreModelMixin</span><span class="p">):</span>
+</span><span data-line="8">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;session_store&quot;</span>
+</span><span data-line="9">
+</span><span data-line="10"><span class="c1"># 2. Configure SQLAlchemy</span>
+</span><span data-line="11"><span class="n">alchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
+</span><span data-line="12">    <span class="n">connection_string</span><span class="o">=</span><span class="s2">&quot;postgresql+asyncpg://user:password@localhost/mydb&quot;</span><span class="p">,</span>
+</span><span data-line="13">    <span class="n">create_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="14"><span class="p">)</span>
+</span><span data-line="15">
+</span><span data-line="16"><span class="c1"># 3. Configure the session middleware (``store`` defaults to &quot;sessions&quot;)</span>
+</span><span data-line="17"><span class="n">session_config</span> <span class="o">=</span> <span class="n">ServerSideSessionConfig</span><span class="p">(</span><span class="n">max_age</span><span class="o">=</span><span class="mi">3600</span><span class="p">)</span>
 </span><span data-line="18">
-</span><span data-line="19"><span class="c1"># 3. Configure session backend</span>
-</span><span data-line="20"><span class="n">session_config</span> <span class="o">=</span> <span class="n">ServerSideSessionConfig</span><span class="p">(</span>
-</span><span data-line="21">    <span class="n">max_age</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>  <span class="c1"># 1 hour</span>
-</span><span data-line="22"><span class="p">)</span>
-</span><span data-line="23">
-</span><span data-line="24"><span class="c1"># 4. Create the session backend</span>
-</span><span data-line="25"><span class="n">session_backend</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncSessionBackend</span><span class="p">(</span>
-</span><span data-line="26">    <span class="n">config</span><span class="o">=</span><span class="n">session_config</span><span class="p">,</span>
-</span><span data-line="27">    <span class="n">alchemy_config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">,</span>
-</span><span data-line="28">    <span class="n">model</span><span class="o">=</span><span class="n">UserSession</span><span class="p">,</span>
-</span><span data-line="29"><span class="p">)</span>
-</span><span data-line="30">
-</span><span data-line="31"><span class="c1"># 5. Create your Litestar app</span>
-</span><span data-line="32"><span class="n">app</span> <span class="o">=</span> <span class="n">Litestar</span><span class="p">(</span>
-</span><span data-line="33">    <span class="n">route_handlers</span><span class="o">=</span><span class="p">[],</span>
-</span><span data-line="34">    <span class="n">plugins</span><span class="o">=</span><span class="p">[</span><span class="n">SQLAlchemyPlugin</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">)],</span>
-</span><span data-line="35">    <span class="n">middleware</span><span class="o">=</span><span class="p">[</span><span class="n">session_config</span><span class="o">.</span><span class="n">middleware</span><span class="p">],</span>
-</span><span data-line="36"><span class="p">)</span>
+</span><span data-line="19"><span class="c1"># 4. Build the store and bind it to the session model</span>
+</span><span data-line="20"><span class="n">session_store</span> <span class="o">=</span> <span class="n">SQLAlchemyStore</span><span class="p">(</span><span class="n">alchemy_config</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">SessionStore</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="s2">&quot;my-app&quot;</span><span class="p">)</span>
+</span><span data-line="21">
+</span><span data-line="22"><span class="c1"># 5. Register the store under the session store name (&quot;sessions&quot;)</span>
+</span><span data-line="23"><span class="n">app</span> <span class="o">=</span> <span class="n">Litestar</span><span class="p">(</span>
+</span><span data-line="24">    <span class="n">route_handlers</span><span class="o">=</span><span class="p">[],</span>
+</span><span data-line="25">    <span class="n">plugins</span><span class="o">=</span><span class="p">[</span><span class="n">SQLAlchemyPlugin</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">)],</span>
+</span><span data-line="26">    <span class="n">middleware</span><span class="o">=</span><span class="p">[</span><span class="n">session_config</span><span class="o">.</span><span class="n">middleware</span><span class="p">],</span>
+</span><span data-line="27">    <span class="n">stores</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;sessions&quot;</span><span class="p">:</span> <span class="n">session_store</span><span class="p">},</span>
+</span><span data-line="28"><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>The registered store name must match <code class="docutils literal notranslate"><span class="pre">ServerSideSessionConfig.store</span></code>, which is <code class="docutils literal notranslate"><span class="pre">&quot;sessions&quot;</span></code> unless you override it.</p>
+</section>
+<section id="backend-based-integration">
+<h3>Backend-Based Integration<a class="headerlink" href="#backend-based-integration" title="Link to this heading">¶</a></h3>
+<p>Use a dedicated session backend and wire it into <code class="docutils literal notranslate"><span class="pre">SessionMiddleware</span></code> directly. Do not use <code class="docutils literal notranslate"><span class="pre">session_config.middleware</span></code> for this style, because that installs Litestar’s built-in backend and ignores <code class="docutils literal notranslate"><span class="pre">session_backend</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Litestar</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar.middleware.session</span><span class="w"> </span><span class="kn">import</span> <span class="n">SessionMiddleware</span>
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar.middleware.session.server_side</span><span class="w"> </span><span class="kn">import</span> <span class="n">ServerSideSessionConfig</span>
+</span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.extensions.litestar</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">,</span> <span class="n">SQLAlchemyPlugin</span>
+</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.extensions.litestar.session</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span data-line="8">    <span class="n">SessionModelMixin</span><span class="p">,</span>
+</span><span data-line="9">    <span class="n">SQLAlchemyAsyncSessionBackend</span><span class="p">,</span>
+</span><span data-line="10"><span class="p">)</span>
+</span><span data-line="11">
+</span><span data-line="12"><span class="c1"># 1. Create your session model</span>
+</span><span data-line="13"><span class="k">class</span><span class="w"> </span><span class="nc">UserSession</span><span class="p">(</span><span class="n">SessionModelMixin</span><span class="p">):</span>
+</span><span data-line="14">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;user_sessions&quot;</span>
+</span><span data-line="15">
+</span><span data-line="16"><span class="c1"># 2. Configure SQLAlchemy</span>
+</span><span data-line="17"><span class="n">alchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
+</span><span data-line="18">    <span class="n">connection_string</span><span class="o">=</span><span class="s2">&quot;postgresql+asyncpg://user:password@localhost/mydb&quot;</span><span class="p">,</span>
+</span><span data-line="19">    <span class="n">create_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="20"><span class="p">)</span>
+</span><span data-line="21">
+</span><span data-line="22"><span class="c1"># 3. Configure the session middleware</span>
+</span><span data-line="23"><span class="n">session_config</span> <span class="o">=</span> <span class="n">ServerSideSessionConfig</span><span class="p">(</span><span class="n">max_age</span><span class="o">=</span><span class="mi">3600</span><span class="p">)</span>
+</span><span data-line="24">
+</span><span data-line="25"><span class="c1"># 4. Create the session backend</span>
+</span><span data-line="26"><span class="n">session_backend</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncSessionBackend</span><span class="p">(</span>
+</span><span data-line="27">    <span class="n">config</span><span class="o">=</span><span class="n">session_config</span><span class="p">,</span>
+</span><span data-line="28">    <span class="n">alchemy_config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">,</span>
+</span><span data-line="29">    <span class="n">model</span><span class="o">=</span><span class="n">UserSession</span><span class="p">,</span>
+</span><span data-line="30"><span class="p">)</span>
+</span><span data-line="31">
+</span><span data-line="32"><span class="c1"># 5. Wire the backend into ``SessionMiddleware`` directly</span>
+</span><span data-line="33"><span class="n">app</span> <span class="o">=</span> <span class="n">Litestar</span><span class="p">(</span>
+</span><span data-line="34">    <span class="n">route_handlers</span><span class="o">=</span><span class="p">[],</span>
+</span><span data-line="35">    <span class="n">plugins</span><span class="o">=</span><span class="p">[</span><span class="n">SQLAlchemyPlugin</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">)],</span>
+</span><span data-line="36">    <span class="n">middleware</span><span class="o">=</span><span class="p">[</span><span class="n">partial</span><span class="p">(</span><span class="n">SessionMiddleware</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">session_backend</span><span class="p">)],</span>
+</span><span data-line="37"><span class="p">)</span>
 </span></pre></div>
 </div>
 </section>
@@ -944,7 +978,6 @@ extension package also exposes <code class="docutils literal notranslate"><span 
 </span><span data-line="8">    <span class="c1"># - session_id: String(255) session identifier</span>
 </span><span data-line="9">    <span class="c1"># - data: LargeBinary session data</span>
 </span><span data-line="10">    <span class="c1"># - expires_at: DateTime expiration timestamp</span>
-</span><span data-line="11">    <span class="c1"># - created_at, updated_at: Audit timestamps</span>
 </span></pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">SessionModelMixin</span></code> automatically creates:</p>
@@ -959,20 +992,19 @@ extension package also exposes <code class="docutils literal notranslate"><span 
 <p><strong>Custom Table Arguments</strong></p>
 <p>You can customize table arguments while keeping the mixin’s constraints:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Index</span>
-</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.extensions.litestar.session</span><span class="w"> </span><span class="kn">import</span> <span class="n">SessionModelMixin</span>
-</span><span data-line="3">
-</span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">UserSession</span><span class="p">(</span><span class="n">SessionModelMixin</span><span class="p">):</span>
-</span><span data-line="5">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;user_sessions&quot;</span>
-</span><span data-line="6">
-</span><span data-line="7">    <span class="nd">@declared_attr</span><span class="o">.</span><span class="n">directive</span>
-</span><span data-line="8">    <span class="nd">@classmethod</span>
-</span><span data-line="9">    <span class="k">def</span><span class="w"> </span><span class="nf">__table_args__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-</span><span data-line="10">        <span class="c1"># Get the mixin&#39;s default constraints</span>
-</span><span data-line="11">        <span class="n">base_args</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__table_args__</span><span class="p">()</span>
-</span><span data-line="12">        <span class="c1"># Add your custom indexes/constraints</span>
-</span><span data-line="13">        <span class="k">return</span> <span class="n">base_args</span> <span class="o">+</span> <span class="p">(</span>
-</span><span data-line="14">            <span class="n">Index</span><span class="p">(</span><span class="s2">&quot;ix_user_sessions_custom&quot;</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">created_at</span><span class="p">),</span>
-</span><span data-line="15">        <span class="p">)</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">declared_attr</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.extensions.litestar.session</span><span class="w"> </span><span class="kn">import</span> <span class="n">SessionModelMixin</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="k">class</span><span class="w"> </span><span class="nc">UserSession</span><span class="p">(</span><span class="n">SessionModelMixin</span><span class="p">):</span>
+</span><span data-line="6">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;user_sessions&quot;</span>
+</span><span data-line="7">
+</span><span data-line="8">    <span class="nd">@declared_attr</span><span class="o">.</span><span class="n">directive</span>
+</span><span data-line="9">    <span class="nd">@classmethod</span>
+</span><span data-line="10">    <span class="k">def</span><span class="w"> </span><span class="nf">__table_args__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+</span><span data-line="11">        <span class="c1"># Get the mixin&#39;s default constraints (a tuple) and append your own</span>
+</span><span data-line="12">        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__table_args__</span> <span class="o">+</span> <span class="p">(</span>
+</span><span data-line="13">            <span class="n">Index</span><span class="p">(</span><span class="s2">&quot;ix_user_sessions_custom&quot;</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">expires_at</span><span class="p">),</span>
+</span><span data-line="14">        <span class="p">)</span>
 </span></pre></div>
 </div>
 <p><strong>Sync vs Async Configuration</strong></p>
@@ -1051,14 +1083,12 @@ extension package also exposes <code class="docutils literal notranslate"><span 
 </span><span data-line="3"><span class="w">    </span><span class="n">session_id</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 </span><span data-line="4"><span class="w">    </span><span class="k">data</span><span class="w"> </span><span class="n">BYTEA</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 </span><span data-line="5"><span class="w">    </span><span class="n">expires_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="p">,</span>
-</span><span data-line="6"><span class="w">    </span><span class="n">created_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-</span><span data-line="7"><span class="w">    </span><span class="n">updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-</span><span data-line="8">
-</span><span data-line="9"><span class="w">    </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="n">uq_user_sessions_session_id</span><span class="w"> </span><span class="k">UNIQUE</span><span class="w"> </span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
-</span><span data-line="10"><span class="p">);</span>
-</span><span data-line="11">
-</span><span data-line="12"><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">ix_user_sessions_expires_at</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">user_sessions</span><span class="w"> </span><span class="p">(</span><span class="n">expires_at</span><span class="p">);</span>
-</span><span data-line="13"><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">ix_user_sessions_session_id_unique</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">user_sessions</span><span class="w"> </span><span class="p">(</span><span class="n">session_id</span><span class="p">);</span>
+</span><span data-line="6"><span class="w">    </span><span class="n">sa_orm_sentinel</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="w">    </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="n">uq_user_sessions_session_id</span><span class="w"> </span><span class="k">UNIQUE</span><span class="w"> </span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+</span><span data-line="9"><span class="p">);</span>
+</span><span data-line="10">
+</span><span data-line="11"><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">ix_user_sessions_expires_at</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">user_sessions</span><span class="w"> </span><span class="p">(</span><span class="n">expires_at</span><span class="p">);</span>
 </span></pre></div>
 </div>
 <p><strong>Session ID Handling</strong></p>
@@ -1075,7 +1105,7 @@ extension package also exposes <code class="docutils literal notranslate"><span 
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># Sessions are automatically renewed on each request</span>
 </span><span data-line="2"><span class="n">session_config</span> <span class="o">=</span> <span class="n">ServerSideSessionConfig</span><span class="p">(</span>
 </span><span data-line="3">    <span class="n">max_age</span><span class="o">=</span><span class="mi">1800</span><span class="p">,</span>  <span class="c1"># 30 minutes</span>
-</span><span data-line="4">    <span class="n">https_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Require HTTPS in production</span>
+</span><span data-line="4">    <span class="n">secure</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Require HTTPS in production</span>
 </span><span data-line="5">    <span class="n">samesite</span><span class="o">=</span><span class="s2">&quot;strict&quot;</span><span class="p">,</span>  <span class="c1"># CSRF protection</span>
 </span><span data-line="6"><span class="p">)</span>
 </span></pre></div>
@@ -1093,13 +1123,19 @@ extension package also exposes <code class="docutils literal notranslate"><span 
 <h3>Performance Optimization<a class="headerlink" href="#performance-optimization" title="Link to this heading">¶</a></h3>
 <p><strong>Indexing Strategy</strong></p>
 <p>The mixin automatically creates optimal indexes, but you can add application-specific indexes:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">class</span><span class="w"> </span><span class="nc">UserSession</span><span class="p">(</span><span class="n">SessionModelMixin</span><span class="p">):</span>
-</span><span data-line="2">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;user_sessions&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Index</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">declared_attr</span>
 </span><span data-line="3">
-</span><span data-line="4">    <span class="c1"># Add indexes for common query patterns</span>
-</span><span data-line="5">    <span class="n">__table_args__</span> <span class="o">=</span> <span class="n">SessionModelMixin</span><span class="o">.</span><span class="n">__table_args__</span> <span class="o">+</span> <span class="p">(</span>
-</span><span data-line="6">        <span class="n">Index</span><span class="p">(</span><span class="s2">&quot;ix_user_sessions_created_user&quot;</span><span class="p">,</span> <span class="s2">&quot;created_at&quot;</span><span class="p">,</span> <span class="s2">&quot;session_id&quot;</span><span class="p">),</span>
-</span><span data-line="7">    <span class="p">)</span>
+</span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">UserSession</span><span class="p">(</span><span class="n">SessionModelMixin</span><span class="p">):</span>
+</span><span data-line="5">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;user_sessions&quot;</span>
+</span><span data-line="6">
+</span><span data-line="7">    <span class="c1"># Add indexes for common query patterns</span>
+</span><span data-line="8">    <span class="nd">@declared_attr</span><span class="o">.</span><span class="n">directive</span>
+</span><span data-line="9">    <span class="nd">@classmethod</span>
+</span><span data-line="10">    <span class="k">def</span><span class="w"> </span><span class="nf">__table_args__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+</span><span data-line="11">        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__table_args__</span> <span class="o">+</span> <span class="p">(</span>
+</span><span data-line="12">            <span class="n">Index</span><span class="p">(</span><span class="s2">&quot;ix_user_sessions_session_expires&quot;</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">expires_at</span><span class="p">),</span>
+</span><span data-line="13">        <span class="p">)</span>
 </span></pre></div>
 </div>
 <p><strong>Connection Pooling</strong></p>
@@ -1136,74 +1172,77 @@ extension package also exposes <code class="docutils literal notranslate"><span 
 <section id="complete-example">
 <h3>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading">¶</a></h3>
 <p>Here’s a complete working example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Litestar</span><span class="p">,</span> <span class="n">get</span><span class="p">,</span> <span class="n">post</span>
-</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar.connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">ASGIConnection</span>
-</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar.middleware.session.server_side</span><span class="w"> </span><span class="kn">import</span> <span class="n">ServerSideSessionConfig</span>
-</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.extensions.litestar</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-</span><span data-line="5">    <span class="n">AsyncSessionConfig</span><span class="p">,</span>
-</span><span data-line="6">    <span class="n">SQLAlchemyAsyncConfig</span><span class="p">,</span>
-</span><span data-line="7">    <span class="n">SQLAlchemyPlugin</span><span class="p">,</span>
-</span><span data-line="8"><span class="p">)</span>
-</span><span data-line="9">
-</span><span data-line="10"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.extensions.litestar.session</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-</span><span data-line="11">    <span class="n">SessionModelMixin</span><span class="p">,</span>
-</span><span data-line="12">    <span class="n">SQLAlchemyAsyncSessionBackend</span><span class="p">,</span>
-</span><span data-line="13"><span class="p">)</span>
-</span><span data-line="14">
-</span><span data-line="15"><span class="c1"># Session model</span>
-</span><span data-line="16"><span class="k">class</span><span class="w"> </span><span class="nc">WebSession</span><span class="p">(</span><span class="n">SessionModelMixin</span><span class="p">):</span>
-</span><span data-line="17">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;web_sessions&quot;</span>
-</span><span data-line="18">
-</span><span data-line="19"><span class="c1"># Database configuration</span>
-</span><span data-line="20"><span class="n">alchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
-</span><span data-line="21">    <span class="n">connection_string</span><span class="o">=</span><span class="s2">&quot;sqlite+aiosqlite:///sessions.db&quot;</span><span class="p">,</span>
-</span><span data-line="22">    <span class="n">session_config</span><span class="o">=</span><span class="n">AsyncSessionConfig</span><span class="p">(</span><span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-</span><span data-line="23">    <span class="n">create_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span data-line="24"><span class="p">)</span>
-</span><span data-line="25">
-</span><span data-line="26"><span class="c1"># Session configuration</span>
-</span><span data-line="27"><span class="n">session_config</span> <span class="o">=</span> <span class="n">ServerSideSessionConfig</span><span class="p">(</span>
-</span><span data-line="28">    <span class="n">max_age</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>  <span class="c1"># 1 hour</span>
-</span><span data-line="29"><span class="p">)</span>
-</span><span data-line="30">
-</span><span data-line="31"><span class="c1"># Session backend</span>
-</span><span data-line="32"><span class="n">session_backend</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncSessionBackend</span><span class="p">(</span>
-</span><span data-line="33">    <span class="n">config</span><span class="o">=</span><span class="n">session_config</span><span class="p">,</span>
-</span><span data-line="34">    <span class="n">alchemy_config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">,</span>
-</span><span data-line="35">    <span class="n">model</span><span class="o">=</span><span class="n">WebSession</span><span class="p">,</span>
-</span><span data-line="36"><span class="p">)</span>
-</span><span data-line="37">
-</span><span data-line="38"><span class="c1"># Routes</span>
-</span><span data-line="39"><span class="nd">@get</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-</span><span data-line="40"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">home</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">ASGIConnection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span data-line="41">    <span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;username&quot;</span><span class="p">)</span>
-</span><span data-line="42">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">!&quot;</span> <span class="k">if</span> <span class="n">username</span> <span class="k">else</span> <span class="s2">&quot;Hello stranger!&quot;</span><span class="p">}</span>
-</span><span data-line="43">
-</span><span data-line="44"><span class="nd">@post</span><span class="p">(</span><span class="s2">&quot;/login&quot;</span><span class="p">)</span>
-</span><span data-line="45"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">login</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">ASGIConnection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span data-line="46">    <span class="n">form</span> <span class="o">=</span> <span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">()</span>
-</span><span data-line="47">    <span class="n">username</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;username&quot;</span><span class="p">)</span>
-</span><span data-line="48">
-</span><span data-line="49">    <span class="k">if</span> <span class="n">username</span><span class="p">:</span>
-</span><span data-line="50">        <span class="n">request</span><span class="o">.</span><span class="n">set_session</span><span class="p">({</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span> <span class="s2">&quot;login_time&quot;</span><span class="p">:</span> <span class="s2">&quot;now&quot;</span><span class="p">})</span>
-</span><span data-line="51">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Welcome </span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">}</span>
-</span><span data-line="52">
-</span><span data-line="53">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Username required&quot;</span><span class="p">}</span>
-</span><span data-line="54">
-</span><span data-line="55"><span class="nd">@post</span><span class="p">(</span><span class="s2">&quot;/logout&quot;</span><span class="p">)</span>
-</span><span data-line="56"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">logout</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">ASGIConnection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span data-line="57">    <span class="n">request</span><span class="o">.</span><span class="n">clear_session</span><span class="p">()</span>
-</span><span data-line="58">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Logged out successfully&quot;</span><span class="p">}</span>
-</span><span data-line="59">
-</span><span data-line="60"><span class="c1"># Application</span>
-</span><span data-line="61"><span class="n">app</span> <span class="o">=</span> <span class="n">Litestar</span><span class="p">(</span>
-</span><span data-line="62">    <span class="n">route_handlers</span><span class="o">=</span><span class="p">[</span><span class="n">home</span><span class="p">,</span> <span class="n">login</span><span class="p">,</span> <span class="n">logout</span><span class="p">],</span>
-</span><span data-line="63">    <span class="n">plugins</span><span class="o">=</span><span class="p">[</span><span class="n">SQLAlchemyPlugin</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">)],</span>
-</span><span data-line="64">    <span class="n">middleware</span><span class="o">=</span><span class="p">[</span><span class="n">session_config</span><span class="o">.</span><span class="n">middleware</span><span class="p">],</span>
-</span><span data-line="65"><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Litestar</span><span class="p">,</span> <span class="n">get</span><span class="p">,</span> <span class="n">post</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar.connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">ASGIConnection</span>
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar.middleware.session</span><span class="w"> </span><span class="kn">import</span> <span class="n">SessionMiddleware</span>
+</span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar.middleware.session.server_side</span><span class="w"> </span><span class="kn">import</span> <span class="n">ServerSideSessionConfig</span>
+</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.extensions.litestar</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span data-line="8">    <span class="n">AsyncSessionConfig</span><span class="p">,</span>
+</span><span data-line="9">    <span class="n">SQLAlchemyAsyncConfig</span><span class="p">,</span>
+</span><span data-line="10">    <span class="n">SQLAlchemyPlugin</span><span class="p">,</span>
+</span><span data-line="11"><span class="p">)</span>
+</span><span data-line="12">
+</span><span data-line="13"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.extensions.litestar.session</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span data-line="14">    <span class="n">SessionModelMixin</span><span class="p">,</span>
+</span><span data-line="15">    <span class="n">SQLAlchemyAsyncSessionBackend</span><span class="p">,</span>
+</span><span data-line="16"><span class="p">)</span>
+</span><span data-line="17">
+</span><span data-line="18"><span class="c1"># Session model</span>
+</span><span data-line="19"><span class="k">class</span><span class="w"> </span><span class="nc">WebSession</span><span class="p">(</span><span class="n">SessionModelMixin</span><span class="p">):</span>
+</span><span data-line="20">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;web_sessions&quot;</span>
+</span><span data-line="21">
+</span><span data-line="22"><span class="c1"># Database configuration</span>
+</span><span data-line="23"><span class="n">alchemy_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
+</span><span data-line="24">    <span class="n">connection_string</span><span class="o">=</span><span class="s2">&quot;sqlite+aiosqlite:///sessions.db&quot;</span><span class="p">,</span>
+</span><span data-line="25">    <span class="n">session_config</span><span class="o">=</span><span class="n">AsyncSessionConfig</span><span class="p">(</span><span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+</span><span data-line="26">    <span class="n">create_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="27"><span class="p">)</span>
+</span><span data-line="28">
+</span><span data-line="29"><span class="c1"># Session configuration</span>
+</span><span data-line="30"><span class="n">session_config</span> <span class="o">=</span> <span class="n">ServerSideSessionConfig</span><span class="p">(</span>
+</span><span data-line="31">    <span class="n">max_age</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>  <span class="c1"># 1 hour</span>
+</span><span data-line="32"><span class="p">)</span>
+</span><span data-line="33">
+</span><span data-line="34"><span class="c1"># Session backend</span>
+</span><span data-line="35"><span class="n">session_backend</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncSessionBackend</span><span class="p">(</span>
+</span><span data-line="36">    <span class="n">config</span><span class="o">=</span><span class="n">session_config</span><span class="p">,</span>
+</span><span data-line="37">    <span class="n">alchemy_config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">,</span>
+</span><span data-line="38">    <span class="n">model</span><span class="o">=</span><span class="n">WebSession</span><span class="p">,</span>
+</span><span data-line="39"><span class="p">)</span>
+</span><span data-line="40">
+</span><span data-line="41"><span class="c1"># Routes</span>
+</span><span data-line="42"><span class="nd">@get</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+</span><span data-line="43"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">home</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">ASGIConnection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="44">    <span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;username&quot;</span><span class="p">)</span>
+</span><span data-line="45">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">!&quot;</span> <span class="k">if</span> <span class="n">username</span> <span class="k">else</span> <span class="s2">&quot;Hello stranger!&quot;</span><span class="p">}</span>
+</span><span data-line="46">
+</span><span data-line="47"><span class="nd">@post</span><span class="p">(</span><span class="s2">&quot;/login&quot;</span><span class="p">)</span>
+</span><span data-line="48"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">login</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">ASGIConnection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="49">    <span class="n">form</span> <span class="o">=</span> <span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">()</span>
+</span><span data-line="50">    <span class="n">username</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;username&quot;</span><span class="p">)</span>
+</span><span data-line="51">
+</span><span data-line="52">    <span class="k">if</span> <span class="n">username</span><span class="p">:</span>
+</span><span data-line="53">        <span class="n">request</span><span class="o">.</span><span class="n">set_session</span><span class="p">({</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span> <span class="s2">&quot;login_time&quot;</span><span class="p">:</span> <span class="s2">&quot;now&quot;</span><span class="p">})</span>
+</span><span data-line="54">        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Welcome </span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">}</span>
+</span><span data-line="55">
+</span><span data-line="56">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Username required&quot;</span><span class="p">}</span>
+</span><span data-line="57">
+</span><span data-line="58"><span class="nd">@post</span><span class="p">(</span><span class="s2">&quot;/logout&quot;</span><span class="p">)</span>
+</span><span data-line="59"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">logout</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">ASGIConnection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="60">    <span class="n">request</span><span class="o">.</span><span class="n">clear_session</span><span class="p">()</span>
+</span><span data-line="61">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Logged out successfully&quot;</span><span class="p">}</span>
+</span><span data-line="62">
+</span><span data-line="63"><span class="c1"># Application</span>
+</span><span data-line="64"><span class="n">app</span> <span class="o">=</span> <span class="n">Litestar</span><span class="p">(</span>
+</span><span data-line="65">    <span class="n">route_handlers</span><span class="o">=</span><span class="p">[</span><span class="n">home</span><span class="p">,</span> <span class="n">login</span><span class="p">,</span> <span class="n">logout</span><span class="p">],</span>
+</span><span data-line="66">    <span class="n">plugins</span><span class="o">=</span><span class="p">[</span><span class="n">SQLAlchemyPlugin</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">alchemy_config</span><span class="p">)],</span>
+</span><span data-line="67">    <span class="n">middleware</span><span class="o">=</span><span class="p">[</span><span class="n">partial</span><span class="p">(</span><span class="n">SessionMiddleware</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">session_backend</span><span class="p">)],</span>
+</span><span data-line="68"><span class="p">)</span>
 </span></pre></div>
 </div>
-<p>This example provides a complete session-enabled application using SQLAlchemy for session storage.</p>
+<p>This example provides a complete session-enabled application using SQLAlchemy for session storage. To use the store-based integration instead, drop <code class="docutils literal notranslate"><span class="pre">session_backend</span></code> and register a <a class="reference internal" href="../../reference/extensions/litestar/store.html#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore" title="advanced_alchemy.extensions.litestar.store.SQLAlchemyStore"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyStore</span></code></a> under <code class="docutils literal notranslate"><span class="pre">stores={&quot;sessions&quot;:</span> <span class="pre">...}</span></code> as shown above.</p>
 </section>
 </section>
 <section id="file-object-storage">

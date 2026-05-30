@@ -2,7 +2,7 @@
 <html lang="en" data-accent-color="amber" data-content_root="../../../">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>advanced_alchemy.config.routing - Advanced Alchemy</title><link rel="shortcut icon" href="../../../_static/favicon.png"/><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>advanced_alchemy.types.boolean - Advanced Alchemy</title><link rel="shortcut icon" href="../../../_static/favicon.png"/><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=f087ae94" />
@@ -24,7 +24,7 @@
 }
 </style>
     
-  <meta property="og:type" content="website"/><meta property="og:title" content="advanced_alchemy.config.routing"/>
+  <meta property="og:type" content="website"/><meta property="og:title" content="advanced_alchemy.types.boolean"/>
     <meta name="twitter:card" content="summary"/>
   </head>
 <body><div class="sy-head">
@@ -256,7 +256,7 @@ data-aria-dark="Switch to auto color mode">
         <span>/</span>
         <meta itemprop="position" content="2" />
       </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-        <strong itemprop="name">advanced_alchemy.config.routing</strong>
+        <strong itemprop="name">advanced_alchemy.types.boolean</strong>
         <meta itemprop="position" content="3" />
       </li></ol>
     <div class="xl:hidden ml-1">
@@ -269,159 +269,48 @@ data-aria-dark="Switch to auto color mode">
 </div><div class="flex flex-col break-words justify-between">
       <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
   <article class="yue" role="main">
-          <h1>Source code for advanced_alchemy.config.routing</h1><div class="highlight"><pre>
-<span></span><span data-line="1"><span class="sd">&quot;&quot;&quot;Read/Write routing configuration for Advanced Alchemy.</span>
+          <h1>Source code for advanced_alchemy.types.boolean</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 </span><span data-line="2">
-</span><span data-line="3"><span class="sd">This module provides configuration classes for read/write replica routing,</span>
-</span><span data-line="4"><span class="sd">enabling automatic routing of read operations to read replicas while directing</span>
-</span><span data-line="5"><span class="sd">write operations to the primary database.</span>
-</span><span data-line="6"><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dialect</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Boolean</span><span class="p">,</span> <span class="n">TypeDecorator</span><span class="p">,</span> <span class="n">TypeEngine</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Bool&quot;</span><span class="p">,)</span>
 </span><span data-line="7">
-</span><span data-line="8"><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
-</span><span data-line="9"><span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
-</span><span data-line="10"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="n">_ORACLE_NATIVE_BOOLEAN_MIN_VERSION</span> <span class="o">=</span> <span class="mi">23</span>
+</span><span data-line="10">
 </span><span data-line="11">
-</span><span data-line="12"><span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-</span><span data-line="13">    <span class="s2">&quot;ReplicaConfig&quot;</span><span class="p">,</span>
-</span><span data-line="14">    <span class="s2">&quot;RoutingConfig&quot;</span><span class="p">,</span>
-</span><span data-line="15">    <span class="s2">&quot;RoutingStrategy&quot;</span><span class="p">,</span>
-</span><span data-line="16"><span class="p">)</span>
-</span><span data-line="17">
-</span><span data-line="18">
-<div class="viewcode-block" id="RoutingStrategy">
-<a class="viewcode-back" href="../../../reference/config/routing.html#advanced_alchemy.config.routing.RoutingStrategy">[docs]</a>
-</span><span data-line="19"><span class="k">class</span><span class="w"> </span><span class="nc">RoutingStrategy</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-</span><span data-line="20"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Strategy for selecting engines from a group.</span>
-</span><span data-line="21">
-</span><span data-line="22"><span class="sd">    Determines how the routing layer chooses which engine to use</span>
-</span><span data-line="23"><span class="sd">    when multiple engines are configured for a routing group.</span>
-</span><span data-line="24"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="25">
-</span><span data-line="26">    <span class="n">ROUND_ROBIN</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
-</span><span data-line="27"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Cycle through engines in order.&quot;&quot;&quot;</span>
-</span><span data-line="28">
-</span><span data-line="29">    <span class="n">RANDOM</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
-</span><span data-line="30"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Select engines randomly.&quot;&quot;&quot;</span></div>
-
+</span><span data-line="12"><span class="k">class</span><span class="w"> </span><span class="nc">_OracleAwareBoolean</span><span class="p">(</span><span class="n">TypeDecorator</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
+</span><span data-line="13"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Render native BOOLEAN on Oracle 23c+ when SA 2.1+ exposes it.</span>
+</span><span data-line="14">
+</span><span data-line="15"><span class="sd">    Falls back to SA stock Boolean (SMALLINT on Oracle) on SA 2.0.x or</span>
+</span><span data-line="16"><span class="sd">    Oracle servers older than 23c. Non-Oracle dialects always use stock</span>
+</span><span data-line="17"><span class="sd">    Boolean - no behavior change.</span>
+</span><span data-line="18"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="19">
+</span><span data-line="20">    <span class="n">impl</span> <span class="o">=</span> <span class="n">Boolean</span>
+</span><span data-line="21">    <span class="n">cache_ok</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="22">
+</span><span data-line="23">    <span class="nd">@property</span>
+</span><span data-line="24">    <span class="k">def</span><span class="w"> </span><span class="nf">python_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+</span><span data-line="25">        <span class="k">return</span> <span class="nb">bool</span>
+</span><span data-line="26">
+</span><span data-line="27">    <span class="k">def</span><span class="w"> </span><span class="nf">load_dialect_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="n">Dialect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypeEngine</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+</span><span data-line="28">        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;oracle&quot;</span><span class="p">:</span>
+</span><span data-line="29">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">Boolean</span><span class="p">())</span>
+</span><span data-line="30">        <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.dialects</span><span class="w"> </span><span class="kn">import</span> <span class="n">oracle</span> <span class="k">as</span> <span class="n">_ora_dialect</span>
 </span><span data-line="31">
-</span><span data-line="32">
-</span><span data-line="33"><span class="k">def</span><span class="w"> </span><span class="nf">_default_read_replicas</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;EngineConfig&quot;</span><span class="p">]]:</span>
-</span><span data-line="34"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an empty list for read replica configuration.&quot;&quot;&quot;</span>
-</span><span data-line="35">    <span class="k">return</span> <span class="p">[]</span>
-</span><span data-line="36">
-</span><span data-line="37">
-</span><span data-line="38"><span class="k">def</span><span class="w"> </span><span class="nf">_default_engines</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;EngineConfig&quot;</span><span class="p">]]]:</span>
-</span><span data-line="39"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Return default empty engines map.&quot;&quot;&quot;</span>
-</span><span data-line="40">    <span class="k">return</span> <span class="p">{}</span>
-</span><span data-line="41">
-</span><span data-line="42">
-</span><span data-line="43"><span class="nd">@dataclass</span>
-</span><span data-line="44"><span class="k">class</span><span class="w"> </span><span class="nc">EngineConfig</span><span class="p">:</span>
-</span><span data-line="45"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for a single database engine.&quot;&quot;&quot;</span>
-</span><span data-line="46">
-</span><span data-line="47">    <span class="n">connection_string</span><span class="p">:</span> <span class="nb">str</span>
-</span><span data-line="48"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Connection string for the engine.&quot;&quot;&quot;</span>
-</span><span data-line="49">
-</span><span data-line="50">    <span class="n">weight</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span data-line="51"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Relative weight for load balancing (higher weight = more traffic).&quot;&quot;&quot;</span>
-</span><span data-line="52">
-</span><span data-line="53">    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span data-line="54"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Optional human-readable name for this engine.&quot;&quot;&quot;</span>
-</span><span data-line="55">
-</span><span data-line="56">
-</span><span data-line="57"><span class="c1"># Alias for backward compatibility</span>
-</span><span data-line="58"><span class="n">ReplicaConfig</span> <span class="o">=</span> <span class="n">EngineConfig</span>
-</span><span data-line="59">
-</span><span data-line="60">
-<div class="viewcode-block" id="RoutingConfig">
-<a class="viewcode-back" href="../../../reference/config/routing.html#advanced_alchemy.config.routing.RoutingConfig">[docs]</a>
-</span><span data-line="61"><span class="nd">@dataclass</span>
-</span><span data-line="62"><span class="k">class</span><span class="w"> </span><span class="nc">RoutingConfig</span><span class="p">:</span>
-</span><span data-line="63"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Read/Write routing configuration.</span>
-</span><span data-line="64">
-</span><span data-line="65"><span class="sd">    This configuration enables automatic routing of database operations</span>
-</span><span data-line="66"><span class="sd">    to different engine groups (e.g., writer, reader, analytics).</span>
-</span><span data-line="67"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="68">
-</span><span data-line="69">    <span class="n">primary_connection_string</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="70"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Legacy: Connection string for the primary (write) database.</span>
-</span><span data-line="71"><span class="sd">    Mapped to ``engines[default_group]``.</span>
-</span><span data-line="72"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="73">
-</span><span data-line="74">    <span class="n">read_replicas</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">EngineConfig</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">_default_read_replicas</span><span class="p">)</span>
-</span><span data-line="75"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Legacy: Read replica connection strings or configs.</span>
-</span><span data-line="76"><span class="sd">    Mapped to ``engines[read_group]``.</span>
-</span><span data-line="77"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="78">
-</span><span data-line="79">    <span class="n">engines</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">EngineConfig</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">_default_engines</span><span class="p">)</span>
-</span><span data-line="80"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Dictionary mapping group names to lists of engine configs.</span>
-</span><span data-line="81">
-</span><span data-line="82"><span class="sd">    Example:</span>
-</span><span data-line="83"><span class="sd">        .. code-block:: python</span>
-</span><span data-line="84">
-</span><span data-line="85"><span class="sd">            {</span>
-</span><span data-line="86"><span class="sd">                &quot;writer&quot;: [&quot;postgres://primary&quot;],</span>
-</span><span data-line="87"><span class="sd">                &quot;reader&quot;: [&quot;postgres://rep1&quot;, &quot;postgres://rep2&quot;],</span>
-</span><span data-line="88"><span class="sd">                &quot;analytics&quot;: [&quot;postgres://warehouse&quot;]</span>
-</span><span data-line="89"><span class="sd">            }</span>
-</span><span data-line="90"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="91">
-</span><span data-line="92">    <span class="n">default_group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span>
-</span><span data-line="93"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Name of the group to use for write operations.&quot;&quot;&quot;</span>
-</span><span data-line="94">
-</span><span data-line="95">    <span class="n">read_group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;read&quot;</span>
-</span><span data-line="96"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Name of the group to use for read operations.&quot;&quot;&quot;</span>
-</span><span data-line="97">
-</span><span data-line="98">    <span class="n">routing_strategy</span><span class="p">:</span> <span class="n">RoutingStrategy</span> <span class="o">=</span> <span class="n">RoutingStrategy</span><span class="o">.</span><span class="n">ROUND_ROBIN</span>
-</span><span data-line="99"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Strategy for selecting engines within a group.&quot;&quot;&quot;</span>
-</span><span data-line="100">
-</span><span data-line="101">    <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span data-line="102"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Enable/disable routing.&quot;&quot;&quot;</span>
-</span><span data-line="103">
-</span><span data-line="104">    <span class="n">sticky_after_write</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span data-line="105"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Stick to writer after first write in context (read-your-writes).&quot;&quot;&quot;</span>
-</span><span data-line="106">
-</span><span data-line="107">    <span class="n">reset_stickiness_on_commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span data-line="108"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Reset stickiness after commit.&quot;&quot;&quot;</span>
-</span><span data-line="109">
-<div class="viewcode-block" id="RoutingConfig.__post_init__">
-<a class="viewcode-back" href="../../../reference/config/routing.html#advanced_alchemy.config.routing.RoutingConfig.__post_init__">[docs]</a>
-</span><span data-line="110">    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="111"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize configuration.&quot;&quot;&quot;</span>
-</span><span data-line="112">        <span class="c1"># Migrate legacy config to engines map</span>
-</span><span data-line="113">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">primary_connection_string</span><span class="p">:</span>
-</span><span data-line="114">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">engines</span><span class="p">:</span>
-</span><span data-line="115">                <span class="bp">self</span><span class="o">.</span><span class="n">engines</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">default_group</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="116">            <span class="bp">self</span><span class="o">.</span><span class="n">engines</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">default_group</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
-</span><span data-line="117">                <span class="mi">0</span><span class="p">,</span> <span class="n">EngineConfig</span><span class="p">(</span><span class="n">connection_string</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">primary_connection_string</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">)</span>
-</span><span data-line="118">            <span class="p">)</span>
-</span><span data-line="119">
-</span><span data-line="120">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_replicas</span><span class="p">:</span>
-</span><span data-line="121">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">engines</span><span class="p">:</span>
-</span><span data-line="122">                <span class="bp">self</span><span class="o">.</span><span class="n">engines</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">read_group</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="123">            <span class="bp">self</span><span class="o">.</span><span class="n">engines</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">read_group</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_replicas</span><span class="p">)</span></div>
-
-</span><span data-line="124">
-<div class="viewcode-block" id="RoutingConfig.get_engine_configs">
-<a class="viewcode-back" href="../../../reference/config/routing.html#advanced_alchemy.config.routing.RoutingConfig.get_engine_configs">[docs]</a>
-</span><span data-line="125">    <span class="k">def</span><span class="w"> </span><span class="nf">get_engine_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">EngineConfig</span><span class="p">]:</span>
-</span><span data-line="126"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get engine configs for a specific group.</span>
-</span><span data-line="127">
-</span><span data-line="128"><span class="sd">        Args:</span>
-</span><span data-line="129"><span class="sd">            group: Name of the engine group.</span>
-</span><span data-line="130">
-</span><span data-line="131"><span class="sd">        Returns:</span>
-</span><span data-line="132"><span class="sd">            List of :class:`EngineConfig` instances.</span>
-</span><span data-line="133"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="134">        <span class="k">if</span> <span class="n">group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">engines</span><span class="p">:</span>
-</span><span data-line="135">            <span class="k">return</span> <span class="p">[]</span>
-</span><span data-line="136">
-</span><span data-line="137">        <span class="n">configs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">engines</span><span class="p">[</span><span class="n">group</span><span class="p">]</span>
-</span><span data-line="138">        <span class="k">return</span> <span class="p">[</span>
-</span><span data-line="139">            <span class="n">config</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">EngineConfig</span><span class="p">)</span> <span class="k">else</span> <span class="n">EngineConfig</span><span class="p">(</span><span class="n">connection_string</span><span class="o">=</span><span class="n">config</span><span class="p">)</span> <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">configs</span>
-</span><span data-line="140">        <span class="p">]</span></div>
-</div>
-
+</span><span data-line="32">        <span class="n">ora_boolean</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_ora_dialect</span><span class="p">,</span> <span class="s2">&quot;BOOLEAN&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="33">        <span class="k">if</span> <span class="n">ora_boolean</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="34">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">Boolean</span><span class="p">())</span>
+</span><span data-line="35">        <span class="n">sv</span> <span class="o">=</span> <span class="n">dialect</span><span class="o">.</span><span class="n">server_version_info</span>
+</span><span data-line="36">        <span class="k">if</span> <span class="n">sv</span> <span class="ow">and</span> <span class="n">sv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">_ORACLE_NATIVE_BOOLEAN_MIN_VERSION</span><span class="p">:</span>
+</span><span data-line="37">            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">ora_boolean</span><span class="p">())</span>
+</span><span data-line="38">        <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">Boolean</span><span class="p">())</span>
+</span><span data-line="39">
+</span><span data-line="40">
+</span><span data-line="41"><span class="n">Bool</span> <span class="o">=</span> <span class="n">_OracleAwareBoolean</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
