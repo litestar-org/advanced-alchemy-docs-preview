@@ -216,6 +216,12 @@ data-aria-dark="Switch to auto color mode">
       <i class="i-lucide close"></i>
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#1.11.0">1.11.0</a><ul>
+<li><a class="reference internal" href="#1.11.0-feature">Features</a></li>
+<li><a class="reference internal" href="#1.11.0-bugfix">Bugfixes</a></li>
+<li><a class="reference internal" href="#1.11.0-misc">Other changes</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#1.10.0">1.10.0</a><ul>
 <li><a class="reference internal" href="#1.10.0-feature">Features</a></li>
 <li><a class="reference internal" href="#1.10.0-bugfix">Bugfixes</a></li>
@@ -543,6 +549,133 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="x-changelog">
 <h1>1.x Changelog<a class="headerlink" href="#x-changelog" title="Link to this heading">¶</a></h1>
+<section id="1.11.0">
+<h2>1.11.0<a class="headerlink" href="#1.11.0" title="Link to this heading">¶</a></h2>
+<strong>Released: </strong>2026-05-30<section id="1.11.0-feature">
+<h3>Features<a class="headerlink" href="#1.11.0-feature" title="Link to this heading">¶</a></h3>
+<dl>
+<dt>add configurable schema dump settings<a class="headerlink reference internal" href="#1.11.0-add configurable schema dump settings" id="1.11.0-add configurable schema dump settings">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds <code class="docutils literal notranslate"><span class="pre">SchemaDumpConfig</span></code> for service input conversion, allowing schema
+dumping behavior to be configured once on a service or overridden for a
+single write operation. Pydantic, msgspec, attrs, and dataclass inputs
+now flow through the shared <code class="docutils literal notranslate"><span class="pre">schema_dump()</span></code> utility, with options for
+excluding unset values, <code class="docutils literal notranslate"><span class="pre">None</span></code> values, defaults, and sentinel values
+while preserving the existing partial-update defaults.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/750">https://github.com/litestar-org/advanced-alchemy/pull/750</a></span></p>
+</div>
+</dd>
+<dt>add choices and boolean filters<a class="headerlink reference internal" href="#1.11.0-add choices and boolean filters" id="1.11.0-add choices and boolean filters">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds <code class="docutils literal notranslate"><span class="pre">ChoicesFilter</span></code> for matching fields against a collection of
+allowed values and <code class="docutils literal notranslate"><span class="pre">BooleanFilter</span></code> for optional boolean query
+parameters. Both filters are exported through the public filter API and
+included in <code class="docutils literal notranslate"><span class="pre">FilterMap</span></code> for framework integration.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/72">https://github.com/litestar-org/advanced-alchemy/issues/72</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/723">https://github.com/litestar-org/advanced-alchemy/pull/723</a></span></p>
+</div>
+</dd>
+<dt>add dialect-aware vector columns<a class="headerlink reference internal" href="#1.11.0-add dialect-aware vector columns" id="1.11.0-add dialect-aware vector columns">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds <code class="docutils literal notranslate"><span class="pre">Vector</span></code> as a portable column type that selects the native vector
+implementation for Oracle 23ai and PostgreSQL/CockroachDB when
+available, and falls back to JSON storage elsewhere. Returned vector
+values are normalized to <code class="docutils literal notranslate"><span class="pre">list[float]</span></code> so callers can use one API
+across supported dialects.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/739">https://github.com/litestar-org/advanced-alchemy/pull/739</a></span></p>
+</div>
+</dd>
+<dt>use native Oracle JSON when available<a class="headerlink reference internal" href="#1.11.0-use native oracle json when available" id="1.11.0-use native oracle json when available">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Updates <code class="docutils literal notranslate"><span class="pre">ORA_JSONB</span></code> to prefer SQLAlchemy’s native Oracle JSON type on
+Oracle 21c and newer when running with SQLAlchemy 2.1 or newer, while
+keeping the existing BLOB plus <code class="docutils literal notranslate"><span class="pre">IS</span> <span class="pre">JSON</span></code> check-constraint fallback for
+older SQLAlchemy or Oracle versions. <code class="docutils literal notranslate"><span class="pre">JsonB</span></code> is also exposed in the
+Alembic migration templates.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/741">https://github.com/litestar-org/advanced-alchemy/pull/741</a></span></p>
+</div>
+</dd>
+<dt>add Oracle 23c-aware boolean columns<a class="headerlink reference internal" href="#1.11.0-add oracle 23c-aware boolean columns" id="1.11.0-add oracle 23c-aware boolean columns">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds <code class="docutils literal notranslate"><span class="pre">Bool</span></code> as a dialect-aware boolean type that uses native Oracle
+<code class="docutils literal notranslate"><span class="pre">BOOLEAN</span></code> support on Oracle 23c with SQLAlchemy 2.1 or newer, and
+keeps the existing SQLAlchemy boolean behavior everywhere else. The new
+type is exported from <code class="docutils literal notranslate"><span class="pre">advanced_alchemy.types</span></code> and added to the
+Alembic migration templates.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/742">https://github.com/litestar-org/advanced-alchemy/pull/742</a></span></p>
+</div>
+</dd>
+<dt>update Litestar parameter declarations<a class="headerlink reference internal" href="#1.11.0-update litestar parameter declarations" id="1.11.0-update litestar parameter declarations">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Updates Litestar integration code to use the newer parameter marker
+declarations introduced by recent Litestar releases, replacing
+deprecated parameter specification patterns.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/746">https://github.com/litestar-org/advanced-alchemy/pull/746</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
+<section id="1.11.0-bugfix">
+<h3>Bugfixes<a class="headerlink" href="#1.11.0-bugfix" title="Link to this heading">¶</a></h3>
+<dl>
+<dt>support Typer 0.26 in the FastAPI CLI integration<a class="headerlink reference internal" href="#1.11.0-support typer 0.26 in the fastapi cli integration" id="1.11.0-support typer 0.26 in the fastapi cli integration">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adapts FastAPI CLI registration for Typer 0.26 and newer, where Typer
+no longer accepts external Click command groups directly. The FastAPI
+extension now bridges the existing Click migration command group through
+Typer while preserving both <code class="docutils literal notranslate"><span class="pre">database</span></code> and <code class="docutils literal notranslate"><span class="pre">db</span></code> command names.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/748">https://github.com/litestar-org/advanced-alchemy/pull/748</a></span></p>
+</div>
+</dd>
+<dt>correct Litestar server-side session backend docs<a class="headerlink reference internal" href="#1.11.0-correct litestar server-side session backend docs" id="1.11.0-correct litestar server-side session backend docs">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Corrects the Litestar server-side session guide to show both supported
+database-backed wiring styles: registering <code class="docutils literal notranslate"><span class="pre">SQLAlchemyStore</span></code> under the
+session store name, or wiring <code class="docutils literal notranslate"><span class="pre">SessionMiddleware</span></code> with an explicit
+<code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncSessionBackend</span></code>. The examples are now executable docs
+coverage so the documented session rows are verified against the
+database.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/707">https://github.com/litestar-org/advanced-alchemy/issues/707</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/745">https://github.com/litestar-org/advanced-alchemy/issues/745</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/749">https://github.com/litestar-org/advanced-alchemy/pull/749</a></span></p>
+</div>
+</dd>
+<dt>index repository classes in intersphinx inventories<a class="headerlink reference internal" href="#1.11.0-index repository classes in intersphinx inventories" id="1.11.0-index repository classes in intersphinx inventories">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Fixes the repository reference page so repository classes are included
+in the generated <code class="docutils literal notranslate"><span class="pre">objects.inv</span></code> inventory for downstream Sphinx
+projects. The memory repository classes are now documented as well, and
+malformed deprecation directives in memory repository docstrings were
+corrected for warning-free docs builds.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/729">https://github.com/litestar-org/advanced-alchemy/issues/729</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/751">https://github.com/litestar-org/advanced-alchemy/pull/751</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
+<section id="1.11.0-misc">
+<h3>Other changes<a class="headerlink" href="#1.11.0-misc" title="Link to this heading">¶</a></h3>
+<dl>
+<dt>extract provider dependency utilities<a class="headerlink reference internal" href="#1.11.0-extract provider dependency utilities" id="1.11.0-extract provider dependency utilities">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Moves shared framework dependency helpers into
+<code class="docutils literal notranslate"><span class="pre">advanced_alchemy.utils.dependencies</span></code>. Litestar and FastAPI provider
+generation now share the same primitives while preserving framework
+specific dependency caches and normalizing multi-field sort defaults
+before building <code class="docutils literal notranslate"><span class="pre">OrderBy</span></code> filters.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/602">https://github.com/litestar-org/advanced-alchemy/issues/602</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/721">https://github.com/litestar-org/advanced-alchemy/pull/721</a></span></p>
+</div>
+</dd>
+<dt>document GUID storage and UUIDv7 usage<a class="headerlink reference internal" href="#1.11.0-document guid storage and uuidv7 usage" id="1.11.0-document guid storage and uuidv7 usage">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Expands the GUID documentation with Oracle storage details and guidance
+for using UUIDv7 primary keys where time-ordered identifiers improve
+index locality.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/743">https://github.com/litestar-org/advanced-alchemy/pull/743</a></span></p>
+</div>
+</dd>
+<dt>document custom non-autogenerated primary keys<a class="headerlink reference internal" href="#1.11.0-document custom non-autogenerated primary keys" id="1.11.0-document custom non-autogenerated primary keys">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Documents how to compose <code class="docutils literal notranslate"><span class="pre">DefaultBase</span></code> with <code class="docutils literal notranslate"><span class="pre">AuditColumns</span></code> when a
+model needs caller-supplied primary keys instead of autogenerated
+identifiers, including string and integer primary-key examples.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/649">https://github.com/litestar-org/advanced-alchemy/issues/649</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/754">https://github.com/litestar-org/advanced-alchemy/pull/754</a></span></p>
+</div>
+</dd>
+<dt>document mixin column ordering<a class="headerlink reference internal" href="#1.11.0-document mixin column ordering" id="1.11.0-document mixin column ordering">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds documentation for the <code class="docutils literal notranslate"><span class="pre">sort_order</span></code> values used by Advanced
+Alchemy mixins so users can understand the physical column order
+produced for newly-created tables.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/584">https://github.com/litestar-org/advanced-alchemy/issues/584</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/753">https://github.com/litestar-org/advanced-alchemy/pull/753</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
+</section>
 <section id="1.10.0">
 <h2>1.10.0<a class="headerlink" href="#1.10.0" title="Link to this heading">¶</a></h2>
 <strong>Released: </strong>2026-05-23<section id="1.10.0-feature">
