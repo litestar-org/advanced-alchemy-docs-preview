@@ -384,6 +384,15 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.types.StoredObject.process_result_value"><code class="docutils literal notranslate">process_result_value()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#advanced_alchemy.types.Vector"><code class="docutils literal notranslate"><span class="pre">Vector</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.types.Vector.impl"><code class="docutils literal notranslate">impl</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.Vector.cache_ok"><code class="docutils literal notranslate">cache_ok</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.Vector.python_type"><code class="docutils literal notranslate">python_type</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.Vector.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.Vector.load_dialect_impl"><code class="docutils literal notranslate">load_dialect_impl()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.Vector.process_result_value"><code class="docutils literal notranslate">process_result_value()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend"><code class="docutils literal notranslate"><span class="pre">PGCryptoBackend</span></code></a><ul>
 <li><a class="reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.passphrase"><code class="docutils literal notranslate">passphrase</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.init_engine"><code class="docutils literal notranslate">init_engine()</span></code></a></li>
@@ -3613,6 +3622,269 @@ and <code class="xref py py-class docutils literal notranslate"><span class="pre
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Optional[FileObjectOrList]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.types.Vector">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.types.</span></span><span class="sig-name descname"><span class="pre">Vector</span></span><a class="reference internal" href="../_modules/advanced_alchemy/types/vector.html#Vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.Vector" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/custom_types.html#sqlalchemy.types.TypeDecorator" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeDecorator</span></code></a></p>
+<p>Dialect-aware fixed-dimension vector column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.Vector.params.dim"></span><strong>dim</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.Vector.params.dim">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – The vector dimension. Required by every supported backend.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.Vector.params.storage_format"></span><strong>storage_format</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.Vector.params.storage_format">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Oracle 23ai storage format name (matched against
+<a class="reference external" href="https://docs.sqlalchemy.org/en/20/dialects/oracle.html#sqlalchemy.dialects.oracle.VectorStorageFormat" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.dialects.oracle.VectorStorageFormat</span></code></a>).
+Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;FLOAT32&quot;</span></code>. Ignored on non-Oracle backends.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.types.Vector.impl">
+<span class="sig-name descname"><span class="pre">impl</span></span><a class="headerlink" href="#advanced_alchemy.types.Vector.impl" title="Link to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/type_basics.html#sqlalchemy.types.JSON" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">JSON</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.types.Vector.cache_ok">
+<span class="sig-name descname"><span class="pre">cache_ok</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></span><a class="headerlink" href="#advanced_alchemy.types.Vector.cache_ok" title="Link to this definition">¶</a></dt>
+<dd><p>Indicate if statements using this <code class="xref py py-class docutils literal notranslate"><span class="pre">ExternalType</span></code> are “safe to
+cache”.</p>
+<p>The default value <code class="docutils literal notranslate"><span class="pre">None</span></code> will emit a warning and then not allow caching
+of a statement which includes this type.   Set to <code class="docutils literal notranslate"><span class="pre">False</span></code> to disable
+statements using this type from being cached at all without a warning.
+When set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, the object’s class and selected elements from its
+state will be used as part of the cache key.  For example, using a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeDecorator</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">class</span><span class="w"> </span><span class="nc">MyType</span><span class="p">(</span><span class="n">TypeDecorator</span><span class="p">):</span>
+</span><span data-line="2">    <span class="n">impl</span> <span class="o">=</span> <span class="n">String</span>
+</span><span data-line="3">
+</span><span data-line="4">    <span class="n">cache_ok</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="5">
+</span><span data-line="6">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">choices</span><span class="p">):</span>
+</span><span data-line="7">        <span class="bp">self</span><span class="o">.</span><span class="n">choices</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">choices</span><span class="p">)</span>
+</span><span data-line="8">        <span class="bp">self</span><span class="o">.</span><span class="n">internal_only</span> <span class="o">=</span> <span class="kc">True</span>
+</span></pre></div>
+</div>
+<p>The cache key for the above type would be equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">MyType</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">_static_cache_key</span>
+</span><span data-line="2"><span class="go">(&lt;class &#39;__main__.MyType&#39;&gt;, (&#39;choices&#39;, (&#39;a&#39;, &#39;b&#39;, &#39;c&#39;)))</span>
+</span></pre></div>
+</div>
+<p>The caching scheme will extract attributes from the type that correspond
+to the names of parameters in the <code class="docutils literal notranslate"><span class="pre">__init__()</span></code> method.  Above, the
+“choices” attribute becomes part of the cache key but “internal_only”
+does not, because there is no parameter named “internal_only”.</p>
+<p>The requirements for cacheable elements is that they are hashable
+and also that they indicate the same SQL rendered for expressions using
+this type every time for a given cache value.</p>
+<p>To accommodate for datatypes that refer to unhashable structures such
+as dictionaries, sets and lists, these objects can be made “cacheable”
+by assigning hashable structures to the attributes whose names
+correspond with the names of the arguments.  For example, a datatype
+which accepts a dictionary of lookup values may publish this as a sorted
+series of tuples.   Given a previously un-cacheable type as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">class</span><span class="w"> </span><span class="nc">LookupType</span><span class="p">(</span><span class="n">UserDefinedType</span><span class="p">):</span>
+</span><span data-line="2"><span class="w">    </span><span class="sd">&quot;&quot;&quot;a custom type that accepts a dictionary as a parameter.</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="sd">    this is the non-cacheable version, as &quot;self.lookup&quot; is not</span>
+</span><span data-line="5"><span class="sd">    hashable.</span>
+</span><span data-line="6">
+</span><span data-line="7"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="8">
+</span><span data-line="9">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lookup</span><span class="p">):</span>
+</span><span data-line="10">        <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span> <span class="o">=</span> <span class="n">lookup</span>
+</span><span data-line="11">
+</span><span data-line="12">    <span class="k">def</span><span class="w"> </span><span class="nf">get_col_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+</span><span data-line="13">        <span class="k">return</span> <span class="s2">&quot;VARCHAR(255)&quot;</span>
+</span><span data-line="14">
+</span><span data-line="15">    <span class="k">def</span><span class="w"> </span><span class="nf">bind_processor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialect</span><span class="p">):</span> <span class="o">...</span>  <span class="c1"># works with &quot;self.lookup&quot; ...</span>
+</span></pre></div>
+</div>
+<p>Where “lookup” is a dictionary.  The type will not be able to generate
+a cache key:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">type_</span> <span class="o">=</span> <span class="n">LookupType</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">})</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">type_</span><span class="o">.</span><span class="n">_static_cache_key</span>
+</span><span data-line="3"><span class="go">&lt;stdin&gt;:1: SAWarning: UserDefinedType LookupType({&#39;a&#39;: 10, &#39;b&#39;: 20}) will not</span>
+</span><span data-line="4"><span class="go">produce a cache key because the ``cache_ok`` flag is not set to True.</span>
+</span><span data-line="5"><span class="go">Set this flag to True if this type object&#39;s state is safe to use</span>
+</span><span data-line="6"><span class="go">in a cache key, or False to disable this warning.</span>
+</span><span data-line="7"><span class="go">symbol(&#39;no_cache&#39;)</span>
+</span></pre></div>
+</div>
+<p>If we <strong>did</strong> set up such a cache key, it wouldn’t be usable. We would
+get a tuple structure that contains a dictionary inside of it, which
+cannot itself be used as a key in a “cache dictionary” such as SQLAlchemy’s
+statement cache, since Python dictionaries aren’t hashable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="c1"># set cache_ok = True</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">type_</span><span class="o">.</span><span class="n">cache_ok</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="c1"># this is the cache key it would generate</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="n">key</span> <span class="o">=</span> <span class="n">type_</span><span class="o">.</span><span class="n">_static_cache_key</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="n">key</span>
+</span><span data-line="7"><span class="go">(&lt;class &#39;__main__.LookupType&#39;&gt;, (&#39;lookup&#39;, {&#39;a&#39;: 10, &#39;b&#39;: 20}))</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="gp">&gt;&gt;&gt; </span><span class="c1"># however this key is not hashable, will fail when used with</span>
+</span><span data-line="10"><span class="gp">&gt;&gt;&gt; </span><span class="c1"># SQLAlchemy statement cache</span>
+</span><span data-line="11"><span class="gp">&gt;&gt;&gt; </span><span class="n">some_cache</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="s2">&quot;some sql value&quot;</span><span class="p">}</span>
+</span><span data-line="12"><span class="go">Traceback (most recent call last): File &quot;&lt;stdin&gt;&quot;, line 1,</span>
+</span><span data-line="13"><span class="go">in &lt;module&gt; TypeError: unhashable type: &#39;dict&#39;</span>
+</span></pre></div>
+</div>
+<p>The type may be made cacheable by assigning a sorted tuple of tuples
+to the “.lookup” attribute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">class</span><span class="w"> </span><span class="nc">LookupType</span><span class="p">(</span><span class="n">UserDefinedType</span><span class="p">):</span>
+</span><span data-line="2"><span class="w">    </span><span class="sd">&quot;&quot;&quot;a custom type that accepts a dictionary as a parameter.</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="sd">    The dictionary is stored both as itself in a private variable,</span>
+</span><span data-line="5"><span class="sd">    and published in a public variable as a sorted tuple of tuples,</span>
+</span><span data-line="6"><span class="sd">    which is hashable and will also return the same value for any</span>
+</span><span data-line="7"><span class="sd">    two equivalent dictionaries.  Note it assumes the keys and</span>
+</span><span data-line="8"><span class="sd">    values of the dictionary are themselves hashable.</span>
+</span><span data-line="9">
+</span><span data-line="10"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="11">
+</span><span data-line="12">    <span class="n">cache_ok</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="13">
+</span><span data-line="14">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lookup</span><span class="p">):</span>
+</span><span data-line="15">        <span class="bp">self</span><span class="o">.</span><span class="n">_lookup</span> <span class="o">=</span> <span class="n">lookup</span>
+</span><span data-line="16">
+</span><span data-line="17">        <span class="c1"># assume keys/values of &quot;lookup&quot; are hashable; otherwise</span>
+</span><span data-line="18">        <span class="c1"># they would also need to be converted in some way here</span>
+</span><span data-line="19">        <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">key</span><span class="p">,</span> <span class="n">lookup</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">lookup</span><span class="p">))</span>
+</span><span data-line="20">
+</span><span data-line="21">    <span class="k">def</span><span class="w"> </span><span class="nf">get_col_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+</span><span data-line="22">        <span class="k">return</span> <span class="s2">&quot;VARCHAR(255)&quot;</span>
+</span><span data-line="23">
+</span><span data-line="24">    <span class="k">def</span><span class="w"> </span><span class="nf">bind_processor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialect</span><span class="p">):</span> <span class="o">...</span>  <span class="c1"># works with &quot;self._lookup&quot; ...</span>
+</span></pre></div>
+</div>
+<p>Where above, the cache key for <code class="docutils literal notranslate"><span class="pre">LookupType({&quot;a&quot;:</span> <span class="pre">10,</span> <span class="pre">&quot;b&quot;:</span> <span class="pre">20})</span></code> will be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">LookupType</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">})</span><span class="o">.</span><span class="n">_static_cache_key</span>
+</span><span data-line="2"><span class="go">(&lt;class &#39;__main__.LookupType&#39;&gt;, (&#39;lookup&#39;, ((&#39;a&#39;, 10), (&#39;b&#39;, 20))))</span>
+</span></pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.4.14: </span>- added the <code class="docutils literal notranslate"><span class="pre">cache_ok</span></code> flag to allow
+some configurability of caching for <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeDecorator</span></code> classes.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.4.28: </span>- added the <code class="xref py py-class docutils literal notranslate"><span class="pre">ExternalType</span></code> mixin which
+generalizes the <code class="docutils literal notranslate"><span class="pre">cache_ok</span></code> flag to both the <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeDecorator</span></code>
+and <code class="xref py py-class docutils literal notranslate"><span class="pre">UserDefinedType</span></code> classes.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/connections.html#sql-caching" title="(in SQLAlchemy v2.0)"><span>SQL Compilation Caching</span></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="advanced_alchemy.types.Vector.python_type">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">python_type</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#advanced_alchemy.types.Vector.python_type" title="Link to this definition">¶</a></dt>
+<dd><p>Return the Python type object expected to be returned
+by instances of this type, if known.</p>
+<p>Basically, for those types which enforce a return type,
+or are known across the board to do such for all common
+DBAPIs (like <code class="docutils literal notranslate"><span class="pre">int</span></code> for example), will return that type.</p>
+<p>If a return type is not defined, raises
+<code class="docutils literal notranslate"><span class="pre">NotImplementedError</span></code>.</p>
+<p>Note that any type also accommodates NULL in SQL which
+means you can also get back <code class="docutils literal notranslate"><span class="pre">None</span></code> from any type
+in practice.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.Vector.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">storage_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'FLOAT32'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/vector.html#Vector.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.Vector.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Construct a <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeDecorator</span></code>.</p>
+<p>Arguments sent here are passed to the constructor
+of the class assigned to the <code class="docutils literal notranslate"><span class="pre">impl</span></code> class level attribute,
+assuming the <code class="docutils literal notranslate"><span class="pre">impl</span></code> is a callable, and the resulting
+object is assigned to the <code class="docutils literal notranslate"><span class="pre">self.impl</span></code> instance attribute
+(thus overriding the class attribute of the same name).</p>
+<p>If the class level <code class="docutils literal notranslate"><span class="pre">impl</span></code> is not a callable (the unusual case),
+it will be assigned to the same instance attribute ‘as-is’,
+ignoring those arguments passed to the constructor.</p>
+<p>Subclasses can override this to customize the generation
+of <code class="docutils literal notranslate"><span class="pre">self.impl</span></code> entirely.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>)</p></li>
+<li><p><strong>storage_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.Vector.load_dialect_impl">
+<span class="sig-name descname"><span class="pre">load_dialect_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dialect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/vector.html#Vector.load_dialect_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.Vector.load_dialect_impl" title="Link to this definition">¶</a></dt>
+<dd><p>Return a <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeEngine</span></code> object corresponding to a dialect.</p>
+<p>This is an end-user override hook that can be used to provide
+differing types depending on the given dialect.  It is used
+by the <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeDecorator</span></code> implementation of <code class="xref py py-meth docutils literal notranslate"><span class="pre">type_engine()</span></code>
+to help determine what type should ultimately be returned
+for a given <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeDecorator</span></code>.</p>
+<p>By default returns <code class="docutils literal notranslate"><span class="pre">self.impl</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/type_api.html#sqlalchemy.types.TypeEngine" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeEngine</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dialect</strong> (<a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/internals.html#sqlalchemy.engine.Dialect" title="(in SQLAlchemy v2.0)"><em>Dialect</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.Vector.process_result_value">
+<span class="sig-name descname"><span class="pre">process_result_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dialect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/vector.html#Vector.process_result_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.Vector.process_result_value" title="Link to this definition">¶</a></dt>
+<dd><p>Receive a result-row column value to be converted.</p>
+<p>Custom subclasses of <code class="xref py py-class docutils literal notranslate"><span class="pre">_types.TypeDecorator</span></code> should override
+this method to provide custom behaviors for data values
+being received in result rows coming from the database.
+This method is called at <strong>result fetching time</strong> and is passed
+the literal Python data value that’s extracted from a database result
+row.</p>
+<p>The operation could be anything desired to perform custom
+behavior, such as transforming or deserializing data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.Vector.process_result_value.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.Vector.process_result_value.params.value">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Data to operate upon, of any type expected by
+this method in the subclass.  Can be <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.Vector.process_result_value.params.dialect"></span><strong>dialect</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.Vector.process_result_value.params.dialect">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/internals.html#sqlalchemy.engine.Dialect" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dialect</span></code></a></span>) – the <code class="xref py py-class docutils literal notranslate"><span class="pre">Dialect</span></code> in use.</p></li>
+<li><p><strong>value</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+<li><p><strong>dialect</strong> (<a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/internals.html#sqlalchemy.engine.Dialect" title="(in SQLAlchemy v2.0)"><em>Dialect</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>] | None</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/custom_types.html#types-typedecorator" title="(in SQLAlchemy v2.0)"><span>Augmenting Existing Types</span></a></p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">_types.TypeDecorator.process_bind_param()</span></code></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>value</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+<li><p><strong>dialect</strong> (<a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/internals.html#sqlalchemy.engine.Dialect" title="(in SQLAlchemy v2.0)"><em>Dialect</em></a>)</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
