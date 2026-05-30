@@ -182,6 +182,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l4"><a class="reference internal" href="extensions/litestar/plugins.html">plugin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="extensions/litestar/cli.html">cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="extensions/litestar/session.html">Session Backends</a></li>
+<li class="toctree-l4"><a class="reference internal" href="extensions/litestar/store.html">Store</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="extensions/flask/index.html">flask</a></li>
@@ -223,6 +224,17 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.filters.BeforeAfter.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.BooleanFilter"><code class="docutils literal notranslate"><span class="pre">BooleanFilter</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.filters.BooleanFilter.field_name"><code class="docutils literal notranslate">field_name</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.BooleanFilter.value"><code class="docutils literal notranslate">value</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.BooleanFilter.append_to_statement"><code class="docutils literal notranslate">append_to_statement()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.BooleanFilter.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.ChoicesFilter"><code class="docutils literal notranslate"><span class="pre">ChoicesFilter</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.filters.ChoicesFilter.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#advanced_alchemy.filters.CollectionFilter"><code class="docutils literal notranslate"><span class="pre">CollectionFilter</span></code></a><ul>
 <li><a class="reference internal" href="#advanced_alchemy.filters.CollectionFilter.field_name"><code class="docutils literal notranslate">field_name</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.filters.CollectionFilter.values"><code class="docutils literal notranslate">values</span></code></a></li>
@@ -256,6 +268,8 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.filters.FilterMap"><code class="docutils literal notranslate"><span class="pre">FilterMap</span></code></a><ul>
 <li><a class="reference internal" href="#advanced_alchemy.filters.FilterMap.before_after"><code class="docutils literal notranslate">before_after</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.filters.FilterMap.on_before_after"><code class="docutils literal notranslate">on_before_after</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.FilterMap.boolean"><code class="docutils literal notranslate">boolean</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.FilterMap.choices"><code class="docutils literal notranslate">choices</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.filters.FilterMap.collection"><code class="docutils literal notranslate">collection</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.filters.FilterMap.not_in_collection"><code class="docutils literal notranslate">not_in_collection</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.filters.FilterMap.limit_offset"><code class="docutils literal notranslate">limit_offset</span></code></a></li>
@@ -538,6 +552,71 @@ excluding the boundary values.</p>
 </dd></dl>
 
 </section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.BooleanFilter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">BooleanFilter</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#BooleanFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.BooleanFilter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.filters.StatementFilter" title="advanced_alchemy.filters.StatementFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">StatementFilter</span></code></a></p>
+<p>Filter records by a boolean field value.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">value</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the statement is returned unchanged.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.BooleanFilter.field_name">
+<span class="sig-name descname"><span class="pre">field_name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ColumnElement</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="advanced_alchemy.config.types.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">InstrumentedAttribute</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="advanced_alchemy.config.types.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#advanced_alchemy.filters.BooleanFilter.field_name" title="Link to this definition">¶</a></dt>
+<dd><p>Field name, model attribute, or func expression.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.BooleanFilter.value">
+<span class="sig-name descname"><span class="pre">value</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><a class="headerlink" href="#advanced_alchemy.filters.BooleanFilter.value" title="Link to this definition">¶</a></dt>
+<dd><p>Boolean value to match. If None, no filter is applied.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.BooleanFilter.append_to_statement">
+<span class="sig-name descname"><span class="pre">append_to_statement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statement</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#BooleanFilter.append_to_statement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.BooleanFilter.append_to_statement" title="Link to this definition">¶</a></dt>
+<dd><p>Apply a boolean equality condition to the statement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code></a>(<code class="docutils literal notranslate"><span class="pre">StatementTypeT</span></code>, bound= <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ReturningDelete</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ReturningUpdate</span></code>, <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/selectable.html#sqlalchemy.sql.expression.Select" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Select</span></code></a>, <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/dml.html#sqlalchemy.sql.expression.Update" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Update</span></code></a>, <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/dml.html#sqlalchemy.sql.expression.Delete" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Delete</span></code></a>])</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>statement</strong> (<em>StatementTypeT</em>)</p></li>
+<li><p><strong>model</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><em>type</em></a><em>[</em><em>ModelT</em><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.BooleanFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.filters.BooleanFilter.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.ChoicesFilter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">ChoicesFilter</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#ChoicesFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.ChoicesFilter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.filters.CollectionFilter" title="advanced_alchemy.filters.CollectionFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">CollectionFilter</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code>]</p>
+<p>Filter records whose field matches one of a fixed set of choices.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.ChoicesFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.filters.ChoicesFilter.__init__" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_name</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+<li><p><strong>values</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.14)"><em>Collection</em></a><em>[</em><em>T</em><em>] </em><em>| </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -879,6 +958,16 @@ It provides a way to create complex nested filter conditions.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.FilterMap.boolean">
+<span class="sig-name descname"><span class="pre">boolean</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#advanced_alchemy.filters.BooleanFilter" title="advanced_alchemy.filters.BooleanFilter"><span class="pre">BooleanFilter</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#advanced_alchemy.filters.FilterMap.boolean" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.FilterMap.choices">
+<span class="sig-name descname"><span class="pre">choices</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#advanced_alchemy.filters.ChoicesFilter" title="advanced_alchemy.filters.ChoicesFilter"><span class="pre">ChoicesFilter</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="advanced_alchemy.config.types.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#advanced_alchemy.filters.FilterMap.choices" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.filters.FilterMap.collection">
 <span class="sig-name descname"><span class="pre">collection</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#advanced_alchemy.filters.CollectionFilter" title="advanced_alchemy.filters.CollectionFilter"><span class="pre">CollectionFilter</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="advanced_alchemy.config.types.Any"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#advanced_alchemy.filters.FilterMap.collection" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -944,7 +1033,7 @@ It provides a way to create complex nested filter conditions.</p>
 <dt class="sig sig-object py" id="advanced_alchemy.filters.FilterTypes">
 <span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">FilterTypes</span></span><a class="headerlink" href="#advanced_alchemy.filters.FilterTypes" title="Link to this definition">¶</a></dt>
 <dd><p>Aggregate type alias of the types supported for collection filtering.</p>
-<p>alias of <a class="reference internal" href="#advanced_alchemy.filters.BeforeAfter" title="advanced_alchemy.filters.BeforeAfter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BeforeAfter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.OnBeforeAfter" title="advanced_alchemy.filters.OnBeforeAfter"><code class="xref py py-class docutils literal notranslate"><span class="pre">OnBeforeAfter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.CollectionFilter" title="advanced_alchemy.filters.CollectionFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">CollectionFilter</span></code></a>[<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code></a>] | <a class="reference internal" href="#advanced_alchemy.filters.LimitOffset" title="advanced_alchemy.filters.LimitOffset"><code class="xref py py-class docutils literal notranslate"><span class="pre">LimitOffset</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.NullFilter" title="advanced_alchemy.filters.NullFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NullFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.NotNullFilter" title="advanced_alchemy.filters.NotNullFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotNullFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.OrderBy" title="advanced_alchemy.filters.OrderBy"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrderBy</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.SearchFilter" title="advanced_alchemy.filters.SearchFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.NotInCollectionFilter" title="advanced_alchemy.filters.NotInCollectionFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotInCollectionFilter</span></code></a>[<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code></a>] | <a class="reference internal" href="#advanced_alchemy.filters.NotInSearchFilter" title="advanced_alchemy.filters.NotInSearchFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotInSearchFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.ExistsFilter" title="advanced_alchemy.filters.ExistsFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExistsFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.NotExistsFilter" title="advanced_alchemy.filters.NotExistsFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotExistsFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.ComparisonFilter" title="advanced_alchemy.filters.ComparisonFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComparisonFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.MultiFilter" title="advanced_alchemy.filters.MultiFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.FilterGroup" title="advanced_alchemy.filters.FilterGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterGroup</span></code></a></p>
+<p>alias of <a class="reference internal" href="#advanced_alchemy.filters.BeforeAfter" title="advanced_alchemy.filters.BeforeAfter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BeforeAfter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.OnBeforeAfter" title="advanced_alchemy.filters.OnBeforeAfter"><code class="xref py py-class docutils literal notranslate"><span class="pre">OnBeforeAfter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.BooleanFilter" title="advanced_alchemy.filters.BooleanFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BooleanFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.ChoicesFilter" title="advanced_alchemy.filters.ChoicesFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChoicesFilter</span></code></a>[<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code></a>] | <a class="reference internal" href="#advanced_alchemy.filters.CollectionFilter" title="advanced_alchemy.filters.CollectionFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">CollectionFilter</span></code></a>[<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code></a>] | <a class="reference internal" href="#advanced_alchemy.filters.LimitOffset" title="advanced_alchemy.filters.LimitOffset"><code class="xref py py-class docutils literal notranslate"><span class="pre">LimitOffset</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.NullFilter" title="advanced_alchemy.filters.NullFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NullFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.NotNullFilter" title="advanced_alchemy.filters.NotNullFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotNullFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.OrderBy" title="advanced_alchemy.filters.OrderBy"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrderBy</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.SearchFilter" title="advanced_alchemy.filters.SearchFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.NotInCollectionFilter" title="advanced_alchemy.filters.NotInCollectionFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotInCollectionFilter</span></code></a>[<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code></a>] | <a class="reference internal" href="#advanced_alchemy.filters.NotInSearchFilter" title="advanced_alchemy.filters.NotInSearchFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotInSearchFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.ExistsFilter" title="advanced_alchemy.filters.ExistsFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExistsFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.NotExistsFilter" title="advanced_alchemy.filters.NotExistsFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotExistsFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.ComparisonFilter" title="advanced_alchemy.filters.ComparisonFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComparisonFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.MultiFilter" title="advanced_alchemy.filters.MultiFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiFilter</span></code></a> | <a class="reference internal" href="#advanced_alchemy.filters.FilterGroup" title="advanced_alchemy.filters.FilterGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterGroup</span></code></a></p>
 </dd></dl>
 
 <dl class="py class">
