@@ -321,7 +321,22 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.types.FileObject.__get_pydantic_core_schema__"><code class="docutils literal notranslate">__get_pydantic_core_schema__()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode"><code class="docutils literal notranslate"><span class="pre">HashedOneTimeCode</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode"><code class="docutils literal notranslate"><span class="pre">HashedOneTimeCode</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.hash_string"><code class="docutils literal notranslate">hash_string</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.expires_at"><code class="docutils literal notranslate">expires_at</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.used_at"><code class="docutils literal notranslate">used_at</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.attempts"><code class="docutils literal notranslate">attempts</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.is_expired"><code class="docutils literal notranslate">is_expired</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.is_used"><code class="docutils literal notranslate">is_used</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.is_locked"><code class="docutils literal notranslate">is_locked</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.is_redeemable"><code class="docutils literal notranslate">is_redeemable</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.verify"><code class="docutils literal notranslate">verify()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.redeem"><code class="docutils literal notranslate">redeem()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.consume"><code class="docutils literal notranslate">consume()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.register_failure"><code class="docutils literal notranslate">register_failure()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#advanced_alchemy.types.HashedPassword"><code class="docutils literal notranslate"><span class="pre">HashedPassword</span></code></a><ul>
 <li><a class="reference internal" href="#advanced_alchemy.types.HashedPassword.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.HashedPassword.verify"><code class="docutils literal notranslate">verify()</span></code></a></li>
@@ -344,7 +359,12 @@ data-aria-dark="Switch to auto color mode">
 </ul>
 </li>
 <li><a class="reference internal" href="#advanced_alchemy.types.OneTimeCode"><code class="docutils literal notranslate"><span class="pre">OneTimeCode</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.types.OneTimeCode.impl"><code class="docutils literal notranslate">impl</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.OneTimeCode.cache_ok"><code class="docutils literal notranslate">cache_ok</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.OneTimeCode.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.OneTimeCode.__repr__"><code class="docutils literal notranslate">__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.OneTimeCode.python_type"><code class="docutils literal notranslate">python_type</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.OneTimeCode.process_bind_param"><code class="docutils literal notranslate">process_bind_param()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.OneTimeCode.process_result_value"><code class="docutils literal notranslate">process_result_value()</span></code></a></li>
 </ul>
 </li>
@@ -431,6 +451,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.types.Vector.comparator_factory"><code class="docutils literal notranslate">comparator_factory</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#advanced_alchemy.types.generate_one_time_code"><code class="docutils literal notranslate"><span class="pre">generate_one_time_code()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.generate_totp_secret"><code class="docutils literal notranslate"><span class="pre">generate_totp_secret()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend"><code class="docutils literal notranslate"><span class="pre">PGCryptoBackend</span></code></a><ul>
 <li><a class="reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.passphrase"><code class="docutils literal notranslate">passphrase</span></code></a></li>
@@ -2652,12 +2673,141 @@ converts them to FileObject instances.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="advanced_alchemy.types.HashedOneTimeCode">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.types.</span></span><span class="sig-name descname"><span class="pre">HashedOneTimeCode</span></span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/one_time_code.html#HashedOneTimeCode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.HashedOneTimeCode" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.types.HashedPassword" title="advanced_alchemy.types.password_hash.base.HashedPassword"><code class="xref py py-class docutils literal notranslate"><span class="pre">HashedPassword</span></code></a></p>
-<p>Read-side wrapper for a hashed one-time code.</p>
-<p>Inherits <code class="xref py py-meth docutils literal notranslate"><span class="pre">verify()</span></code> and
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">verify_and_update()</span></code>.
-Verification is single-use by convention: the caller should invalidate the stored code
-after a successful verify.</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Read-side wrapper over a stored one-time code’s hash and lifecycle state.</p>
+<p><code class="docutils literal notranslate"><span class="pre">verify</span></code> only succeeds while the code is still redeemable (not expired, not used, and
+not locked out). State transitions return a new instance to assign back to the column;
+commit it to persist single-use and attempt tracking.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.HashedOneTimeCode.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hash_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">expires_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">used_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attempts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_attempts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/one_time_code.html#HashedOneTimeCode.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.HashedOneTimeCode.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.HashedOneTimeCode.params.hash_string"></span><strong>hash_string</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.params.hash_string">¶</a> – The stored hash of the code.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.HashedOneTimeCode.params.backend"></span><strong>backend</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.params.backend">¶</a> – The hashing backend used to verify candidates.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.HashedOneTimeCode.params.expires_at"></span><strong>expires_at</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.params.expires_at">¶</a> – POSIX timestamp after which the code is expired, or None for no expiry.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.HashedOneTimeCode.params.used_at"></span><strong>used_at</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.params.used_at">¶</a> – POSIX timestamp when the code was redeemed, or None if unused.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.HashedOneTimeCode.params.attempts"></span><strong>attempts</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.params.attempts">¶</a> – Number of failed verification attempts recorded so far.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.HashedOneTimeCode.params.max_attempts"></span><strong>max_attempts</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.params.max_attempts">¶</a> – Attempt ceiling after which the code locks, or None for no limit.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.types.HashedOneTimeCode.hash_string">
+<span class="sig-name descname"><span class="pre">hash_string</span></span><a class="headerlink" href="#advanced_alchemy.types.HashedOneTimeCode.hash_string" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.types.HashedOneTimeCode.expires_at">
+<span class="sig-name descname"><span class="pre">expires_at</span></span><a class="headerlink" href="#advanced_alchemy.types.HashedOneTimeCode.expires_at" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.types.HashedOneTimeCode.used_at">
+<span class="sig-name descname"><span class="pre">used_at</span></span><a class="headerlink" href="#advanced_alchemy.types.HashedOneTimeCode.used_at" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.types.HashedOneTimeCode.attempts">
+<span class="sig-name descname"><span class="pre">attempts</span></span><a class="headerlink" href="#advanced_alchemy.types.HashedOneTimeCode.attempts" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="advanced_alchemy.types.HashedOneTimeCode.is_expired">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_expired</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="headerlink" href="#advanced_alchemy.types.HashedOneTimeCode.is_expired" title="Link to this definition">¶</a></dt>
+<dd><p>True if the code has an expiry and it has passed.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="advanced_alchemy.types.HashedOneTimeCode.is_used">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_used</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="headerlink" href="#advanced_alchemy.types.HashedOneTimeCode.is_used" title="Link to this definition">¶</a></dt>
+<dd><p>True if the code has already been redeemed.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="advanced_alchemy.types.HashedOneTimeCode.is_locked">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_locked</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="headerlink" href="#advanced_alchemy.types.HashedOneTimeCode.is_locked" title="Link to this definition">¶</a></dt>
+<dd><p>True if failed attempts have reached <code class="docutils literal notranslate"><span class="pre">max_attempts</span></code>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="advanced_alchemy.types.HashedOneTimeCode.is_redeemable">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_redeemable</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="headerlink" href="#advanced_alchemy.types.HashedOneTimeCode.is_redeemable" title="Link to this definition">¶</a></dt>
+<dd><p>True if the code can still be redeemed (not expired, used, or locked).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.HashedOneTimeCode.verify">
+<span class="sig-name descname"><span class="pre">verify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/one_time_code.html#HashedOneTimeCode.verify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.HashedOneTimeCode.verify" title="Link to this definition">¶</a></dt>
+<dd><p>Return True only if <code class="docutils literal notranslate"><span class="pre">code</span></code> matches and the code is still redeemable.</p>
+<p>This does not mutate state. Use <a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.redeem" title="advanced_alchemy.types.HashedOneTimeCode.redeem"><code class="xref py py-meth docutils literal notranslate"><span class="pre">redeem()</span></code></a> to also produce the updated value to
+persist, or pair with <a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.consume" title="advanced_alchemy.types.HashedOneTimeCode.consume"><code class="xref py py-meth docutils literal notranslate"><span class="pre">consume()</span></code></a>/<a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.register_failure" title="advanced_alchemy.types.HashedOneTimeCode.register_failure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">register_failure()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.HashedOneTimeCode.verify.params.code"></span><strong>code</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.verify.params.code">¶</a> – The candidate code.</p></li>
+<li><p><strong>code</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True on a match of a still-redeemable code, otherwise False.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.HashedOneTimeCode.redeem">
+<span class="sig-name descname"><span class="pre">redeem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/one_time_code.html#HashedOneTimeCode.redeem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.HashedOneTimeCode.redeem" title="Link to this definition">¶</a></dt>
+<dd><p>Verify <code class="docutils literal notranslate"><span class="pre">code</span></code> and return the updated state to persist.</p>
+<p>On success the returned value is marked used (single-use); on a redeemable failure the
+attempt counter is incremented. Assign the returned wrapper back to the column and
+commit to enforce single-use, expiry, and attempt limits on the next load.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.HashedOneTimeCode.redeem.params.code"></span><strong>code</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.HashedOneTimeCode.redeem.params.code">¶</a> – The candidate code.</p></li>
+<li><p><strong>code</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <code class="docutils literal notranslate"><span class="pre">(ok,</span> <span class="pre">new_state)</span></code> tuple. <code class="docutils literal notranslate"><span class="pre">new_state</span></code> is unchanged when the code was already
+expired, used, or locked.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a>, <a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode" title="advanced_alchemy.types.HashedOneTimeCode">HashedOneTimeCode</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.HashedOneTimeCode.consume">
+<span class="sig-name descname"><span class="pre">consume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/one_time_code.html#HashedOneTimeCode.consume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.HashedOneTimeCode.consume" title="Link to this definition">¶</a></dt>
+<dd><p>Return a copy marked used now. Assign back and commit to enforce single-use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode" title="advanced_alchemy.types.password_hash.one_time_code.HashedOneTimeCode"><code class="xref py py-class docutils literal notranslate"><span class="pre">HashedOneTimeCode</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.HashedOneTimeCode.register_failure">
+<span class="sig-name descname"><span class="pre">register_failure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/one_time_code.html#HashedOneTimeCode.register_failure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.HashedOneTimeCode.register_failure" title="Link to this definition">¶</a></dt>
+<dd><p>Return a copy with the failed-attempt counter incremented. Assign back and commit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode" title="advanced_alchemy.types.password_hash.one_time_code.HashedOneTimeCode"><code class="xref py py-class docutils literal notranslate"><span class="pre">HashedOneTimeCode</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -2926,12 +3076,17 @@ ascending or descending, according to their function values.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="advanced_alchemy.types.OneTimeCode">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.types.</span></span><span class="sig-name descname"><span class="pre">OneTimeCode</span></span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/one_time_code.html#OneTimeCode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.OneTimeCode" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.types.PasswordHash" title="advanced_alchemy.types.password_hash.base.PasswordHash"><code class="xref py py-class docutils literal notranslate"><span class="pre">PasswordHash</span></code></a></p>
-<p>Stores a transient one-time code as a hash, returning <a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode" title="advanced_alchemy.types.HashedOneTimeCode"><code class="xref py py-class docutils literal notranslate"><span class="pre">HashedOneTimeCode</span></code></a> on read.</p>
-<p>Mechanically identical to <a class="reference internal" href="#advanced_alchemy.types.PasswordHash" title="advanced_alchemy.types.password_hash.base.PasswordHash"><code class="xref py py-class docutils literal notranslate"><span class="pre">PasswordHash</span></code></a>;
-provided for intent and to return a one-time-code-specific wrapper. Requires an explicit
-backend. Expiry, single-use enforcement, and attempt throttling are model/service-layer
-concerns, not handled by this type.</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/custom_types.html#sqlalchemy.types.TypeDecorator" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeDecorator</span></code></a></p>
+<p>Stores a transient one-time code hashed, with expiry and single-use state in JSON.</p>
+<p>The column holds <code class="docutils literal notranslate"><span class="pre">{&quot;hash&quot;,</span> <span class="pre">&quot;expires_at&quot;,</span> <span class="pre">&quot;used_at&quot;,</span> <span class="pre">&quot;attempts&quot;}</span></code> so the full lifecycle
+lives in one value: an expired or already-redeemed code fails verification, and the code
+can lock after <code class="docutils literal notranslate"><span class="pre">max_attempts</span></code> failures. Reads return a <a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode" title="advanced_alchemy.types.HashedOneTimeCode"><code class="xref py py-class docutils literal notranslate"><span class="pre">HashedOneTimeCode</span></code></a>.
+Requires an explicit backend.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.types.OneTimeCode.impl">
+<span class="sig-name descname"><span class="pre">impl</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">JSON()</span></span><a class="headerlink" href="#advanced_alchemy.types.OneTimeCode.impl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.types.OneTimeCode.cache_ok">
 <span class="sig-name descname"><span class="pre">cache_ok</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></span><a class="headerlink" href="#advanced_alchemy.types.OneTimeCode.cache_ok" title="Link to this definition">¶</a></dt>
@@ -3067,23 +3222,81 @@ and <code class="xref py py-class docutils literal notranslate"><span class="pre
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="advanced_alchemy.types.OneTimeCode.process_result_value">
-<span class="sig-name descname"><span class="pre">process_result_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dialect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/one_time_code.html#OneTimeCode.process_result_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.OneTimeCode.process_result_value" title="Link to this definition">¶</a></dt>
-<dd><p>Wrap the stored hash in a <a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode" title="advanced_alchemy.types.HashedOneTimeCode"><code class="xref py py-class docutils literal notranslate"><span class="pre">HashedOneTimeCode</span></code></a>.</p>
+<dt class="sig sig-object py" id="advanced_alchemy.types.OneTimeCode.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ttl_seconds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_attempts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/one_time_code.html#OneTimeCode.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.OneTimeCode.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the OneTimeCode type.</p>
+<p>Single-use is always enforced (a successful redemption marks the code used);
+<code class="docutils literal notranslate"><span class="pre">max_attempts</span></code> governs how many <em>wrong</em> guesses lock the code before then.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span class="target" id="advanced_alchemy.types.OneTimeCode.process_result_value.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.OneTimeCode.process_result_value.params.value">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The stored hash value.</p></li>
-<li><p><span class="target" id="advanced_alchemy.types.OneTimeCode.process_result_value.params.dialect"></span><strong>dialect</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.OneTimeCode.process_result_value.params.dialect">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The SQLAlchemy dialect.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.OneTimeCode.params.backend"></span><strong>backend</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.OneTimeCode.params.backend">¶</a> – The hashing backend used to hash and verify codes.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.OneTimeCode.params.ttl_seconds"></span><strong>ttl_seconds</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.OneTimeCode.params.ttl_seconds">¶</a> – Lifetime of a written code in seconds, or None for no expiry.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.OneTimeCode.params.max_attempts"></span><strong>max_attempts</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.OneTimeCode.params.max_attempts">¶</a> – Wrong-guess ceiling after which a code locks. Defaults to 3; pass
+None to disable the lockout (the code stays single-use and still expires).</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.OneTimeCode.params.**kwargs"></span><strong>**kwargs</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.OneTimeCode.params.**kwargs">¶</a> – Additional arguments passed to the underlying JSON type.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.OneTimeCode.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/one_time_code.html#OneTimeCode.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.OneTimeCode.__repr__" title="Link to this definition">¶</a></dt>
+<dd><p>Return a reconstructable representation for Alembic autogenerate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="advanced_alchemy.types.OneTimeCode.python_type">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">python_type</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">TypeAliasForwardRef</span><span class="p"><span class="pre">(</span></span><span class="s"><span class="pre">'typing.Any'</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#advanced_alchemy.types.OneTimeCode.python_type" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the Python type for this type decorator.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.OneTimeCode.process_bind_param">
+<span class="sig-name descname"><span class="pre">process_bind_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dialect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/one_time_code.html#OneTimeCode.process_bind_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.OneTimeCode.process_bind_param" title="Link to this definition">¶</a></dt>
+<dd><p>Hash a new code or serialize an updated wrapper to the stored JSON shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.OneTimeCode.process_bind_param.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.OneTimeCode.process_bind_param.params.value">¶</a> – A plaintext code, an updated <a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode" title="advanced_alchemy.types.HashedOneTimeCode"><code class="xref py py-class docutils literal notranslate"><span class="pre">HashedOneTimeCode</span></code></a>, or None.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.OneTimeCode.process_bind_param.params.dialect"></span><strong>dialect</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.OneTimeCode.process_bind_param.params.dialect">¶</a> – The SQLAlchemy dialect.</p></li>
 <li><p><strong>value</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
 <li><p><strong>dialect</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type">typing.Any</span></p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The JSON-serializable state dict, or None.</p>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A HashedOneTimeCode over the stored hash, or None.</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>, <a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="advanced_alchemy.config.types.Any">Any</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.OneTimeCode.process_result_value">
+<span class="sig-name descname"><span class="pre">process_result_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dialect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/one_time_code.html#OneTimeCode.process_result_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.OneTimeCode.process_result_value" title="Link to this definition">¶</a></dt>
+<dd><p>Wrap the stored JSON state in a <a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode" title="advanced_alchemy.types.HashedOneTimeCode"><code class="xref py py-class docutils literal notranslate"><span class="pre">HashedOneTimeCode</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.OneTimeCode.process_result_value.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.OneTimeCode.process_result_value.params.value">¶</a> – The stored JSON object, or None.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.OneTimeCode.process_result_value.params.dialect"></span><strong>dialect</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.OneTimeCode.process_result_value.params.dialect">¶</a> – The SQLAlchemy dialect.</p></li>
+<li><p><strong>value</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+<li><p><strong>dialect</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A HashedOneTimeCode over the stored state, or None.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[<a class="reference internal" href="#advanced_alchemy.types.HashedOneTimeCode" title="advanced_alchemy.types.HashedOneTimeCode">HashedOneTimeCode</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4640,6 +4853,28 @@ existing pgvector-based queries can swap to <a class="reference internal" href="
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.types.generate_one_time_code">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.types.</span></span><span class="sig-name descname"><span class="pre">generate_one_time_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">digits_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/one_time_code.html#generate_one_time_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.generate_one_time_code" title="Link to this definition">¶</a></dt>
+<dd><p>Generate a cryptographically secure random one-time code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.generate_one_time_code.params.length"></span><strong>length</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.generate_one_time_code.params.length">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of characters in the code. Defaults to 6.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.generate_one_time_code.params.digits_only"></span><strong>digits_only</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.generate_one_time_code.params.digits_only">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Use digits only when True (default); otherwise uppercase letters and digits.</p></li>
+<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>)</p></li>
+<li><p><strong>digits_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A random one-time code string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="advanced_alchemy.types.generate_totp_secret">
 <span class="sig-prename descclassname"><span class="pre">advanced_alchemy.types.</span></span><span class="sig-name descname"><span class="pre">generate_totp_secret</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/totp.html#generate_totp_secret"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.generate_totp_secret" title="Link to this definition">¶</a></dt>
 <dd><p>Generate a new random base32 TOTP secret.</p>
@@ -4799,8 +5034,11 @@ memory_cost, parallelism, hash_len, salt_len, type).</p></li>
 <li><p><strong>kwargs</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.MissingDependencyError" title="advanced_alchemy.exceptions.MissingDependencyError"><strong>MissingDependencyError</strong></a> – If the <code class="docutils literal notranslate"><span class="pre">argon2-cffi</span></code> package is not installed.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>

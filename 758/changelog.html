@@ -554,26 +554,23 @@ data-aria-dark="Switch to auto color mode">
 <strong>Released: </strong>2026-05-30<section id="1.11.0-feature">
 <h3>Features<a class="headerlink" href="#1.11.0-feature" title="Link to this heading">¶</a></h3>
 <dl>
-<dt>add rehash-on-verify to PasswordHash<a class="headerlink reference internal" href="#1.11.0-add rehash-on-verify to passwordhash" id="1.11.0-add rehash-on-verify to passwordhash">#</a></dt><dd><div class="changelog-change docutils container">
-<p><code class="docutils literal notranslate"><span class="pre">HashedPassword.verify_and_update</span></code> returns a fresh hash when the stored
-hash uses outdated parameters, enabling transparent upgrades on successful
-login. The hashing backends gained <code class="docutils literal notranslate"><span class="pre">needs_rehash</span></code>.</p>
-<p>References: </p>
-</div>
-</dd>
-<dt>add TOTPSecret column type<a class="headerlink reference internal" href="#1.11.0-add totpsecret column type" id="1.11.0-add totpsecret column type">#</a></dt><dd><div class="changelog-change docutils container">
-<p>New <code class="docutils literal notranslate"><span class="pre">TOTPSecret</span></code> type stores a base32 TOTP secret encrypted at rest and
-returns a pyotp-backed provider (<code class="docutils literal notranslate"><span class="pre">now</span></code>/<code class="docutils literal notranslate"><span class="pre">verify</span></code>/<code class="docutils literal notranslate"><span class="pre">provisioning_uri</span></code>),
-plus a <code class="docutils literal notranslate"><span class="pre">generate_totp_secret</span></code> helper. Install with
-<code class="docutils literal notranslate"><span class="pre">advanced_alchemy[pyotp]</span></code>.</p>
-<p>References: </p>
-</div>
-</dd>
-<dt>add OneTimeCode column type<a class="headerlink reference internal" href="#1.11.0-add onetimecode column type" id="1.11.0-add onetimecode column type">#</a></dt><dd><div class="changelog-change docutils container">
-<p>New <code class="docutils literal notranslate"><span class="pre">OneTimeCode</span></code> type stores transient one-time codes hashed, reusing the
-password-hash backends. Expiry and single-use enforcement remain model-level
-concerns.</p>
-<p>References: </p>
+<dt>harden crypto column types and add TOTP and one-time-code storage<a class="headerlink reference internal" href="#1.11.0-harden crypto column types and add totp and one-time-code storage" id="1.11.0-harden crypto column types and add totp and one-time-code storage">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Corrects <code class="docutils literal notranslate"><span class="pre">PGCryptoBackend</span></code> so encryption and decryption run server-side
+via <code class="docutils literal notranslate"><span class="pre">bind_expression</span></code>/<code class="docutils literal notranslate"><span class="pre">column_expression</span></code> (<code class="docutils literal notranslate"><span class="pre">pgp_sym_encrypt</span></code> /
+<code class="docutils literal notranslate"><span class="pre">pgp_sym_decrypt</span></code>), round-tripping correctly on PostgreSQL with the
+<code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code> extension enabled. Deprecates the random default encryption key:
+constructing <code class="docutils literal notranslate"><span class="pre">EncryptedString</span></code>/<code class="docutils literal notranslate"><span class="pre">EncryptedText</span></code> without a <code class="docutils literal notranslate"><span class="pre">key</span></code> now
+warns, since the random default changed per process restart and left rows
+undecryptable. <code class="docutils literal notranslate"><span class="pre">PasswordHash</span></code> gains rehash-on-verify via
+<code class="docutils literal notranslate"><span class="pre">HashedPassword.verify_and_update</span></code> (backends gained <code class="docutils literal notranslate"><span class="pre">needs_rehash</span></code>). Adds
+two new column types: <code class="docutils literal notranslate"><span class="pre">TOTPSecret</span></code> (a base32 TOTP secret encrypted at rest
+with a pyotp-backed provider exposing <code class="docutils literal notranslate"><span class="pre">now</span></code>/<code class="docutils literal notranslate"><span class="pre">verify</span></code>/<code class="docutils literal notranslate"><span class="pre">provisioning_uri</span></code>
+and a <code class="docutils literal notranslate"><span class="pre">generate_totp_secret</span></code> helper) and <code class="docutils literal notranslate"><span class="pre">OneTimeCode</span></code> (a code hashed in
+a JSON column that also tracks expiry, single-use redemption, and wrong-guess
+lockout, with a <code class="docutils literal notranslate"><span class="pre">generate_one_time_code</span></code> helper). Adds the
+<code class="docutils literal notranslate"><span class="pre">cryptography</span></code> and <code class="docutils literal notranslate"><span class="pre">pyotp</span></code> optional-dependency extras; <code class="docutils literal notranslate"><span class="pre">FernetBackend</span></code>
+now raises <code class="docutils literal notranslate"><span class="pre">MissingDependencyError</span></code> when <code class="docutils literal notranslate"><span class="pre">cryptography</span></code> is absent.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/758">https://github.com/litestar-org/advanced-alchemy/pull/758</a></span></p>
 </div>
 </dd>
 <dt>add configurable schema dump settings<a class="headerlink reference internal" href="#1.11.0-add configurable schema dump settings" id="1.11.0-add configurable schema dump settings">#</a></dt><dd><div class="changelog-change docutils container">
@@ -643,16 +640,6 @@ deprecated parameter specification patterns.</p>
 <section id="1.11.0-bugfix">
 <h3>Bugfixes<a class="headerlink" href="#1.11.0-bugfix" title="Link to this heading">¶</a></h3>
 <dl>
-<dt>fix non-functional PGCryptoBackend<a class="headerlink reference internal" href="#1.11.0-fix non-functional pgcryptobackend" id="1.11.0-fix non-functional pgcryptobackend">#</a></dt><dd><div class="changelog-change docutils container">
-<p><code class="docutils literal notranslate"><span class="pre">PGCryptoBackend</span></code> never initialized its engine (the base <code class="docutils literal notranslate"><span class="pre">mount_vault</span></code>
-did not call <code class="docutils literal notranslate"><span class="pre">init_engine</span></code>), and even past that, the type encrypted via
-<code class="docutils literal notranslate"><span class="pre">process_bind_param</span></code> which cannot bind a SQL function. <code class="docutils literal notranslate"><span class="pre">PGCryptoBackend</span></code>
-now runs <code class="docutils literal notranslate"><span class="pre">pgp_sym_encrypt</span></code>/<code class="docutils literal notranslate"><span class="pre">pgp_sym_decrypt</span></code> server-side via
-<code class="docutils literal notranslate"><span class="pre">bind_expression</span></code>/<code class="docutils literal notranslate"><span class="pre">column_expression</span></code> and round-trips correctly against
-PostgreSQL (the <code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code> extension must be enabled on the database).</p>
-<p>References: </p>
-</div>
-</dd>
 <dt>support Typer 0.26 in the FastAPI CLI integration<a class="headerlink reference internal" href="#1.11.0-support typer 0.26 in the fastapi cli integration" id="1.11.0-support typer 0.26 in the fastapi cli integration">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Adapts FastAPI CLI registration for Typer 0.26 and newer, where Typer
 no longer accepts external Click command groups directly. The FastAPI
@@ -685,23 +672,6 @@ corrected for warning-free docs builds.</p>
 <section id="1.11.0-misc">
 <h3>Other changes<a class="headerlink" href="#1.11.0-misc" title="Link to this heading">¶</a></h3>
 <dl>
-<dt>deprecate the random default encryption key<a class="headerlink reference internal" href="#1.11.0-deprecate the random default encryption key" id="1.11.0-deprecate the random default encryption key">#</a></dt><dd><div class="changelog-change docutils container">
-<p><code class="docutils literal notranslate"><span class="pre">EncryptedString</span></code> and <code class="docutils literal notranslate"><span class="pre">EncryptedText</span></code> now emit a <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code>
-when constructed without an explicit <code class="docutils literal notranslate"><span class="pre">key</span></code>. The previous random default
-changes on every process restart, which makes previously written rows
-undecryptable. Provide a stable key — a string, bytes, or a callable that
-reads it from configuration. The new <code class="docutils literal notranslate"><span class="pre">TOTPSecret</span></code> type requires a key
-outright. The default <code class="docutils literal notranslate"><span class="pre">FernetBackend</span></code> now raises <code class="docutils literal notranslate"><span class="pre">MissingDependencyError</span></code>
-when <code class="docutils literal notranslate"><span class="pre">cryptography</span></code> is not installed.</p>
-<p>References: </p>
-</div>
-</dd>
-<dt>add cryptography and pyotp extras<a class="headerlink reference internal" href="#1.11.0-add cryptography and pyotp extras" id="1.11.0-add cryptography and pyotp extras">#</a></dt><dd><div class="changelog-change docutils container">
-<p>Adds the <code class="docutils literal notranslate"><span class="pre">advanced_alchemy[cryptography]</span></code> and <code class="docutils literal notranslate"><span class="pre">advanced_alchemy[pyotp]</span></code>
-optional-dependency extras.</p>
-<p>References: </p>
-</div>
-</dd>
 <dt>deprecate DictProtocol<a class="headerlink reference internal" href="#1.11.0-deprecate dictprotocol" id="1.11.0-deprecate dictprotocol">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Deprecates <code class="docutils literal notranslate"><span class="pre">advanced_alchemy.typing.DictProtocol</span></code> and schedules it
 for removal in 2.0. Runtime code should rely on <code class="docutils literal notranslate"><span class="pre">has_dict_attribute()</span></code>
