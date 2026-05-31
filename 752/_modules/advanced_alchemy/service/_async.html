@@ -299,7 +299,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="27"><span class="p">)</span>
 </span><span data-line="28"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository._util</span><span class="w"> </span><span class="kn">import</span> <span class="n">LoadSpec</span><span class="p">,</span> <span class="n">model_from_dict</span>
 </span><span data-line="29"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">MISSING</span><span class="p">,</span> <span class="n">ModelT</span><span class="p">,</span> <span class="n">OrderingPair</span><span class="p">,</span> <span class="n">PrimaryKeyType</span><span class="p">,</span> <span class="n">SQLAlchemyAsyncRepositoryT</span>
-</span><span data-line="30"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service._util</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResultConverter</span>
+</span><span data-line="30"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service._util</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResultConverter</span><span class="p">,</span> <span class="n">resolve_item_ids</span>
 </span><span data-line="31"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.dataclass</span><span class="w"> </span><span class="kn">import</span> <span class="n">Empty</span><span class="p">,</span> <span class="n">EmptyType</span>
 </span><span data-line="32"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.deprecation</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn_deprecation</span>
 </span><span data-line="33"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.serialization</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -1742,85 +1742,76 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="1376"><span class="sd">            ...     ]</span>
 </span><span data-line="1377"><span class="sd">            ... )</span>
 </span><span data-line="1378"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="1379">        <span class="n">resolved_item_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">PrimaryKeyType</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="1380">        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">item_ids</span><span class="p">:</span>
-</span><span data-line="1381">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">):</span>
-</span><span data-line="1382">                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">has_composite_pk</span><span class="p">:</span>
-</span><span data-line="1383">                    <span class="n">resolved_item_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_primary_key_value</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
-</span><span data-line="1384">                <span class="k">else</span><span class="p">:</span>
-</span><span data-line="1385">                    <span class="n">resolved_item_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span data-line="1386">                        <span class="n">cast</span><span class="p">(</span>
-</span><span data-line="1387">                            <span class="s2">&quot;PrimaryKeyType&quot;</span><span class="p">,</span>
-</span><span data-line="1388">                            <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_id_attribute_value</span><span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">,</span> <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">),</span>
-</span><span data-line="1389">                        <span class="p">)</span>
-</span><span data-line="1390">                    <span class="p">)</span>
-</span><span data-line="1391">            <span class="k">else</span><span class="p">:</span>
-</span><span data-line="1392">                <span class="n">resolved_item_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-</span><span data-line="1393">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>
-</span><span data-line="1394">            <span class="s2">&quot;Sequence[ModelT]&quot;</span><span class="p">,</span>
-</span><span data-line="1395">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">delete_many</span><span class="p">(</span>
-</span><span data-line="1396">                <span class="n">item_ids</span><span class="o">=</span><span class="n">resolved_item_ids</span><span class="p">,</span>
-</span><span data-line="1397">                <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
-</span><span data-line="1398">                <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">,</span>
-</span><span data-line="1399">                <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">,</span>
-</span><span data-line="1400">                <span class="n">chunk_size</span><span class="o">=</span><span class="n">chunk_size</span><span class="p">,</span>
-</span><span data-line="1401">                <span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span>
-</span><span data-line="1402">                <span class="n">load</span><span class="o">=</span><span class="n">load</span><span class="p">,</span>
-</span><span data-line="1403">                <span class="n">execution_options</span><span class="o">=</span><span class="n">execution_options</span><span class="p">,</span>
-</span><span data-line="1404">                <span class="n">uniquify</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_uniquify</span><span class="p">(</span><span class="n">uniquify</span><span class="p">),</span>
-</span><span data-line="1405">                <span class="n">bind_group</span><span class="o">=</span><span class="n">bind_group</span><span class="p">,</span>
-</span><span data-line="1406">            <span class="p">),</span>
-</span><span data-line="1407">        <span class="p">)</span></div>
+</span><span data-line="1379">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>
+</span><span data-line="1380">            <span class="s2">&quot;Sequence[ModelT]&quot;</span><span class="p">,</span>
+</span><span data-line="1381">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">delete_many</span><span class="p">(</span>
+</span><span data-line="1382">                <span class="n">item_ids</span><span class="o">=</span><span class="n">resolve_item_ids</span><span class="p">(</span>
+</span><span data-line="1383">                    <span class="n">item_ids</span><span class="p">,</span>
+</span><span data-line="1384">                    <span class="n">model_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span>
+</span><span data-line="1385">                    <span class="n">repository</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="p">,</span>
+</span><span data-line="1386">                    <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">,</span>
+</span><span data-line="1387">                <span class="p">),</span>
+</span><span data-line="1388">                <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
+</span><span data-line="1389">                <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">,</span>
+</span><span data-line="1390">                <span class="n">id_attribute</span><span class="o">=</span><span class="n">id_attribute</span><span class="p">,</span>
+</span><span data-line="1391">                <span class="n">chunk_size</span><span class="o">=</span><span class="n">chunk_size</span><span class="p">,</span>
+</span><span data-line="1392">                <span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span>
+</span><span data-line="1393">                <span class="n">load</span><span class="o">=</span><span class="n">load</span><span class="p">,</span>
+</span><span data-line="1394">                <span class="n">execution_options</span><span class="o">=</span><span class="n">execution_options</span><span class="p">,</span>
+</span><span data-line="1395">                <span class="n">uniquify</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_uniquify</span><span class="p">(</span><span class="n">uniquify</span><span class="p">),</span>
+</span><span data-line="1396">                <span class="n">bind_group</span><span class="o">=</span><span class="n">bind_group</span><span class="p">,</span>
+</span><span data-line="1397">            <span class="p">),</span>
+</span><span data-line="1398">        <span class="p">)</span></div>
 
-</span><span data-line="1408">
+</span><span data-line="1399">
 <div class="viewcode-block" id="SQLAlchemyAsyncRepositoryService.delete_where">
 <a class="viewcode-back" href="../../../reference/service.html#advanced_alchemy.service.SQLAlchemyAsyncRepositoryService.delete_where">[docs]</a>
-</span><span data-line="1409">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">delete_where</span><span class="p">(</span>
-</span><span data-line="1410">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="1411">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">StatementFilter</span><span class="p">,</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">]],</span>
-</span><span data-line="1412">        <span class="n">auto_commit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="1413">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="1414">        <span class="n">error_messages</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ErrorMessages</span><span class="p">,</span> <span class="n">EmptyType</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Empty</span><span class="p">,</span>
-</span><span data-line="1415">        <span class="n">sanity_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span data-line="1416">        <span class="n">load</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LoadSpec</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="1417">        <span class="n">execution_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="1418">        <span class="n">uniquify</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="1419">        <span class="n">bind_group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="1420">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="1421">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
-</span><span data-line="1422"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap repository scalars operation.</span>
-</span><span data-line="1423">
-</span><span data-line="1424"><span class="sd">        Args:</span>
-</span><span data-line="1425"><span class="sd">            *filters: Types for specific filtering operations.</span>
-</span><span data-line="1426"><span class="sd">            auto_expunge: Remove object from session before returning.</span>
-</span><span data-line="1427"><span class="sd">            auto_commit: Commit objects before returning.</span>
-</span><span data-line="1428"><span class="sd">            error_messages: An optional dictionary of templates to use</span>
-</span><span data-line="1429"><span class="sd">                for friendlier error messages to clients</span>
-</span><span data-line="1430"><span class="sd">            sanity_check: When true, the length of selected instances is compared to the deleted row count</span>
-</span><span data-line="1431"><span class="sd">            load: Set default relationships to be loaded</span>
-</span><span data-line="1432"><span class="sd">            execution_options: Set default execution options</span>
-</span><span data-line="1433"><span class="sd">            uniquify: Optionally apply the ``unique()`` method to results before returning.</span>
-</span><span data-line="1434"><span class="sd">            bind_group: Optional routing group to use for the operation.</span>
-</span><span data-line="1435"><span class="sd">            **kwargs: Instance attribute value filters.</span>
-</span><span data-line="1436">
-</span><span data-line="1437"><span class="sd">        Returns:</span>
-</span><span data-line="1438"><span class="sd">            The list of instances deleted from the repository.</span>
-</span><span data-line="1439"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="1440">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>
-</span><span data-line="1441">            <span class="s2">&quot;Sequence[ModelT]&quot;</span><span class="p">,</span>
-</span><span data-line="1442">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">delete_where</span><span class="p">(</span>
-</span><span data-line="1443">                <span class="o">*</span><span class="n">filters</span><span class="p">,</span>
-</span><span data-line="1444">                <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
-</span><span data-line="1445">                <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">,</span>
-</span><span data-line="1446">                <span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span>
-</span><span data-line="1447">                <span class="n">sanity_check</span><span class="o">=</span><span class="n">sanity_check</span><span class="p">,</span>
-</span><span data-line="1448">                <span class="n">load</span><span class="o">=</span><span class="n">load</span><span class="p">,</span>
-</span><span data-line="1449">                <span class="n">execution_options</span><span class="o">=</span><span class="n">execution_options</span><span class="p">,</span>
-</span><span data-line="1450">                <span class="n">uniquify</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_uniquify</span><span class="p">(</span><span class="n">uniquify</span><span class="p">),</span>
-</span><span data-line="1451">                <span class="n">bind_group</span><span class="o">=</span><span class="n">bind_group</span><span class="p">,</span>
-</span><span data-line="1452">                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-</span><span data-line="1453">            <span class="p">),</span>
-</span><span data-line="1454">        <span class="p">)</span></div>
+</span><span data-line="1400">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">delete_where</span><span class="p">(</span>
+</span><span data-line="1401">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="1402">        <span class="o">*</span><span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">StatementFilter</span><span class="p">,</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">]],</span>
+</span><span data-line="1403">        <span class="n">auto_commit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="1404">        <span class="n">auto_expunge</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="1405">        <span class="n">error_messages</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ErrorMessages</span><span class="p">,</span> <span class="n">EmptyType</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Empty</span><span class="p">,</span>
+</span><span data-line="1406">        <span class="n">sanity_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="1407">        <span class="n">load</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LoadSpec</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="1408">        <span class="n">execution_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="1409">        <span class="n">uniquify</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="1410">        <span class="n">bind_group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="1411">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="1412">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ModelT</span><span class="p">]:</span>
+</span><span data-line="1413"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap repository scalars operation.</span>
+</span><span data-line="1414">
+</span><span data-line="1415"><span class="sd">        Args:</span>
+</span><span data-line="1416"><span class="sd">            *filters: Types for specific filtering operations.</span>
+</span><span data-line="1417"><span class="sd">            auto_expunge: Remove object from session before returning.</span>
+</span><span data-line="1418"><span class="sd">            auto_commit: Commit objects before returning.</span>
+</span><span data-line="1419"><span class="sd">            error_messages: An optional dictionary of templates to use</span>
+</span><span data-line="1420"><span class="sd">                for friendlier error messages to clients</span>
+</span><span data-line="1421"><span class="sd">            sanity_check: When true, the length of selected instances is compared to the deleted row count</span>
+</span><span data-line="1422"><span class="sd">            load: Set default relationships to be loaded</span>
+</span><span data-line="1423"><span class="sd">            execution_options: Set default execution options</span>
+</span><span data-line="1424"><span class="sd">            uniquify: Optionally apply the ``unique()`` method to results before returning.</span>
+</span><span data-line="1425"><span class="sd">            bind_group: Optional routing group to use for the operation.</span>
+</span><span data-line="1426"><span class="sd">            **kwargs: Instance attribute value filters.</span>
+</span><span data-line="1427">
+</span><span data-line="1428"><span class="sd">        Returns:</span>
+</span><span data-line="1429"><span class="sd">            The list of instances deleted from the repository.</span>
+</span><span data-line="1430"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="1431">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>
+</span><span data-line="1432">            <span class="s2">&quot;Sequence[ModelT]&quot;</span><span class="p">,</span>
+</span><span data-line="1433">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">delete_where</span><span class="p">(</span>
+</span><span data-line="1434">                <span class="o">*</span><span class="n">filters</span><span class="p">,</span>
+</span><span data-line="1435">                <span class="n">auto_commit</span><span class="o">=</span><span class="n">auto_commit</span><span class="p">,</span>
+</span><span data-line="1436">                <span class="n">auto_expunge</span><span class="o">=</span><span class="n">auto_expunge</span><span class="p">,</span>
+</span><span data-line="1437">                <span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span>
+</span><span data-line="1438">                <span class="n">sanity_check</span><span class="o">=</span><span class="n">sanity_check</span><span class="p">,</span>
+</span><span data-line="1439">                <span class="n">load</span><span class="o">=</span><span class="n">load</span><span class="p">,</span>
+</span><span data-line="1440">                <span class="n">execution_options</span><span class="o">=</span><span class="n">execution_options</span><span class="p">,</span>
+</span><span data-line="1441">                <span class="n">uniquify</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_uniquify</span><span class="p">(</span><span class="n">uniquify</span><span class="p">),</span>
+</span><span data-line="1442">                <span class="n">bind_group</span><span class="o">=</span><span class="n">bind_group</span><span class="p">,</span>
+</span><span data-line="1443">                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span data-line="1444">            <span class="p">),</span>
+</span><span data-line="1445">        <span class="p">)</span></div>
 </div>
 
 </span></pre></div>
