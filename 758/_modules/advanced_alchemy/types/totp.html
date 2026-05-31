@@ -336,177 +336,182 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="57"><span class="sd">            interval: Time step in seconds. Defaults to 30.</span>
 </span><span data-line="58"><span class="sd">            digest: Hash algorithm passed to pyotp (None selects SHA1).</span>
 </span><span data-line="59"><span class="sd">            issuer: Default issuer used for provisioning URIs.</span>
-</span><span data-line="60"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="61">        <span class="bp">self</span><span class="o">.</span><span class="n">_secret</span> <span class="o">=</span> <span class="n">secret</span>
-</span><span data-line="62">        <span class="bp">self</span><span class="o">.</span><span class="n">_digits</span> <span class="o">=</span> <span class="n">digits</span>
-</span><span data-line="63">        <span class="bp">self</span><span class="o">.</span><span class="n">_interval</span> <span class="o">=</span> <span class="n">interval</span>
-</span><span data-line="64">        <span class="bp">self</span><span class="o">.</span><span class="n">_digest</span> <span class="o">=</span> <span class="n">digest</span>
-</span><span data-line="65">        <span class="bp">self</span><span class="o">.</span><span class="n">_issuer</span> <span class="o">=</span> <span class="n">issuer</span></div>
+</span><span data-line="60">
+</span><span data-line="61"><span class="sd">        Raises:</span>
+</span><span data-line="62"><span class="sd">            MissingDependencyError: If the ``pyotp`` package is not installed.</span>
+</span><span data-line="63"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="64">        <span class="k">if</span> <span class="ow">not</span> <span class="n">PYOTP_INSTALLED</span><span class="p">:</span>
+</span><span data-line="65">            <span class="k">raise</span> <span class="n">MissingDependencyError</span><span class="p">(</span><span class="n">package</span><span class="o">=</span><span class="s2">&quot;pyotp&quot;</span><span class="p">)</span>
+</span><span data-line="66">        <span class="bp">self</span><span class="o">.</span><span class="n">_secret</span> <span class="o">=</span> <span class="n">secret</span>
+</span><span data-line="67">        <span class="bp">self</span><span class="o">.</span><span class="n">_digits</span> <span class="o">=</span> <span class="n">digits</span>
+</span><span data-line="68">        <span class="bp">self</span><span class="o">.</span><span class="n">_interval</span> <span class="o">=</span> <span class="n">interval</span>
+</span><span data-line="69">        <span class="bp">self</span><span class="o">.</span><span class="n">_digest</span> <span class="o">=</span> <span class="n">digest</span>
+</span><span data-line="70">        <span class="bp">self</span><span class="o">.</span><span class="n">_issuer</span> <span class="o">=</span> <span class="n">issuer</span></div>
 
-</span><span data-line="66">
-</span><span data-line="67">    <span class="nd">@property</span>
-</span><span data-line="68">    <span class="k">def</span><span class="w"> </span><span class="nf">secret</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span data-line="69"><span class="w">        </span><span class="sd">&quot;&quot;&quot;The decrypted base32 secret.&quot;&quot;&quot;</span>
-</span><span data-line="70">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_secret</span>
 </span><span data-line="71">
-</span><span data-line="72">    <span class="k">def</span><span class="w"> </span><span class="nf">_totp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span data-line="73">        <span class="kn">import</span><span class="w"> </span><span class="nn">pyotp</span>
-</span><span data-line="74">
-</span><span data-line="75">        <span class="k">return</span> <span class="n">pyotp</span><span class="o">.</span><span class="n">TOTP</span><span class="p">(</span>
-</span><span data-line="76">            <span class="bp">self</span><span class="o">.</span><span class="n">_secret</span><span class="p">,</span>
-</span><span data-line="77">            <span class="n">digits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_digits</span><span class="p">,</span>
-</span><span data-line="78">            <span class="n">digest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_digest</span><span class="p">,</span>
-</span><span data-line="79">            <span class="n">interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_interval</span><span class="p">,</span>
-</span><span data-line="80">            <span class="n">issuer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_issuer</span><span class="p">,</span>
-</span><span data-line="81">        <span class="p">)</span>
-</span><span data-line="82">
+</span><span data-line="72">    <span class="nd">@property</span>
+</span><span data-line="73">    <span class="k">def</span><span class="w"> </span><span class="nf">secret</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="74"><span class="w">        </span><span class="sd">&quot;&quot;&quot;The decrypted base32 secret.&quot;&quot;&quot;</span>
+</span><span data-line="75">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_secret</span>
+</span><span data-line="76">
+</span><span data-line="77">    <span class="k">def</span><span class="w"> </span><span class="nf">_totp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="78">        <span class="kn">import</span><span class="w"> </span><span class="nn">pyotp</span>
+</span><span data-line="79">
+</span><span data-line="80">        <span class="k">return</span> <span class="n">pyotp</span><span class="o">.</span><span class="n">TOTP</span><span class="p">(</span>
+</span><span data-line="81">            <span class="bp">self</span><span class="o">.</span><span class="n">_secret</span><span class="p">,</span>
+</span><span data-line="82">            <span class="n">digits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_digits</span><span class="p">,</span>
+</span><span data-line="83">            <span class="n">digest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_digest</span><span class="p">,</span>
+</span><span data-line="84">            <span class="n">interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_interval</span><span class="p">,</span>
+</span><span data-line="85">            <span class="n">issuer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_issuer</span><span class="p">,</span>
+</span><span data-line="86">        <span class="p">)</span>
+</span><span data-line="87">
 <div class="viewcode-block" id="TOTPProvider.now">
 <a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.TOTPProvider.now">[docs]</a>
-</span><span data-line="83">    <span class="k">def</span><span class="w"> </span><span class="nf">now</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span data-line="84"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the current TOTP code.</span>
-</span><span data-line="85">
-</span><span data-line="86"><span class="sd">        Returns:</span>
-</span><span data-line="87"><span class="sd">            The zero-padded code for the current time step.</span>
-</span><span data-line="88"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="89">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_totp</span><span class="p">()</span><span class="o">.</span><span class="n">now</span><span class="p">())</span></div>
-
+</span><span data-line="88">    <span class="k">def</span><span class="w"> </span><span class="nf">now</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="89"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the current TOTP code.</span>
 </span><span data-line="90">
+</span><span data-line="91"><span class="sd">        Returns:</span>
+</span><span data-line="92"><span class="sd">            The zero-padded code for the current time step.</span>
+</span><span data-line="93"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="94">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_totp</span><span class="p">()</span><span class="o">.</span><span class="n">now</span><span class="p">())</span></div>
+
+</span><span data-line="95">
 <div class="viewcode-block" id="TOTPProvider.verify">
 <a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.TOTPProvider.verify">[docs]</a>
-</span><span data-line="91">    <span class="k">def</span><span class="w"> </span><span class="nf">verify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">valid_window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span data-line="92"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Verify a code, tolerating ``valid_window`` ticks of clock drift each way.</span>
-</span><span data-line="93">
-</span><span data-line="94"><span class="sd">        Args:</span>
-</span><span data-line="95"><span class="sd">            code: The candidate code.</span>
-</span><span data-line="96"><span class="sd">            valid_window: Number of time steps of drift accepted on each side. Defaults to 1.</span>
-</span><span data-line="97">
-</span><span data-line="98"><span class="sd">        Returns:</span>
-</span><span data-line="99"><span class="sd">            True if the code is valid within the window, False otherwise.</span>
-</span><span data-line="100"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="101">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_totp</span><span class="p">()</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">valid_window</span><span class="o">=</span><span class="n">valid_window</span><span class="p">))</span></div>
-
+</span><span data-line="96">    <span class="k">def</span><span class="w"> </span><span class="nf">verify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">valid_window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span data-line="97"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Verify a code, tolerating ``valid_window`` ticks of clock drift each way.</span>
+</span><span data-line="98">
+</span><span data-line="99"><span class="sd">        Args:</span>
+</span><span data-line="100"><span class="sd">            code: The candidate code.</span>
+</span><span data-line="101"><span class="sd">            valid_window: Number of time steps of drift accepted on each side. Defaults to 1.</span>
 </span><span data-line="102">
+</span><span data-line="103"><span class="sd">        Returns:</span>
+</span><span data-line="104"><span class="sd">            True if the code is valid within the window, False otherwise.</span>
+</span><span data-line="105"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="106">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_totp</span><span class="p">()</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">valid_window</span><span class="o">=</span><span class="n">valid_window</span><span class="p">))</span></div>
+
+</span><span data-line="107">
 <div class="viewcode-block" id="TOTPProvider.provisioning_uri">
 <a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.TOTPProvider.provisioning_uri">[docs]</a>
-</span><span data-line="103">    <span class="k">def</span><span class="w"> </span><span class="nf">provisioning_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Optional[str]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">issuer_name</span><span class="p">:</span> <span class="s2">&quot;Optional[str]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span data-line="104"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an ``otpauth://`` provisioning URI for QR enrollment.</span>
-</span><span data-line="105">
-</span><span data-line="106"><span class="sd">        Args:</span>
-</span><span data-line="107"><span class="sd">            name: The account name (e.g. the user&#39;s email).</span>
-</span><span data-line="108"><span class="sd">            issuer_name: The issuer label; falls back to the type&#39;s configured issuer.</span>
-</span><span data-line="109">
-</span><span data-line="110"><span class="sd">        Returns:</span>
-</span><span data-line="111"><span class="sd">            The provisioning URI string.</span>
-</span><span data-line="112"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="113">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_totp</span><span class="p">()</span><span class="o">.</span><span class="n">provisioning_uri</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">issuer_name</span><span class="o">=</span><span class="n">issuer_name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_issuer</span><span class="p">))</span></div>
+</span><span data-line="108">    <span class="k">def</span><span class="w"> </span><span class="nf">provisioning_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Optional[str]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">issuer_name</span><span class="p">:</span> <span class="s2">&quot;Optional[str]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="109"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an ``otpauth://`` provisioning URI for QR enrollment.</span>
+</span><span data-line="110">
+</span><span data-line="111"><span class="sd">        Args:</span>
+</span><span data-line="112"><span class="sd">            name: The account name (e.g. the user&#39;s email).</span>
+</span><span data-line="113"><span class="sd">            issuer_name: The issuer label; falls back to the type&#39;s configured issuer.</span>
+</span><span data-line="114">
+</span><span data-line="115"><span class="sd">        Returns:</span>
+</span><span data-line="116"><span class="sd">            The provisioning URI string.</span>
+</span><span data-line="117"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="118">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_totp</span><span class="p">()</span><span class="o">.</span><span class="n">provisioning_uri</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">issuer_name</span><span class="o">=</span><span class="n">issuer_name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_issuer</span><span class="p">))</span></div>
 </div>
 
-</span><span data-line="114">
-</span><span data-line="115">
+</span><span data-line="119">
+</span><span data-line="120">
 <div class="viewcode-block" id="TOTPSecret">
 <a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.TOTPSecret">[docs]</a>
-</span><span data-line="116"><span class="k">class</span><span class="w"> </span><span class="nc">TOTPSecret</span><span class="p">(</span><span class="n">EncryptedString</span><span class="p">):</span>
-</span><span data-line="117"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Stores a TOTP shared secret encrypted at rest, returning a :class:`TOTPProvider` on read.</span>
-</span><span data-line="118">
-</span><span data-line="119"><span class="sd">    Storage is identical to :class:`EncryptedString`; the read side wraps the decrypted secret</span>
-</span><span data-line="120"><span class="sd">    in a :class:`TOTPProvider` so callers can generate and verify codes. Requires ``pyotp``.</span>
-</span><span data-line="121"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="122">
-</span><span data-line="123">    <span class="n">cache_ok</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span data-line="124">
+</span><span data-line="121"><span class="k">class</span><span class="w"> </span><span class="nc">TOTPSecret</span><span class="p">(</span><span class="n">EncryptedString</span><span class="p">):</span>
+</span><span data-line="122"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Stores a TOTP shared secret encrypted at rest, returning a :class:`TOTPProvider` on read.</span>
+</span><span data-line="123">
+</span><span data-line="124"><span class="sd">    Storage is identical to :class:`EncryptedString`; the read side wraps the decrypted secret</span>
+</span><span data-line="125"><span class="sd">    in a :class:`TOTPProvider` so callers can generate and verify codes. Requires ``pyotp``.</span>
+</span><span data-line="126"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="127">
+</span><span data-line="128">    <span class="n">cache_ok</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="129">
 <div class="viewcode-block" id="TOTPSecret.__init__">
 <a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.TOTPSecret.__init__">[docs]</a>
-</span><span data-line="125">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-</span><span data-line="126">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="127">        <span class="n">key</span><span class="p">:</span> <span class="s2">&quot;Union[str, bytes, Callable[[], Union[str, bytes]]]&quot;</span><span class="p">,</span>
-</span><span data-line="128">        <span class="n">backend</span><span class="p">:</span> <span class="s2">&quot;type[EncryptionBackend]&quot;</span> <span class="o">=</span> <span class="n">FernetBackend</span><span class="p">,</span>
-</span><span data-line="129">        <span class="n">digits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>
-</span><span data-line="130">        <span class="n">interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
-</span><span data-line="131">        <span class="n">digest</span><span class="p">:</span> <span class="s2">&quot;Optional[Any]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="132">        <span class="n">issuer</span><span class="p">:</span> <span class="s2">&quot;Optional[str]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="133">        <span class="n">length</span><span class="p">:</span> <span class="s2">&quot;Optional[int]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="134">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="135">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="136"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the TOTPSecret type.</span>
-</span><span data-line="137">
-</span><span data-line="138"><span class="sd">        Args:</span>
-</span><span data-line="139"><span class="sd">            key: The encryption key (str/bytes or a callable returning one). Required: unlike</span>
-</span><span data-line="140"><span class="sd">                :class:`EncryptedString`, this new type has no deprecated random default.</span>
-</span><span data-line="141"><span class="sd">            backend: The encryption backend class. Defaults to FernetBackend.</span>
-</span><span data-line="142"><span class="sd">            digits: Number of digits in generated codes. Defaults to 6.</span>
-</span><span data-line="143"><span class="sd">            interval: Time step in seconds. Defaults to 30.</span>
-</span><span data-line="144"><span class="sd">            digest: Hash algorithm passed to pyotp (None selects SHA1).</span>
-</span><span data-line="145"><span class="sd">            issuer: Default issuer used for provisioning URIs.</span>
-</span><span data-line="146"><span class="sd">            length: The unencrypted string length (documentation only).</span>
-</span><span data-line="147"><span class="sd">            **kwargs: Additional arguments passed to the underlying String type.</span>
-</span><span data-line="148">
-</span><span data-line="149"><span class="sd">        Raises:</span>
-</span><span data-line="150"><span class="sd">            MissingDependencyError: If the ``pyotp`` package is not installed.</span>
-</span><span data-line="151"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="152">        <span class="k">if</span> <span class="ow">not</span> <span class="n">PYOTP_INSTALLED</span><span class="p">:</span>
-</span><span data-line="153">            <span class="k">raise</span> <span class="n">MissingDependencyError</span><span class="p">(</span><span class="n">package</span><span class="o">=</span><span class="s2">&quot;pyotp&quot;</span><span class="p">)</span>
-</span><span data-line="154">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span data-line="155">        <span class="bp">self</span><span class="o">.</span><span class="n">digits</span> <span class="o">=</span> <span class="n">digits</span>
-</span><span data-line="156">        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="n">interval</span>
-</span><span data-line="157">        <span class="bp">self</span><span class="o">.</span><span class="n">digest</span> <span class="o">=</span> <span class="n">digest</span>
-</span><span data-line="158">        <span class="bp">self</span><span class="o">.</span><span class="n">issuer</span> <span class="o">=</span> <span class="n">issuer</span></div>
+</span><span data-line="130">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="131">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="132">        <span class="n">key</span><span class="p">:</span> <span class="s2">&quot;Union[str, bytes, Callable[[], Union[str, bytes]]]&quot;</span><span class="p">,</span>
+</span><span data-line="133">        <span class="n">backend</span><span class="p">:</span> <span class="s2">&quot;type[EncryptionBackend]&quot;</span> <span class="o">=</span> <span class="n">FernetBackend</span><span class="p">,</span>
+</span><span data-line="134">        <span class="n">digits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>
+</span><span data-line="135">        <span class="n">interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
+</span><span data-line="136">        <span class="n">digest</span><span class="p">:</span> <span class="s2">&quot;Optional[Any]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="137">        <span class="n">issuer</span><span class="p">:</span> <span class="s2">&quot;Optional[str]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="138">        <span class="n">length</span><span class="p">:</span> <span class="s2">&quot;Optional[int]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="139">        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="140">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="141"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the TOTPSecret type.</span>
+</span><span data-line="142">
+</span><span data-line="143"><span class="sd">        Args:</span>
+</span><span data-line="144"><span class="sd">            key: The encryption key (str/bytes or a callable returning one). Required: unlike</span>
+</span><span data-line="145"><span class="sd">                :class:`EncryptedString`, this new type has no deprecated random default.</span>
+</span><span data-line="146"><span class="sd">            backend: The encryption backend class. Defaults to FernetBackend.</span>
+</span><span data-line="147"><span class="sd">            digits: Number of digits in generated codes. Defaults to 6.</span>
+</span><span data-line="148"><span class="sd">            interval: Time step in seconds. Defaults to 30.</span>
+</span><span data-line="149"><span class="sd">            digest: Hash algorithm passed to pyotp (None selects SHA1).</span>
+</span><span data-line="150"><span class="sd">            issuer: Default issuer used for provisioning URIs.</span>
+</span><span data-line="151"><span class="sd">            length: The unencrypted string length (documentation only).</span>
+</span><span data-line="152"><span class="sd">            **kwargs: Additional arguments passed to the underlying String type.</span>
+</span><span data-line="153">
+</span><span data-line="154"><span class="sd">        Raises:</span>
+</span><span data-line="155"><span class="sd">            MissingDependencyError: If the ``pyotp`` package is not installed.</span>
+</span><span data-line="156"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="157">        <span class="k">if</span> <span class="ow">not</span> <span class="n">PYOTP_INSTALLED</span><span class="p">:</span>
+</span><span data-line="158">            <span class="k">raise</span> <span class="n">MissingDependencyError</span><span class="p">(</span><span class="n">package</span><span class="o">=</span><span class="s2">&quot;pyotp&quot;</span><span class="p">)</span>
+</span><span data-line="159">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="160">        <span class="bp">self</span><span class="o">.</span><span class="n">digits</span> <span class="o">=</span> <span class="n">digits</span>
+</span><span data-line="161">        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="n">interval</span>
+</span><span data-line="162">        <span class="bp">self</span><span class="o">.</span><span class="n">digest</span> <span class="o">=</span> <span class="n">digest</span>
+</span><span data-line="163">        <span class="bp">self</span><span class="o">.</span><span class="n">issuer</span> <span class="o">=</span> <span class="n">issuer</span></div>
 
-</span><span data-line="159">
+</span><span data-line="164">
 <div class="viewcode-block" id="TOTPSecret.__repr__">
 <a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.TOTPSecret.__repr__">[docs]</a>
-</span><span data-line="160">    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span data-line="161"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a reconstructable representation including the TOTP parameters.</span>
-</span><span data-line="162">
-</span><span data-line="163"><span class="sd">        Overrides :class:`EncryptedString` so Alembic autogenerate reconstructs the type with</span>
-</span><span data-line="164"><span class="sd">        its configured ``digits``/``interval``/``digest``/``issuer`` rather than the defaults.</span>
-</span><span data-line="165"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="166">        <span class="n">key_repr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span> <span class="k">else</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
-</span><span data-line="167">        <span class="k">return</span> <span class="p">(</span>
-</span><span data-line="168">            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(key=</span><span class="si">{</span><span class="n">key_repr</span><span class="si">}</span><span class="s2">, backend=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, &quot;</span>
-</span><span data-line="169">            <span class="sa">f</span><span class="s2">&quot;digits=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">digits</span><span class="si">}</span><span class="s2">, interval=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="si">}</span><span class="s2">, digest=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">digest</span><span class="si">!r}</span><span class="s2">, &quot;</span>
-</span><span data-line="170">            <span class="sa">f</span><span class="s2">&quot;issuer=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">issuer</span><span class="si">!r}</span><span class="s2">, length=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="si">}</span><span class="s2">)&quot;</span>
-</span><span data-line="171">        <span class="p">)</span></div>
+</span><span data-line="165">    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="166"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a reconstructable representation including the TOTP parameters.</span>
+</span><span data-line="167">
+</span><span data-line="168"><span class="sd">        Overrides :class:`EncryptedString` so Alembic autogenerate reconstructs the type with</span>
+</span><span data-line="169"><span class="sd">        its configured ``digits``/``interval``/``digest``/``issuer`` rather than the defaults.</span>
+</span><span data-line="170"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="171">        <span class="n">key_repr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span> <span class="k">else</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+</span><span data-line="172">        <span class="k">return</span> <span class="p">(</span>
+</span><span data-line="173">            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(key=</span><span class="si">{</span><span class="n">key_repr</span><span class="si">}</span><span class="s2">, backend=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, &quot;</span>
+</span><span data-line="174">            <span class="sa">f</span><span class="s2">&quot;digits=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">digits</span><span class="si">}</span><span class="s2">, interval=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="si">}</span><span class="s2">, digest=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">digest</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+</span><span data-line="175">            <span class="sa">f</span><span class="s2">&quot;issuer=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">issuer</span><span class="si">!r}</span><span class="s2">, length=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="si">}</span><span class="s2">)&quot;</span>
+</span><span data-line="176">        <span class="p">)</span></div>
 
-</span><span data-line="172">
+</span><span data-line="177">
 <div class="viewcode-block" id="TOTPSecret.process_bind_param">
 <a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.TOTPSecret.process_bind_param">[docs]</a>
-</span><span data-line="173">    <span class="k">def</span><span class="w"> </span><span class="nf">process_bind_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="s2">&quot;Dialect&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, None]&quot;</span><span class="p">:</span>
-</span><span data-line="174"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Accept a raw secret string or a :class:`TOTPProvider`, then encrypt as usual.</span>
-</span><span data-line="175">
-</span><span data-line="176"><span class="sd">        Args:</span>
-</span><span data-line="177"><span class="sd">            value: The secret string or a TOTPProvider.</span>
-</span><span data-line="178"><span class="sd">            dialect: The SQLAlchemy dialect.</span>
-</span><span data-line="179">
-</span><span data-line="180"><span class="sd">        Returns:</span>
-</span><span data-line="181"><span class="sd">            The encrypted secret, or None.</span>
-</span><span data-line="182"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="183">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">TOTPProvider</span><span class="p">):</span>
-</span><span data-line="184">            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">secret</span>
-</span><span data-line="185">        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">process_bind_param</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">dialect</span><span class="p">)</span></div>
+</span><span data-line="178">    <span class="k">def</span><span class="w"> </span><span class="nf">process_bind_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="s2">&quot;Dialect&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Union[str, None]&quot;</span><span class="p">:</span>
+</span><span data-line="179"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Accept a raw secret string or a :class:`TOTPProvider`, then encrypt as usual.</span>
+</span><span data-line="180">
+</span><span data-line="181"><span class="sd">        Args:</span>
+</span><span data-line="182"><span class="sd">            value: The secret string or a TOTPProvider.</span>
+</span><span data-line="183"><span class="sd">            dialect: The SQLAlchemy dialect.</span>
+</span><span data-line="184">
+</span><span data-line="185"><span class="sd">        Returns:</span>
+</span><span data-line="186"><span class="sd">            The encrypted secret, or None.</span>
+</span><span data-line="187"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="188">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">TOTPProvider</span><span class="p">):</span>
+</span><span data-line="189">            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">secret</span>
+</span><span data-line="190">        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">process_bind_param</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">dialect</span><span class="p">)</span></div>
 
-</span><span data-line="186">
+</span><span data-line="191">
 <div class="viewcode-block" id="TOTPSecret.process_result_value">
 <a class="viewcode-back" href="../../../reference/types.html#advanced_alchemy.types.TOTPSecret.process_result_value">[docs]</a>
-</span><span data-line="187">    <span class="k">def</span><span class="w"> </span><span class="nf">process_result_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="s2">&quot;Dialect&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Optional[TOTPProvider]&quot;</span><span class="p">:</span>  <span class="c1"># type: ignore[override]</span>
-</span><span data-line="188"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Decrypt the stored secret and wrap it in a :class:`TOTPProvider`.</span>
-</span><span data-line="189">
-</span><span data-line="190"><span class="sd">        Args:</span>
-</span><span data-line="191"><span class="sd">            value: The stored encrypted value.</span>
-</span><span data-line="192"><span class="sd">            dialect: The SQLAlchemy dialect.</span>
-</span><span data-line="193">
-</span><span data-line="194"><span class="sd">        Returns:</span>
-</span><span data-line="195"><span class="sd">            A TOTPProvider over the decrypted secret, or None.</span>
-</span><span data-line="196"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="197">        <span class="n">decrypted</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">process_result_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">dialect</span><span class="p">)</span>
-</span><span data-line="198">        <span class="k">if</span> <span class="n">decrypted</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="199">            <span class="k">return</span> <span class="kc">None</span>
-</span><span data-line="200">        <span class="k">return</span> <span class="n">TOTPProvider</span><span class="p">(</span>
-</span><span data-line="201">            <span class="n">decrypted</span><span class="p">,</span>
-</span><span data-line="202">            <span class="n">digits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">digits</span><span class="p">,</span>
-</span><span data-line="203">            <span class="n">interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">,</span>
-</span><span data-line="204">            <span class="n">digest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">digest</span><span class="p">,</span>
-</span><span data-line="205">            <span class="n">issuer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">issuer</span><span class="p">,</span>
-</span><span data-line="206">        <span class="p">)</span></div>
+</span><span data-line="192">    <span class="k">def</span><span class="w"> </span><span class="nf">process_result_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">dialect</span><span class="p">:</span> <span class="s2">&quot;Dialect&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Optional[TOTPProvider]&quot;</span><span class="p">:</span>  <span class="c1"># type: ignore[override]</span>
+</span><span data-line="193"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Decrypt the stored secret and wrap it in a :class:`TOTPProvider`.</span>
+</span><span data-line="194">
+</span><span data-line="195"><span class="sd">        Args:</span>
+</span><span data-line="196"><span class="sd">            value: The stored encrypted value.</span>
+</span><span data-line="197"><span class="sd">            dialect: The SQLAlchemy dialect.</span>
+</span><span data-line="198">
+</span><span data-line="199"><span class="sd">        Returns:</span>
+</span><span data-line="200"><span class="sd">            A TOTPProvider over the decrypted secret, or None.</span>
+</span><span data-line="201"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="202">        <span class="n">decrypted</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">process_result_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">dialect</span><span class="p">)</span>
+</span><span data-line="203">        <span class="k">if</span> <span class="n">decrypted</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="204">            <span class="k">return</span> <span class="kc">None</span>
+</span><span data-line="205">        <span class="k">return</span> <span class="n">TOTPProvider</span><span class="p">(</span>
+</span><span data-line="206">            <span class="n">decrypted</span><span class="p">,</span>
+</span><span data-line="207">            <span class="n">digits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">digits</span><span class="p">,</span>
+</span><span data-line="208">            <span class="n">interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">,</span>
+</span><span data-line="209">            <span class="n">digest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">digest</span><span class="p">,</span>
+</span><span data-line="210">            <span class="n">issuer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">issuer</span><span class="p">,</span>
+</span><span data-line="211">        <span class="p">)</span></div>
 </div>
 
 </span></pre></div>
