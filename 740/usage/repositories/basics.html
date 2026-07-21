@@ -506,10 +506,10 @@ historical SELECT-then-partition-then-add/update path.</p>
 <td><p>No</p></td>
 <td><p>re-SELECT on <code class="docutils literal notranslate"><span class="pre">match_fields</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">spanner</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">spanner+spanner</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">INSERT</span> <span class="pre">OR</span> <span class="pre">UPDATE</span> <span class="pre">INTO</span> <span class="pre">…</span> <span class="pre">(…)</span> <span class="pre">VALUES</span> <span class="pre">(…)</span></code></p></td>
-<td><p>No</p></td>
-<td><p>re-SELECT on <code class="docutils literal notranslate"><span class="pre">match_fields</span></code></p></td>
+<td><p>Yes (<code class="docutils literal notranslate"><span class="pre">THEN</span> <span class="pre">RETURN</span></code>)</p></td>
+<td><p>cursor rows via <code class="docutils literal notranslate"><span class="pre">.returning(model_type)</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>anything else</p></td>
 <td><p>fallback: <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> + <code class="docutils literal notranslate"><span class="pre">add_many</span></code> + <code class="docutils literal notranslate"><span class="pre">update_many</span></code></p></td>
@@ -528,6 +528,10 @@ silently — this is the correctness anchor that prevents non-unique match
 keys from inserting duplicates instead of updating. Deferrable unique
 constraints and partial or expression-based unique indexes also use the
 fallback because they are not portable conflict targets.</p></li>
+<li><p><strong>Spanner primary-key semantics.</strong> <code class="docutils literal notranslate"><span class="pre">INSERT</span> <span class="pre">OR</span> <span class="pre">UPDATE</span></code> determines matches
+only from the primary key. A Spanner unique index can protect alternate
+values, but it is not an equivalent conflict target for this DML form, so
+alternate <code class="docutils literal notranslate"><span class="pre">match_fields</span></code> use the correctness fallback.</p></li>
 <li><p><strong>Deterministic batches.</strong> Duplicate conflict keys in one input batch are
 rejected before execution. Backends otherwise disagree between last-write
 wins and statement failure. Rows with different explicitly supplied update
@@ -539,11 +543,14 @@ fallback, avoiding an update caused by an unrelated unique index.</p></li>
 <li><p><strong>``no_merge=True``</strong> forces the fallback path regardless of dialect
 capability. Use it as a deterministic per-call override for testing or to
 preserve historical per-row <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code>/<code class="docutils literal notranslate"><span class="pre">INSERT</span></code> semantics.</p></li>
-<li><p><strong>``chunk_size``</strong> mirrors <code class="docutils literal notranslate"><span class="pre">add_many</span></code>: each chunk compiles to exactly one
-native statement (plus a re-SELECT for hydration on dialects without
-RETURNING). Smaller chunks reduce the number of rows touched by each
-statement, but write locks are still retained until the surrounding
-transaction commits.</p></li>
+<li><p><strong>``chunk_size``</strong> is an optional parameter cap. When it is omitted, the
+active dialect’s <code class="docutils literal notranslate"><span class="pre">insertmanyvalues_max_parameters</span></code> limit is used, with a
+conservative 950-parameter fallback for dialects that do not publish one.
+Native upserts also respect <code class="docutils literal notranslate"><span class="pre">insertmanyvalues_page_size</span></code>. Each chunk
+compiles to exactly one native statement (plus a re-SELECT for hydration on
+dialects without RETURNING). Smaller chunks reduce the number of rows
+touched by each statement, but write locks are still retained until the
+surrounding transaction commits.</p></li>
 <li><p><strong>SQL Server concurrency.</strong> The MSSQL statement intentionally does not add
 <code class="docutils literal notranslate"><span class="pre">HOLDLOCK</span></code> / <code class="docutils literal notranslate"><span class="pre">SERIALIZABLE</span></code>. That hint prevents a concurrent missing-key
 insert race by retaining key-range locks until transaction end, which can

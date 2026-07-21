@@ -228,6 +228,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.operations.OnConflictUpsert"><code class="docutils literal notranslate"><span class="pre">OnConflictUpsert</span></code></a><ul>
 <li><a class="reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.supports_native_upsert"><code class="docutils literal notranslate"><span class="pre">OnConflictUpsert.supports_native_upsert()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_upsert"><code class="docutils literal notranslate"><span class="pre">OnConflictUpsert.create_upsert()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_insert_or_update_many"><code class="docutils literal notranslate"><span class="pre">OnConflictUpsert.create_insert_or_update_many()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_merge_upsert"><code class="docutils literal notranslate"><span class="pre">OnConflictUpsert.create_merge_upsert()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_upsert_many"><code class="docutils literal notranslate"><span class="pre">OnConflictUpsert.create_upsert_many()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_merge_many"><code class="docutils literal notranslate"><span class="pre">OnConflictUpsert.create_merge_many()</span></code></a></li>
@@ -244,7 +245,6 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.operations.UpsertStrategy.supports_returning"><code class="docutils literal notranslate"><span class="pre">UpsertStrategy.supports_returning</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.operations.UpsertStrategy.conflict_columns"><code class="docutils literal notranslate"><span class="pre">UpsertStrategy.conflict_columns</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.operations.UpsertStrategy.dialect_name"><code class="docutils literal notranslate"><span class="pre">UpsertStrategy.dialect_name</span></code></a></li>
-<li><a class="reference internal" href="#advanced_alchemy.operations.UpsertStrategy.__new__"><code class="docutils literal notranslate"><span class="pre">UpsertStrategy.__new__()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#advanced_alchemy.operations.compile_spanner_upsert_default"><code class="docutils literal notranslate"><span class="pre">compile_spanner_upsert_default()</span></code></a></li>
@@ -501,7 +501,7 @@ mariadb / duckdb; <code class="docutils literal notranslate"><span class="pre">F
 cockroachdb / sqlite / duckdb / mysql / mariadb). MSSQL, Oracle,
 and Spanner are handled by the bulk <code class="docutils literal notranslate"><span class="pre">MERGE</span></code> / <code class="docutils literal notranslate"><span class="pre">INSERT</span> <span class="pre">OR</span> <span class="pre">UPDATE</span></code>
 path in <a class="reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_merge_many" title="advanced_alchemy.operations.OnConflictUpsert.create_merge_many"><code class="xref py py-func docutils literal notranslate"><span class="pre">OnConflictUpsert.create_merge_many()</span></code></a> and
-<a class="reference internal" href="#advanced_alchemy.operations.SpannerUpsert" title="advanced_alchemy.operations.SpannerUpsert"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpannerUpsert</span></code></a>, accessed through
+<a class="reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_insert_or_update_many" title="advanced_alchemy.operations.OnConflictUpsert.create_insert_or_update_many"><code class="xref py py-func docutils literal notranslate"><span class="pre">OnConflictUpsert.create_insert_or_update_many()</span></code></a>, accessed through
 <a class="reference internal" href="#advanced_alchemy.operations.resolve_upsert_strategy" title="advanced_alchemy.operations.resolve_upsert_strategy"><code class="xref py py-func docutils literal notranslate"><span class="pre">resolve_upsert_strategy()</span></code></a> from the repository layer — they
 are not exposed via this single-row API.</p>
 </dd>
@@ -510,6 +510,31 @@ are not exposed via this single-row API.</p>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – If the dialect doesn’t support native upsert</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If validate_identifiers is True and invalid identifiers are found</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.operations.OnConflictUpsert.create_insert_or_update_many">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">create_insert_or_update_many</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/operations.html#OnConflictUpsert.create_insert_or_update_many"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.operations.OnConflictUpsert.create_insert_or_update_many" title="Link to this definition">#</a></dt>
+<dd><p>Create a Spanner <code class="docutils literal notranslate"><span class="pre">INSERT</span> <span class="pre">OR</span> <span class="pre">UPDATE</span></code> using SQLAlchemy’s Insert.</p>
+<p>A regular <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/dml.html#sqlalchemy.sql.expression.Insert" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Insert</span></code></a> retains result-column
+metadata, allowing callers to add <code class="docutils literal notranslate"><span class="pre">returning(model_type)</span></code>. The
+Spanner dialect compiles that combination to <code class="docutils literal notranslate"><span class="pre">THEN</span> <span class="pre">RETURN</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.operations.OnConflictUpsert.create_insert_or_update_many.params.table"></span><strong>table</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_insert_or_update_many.params.table">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/metadata.html#sqlalchemy.schema.Table" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></span>) – Target table for the upsert.</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.OnConflictUpsert.create_insert_or_update_many.params.values_list"></span><strong>values_list</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.OnConflictUpsert.create_insert_or_update_many.params.values_list">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]</span>) – Homogeneous rows to insert or update.</p></li>
+<li><p><strong>table</strong> (<a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/metadata.html#sqlalchemy.schema.Table" title="(in SQLAlchemy v2.0)"><em>Table</em></a>)</p></li>
+<li><p><strong>values_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a><em>]</em><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/dml.html#sqlalchemy.sql.expression.Insert" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Insert</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A multi-values insert prefixed with Spanner’s <code class="docutils literal notranslate"><span class="pre">OR</span> <span class="pre">UPDATE</span></code> token.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -649,8 +674,10 @@ must be passed when executing.</p>
 this with its own ClauseElement (instead of overloading <code class="docutils literal notranslate"><span class="pre">MergeStatement</span></code>)
 because the syntax has no <code class="docutils literal notranslate"><span class="pre">USING</span></code> / <code class="docutils literal notranslate"><span class="pre">WHEN</span> <span class="pre">MATCHED</span></code> shape.</p>
 <p>The PK must be present in every row — Spanner does not auto-generate PKs
-via DML. <code class="docutils literal notranslate"><span class="pre">INSERT</span> <span class="pre">OR</span> <span class="pre">UPDATE</span></code> has no <code class="docutils literal notranslate"><span class="pre">RETURNING</span></code>/<code class="docutils literal notranslate"><span class="pre">OUTPUT</span></code> equivalent;
-callers needing hydration must re-SELECT.</p>
+via DML. This low-level construct does not expose SQLAlchemy result-column
+metadata; repository code that needs hydration uses a regular
+<a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/dml.html#sqlalchemy.sql.expression.Insert" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Insert</span></code></a> with <code class="docutils literal notranslate"><span class="pre">OR</span> <span class="pre">UPDATE</span></code> and <code class="docutils literal notranslate"><span class="pre">returning()</span></code>
+so the Spanner dialect emits <code class="docutils literal notranslate"><span class="pre">THEN</span> <span class="pre">RETURN</span></code>.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.operations.SpannerUpsert.inherit_cache">
 <span class="sig-name descname"><span class="pre">inherit_cache</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></span><a class="headerlink" href="#advanced_alchemy.operations.SpannerUpsert.inherit_cache" title="Link to this definition">#</a></dt>
@@ -736,22 +763,6 @@ exactly the same columns as the caller’s <code class="docutils literal notrans
 <dd><p>Alias for field number 3</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="advanced_alchemy.operations.UpsertStrategy.__new__">
-<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'on_conflict'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'merge'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'insert_or_update'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'fallback'</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supports_returning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">conflict_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dialect_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.operations.UpsertStrategy.__new__" title="Link to this definition">#</a></dt>
-<dd><p>Create new instance of UpsertStrategy(kind, supports_returning, conflict_columns, dialect_name)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>kind</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>'on_conflict'</em><em>, </em><em>'merge'</em><em>, </em><em>'insert_or_update'</em><em>, </em><em>'fallback'</em><em>]</em>)</p></li>
-<li><p><strong>supports_returning</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>)</p></li>
-<li><p><strong>conflict_columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>...</em><em>]</em>)</p></li>
-<li><p><strong>dialect_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py function">
@@ -784,9 +795,12 @@ singletons per declarative class, so this is one decision per
 <li><p><code class="docutils literal notranslate"><span class="pre">match_fields</span></code> equals the table’s primary key →
 native primitive for the dialect, <code class="docutils literal notranslate"><span class="pre">conflict_columns</span></code> is the PK.</p></li>
 <li><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">UniqueConstraint</span></code> whose columns match exactly →
-native primitive, <code class="docutils literal notranslate"><span class="pre">conflict_columns</span></code> is that constraint’s columns.</p></li>
+native primitive where the backend can target it, <code class="docutils literal notranslate"><span class="pre">conflict_columns</span></code>
+is that constraint’s columns.</p></li>
 <li><p>A unique <code class="xref py py-class docutils literal notranslate"><span class="pre">Index</span></code> whose columns match exactly →
-native primitive, <code class="docutils literal notranslate"><span class="pre">conflict_columns</span></code> is that index’s columns.</p></li>
+native primitive where the backend can target it, <code class="docutils literal notranslate"><span class="pre">conflict_columns</span></code>
+is that index’s columns. Spanner <code class="docutils literal notranslate"><span class="pre">INSERT</span> <span class="pre">OR</span> <span class="pre">UPDATE</span></code> only matches the
+primary key, and ambiguous MySQL/MariaDB unique targets fall back.</p></li>
 <li><p>Otherwise → <code class="docutils literal notranslate"><span class="pre">kind=&quot;fallback&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">supports_returning=False</span></code>.</p></li>
 </ol>
 <dl class="field-list simple">
@@ -794,10 +808,11 @@ native primitive, <code class="docutils literal notranslate"><span class="pre">c
 <dd class="field-odd"><ul class="simple">
 <li><p><span class="target" id="advanced_alchemy.operations.resolve_upsert_strategy.params.table"></span><strong>table</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.resolve_upsert_strategy.params.table">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/metadata.html#sqlalchemy.schema.Table" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></span>) – Target table. Used by identity for caching.</p></li>
 <li><p><span class="target" id="advanced_alchemy.operations.resolve_upsert_strategy.params.match_fields"></span><strong>match_fields</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.resolve_upsert_strategy.params.match_fields">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Sequence" title="collections.abc.Sequence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – Columns the caller wants to match on. Order-insensitive.</p></li>
-<li><p><span class="target" id="advanced_alchemy.operations.resolve_upsert_strategy.params.dialect_name"></span><strong>dialect_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.resolve_upsert_strategy.params.dialect_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Database dialect name.</p></li>
+<li><p><span class="target" id="advanced_alchemy.operations.resolve_upsert_strategy.params.dialect_name"></span><strong>dialect_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.operations.resolve_upsert_strategy.params.dialect_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/internals.html#sqlalchemy.engine.Dialect" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dialect</span></code></a>]</span>) – Database dialect or dialect name. Passing the runtime dialect
+allows the resolver to honor its actual RETURNING capability.</p></li>
 <li><p><strong>table</strong> (<a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/metadata.html#sqlalchemy.schema.Table" title="(in SQLAlchemy v2.0)"><em>Table</em></a>)</p></li>
 <li><p><strong>match_fields</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Sequence" title="collections.abc.Sequence"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>]</em>)</p></li>
-<li><p><strong>dialect_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>dialect_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/internals.html#sqlalchemy.engine.Dialect" title="(in SQLAlchemy v2.0)"><em>Dialect</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
