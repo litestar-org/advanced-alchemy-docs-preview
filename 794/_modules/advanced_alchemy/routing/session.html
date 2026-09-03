@@ -292,7 +292,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="20">
 </span><span data-line="21"><span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
 </span><span data-line="22">    <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Engine</span>
-</span><span data-line="23">    <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncEngine</span>
+</span><span data-line="23">    <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncConnection</span><span class="p">,</span> <span class="n">AsyncEngine</span>
 </span><span data-line="24">    <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapper</span>
 </span><span data-line="25">
 </span><span data-line="26">    <span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoutingConfig</span>
@@ -505,79 +505,81 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="214">
 </span><span data-line="215">        <span class="c1"># Convert async selectors to sync selectors for the wrapped session</span>
 </span><span data-line="216">        <span class="n">sync_selectors</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">_SyncEngineSelectorWrapper</span><span class="p">(</span><span class="n">selector</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">selector</span> <span class="ow">in</span> <span class="n">selectors</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-</span><span data-line="217">        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
-</span><span data-line="218">
-</span><span data-line="219">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-</span><span data-line="220">            <span class="n">sync_session_class</span><span class="o">=</span><span class="n">RoutingSyncSession</span><span class="p">,</span>
-</span><span data-line="221">            <span class="n">routing_config</span><span class="o">=</span><span class="n">routing_config</span><span class="p">,</span>
-</span><span data-line="222">            <span class="n">selectors</span><span class="o">=</span><span class="n">sync_selectors</span><span class="p">,</span>
-</span><span data-line="223">            <span class="n">default_engine</span><span class="o">=</span><span class="n">default_engine</span><span class="o">.</span><span class="n">sync_engine</span><span class="p">,</span>
-</span><span data-line="224">            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-</span><span data-line="225">        <span class="p">)</span>
-</span><span data-line="226">        <span class="bp">self</span><span class="o">.</span><span class="n">_default_engine</span> <span class="o">=</span> <span class="n">default_engine</span>
-</span><span data-line="227">        <span class="bp">self</span><span class="o">.</span><span class="n">_selectors</span> <span class="o">=</span> <span class="n">selectors</span>
-</span><span data-line="228">        <span class="bp">self</span><span class="o">.</span><span class="n">_routing_config</span> <span class="o">=</span> <span class="n">routing_config</span></div>
+</span><span data-line="217">        <span class="c1"># In SQLAlchemy this type is either Unbound or AsyncEngine | AsyncConnection.</span>
+</span><span data-line="218">        <span class="c1"># This type ignore guarantees that bind is going to be defined in any case.</span>
+</span><span data-line="219">        <span class="bp">self</span><span class="o">.</span><span class="n">bind</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">AsyncEngine</span><span class="p">,</span> <span class="n">AsyncConnection</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore[assignment]</span>
+</span><span data-line="220">
+</span><span data-line="221">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="222">            <span class="n">sync_session_class</span><span class="o">=</span><span class="n">RoutingSyncSession</span><span class="p">,</span>
+</span><span data-line="223">            <span class="n">routing_config</span><span class="o">=</span><span class="n">routing_config</span><span class="p">,</span>
+</span><span data-line="224">            <span class="n">selectors</span><span class="o">=</span><span class="n">sync_selectors</span><span class="p">,</span>
+</span><span data-line="225">            <span class="n">default_engine</span><span class="o">=</span><span class="n">default_engine</span><span class="o">.</span><span class="n">sync_engine</span><span class="p">,</span>
+</span><span data-line="226">            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span data-line="227">        <span class="p">)</span>
+</span><span data-line="228">        <span class="bp">self</span><span class="o">.</span><span class="n">_default_engine</span> <span class="o">=</span> <span class="n">default_engine</span>
+</span><span data-line="229">        <span class="bp">self</span><span class="o">.</span><span class="n">_selectors</span> <span class="o">=</span> <span class="n">selectors</span>
+</span><span data-line="230">        <span class="bp">self</span><span class="o">.</span><span class="n">_routing_config</span> <span class="o">=</span> <span class="n">routing_config</span></div>
 
-</span><span data-line="229">
-</span><span data-line="230">    <span class="nd">@property</span>
-</span><span data-line="231">    <span class="k">def</span><span class="w"> </span><span class="nf">primary_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AsyncEngine&quot;</span><span class="p">:</span>
-</span><span data-line="232"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the primary (default) async engine.</span>
-</span><span data-line="233">
-</span><span data-line="234"><span class="sd">        Returns:</span>
-</span><span data-line="235"><span class="sd">            The default database engine.</span>
-</span><span data-line="236"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="237">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_engine</span>
-</span><span data-line="238">
-</span><span data-line="239">    <span class="nd">@property</span>
-</span><span data-line="240">    <span class="k">def</span><span class="w"> </span><span class="nf">routing_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RoutingConfig&quot;</span><span class="p">:</span>
-</span><span data-line="241"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the routing configuration.</span>
-</span><span data-line="242">
-</span><span data-line="243"><span class="sd">        Returns:</span>
-</span><span data-line="244"><span class="sd">            The routing configuration.</span>
-</span><span data-line="245"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="246">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_routing_config</span></div>
+</span><span data-line="231">
+</span><span data-line="232">    <span class="nd">@property</span>
+</span><span data-line="233">    <span class="k">def</span><span class="w"> </span><span class="nf">primary_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AsyncEngine&quot;</span><span class="p">:</span>
+</span><span data-line="234"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the primary (default) async engine.</span>
+</span><span data-line="235">
+</span><span data-line="236"><span class="sd">        Returns:</span>
+</span><span data-line="237"><span class="sd">            The default database engine.</span>
+</span><span data-line="238"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="239">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_engine</span>
+</span><span data-line="240">
+</span><span data-line="241">    <span class="nd">@property</span>
+</span><span data-line="242">    <span class="k">def</span><span class="w"> </span><span class="nf">routing_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RoutingConfig&quot;</span><span class="p">:</span>
+</span><span data-line="243"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the routing configuration.</span>
+</span><span data-line="244">
+</span><span data-line="245"><span class="sd">        Returns:</span>
+</span><span data-line="246"><span class="sd">            The routing configuration.</span>
+</span><span data-line="247"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="248">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_routing_config</span></div>
 
-</span><span data-line="247">
-</span><span data-line="248">
-</span><span data-line="249"><span class="k">class</span><span class="w"> </span><span class="nc">_SyncEngineSelectorWrapper</span><span class="p">:</span>
-</span><span data-line="250"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper to adapt async engine selector for sync session.</span>
-</span><span data-line="251">
-</span><span data-line="252"><span class="sd">    This wrapper extracts sync engines from async engines in the selector.</span>
-</span><span data-line="253"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="254">
-</span><span data-line="255">    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_async_selector&quot;</span><span class="p">,)</span>
+</span><span data-line="249">
+</span><span data-line="250">
+</span><span data-line="251"><span class="k">class</span><span class="w"> </span><span class="nc">_SyncEngineSelectorWrapper</span><span class="p">:</span>
+</span><span data-line="252"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper to adapt async engine selector for sync session.</span>
+</span><span data-line="253">
+</span><span data-line="254"><span class="sd">    This wrapper extracts sync engines from async engines in the selector.</span>
+</span><span data-line="255"><span class="sd">    &quot;&quot;&quot;</span>
 </span><span data-line="256">
-</span><span data-line="257">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">async_selector</span><span class="p">:</span> <span class="s2">&quot;EngineSelector[AsyncEngine]&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="258"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the wrapper.</span>
-</span><span data-line="259">
-</span><span data-line="260"><span class="sd">        Args:</span>
-</span><span data-line="261"><span class="sd">            async_selector: The async engine selector to wrap.</span>
-</span><span data-line="262"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="263">        <span class="bp">self</span><span class="o">.</span><span class="n">_async_selector</span> <span class="o">=</span> <span class="n">async_selector</span>
-</span><span data-line="264">
-</span><span data-line="265">    <span class="k">def</span><span class="w"> </span><span class="nf">has_engines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span data-line="266"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if any engines are configured.</span>
-</span><span data-line="267">
-</span><span data-line="268"><span class="sd">        Returns:</span>
-</span><span data-line="269"><span class="sd">            ``True`` if at least one engine is available.</span>
-</span><span data-line="270"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="271">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_async_selector</span><span class="o">.</span><span class="n">has_engines</span><span class="p">()</span>
-</span><span data-line="272">
-</span><span data-line="273">    <span class="k">def</span><span class="w"> </span><span class="nf">has_replicas</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span data-line="274"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if any replicas are configured (alias for has_engines).</span>
-</span><span data-line="275">
-</span><span data-line="276"><span class="sd">        Returns:</span>
-</span><span data-line="277"><span class="sd">            ``True`` if at least one engine is available.</span>
-</span><span data-line="278"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="279">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_engines</span><span class="p">()</span>
-</span><span data-line="280">
-</span><span data-line="281">    <span class="k">def</span><span class="w"> </span><span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Engine&quot;</span><span class="p">:</span>
-</span><span data-line="282"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the next engine&#39;s sync engine.</span>
-</span><span data-line="283">
-</span><span data-line="284"><span class="sd">        Returns:</span>
-</span><span data-line="285"><span class="sd">            The sync engine for the next selection.</span>
-</span><span data-line="286"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="287">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_async_selector</span><span class="o">.</span><span class="n">next</span><span class="p">()</span><span class="o">.</span><span class="n">sync_engine</span>
+</span><span data-line="257">    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_async_selector&quot;</span><span class="p">,)</span>
+</span><span data-line="258">
+</span><span data-line="259">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">async_selector</span><span class="p">:</span> <span class="s2">&quot;EngineSelector[AsyncEngine]&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="260"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the wrapper.</span>
+</span><span data-line="261">
+</span><span data-line="262"><span class="sd">        Args:</span>
+</span><span data-line="263"><span class="sd">            async_selector: The async engine selector to wrap.</span>
+</span><span data-line="264"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="265">        <span class="bp">self</span><span class="o">.</span><span class="n">_async_selector</span> <span class="o">=</span> <span class="n">async_selector</span>
+</span><span data-line="266">
+</span><span data-line="267">    <span class="k">def</span><span class="w"> </span><span class="nf">has_engines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span data-line="268"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if any engines are configured.</span>
+</span><span data-line="269">
+</span><span data-line="270"><span class="sd">        Returns:</span>
+</span><span data-line="271"><span class="sd">            ``True`` if at least one engine is available.</span>
+</span><span data-line="272"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="273">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_async_selector</span><span class="o">.</span><span class="n">has_engines</span><span class="p">()</span>
+</span><span data-line="274">
+</span><span data-line="275">    <span class="k">def</span><span class="w"> </span><span class="nf">has_replicas</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span data-line="276"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if any replicas are configured (alias for has_engines).</span>
+</span><span data-line="277">
+</span><span data-line="278"><span class="sd">        Returns:</span>
+</span><span data-line="279"><span class="sd">            ``True`` if at least one engine is available.</span>
+</span><span data-line="280"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="281">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_engines</span><span class="p">()</span>
+</span><span data-line="282">
+</span><span data-line="283">    <span class="k">def</span><span class="w"> </span><span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Engine&quot;</span><span class="p">:</span>
+</span><span data-line="284"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the next engine&#39;s sync engine.</span>
+</span><span data-line="285">
+</span><span data-line="286"><span class="sd">        Returns:</span>
+</span><span data-line="287"><span class="sd">            The sync engine for the next selection.</span>
+</span><span data-line="288"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="289">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_async_selector</span><span class="o">.</span><span class="n">next</span><span class="p">()</span><span class="o">.</span><span class="n">sync_engine</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
