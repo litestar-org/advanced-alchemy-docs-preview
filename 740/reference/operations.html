@@ -801,7 +801,10 @@ is that constraint’s columns.</p></li>
 native primitive where the backend can target it, <code class="docutils literal notranslate"><span class="pre">conflict_columns</span></code>
 is that index’s columns. Spanner <code class="docutils literal notranslate"><span class="pre">INSERT</span> <span class="pre">OR</span> <span class="pre">UPDATE</span></code> only matches the
 primary key, and ambiguous MySQL/MariaDB unique targets fall back.</p></li>
-<li><p>Otherwise → <code class="docutils literal notranslate"><span class="pre">kind=&quot;fallback&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">supports_returning=False</span></code>.</p></li>
+<li><p>Otherwise → <code class="docutils literal notranslate"><span class="pre">kind=&quot;fallback&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">supports_returning=False</span></code>. This
+includes <code class="docutils literal notranslate"><span class="pre">match_fields</span></code> entries that do not resolve to table columns
+(mapped attributes whose name differs from the column key, synonyms,
+hybrids) — the ORM fallback resolves those via <code class="docutils literal notranslate"><span class="pre">getattr</span></code>.</p></li>
 </ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -822,8 +825,7 @@ allows the resolver to honor its actual RETURNING capability.</p></li>
 <dd class="field-odd"><p>An <a class="reference internal" href="#advanced_alchemy.operations.UpsertStrategy" title="advanced_alchemy.operations.UpsertStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpsertStrategy</span></code></a> describing the decision.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – <code class="docutils literal notranslate"><span class="pre">match_fields</span></code> is empty or contains a column not present
-    on the table.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – <code class="docutils literal notranslate"><span class="pre">match_fields</span></code> is empty.</p>
 </dd>
 </dl>
 </dd></dl>
