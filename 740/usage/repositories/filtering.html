@@ -225,6 +225,7 @@ data-aria-dark="Switch to auto color mode">
 </li>
 <li><a class="reference internal" href="#pagination">Pagination</a></li>
 <li><a class="reference internal" href="#explicit-routing">Explicit Routing</a></li>
+<li><a class="reference internal" href="#generated-query-parameter-names">Generated query parameter names</a></li>
 </ul>
 </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
   data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
@@ -453,6 +454,35 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="3">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span><span class="n">bind_group</span><span class="o">=</span><span class="s2">&quot;analytics&quot;</span><span class="p">)</span>
 </span></pre></div>
 </div>
+</section>
+<section id="generated-query-parameter-names">
+<h2>Generated query parameter names<a class="headerlink" href="#generated-query-parameter-names" title="Link to this heading">#</a></h2>
+<p>The Litestar <code class="docutils literal notranslate"><span class="pre">create_filter_dependencies()</span></code> and FastAPI <code class="docutils literal notranslate"><span class="pre">provide_filters()</span></code> helpers
+accept the same optional <code class="docutils literal notranslate"><span class="pre">alias_generator</span></code> configuration. Existing names such as
+<code class="docutils literal notranslate"><span class="pre">pageSize</span></code>, <code class="docutils literal notranslate"><span class="pre">searchString</span></code>, and <code class="docutils literal notranslate"><span class="pre">orderBy</span></code> remain the default. To expose snake_case
+query parameters in either integration:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.dependencies</span><span class="w"> </span><span class="kn">import</span> <span class="n">FilterConfig</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="n">config</span><span class="p">:</span> <span class="n">FilterConfig</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="4">    <span class="s2">&quot;pagination_type&quot;</span><span class="p">:</span> <span class="s2">&quot;limit_offset&quot;</span><span class="p">,</span>
+</span><span data-line="5">    <span class="s2">&quot;search&quot;</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+</span><span data-line="6">    <span class="s2">&quot;sort_field&quot;</span><span class="p">:</span> <span class="s2">&quot;created_at&quot;</span><span class="p">,</span>
+</span><span data-line="7">    <span class="s2">&quot;alias_generator&quot;</span><span class="p">:</span> <span class="s2">&quot;snake_case&quot;</span><span class="p">,</span>
+</span><span data-line="8"><span class="p">}</span>
+</span></pre></div>
+</div>
+<p>This configuration accepts <code class="docutils literal notranslate"><span class="pre">?page_size=10&amp;search_string=alice&amp;order_by=created_at</span></code>.
+Use <code class="docutils literal notranslate"><span class="pre">&quot;camel_case&quot;</span></code> to explicitly select camelCase, or supply a callable for custom
+conventions. An explicit preset follows the same collision validation as a callable.
+The generator receives canonical snake_case parameter names, including field-specific
+names such as <code class="docutils literal notranslate"><span class="pre">account_id_in</span></code>. Custom generators must return nonempty, distinct
+strings. Names are resolved when dependencies are constructed and used consistently
+for requests and OpenAPI; the generator does not run during requests.</p>
+<p>This option controls query parameter names. It does not translate sort-field values
+or change the internal dependency names configured through <code class="docutils literal notranslate"><span class="pre">DependencyDefaults</span></code>.
+Dependencies with equivalent configuration, defaults, and resolved query names reuse
+the same cached provider. Different pagination defaults or dependency names remain
+isolated.</p>
 </section>
 </section>
 
