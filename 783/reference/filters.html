@@ -1691,8 +1691,12 @@ databases disagree: PostgreSQL and Oracle sort NULLs last ascending and first de
 while MySQL and SQLite do the opposite. Set it explicitly for a stable order across
 backends — <code class="docutils literal notranslate"><span class="pre">nulls=&quot;last&quot;</span></code> is usually what a user reading a descending list expects, since
 rows with no value otherwise fill the first page.</p>
-<p>MySQL, MariaDB and SQL Server have no <code class="docutils literal notranslate"><span class="pre">NULLS</span> <span class="pre">FIRST</span></code>/<code class="docutils literal notranslate"><span class="pre">NULLS</span> <span class="pre">LAST</span></code> syntax, so there the
-placement is emulated with a leading nullity key rather than raising.</p>
+<p>MySQL, MariaDB and SQL Server have no <code class="docutils literal notranslate"><span class="pre">NULLS</span> <span class="pre">FIRST</span></code>/<code class="docutils literal notranslate"><span class="pre">NULLS</span> <span class="pre">LAST</span></code> syntax. They sort
+NULL as the lowest value, so <code class="docutils literal notranslate"><span class="pre">asc</span></code> with <code class="docutils literal notranslate"><span class="pre">nulls=&quot;first&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">desc</span></code> with
+<code class="docutils literal notranslate"><span class="pre">nulls=&quot;last&quot;</span></code> compile to the plain ordering term. The other two placements are emulated
+with a leading <code class="docutils literal notranslate"><span class="pre">CASE</span> <span class="pre">WHEN</span> <span class="pre">...</span> <span class="pre">IS</span> <span class="pre">NULL</span></code> sort key. SQL Server requires every ORDER BY term
+to appear in the select list under <code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">DISTINCT</span></code>, so combine <code class="docutils literal notranslate"><span class="pre">nulls</span></code> with a
+<code class="docutils literal notranslate"><span class="pre">DISTINCT</span></code> statement there only for those two native placements.</p>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
