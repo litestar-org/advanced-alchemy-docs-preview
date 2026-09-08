@@ -216,6 +216,7 @@ data-aria-dark="Switch to auto color mode">
       <i class="i-lucide close"></i>
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#advanced_alchemy.filters.LIKE_ESCAPE_CHAR"><code class="docutils literal notranslate"><span class="pre">LIKE_ESCAPE_CHAR</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.filters.BeforeAfter"><code class="docutils literal notranslate"><span class="pre">BeforeAfter</span></code></a><ul>
 <li><a class="reference internal" href="#advanced_alchemy.filters.BeforeAfter.field_name"><code class="docutils literal notranslate"><span class="pre">BeforeAfter.field_name</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.filters.BeforeAfter.before"><code class="docutils literal notranslate"><span class="pre">BeforeAfter.before</span></code></a></li>
@@ -346,6 +347,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.filters.OrderBy"><code class="docutils literal notranslate"><span class="pre">OrderBy</span></code></a><ul>
 <li><a class="reference internal" href="#advanced_alchemy.filters.OrderBy.field_name"><code class="docutils literal notranslate"><span class="pre">OrderBy.field_name</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.filters.OrderBy.sort_order"><code class="docutils literal notranslate"><span class="pre">OrderBy.sort_order</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.OrderBy.nulls"><code class="docutils literal notranslate"><span class="pre">OrderBy.nulls</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.filters.OrderBy.append_to_statement"><code class="docutils literal notranslate"><span class="pre">OrderBy.append_to_statement()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.filters.OrderBy.__init__"><code class="docutils literal notranslate"><span class="pre">OrderBy.__init__()</span></code></a></li>
 </ul>
@@ -355,6 +357,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.filters.SearchFilter.field_name"><code class="docutils literal notranslate"><span class="pre">SearchFilter.field_name</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.filters.SearchFilter.value"><code class="docutils literal notranslate"><span class="pre">SearchFilter.value</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.filters.SearchFilter.ignore_case"><code class="docutils literal notranslate"><span class="pre">SearchFilter.ignore_case</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.SearchFilter.escape_wildcards"><code class="docutils literal notranslate"><span class="pre">SearchFilter.escape_wildcards</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.filters.SearchFilter.normalized_field_names"><code class="docutils literal notranslate"><span class="pre">SearchFilter.normalized_field_names</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.filters.SearchFilter.get_search_clauses"><code class="docutils literal notranslate"><span class="pre">SearchFilter.get_search_clauses()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.filters.SearchFilter.append_to_statement"><code class="docutils literal notranslate"><span class="pre">SearchFilter.append_to_statement()</span></code></a></li>
@@ -365,6 +368,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.filters.StatementFilter.append_to_statement"><code class="docutils literal notranslate"><span class="pre">StatementFilter.append_to_statement()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#advanced_alchemy.filters.escape_like_value"><code class="docutils literal notranslate"><span class="pre">escape_like_value()</span></code></a></li>
 </ul>
 </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
   data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
@@ -481,6 +485,15 @@ interface across different filter types.</p>
 <li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">advanced_alchemy.base</span></code>: Base model definitions</p></li>
 </ul>
 </div>
+<dl class="py data">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.LIKE_ESCAPE_CHAR">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">LIKE_ESCAPE_CHAR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/'</span></span><a class="headerlink" href="#advanced_alchemy.filters.LIKE_ESCAPE_CHAR" title="Link to this definition">#</a></dt>
+<dd><p>Escape character used when <a class="reference internal" href="#advanced_alchemy.filters.SearchFilter" title="advanced_alchemy.filters.SearchFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchFilter</span></code></a> escapes LIKE wildcards.</p>
+<p>Not a backslash: SQLAlchemy renders one into the <code class="docutils literal notranslate"><span class="pre">ESCAPE</span></code> clause as <code class="docutils literal notranslate"><span class="pre">'\\'</span></code>, which DuckDB reads
+as two characters and rejects with “Escape string must be empty or one character”. <code class="docutils literal notranslate"><span class="pre">/</span></code> needs no
+such doubling on dialects that support an explicit <code class="docutils literal notranslate"><span class="pre">ESCAPE</span></code> clause.</p>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="advanced_alchemy.filters.BeforeAfter">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">BeforeAfter</span></span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#BeforeAfter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.BeforeAfter" title="Link to this definition">#</a></dt>
@@ -1397,6 +1410,8 @@ Can exclude across multiple fields using AND conditions.</p>
 <li><p><span class="target" id="advanced_alchemy.filters.NotInSearchFilter.params.field_name"></span><strong>field_name</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.NotInSearchFilter.params.field_name">¶</a> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]</span>) – Name or set of names of model attributes to search on</p></li>
 <li><p><span class="target" id="advanced_alchemy.filters.NotInSearchFilter.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.NotInSearchFilter.params.value">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Text to exclude from the field(s)</p></li>
 <li><p><span class="target" id="advanced_alchemy.filters.NotInSearchFilter.params.ignore_case"></span><strong>ignore_case</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.NotInSearchFilter.params.ignore_case">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]</span>) – If True, uses NOT ILIKE for case-insensitive matching</p></li>
+<li><p><span class="target" id="advanced_alchemy.filters.NotInSearchFilter.params.escape_wildcards"></span><strong>escape_wildcards</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.NotInSearchFilter.params.escape_wildcards">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – If True, matches wildcard characters literally using
+SQL ESCAPE. Defaults to False; not supported by Spanner when enabled.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1414,13 +1429,14 @@ Can exclude across multiple fields using AND conditions.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="advanced_alchemy.filters.NotInSearchFilter.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.filters.NotInSearchFilter.__init__" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">escape_wildcards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.filters.NotInSearchFilter.__init__" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>field_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><em>set</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>]</em>)</p></li>
 <li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
 <li><p><strong>ignore_case</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>escape_wildcards</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1683,12 +1699,28 @@ specified field in ascending or descending order.</p>
 <p>This filter only modifies SELECT statements. For other statement types,
 the statement is returned unchanged.</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">nulls</span></code> controls where NULLs land. Left as <code class="docutils literal notranslate"><span class="pre">None</span></code> the database decides, and the
+databases disagree: PostgreSQL and Oracle sort NULLs last ascending and first descending,
+while MySQL and SQLite do the opposite. Set it explicitly for a stable order across
+backends — <code class="docutils literal notranslate"><span class="pre">nulls=&quot;last&quot;</span></code> is usually what a user reading a descending list expects, since
+rows with no value otherwise fill the first page.</p>
+<p>MySQL, MariaDB and SQL Server have no <code class="docutils literal notranslate"><span class="pre">NULLS</span> <span class="pre">FIRST</span></code>/<code class="docutils literal notranslate"><span class="pre">NULLS</span> <span class="pre">LAST</span></code> syntax. They sort
+NULL as the lowest value, so <code class="docutils literal notranslate"><span class="pre">asc</span></code> with <code class="docutils literal notranslate"><span class="pre">nulls=&quot;first&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">desc</span></code> with
+<code class="docutils literal notranslate"><span class="pre">nulls=&quot;last&quot;</span></code> compile to the plain ordering term. The other two placements are emulated
+with a leading <code class="docutils literal notranslate"><span class="pre">CASE</span> <span class="pre">WHEN</span> <span class="pre">...</span> <span class="pre">IS</span> <span class="pre">NULL</span></code> sort key. SQL Server requires every ORDER BY term
+to appear in the select list under <code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">DISTINCT</span></code>, so combine <code class="docutils literal notranslate"><span class="pre">nulls</span></code> with a
+<code class="docutils literal notranslate"><span class="pre">DISTINCT</span></code> statement there only for those two native placements.</p>
+</div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/selectable.html#sqlalchemy.sql.expression.Select.order_by" title="(in SQLAlchemy v2.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sqlalchemy.sql.expression.Select.order_by()</span></code></a>: SQLAlchemy ORDER BY clause</p></li>
 <li><p><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.ColumnElement.asc" title="(in SQLAlchemy v2.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sqlalchemy.sql.expression.ColumnElement.asc()</span></code></a>: Ascending order</p></li>
 <li><p><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.ColumnElement.desc" title="(in SQLAlchemy v2.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sqlalchemy.sql.expression.ColumnElement.desc()</span></code></a>: Descending order</p></li>
+<li><p><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.nulls_first" title="(in SQLAlchemy v2.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sqlalchemy.sql.expression.nulls_first()</span></code></a>: NULLS FIRST</p></li>
+<li><p><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.nulls_last" title="(in SQLAlchemy v2.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sqlalchemy.sql.expression.nulls_last()</span></code></a>: NULLS LAST</p></li>
 </ul>
 </div>
 <dl class="py attribute">
@@ -1701,6 +1733,12 @@ the statement is returned unchanged.</p>
 <dt class="sig sig-object py" id="advanced_alchemy.filters.OrderBy.sort_order">
 <span class="sig-name descname"><span class="pre">sort_order</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'asc'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'desc'</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'asc'</span></span><a class="headerlink" href="#advanced_alchemy.filters.OrderBy.sort_order" title="Link to this definition">#</a></dt>
 <dd><p>Sort direction (“asc” or “desc”).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.OrderBy.nulls">
+<span class="sig-name descname"><span class="pre">nulls</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'first'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'last'</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#advanced_alchemy.filters.OrderBy.nulls" title="Link to this definition">#</a></dt>
+<dd><p>Where NULLs sort. <code class="docutils literal notranslate"><span class="pre">None</span></code> leaves the placement to the database.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1735,12 +1773,13 @@ the statement is returned unchanged.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="advanced_alchemy.filters.OrderBy.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'asc'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.filters.OrderBy.__init__" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'asc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nulls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.filters.OrderBy.__init__" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>field_name</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
 <li><p><strong>sort_order</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>'asc'</em><em>, </em><em>'desc'</em><em>]</em>)</p></li>
+<li><p><strong>nulls</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>'first'</em><em>, </em><em>'last'</em><em>] </em><em>| </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1772,6 +1811,13 @@ multiple fields using OR conditions.</p>
 <p>The search pattern automatically adds wildcards before and after the search
 value, equivalent to SQL pattern ‘%value%’.</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">%</span></code> and <code class="docutils literal notranslate"><span class="pre">_</span></code> in <code class="docutils literal notranslate"><span class="pre">value</span></code> remain SQL wildcards by default. Set
+<code class="docutils literal notranslate"><span class="pre">escape_wildcards=True</span></code> to match them literally on databases supporting
+the SQL <code class="docutils literal notranslate"><span class="pre">ESCAPE</span></code> clause. Spanner has no <code class="docutils literal notranslate"><span class="pre">ESCAPE</span></code> clause, so
+<code class="docutils literal notranslate"><span class="pre">escape_wildcards</span></code> must stay <code class="docutils literal notranslate"><span class="pre">False</span></code> there.</p>
+</div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
@@ -1796,6 +1842,12 @@ value, equivalent to SQL pattern ‘%value%’.</p>
 <dt class="sig sig-object py" id="advanced_alchemy.filters.SearchFilter.ignore_case">
 <span class="sig-name descname"><span class="pre">ignore_case</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#advanced_alchemy.filters.SearchFilter.ignore_case" title="Link to this definition">#</a></dt>
 <dd><p>Whether to use case-insensitive matching.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.SearchFilter.escape_wildcards">
+<span class="sig-name descname"><span class="pre">escape_wildcards</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#advanced_alchemy.filters.SearchFilter.escape_wildcards" title="Link to this definition">#</a></dt>
+<dd><p>Whether to treat <code class="docutils literal notranslate"><span class="pre">%</span></code> and <code class="docutils literal notranslate"><span class="pre">_</span></code> in <a class="reference internal" href="#advanced_alchemy.filters.SearchFilter.value" title="advanced_alchemy.filters.SearchFilter.value"><code class="xref py py-attr docutils literal notranslate"><span class="pre">value</span></code></a> as literal characters.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -1864,13 +1916,14 @@ value, equivalent to SQL pattern ‘%value%’.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="advanced_alchemy.filters.SearchFilter.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.filters.SearchFilter.__init__" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">escape_wildcards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.filters.SearchFilter.__init__" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>field_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><em>set</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>]</em>)</p></li>
 <li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
 <li><p><strong>ignore_case</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>escape_wildcards</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1926,6 +1979,30 @@ SQLAlchemy statement.</p>
 </div>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.filters.escape_like_value">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">escape_like_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">escape_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">LIKE_ESCAPE_CHAR</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/filters.html#escape_like_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.filters.escape_like_value" title="Link to this definition">#</a></dt>
+<dd><p>Escape the LIKE wildcards <code class="docutils literal notranslate"><span class="pre">%</span></code> and <code class="docutils literal notranslate"><span class="pre">_</span></code> so they match literally.</p>
+<p>The escape character itself is escaped first, otherwise it would consume the
+escape characters added for the wildcards.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.filters.escape_like_value.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.escape_like_value.params.value">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The raw search term.</p></li>
+<li><p><span class="target" id="advanced_alchemy.filters.escape_like_value.params.escape_char"></span><strong>escape_char</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.escape_like_value.params.escape_char">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The character to escape with.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>escape_char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">value</span></code> with <code class="docutils literal notranslate"><span class="pre">escape_char</span></code>, <code class="docutils literal notranslate"><span class="pre">%</span></code> and <code class="docutils literal notranslate"><span class="pre">_</span></code> escaped.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

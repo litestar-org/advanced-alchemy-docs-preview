@@ -410,6 +410,19 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="3">    <span class="k">return</span> <span class="k">await</span> <span class="n">repository</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span><span class="n">SearchFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">ignore_case</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 </span></pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">SearchFilter</span></code> and <code class="docutils literal notranslate"><span class="pre">NotInSearchFilter</span></code> preserve SQL wildcard matching by
+default: <code class="docutils literal notranslate"><span class="pre">%</span></code> matches any sequence of characters and <code class="docutils literal notranslate"><span class="pre">_</span></code> matches one character.
+To match those characters literally in accounting codes or titles, opt in with
+<code class="docutils literal notranslate"><span class="pre">escape_wildcards=True</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">literal_search</span> <span class="o">=</span> <span class="n">SearchFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;50</span><span class="si">% o</span><span class="s2">ff&quot;</span><span class="p">,</span> <span class="n">escape_wildcards</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>This option escapes <code class="docutils literal notranslate"><span class="pre">%</span></code>, <code class="docutils literal notranslate"><span class="pre">_</span></code>, and the escape character <code class="docutils literal notranslate"><span class="pre">/</span></code> while retaining
+the surrounding substring wildcards. Dialect-specific pattern syntax, such as
+SQL Server’s bracket expressions (<code class="docutils literal notranslate"><span class="pre">[abc]</span></code>), is unchanged. It requires SQL
+<code class="docutils literal notranslate"><span class="pre">ESCAPE</span></code> support. Spanner has no <code class="docutils literal notranslate"><span class="pre">ESCAPE</span></code> clause, so <code class="docutils literal notranslate"><span class="pre">escape_wildcards</span></code>
+must stay <code class="docutils literal notranslate"><span class="pre">False</span></code> there. The Litestar and FastAPI filter providers enable it
+through the <code class="docutils literal notranslate"><span class="pre">search_escape_wildcards</span></code> key of <code class="docutils literal notranslate"><span class="pre">FilterConfig</span></code>.</p>
 </section>
 <section id="null-and-not-null-filters">
 <h3>Null and Not Null Filters<a class="headerlink" href="#null-and-not-null-filters" title="Link to this heading">#</a></h3>
