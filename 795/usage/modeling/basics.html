@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="amber" data-content_root="../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Modeling Basics - Advanced Alchemy</title><link rel="shortcut icon" href="../../_static/favicon.png"/><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Inheritance Patterns" href="inheritance.html" /><link rel="prev" title="Modeling" href="index.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=f087ae94" />
+    <link rel="stylesheet" type="text/css" href="../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx_paramlinks.css" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=118d83bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/syntax-highlighting.css?v=70fc3471" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="Modeling Basics"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="/">
+      <img class="light-logo" src="../../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
+      <img class="dark-logo" src="../../_static/logo-default.png" alt="advanced_alchemy" height="28" loading="lazy" />
+      <strong>advanced_alchemy</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul><li class="link"><a href="../../index.html">Home</a></li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-2" aria-controls="nav-children-2">
+            <span>About</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-2" aria-labelledby="nav-trigger-2"><li><a href="../../changelog.html">
+                <span>Changelog</span>
+                <small>All changes for Advanced Alchemy</small>
+              </a></li><li><a href="https://litestar.dev/about/organization">
+                <span>Litestar Organization</span>
+                <small>Details about the Litestar organization, the team behind Advanced Alchemy</small>
+              </a></li><li><a href="../../releases.html">
+                <span>Releases</span>
+                <small>Explore the release process, versioning, and deprecation policy for Advanced Alchemy</small>
+              </a></li><li><a href="../../contribution-guide.html">
+                <span>Contributing</span>
+                <small>Learn how to contribute to the Advanced Alchemy project</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file">
+                <span>Code of Conduct</span>
+                <small>Review the etiquette for interacting with the Advanced Alchemy community</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file#security-ov-file">
+                <span>Security</span>
+                <small>Overview of Advanced Alchemy's security protocols</small>
+              </a></li><li><a href="https://github.com/sponsors/Litestar-Org">Sponsor</a></li></ul>
+      </li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-3" aria-controls="nav-children-3">
+            <span>Help</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-3" aria-labelledby="nav-trigger-3"><li><a href="https://discord.gg/dSDXd4mKhp">
+                <span>Discord Help Forum</span>
+                <small>Dedicated Discord help forum</small>
+              </a></li><li><a href="https://github.com/litestar-org/advanced-alchemy/discussions">
+                <span>GitHub Discussions</span>
+                <small>GitHub Discussions</small>
+              </a></li></ul>
+      </li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6"><div class="sidebar-links">
+  <ul>
+    <li><a class="icon-link" href="https://discord.gg/dSDXd4mKhp">
+  <span class="icon">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path fill="var(--accent-9)" fill-rule="evenodd" clip-rule="evenodd" d="M11 5a6 6 0 0 0-4.687 9.746c.215.27.315.62.231.954l-.514 2.058a1 1 0 0 0 1.485 1.1l2.848-1.71c.174-.104.374-.15.576-.148H13a6 6 0 0 0 0-12h-2Z"/>
+      <circle fill="white" cx="12" cy="11" r="1"/>
+      <circle fill="white" cx="9" cy="11" r="1"/>
+      <circle fill="white" cx="15" cy="11" r="1"/>
+    </svg>
+  </span>
+  <span class="text">Discussion</span>
+</a></li>
+  </ul>
+</div>
+        <div class="globaltoc" data-expand-depth="2"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Usage</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Modeling</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Modeling Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inheritance.html">Inheritance Patterns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sqlmodel.html">SQLModel Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="types.html">Advanced Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../repositories/index.html">Repositories</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../repositories/basics.html">Repository Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../repositories/filtering.html">Filtering and Pagination</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../repositories/advanced.html">Advanced Repository</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../services.html">Services</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../routing.html">Read/Write Routing</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../caching.html">Caching</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../cli.html">Command Line Tool</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../database_seeding.html">Database Seeding and Fixture Loading</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../frameworks/litestar.html">Litestar Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../frameworks/flask.html">Flask Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../frameworks/fastapi.html">FastAPI Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../frameworks/sanic.html">Sanic Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../frameworks/starlette.html">Starlette Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../reference/index.html">API Reference</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/base.html">base</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/mixins/index.html">mixins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/unique.html">unique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/nanoid.html">nanoid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/uuid.html">uuid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/sentinel.html">sentinel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/bigint.html">bigint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/audit.html">audit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/mixins/slug.html">slug</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/config/index.html">config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/config/asyncio.html">asyncio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/config/common.html">common</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/config/engine.html">engine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/config/routing.html">routing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/config/sync.html">sync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/config/types.html">types</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/cache.html">Cache</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/operations.html">operations</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/types.html">types</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/exceptions.html">exceptions</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/utils.html">utils</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/repository.html">repositories</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/filters.html">filters</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/service.html">services</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/routing.html">routing</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/extensions/index.html">Extensions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/litestar/index.html">litestar</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/dto.html">dto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/plugins.html">plugin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/cli.html">cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/session.html">Session Backends</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../reference/extensions/litestar/store.html">Store</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/flask/index.html">flask</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/sanic/index.html">sanic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/starlette/index.html">starlette</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/extensions/fastapi/index.html">fastapi</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../../reference/alembic/index.html">alembic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/alembic/commands.html">commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/alembic/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../changelog.html">1.x Changelog</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../contribution-guide.html">Contribution guide</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/search?q=user%3Alitestar-org+state%3Aopen+label%3A%22good+first+issue%22+++no%3Aassignee+repo%3A%22advanced-alchemy%22&amp;type=issues">Available Issues</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/litestar-org/.github?tab=coc-ov-file#readme">Code of Conduct</a></li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#base-classes">Base Classes</a></li>
+<li><a class="reference internal" href="#mixins">Mixins</a></li>
+<li><a class="reference internal" href="#column-ordering">Column Ordering</a><ul>
+<li><a class="reference internal" href="#positioning-your-own-columns">Positioning Your Own Columns</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#basic-model-example">Basic Model Example</a></li>
+<li><a class="reference internal" href="#many-to-many-relationships">Many-to-Many Relationships</a></li>
+<li><a class="reference internal" href="#using-uniquemixin">Using <code class="docutils literal notranslate"><span class="pre">UniqueMixin</span></code></a></li>
+<li><a class="reference internal" href="#using-mappedasdataclass">Using <code class="docutils literal notranslate"><span class="pre">MappedAsDataclass</span></code></a></li>
+<li><a class="reference internal" href="#customizing-declarative-base">Customizing Declarative Base</a></li>
+<li><a class="reference internal" href="#caller-supplied-primary-keys-with-audit-columns">Caller-Supplied Primary Keys with Audit Columns</a></li>
+</ul>
+</div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
+  data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
+  <span class="w-8 flex items-center justify-around shrink-0 text-3xl">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </span>
+  <span class="flex-grow px-2 break-all">
+    
+    
+      <span>advanced-alchemy</span>
+    
+    <span class="flex text-sm repo-stats-count">
+      <span class="flex items-center pr-3">
+        <iconify-icon icon="lucide:star"></iconify-icon>
+        <strong class="js-repo-stars ml-1">0</strong>
+      </span>
+      <span class="flex items-center">
+        <iconify-icon icon="lucide:git-fork"></iconify-icon>
+        <strong class="js-repo-forks ml-1">0</strong>
+      </span>
+    </span>
+  </span>
+</a><div class="edit-this-page">
+  <a href="https://github.com/litestar-org/advanced-alchemy/blob/main/docs/usage/modeling/basics.rst">Edit this page</a>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">advanced_alchemy</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Usage</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">Modeling</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="3" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Modeling Basics</strong>
+        <meta itemprop="position" content="4" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <div class="copy-page-wrapper relative pb-4 lg:absolute lg:top-8 lg:right-6 xl:right-12">
+  <div id="copy-page-trigger">
+    <button
+      type="button"
+      class="js-copy px-3 py-1 inline-flex items-center gap-1"
+      data-url="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/usage/modeling/basics.rst.txt"
+    >
+      <i class="i-lucide" data-icon="copy"></i>
+      <span>Copy page</span>
+    </button>
+    <button class="js-menu px-2 py-1" type="button" aria-label="More actions"
+      aria-haspopup="menu" aria-expanded="false" aria-controls="copy-page-content">
+      <i class="i-lucide chevron-down"></i>
+    </button>
+  </div>
+  <div id="copy-page-content" role="menu" aria-orientation="vertical" aria-hidden="true">
+    <div role="presentation">
+      <div class="flex flex-col" role="group">
+        <button class="js-copy" type="button" role="menuitem"
+          data-url="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/usage/modeling/basics.rst.txt">
+          <span class="iconify-icon">
+            <i class="i-lucide" data-icon="copy"></i>
+          </span>
+          <span>Copy page</span>
+        </button>
+        <a role="menuitem" href="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/usage/modeling/basics.rst.txt" target="_blank" rel="nofollow"><iconify-icon icon="bi:code-slash"></iconify-icon>
+            <span>View Source</span></a><a role="menuitem" href="https://chatgpt.com/?hints=search&q=Read%20https%3A//raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/usage/modeling/basics.rst.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:openai"></iconify-icon>
+          <span>Open in ChatGPT</span>
+        </a><a role="menuitem" href="https://claude.ai/new?q=Read%20https%3A//raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/usage/modeling/basics.rst.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:claude"></iconify-icon>
+          <span>Open in Claude</span>
+        </a></div>
+    </div>
+  </div>
+</div><article class="yue" role="main">
+          <section id="modeling-basics">
+<h1>Modeling Basics<a class="headerlink" href="#modeling-basics" title="Link to this heading">¶</a></h1>
+<p>Advanced Alchemy enhances SQLAlchemy’s modeling capabilities with production-ready base classes, mixins, and specialized types.
+This guide demonstrates modeling for a blog system with posts and tags, showcasing key features and best practices.</p>
+<section id="base-classes">
+<h2>Base Classes<a class="headerlink" href="#base-classes" title="Link to this heading">¶</a></h2>
+<p>Advanced Alchemy provides several declarative bases optimized for different use cases. The common
+ID and audit combinations are ready to use, while the lower-level bases let you assemble your own
+model hierarchy without rebuilding SQLAlchemy’s declarative setup from scratch.</p>
+<div class="table-wrapper colwidths-given docutils container" id="id2">
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Base Classes and Features</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Base Class</p></th>
+<th class="head"><p>Features</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AdvancedDeclarativeBase</span></code></p></td>
+<td><p>Low-level registry-aware base for building custom declarative hierarchies</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">DefaultBase</span></code></p></td>
+<td><p>Automatic table naming and bind-aware metadata without a predefined primary key</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">BigIntBase</span></code></p></td>
+<td><p>BIGINT primary keys for tables</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">BigIntAuditBase</span></code></p></td>
+<td><p>BIGINT primary keys for tables, Automatic created_at/updated_at timestamps</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">IdentityBase</span></code></p></td>
+<td><p>Primary keys using database IDENTITY feature instead of sequences</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">IdentityAuditBase</span></code></p></td>
+<td><p>Primary keys using database IDENTITY feature, Automatic created_at/updated_at timestamps</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDBase</span></code></p></td>
+<td><p>UUID primary keys</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDv6Base</span></code></p></td>
+<td><p>UUIDv6 primary keys</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDv7Base</span></code></p></td>
+<td><p>UUIDv7 primary keys</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDAuditBase</span></code></p></td>
+<td><p>UUID primary keys, Automatic created_at/updated_at timestamps</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDv6AuditBase</span></code></p></td>
+<td><p>UUIDv6 primary keys, Automatic created_at/updated_at timestamps</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UUIDv7AuditBase</span></code></p></td>
+<td><p>Time-sortable UUIDv7 primary keys, Automatic created_at/updated_at timestamps</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NanoIDBase</span></code></p></td>
+<td><p>URL-friendly unique identifiers, Shorter than UUIDs, collision resistant</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NanoIDAuditBase</span></code></p></td>
+<td><p>URL-friendly IDs with audit timestamps, Combines Nanoid benefits with audit trails</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SQLQuery</span></code></p></td>
+<td><p>Registry-backed base for custom mapped query objects and other specialized mapped constructs</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For most applications, start with one of the opinionated bases such as <code class="docutils literal notranslate"><span class="pre">BigIntAuditBase</span></code> or
+<code class="docutils literal notranslate"><span class="pre">UUIDAuditBase</span></code>. Reach for <code class="docutils literal notranslate"><span class="pre">DefaultBase</span></code> when you want Advanced Alchemy’s table naming and
+metadata handling but need to define your own primary key fields.</p>
+</section>
+<section id="mixins">
+<h2>Mixins<a class="headerlink" href="#mixins" title="Link to this heading">¶</a></h2>
+<p>Additionally, Advanced Alchemy provides mixins to enhance model functionality:</p>
+<div class="table-wrapper colwidths-given docutils container" id="id3">
+<table class="docutils align-default" id="id3">
+<caption><span class="caption-text">Available Mixins</span><a class="headerlink" href="#id3" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mixin</p></th>
+<th class="head"><p>Features</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SlugKey</span></code></p></td>
+<td><p>Adds URL-friendly slug field</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">AuditColumns</span></code></p></td>
+<td><p>Automatic created_at/updated_at timestamps. Tracks record modifications.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">BigIntPrimaryKey</span></code></p></td>
+<td><p>Adds BigInt primary key with sequence</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">IdentityPrimaryKey</span></code></p></td>
+<td><p>Adds primary key using database IDENTITY feature</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UniqueMixin</span></code></p></td>
+<td><p>Automatic Select or Create for many-to-many relationships</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="column-ordering">
+<h2>Column Ordering<a class="headerlink" href="#column-ordering" title="Link to this heading">¶</a></h2>
+<p>The mixin and base columns carry a <code class="docutils literal notranslate"><span class="pre">sort_order</span></code> so that tables created with
+<code class="docutils literal notranslate"><span class="pre">metadata.create_all()</span></code> have a consistent, predictable column layout. Primary keys come
+first, your model’s own columns sit in the middle, and the sentinel and audit columns are
+grouped at the end.</p>
+<div class="table-wrapper colwidths-given docutils container" id="id4">
+<table class="docutils align-default" id="id4">
+<caption><span class="caption-text">Mixin Column <code class="docutils literal notranslate"><span class="pre">sort_order</span></code> Values</span><a class="headerlink" href="#id4" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Source</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">sort_order</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (primary key)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">UUIDPrimaryKey</span></code>, <code class="docutils literal notranslate"><span class="pre">BigIntPrimaryKey</span></code>, <code class="docutils literal notranslate"><span class="pre">IdentityPrimaryKey</span></code>, <code class="docutils literal notranslate"><span class="pre">NanoIDPrimaryKey</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">-100</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Your model’s columns</p></td>
+<td><p>User-defined</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0</span></code> (default)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sa_orm_sentinel</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SentinelMixin</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">3001</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">AuditColumns</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">3002</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">updated_at</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">AuditColumns</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">3003</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Columns are emitted in ascending <code class="docutils literal notranslate"><span class="pre">sort_order</span></code>; columns sharing a value (such as your own
+columns, which all use the default of <code class="docutils literal notranslate"><span class="pre">0</span></code>) keep their declaration order. The negative value
+on the primary key pins it ahead of user columns, and the high values on the sentinel and audit
+columns push them to the end of the table.</p>
+<p>Consider a model that declares <code class="docutils literal notranslate"><span class="pre">name</span></code> and <code class="docutils literal notranslate"><span class="pre">email</span></code> on top of <code class="docutils literal notranslate"><span class="pre">UUIDAuditBase</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUIDAuditBase</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span>
+</span><span data-line="3">
+</span><span data-line="4">
+</span><span data-line="5"><span class="k">class</span><span class="w"> </span><span class="nc">OrderedUser</span><span class="p">(</span><span class="n">UUIDAuditBase</span><span class="p">):</span>
+</span><span data-line="6">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;ordered_users&quot;</span>
+</span><span data-line="7">
+</span><span data-line="8">    <span class="n">name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span data-line="9">    <span class="n">email</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span></pre></div>
+</div>
+<p>The resulting table has the following physical column order:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span data-line="1">id              -- sort_order -100 (primary key)
+</span><span data-line="2">name            -- sort_order 0    (declaration order)
+</span><span data-line="3">email           -- sort_order 0    (declaration order)
+</span><span data-line="4">sa_orm_sentinel -- sort_order 3001
+</span><span data-line="5">created_at      -- sort_order 3002
+</span><span data-line="6">updated_at      -- sort_order 3003
+</span></pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This ordering applies to <strong>new table creation</strong> through <code class="docutils literal notranslate"><span class="pre">metadata.create_all()</span></code> only. It
+does not reorder columns in tables that already exist, and Alembic autogenerate does not
+detect column-order changes, so it will not emit a migration to reorder an existing table.</p>
+</div>
+<section id="positioning-your-own-columns">
+<h3>Positioning Your Own Columns<a class="headerlink" href="#positioning-your-own-columns" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">sort_order</span></code> is a standard <a class="reference external" href="https://docs.sqlalchemy.org/en/20/orm/mapping_api.html#sqlalchemy.orm.mapped_column" title="(in SQLAlchemy v2.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">mapped_column()</span></code></a> argument, so you can place your
+own columns anywhere in the table by setting it explicitly. Give a column a value between the
+primary key (<code class="docutils literal notranslate"><span class="pre">-100</span></code>) and the sentinel (<code class="docutils literal notranslate"><span class="pre">3001</span></code>) to position it within the body of the table;
+columns that share a value keep their declaration order.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUIDAuditBase</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span>
+</span><span data-line="3">
+</span><span data-line="4">
+</span><span data-line="5"><span class="k">class</span><span class="w"> </span><span class="nc">PositionedUser</span><span class="p">(</span><span class="n">UUIDAuditBase</span><span class="p">):</span>
+</span><span data-line="6">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;positioned_users&quot;</span>
+</span><span data-line="7">
+</span><span data-line="8">    <span class="n">email</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">sort_order</span><span class="o">=-</span><span class="mi">50</span><span class="p">)</span>
+</span><span data-line="9">    <span class="n">name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span data-line="10">    <span class="n">signup_source</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">sort_order</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>This pins <code class="docutils literal notranslate"><span class="pre">email</span></code> ahead of the default columns and pushes <code class="docutils literal notranslate"><span class="pre">signup_source</span></code> after them:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span data-line="1">id              -- sort_order -100 (primary key)
+</span><span data-line="2">email           -- sort_order -50
+</span><span data-line="3">name            -- sort_order 0    (default)
+</span><span data-line="4">signup_source   -- sort_order 100
+</span><span data-line="5">sa_orm_sentinel -- sort_order 3001
+</span><span data-line="6">created_at      -- sort_order 3002
+</span><span data-line="7">updated_at      -- sort_order 3003
+</span></pre></div>
+</div>
+<p>Use a value below <code class="docutils literal notranslate"><span class="pre">-100</span></code> to place a column ahead of the primary key, or above <code class="docutils literal notranslate"><span class="pre">3003</span></code> to place
+it after the audit columns.</p>
+</section>
+</section>
+<section id="basic-model-example">
+<h2>Basic Model Example<a class="headerlink" href="#basic-model-example" title="Link to this heading">¶</a></h2>
+<p>Let’s start with a simple blog post model:</p>
+<div class="sd-tab-set docutils">
+<input id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-0">
+Python 3.9+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BigIntAuditBase</span>
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span>
+</span><span data-line="6">
+</span><span data-line="7"><span class="k">class</span><span class="w"> </span><span class="nc">BasicBlogPost</span><span class="p">(</span><span class="n">BigIntAuditBase</span><span class="p">):</span>
+</span><span data-line="8"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Blog post model with auto-incrementing ID and audit fields.&quot;&quot;&quot;</span>
+</span><span data-line="9">
+</span><span data-line="10">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;basic_blog_post&quot;</span>
+</span><span data-line="11">
+</span><span data-line="12">    <span class="n">title</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="13">    <span class="n">content</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span data-line="14">    <span class="n">published</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="15">    <span class="n">published_at</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+<input checked="checked" id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.10" for="sd-tab-item-1">
+Python 3.10+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BigIntAuditBase</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="k">class</span><span class="w"> </span><span class="nc">BasicBlogPost</span><span class="p">(</span><span class="n">BigIntAuditBase</span><span class="p">):</span>
+</span><span data-line="7"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Blog post model with auto-incrementing ID and audit fields.&quot;&quot;&quot;</span>
+</span><span data-line="8">
+</span><span data-line="9">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;basic_blog_post&quot;</span>
+</span><span data-line="10">
+</span><span data-line="11">    <span class="n">title</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="12">    <span class="n">content</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span data-line="13">    <span class="n">published</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="14">    <span class="n">published_at</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="many-to-many-relationships">
+<span id="id1"></span><h2>Many-to-Many Relationships<a class="headerlink" href="#many-to-many-relationships" title="Link to this heading">¶</a></h2>
+<p>Let’s implement a tagging system using a many-to-many relationship.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Column</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">Table</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span><span class="p">,</span> <span class="n">relationship</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BigIntAuditBase</span><span class="p">,</span> <span class="n">orm_registry</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.mixins</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlugKey</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="c1"># Association table for post-topic relationships</span>
+</span><span data-line="7"><span class="n">blog_post_topic</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+</span><span data-line="8">    <span class="s2">&quot;blog_post_topic&quot;</span><span class="p">,</span>
+</span><span data-line="9">    <span class="n">orm_registry</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
+</span><span data-line="10">    <span class="n">Column</span><span class="p">(</span><span class="s2">&quot;post_id&quot;</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;tagged_blog_post.id&quot;</span><span class="p">,</span> <span class="n">ondelete</span><span class="o">=</span><span class="s2">&quot;CASCADE&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+</span><span data-line="11">    <span class="n">Column</span><span class="p">(</span><span class="s2">&quot;topic_id&quot;</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;blog_topic.id&quot;</span><span class="p">,</span> <span class="n">ondelete</span><span class="o">=</span><span class="s2">&quot;CASCADE&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+</span><span data-line="12"><span class="p">)</span>
+</span><span data-line="13">
+</span><span data-line="14"><span class="k">class</span><span class="w"> </span><span class="nc">TaggedBlogPost</span><span class="p">(</span><span class="n">BigIntAuditBase</span><span class="p">):</span>
+</span><span data-line="15">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;tagged_blog_post&quot;</span>
+</span><span data-line="16">
+</span><span data-line="17">    <span class="n">title</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="18">    <span class="n">content</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span data-line="19">    <span class="n">published</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="20">
+</span><span data-line="21">    <span class="c1"># Many-to-many relationship with topics</span>
+</span><span data-line="22">    <span class="n">topics</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="s2">&quot;BlogTopic&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span>
+</span><span data-line="23">        <span class="n">secondary</span><span class="o">=</span><span class="n">blog_post_topic</span><span class="p">,</span>
+</span><span data-line="24">        <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;posts&quot;</span><span class="p">,</span>
+</span><span data-line="25">        <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;selectin&quot;</span><span class="p">,</span>
+</span><span data-line="26">    <span class="p">)</span>
+</span><span data-line="27">
+</span><span data-line="28"><span class="k">class</span><span class="w"> </span><span class="nc">BlogTopic</span><span class="p">(</span><span class="n">BigIntAuditBase</span><span class="p">,</span> <span class="n">SlugKey</span><span class="p">):</span>
+</span><span data-line="29"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Topic model with automatic slug generation.&quot;&quot;&quot;</span>
+</span><span data-line="30">
+</span><span data-line="31">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;blog_topic&quot;</span>
+</span><span data-line="32">
+</span><span data-line="33">    <span class="n">name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="34">    <span class="n">posts</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="s2">&quot;TaggedBlogPost&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span>
+</span><span data-line="35">        <span class="n">secondary</span><span class="o">=</span><span class="n">blog_post_topic</span><span class="p">,</span>
+</span><span data-line="36">        <span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;topics&quot;</span><span class="p">,</span>
+</span><span data-line="37">        <span class="n">lazy</span><span class="o">=</span><span class="s2">&quot;selectin&quot;</span><span class="p">,</span>
+</span><span data-line="38">    <span class="p">)</span>
+</span></pre></div>
+</div>
+</section>
+<section id="using-uniquemixin">
+<span id="using-unique-mixin"></span><h2>Using <code class="docutils literal notranslate"><span class="pre">UniqueMixin</span></code><a class="headerlink" href="#using-uniquemixin" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">UniqueMixin</span></code> provides automatic handling of unique constraints and merging of duplicate records.</p>
+<div class="sd-tab-set docutils">
+<input id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-2">
+Python 3.9+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BigIntAuditBase</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.mixins</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlugKey</span><span class="p">,</span> <span class="n">UniqueMixin</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">slugify</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.sql.elements</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColumnElement</span>
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span>
+</span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hashable</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="k">class</span><span class="w"> </span><span class="nc">UniqueTopic</span><span class="p">(</span><span class="n">BigIntAuditBase</span><span class="p">,</span> <span class="n">SlugKey</span><span class="p">,</span> <span class="n">UniqueMixin</span><span class="p">):</span>
+</span><span data-line="10"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Topic model with unique name constraint.&quot;&quot;&quot;</span>
+</span><span data-line="11">
+</span><span data-line="12">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;unique_topic&quot;</span>
+</span><span data-line="13">
+</span><span data-line="14">    <span class="n">name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="15">
+</span><span data-line="16">    <span class="nd">@classmethod</span>
+</span><span data-line="17">    <span class="k">def</span><span class="w"> </span><span class="nf">unique_hash</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">slug</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hashable</span><span class="p">:</span>
+</span><span data-line="18"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a unique hash for deduplication.&quot;&quot;&quot;</span>
+</span><span data-line="19">        <span class="k">return</span> <span class="n">slugify</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</span><span data-line="20">
+</span><span data-line="21">    <span class="nd">@classmethod</span>
+</span><span data-line="22">    <span class="k">def</span><span class="w"> </span><span class="nf">unique_filter</span><span class="p">(</span>
+</span><span data-line="23">        <span class="bp">cls</span><span class="p">,</span>
+</span><span data-line="24">        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="25">        <span class="n">slug</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="26">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+</span><span data-line="27"><span class="w">        </span><span class="sd">&quot;&quot;&quot;SQL filter for finding existing records.&quot;&quot;&quot;</span>
+</span><span data-line="28">        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">slug</span> <span class="o">==</span> <span class="n">slugify</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+<input checked="checked" id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.10" for="sd-tab-item-3">
+Python 3.10+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BigIntAuditBase</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.mixins</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlugKey</span><span class="p">,</span> <span class="n">UniqueMixin</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">slugify</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.sql.elements</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColumnElement</span>
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span>
+</span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hashable</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="k">class</span><span class="w"> </span><span class="nc">UniqueTopic</span><span class="p">(</span><span class="n">BigIntAuditBase</span><span class="p">,</span> <span class="n">SlugKey</span><span class="p">,</span> <span class="n">UniqueMixin</span><span class="p">):</span>
+</span><span data-line="9"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Topic model with unique name constraint.&quot;&quot;&quot;</span>
+</span><span data-line="10">
+</span><span data-line="11">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;unique_topic&quot;</span>
+</span><span data-line="12">
+</span><span data-line="13">    <span class="n">name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="14">
+</span><span data-line="15">    <span class="nd">@classmethod</span>
+</span><span data-line="16">    <span class="k">def</span><span class="w"> </span><span class="nf">unique_hash</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">slug</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hashable</span><span class="p">:</span>
+</span><span data-line="17"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a unique hash for deduplication.&quot;&quot;&quot;</span>
+</span><span data-line="18">        <span class="k">return</span> <span class="n">slugify</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</span><span data-line="19">
+</span><span data-line="20">    <span class="nd">@classmethod</span>
+</span><span data-line="21">    <span class="k">def</span><span class="w"> </span><span class="nf">unique_filter</span><span class="p">(</span>
+</span><span data-line="22">        <span class="bp">cls</span><span class="p">,</span>
+</span><span data-line="23">        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="24">        <span class="n">slug</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="25">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ColumnElement</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+</span><span data-line="26"><span class="w">        </span><span class="sd">&quot;&quot;&quot;SQL filter for finding existing records.&quot;&quot;&quot;</span>
+</span><span data-line="27">        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">slug</span> <span class="o">==</span> <span class="n">slugify</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+</div>
+<p>We can now use <code class="docutils literal notranslate"><span class="pre">as_unique_async</span></code> to simplify creation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">slugify</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_or_create_topics</span><span class="p">(</span>
+</span><span data-line="5">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
+</span><span data-line="6">    <span class="n">topic_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span data-line="7"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">UniqueTopic</span><span class="p">]:</span>
+</span><span data-line="8"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create or fetch topic rows without duplicating existing slugs.&quot;&quot;&quot;</span>
+</span><span data-line="9">    <span class="k">return</span> <span class="p">[</span>
+</span><span data-line="10">        <span class="k">await</span> <span class="n">UniqueTopic</span><span class="o">.</span><span class="n">as_unique_async</span><span class="p">(</span><span class="n">db_session</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">topic_name</span><span class="p">,</span> <span class="n">slug</span><span class="o">=</span><span class="n">slugify</span><span class="p">(</span><span class="n">topic_name</span><span class="p">))</span>
+</span><span data-line="11">        <span class="k">for</span> <span class="n">topic_name</span> <span class="ow">in</span> <span class="n">topic_names</span>
+</span><span data-line="12">    <span class="p">]</span>
+</span></pre></div>
+</div>
+</section>
+<section id="using-mappedasdataclass">
+<h2>Using <code class="docutils literal notranslate"><span class="pre">MappedAsDataclass</span></code><a class="headerlink" href="#using-mappedasdataclass" title="Link to this heading">¶</a></h2>
+<p>Advanced Alchemy’s built-in bases can also be combined with SQLAlchemy’s
+<code class="docutils literal notranslate"><span class="pre">MappedAsDataclass</span></code> helper. <code class="docutils literal notranslate"><span class="pre">DefaultBase</span></code> is the best starting point when you want
+dataclass-style construction but need to define your own primary key fields.</p>
+<div class="sd-tab-set docutils">
+<input id="sd-tab-item-4" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-4">
+Python 3.9+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">DefaultBase</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">MappedAsDataclass</span><span class="p">,</span> <span class="n">mapped_column</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="k">class</span><span class="w"> </span><span class="nc">DataclassAuthor</span><span class="p">(</span><span class="n">MappedAsDataclass</span><span class="p">,</span> <span class="n">DefaultBase</span><span class="p">):</span>
+</span><span data-line="7">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;dataclass_author&quot;</span>
+</span><span data-line="8">
+</span><span data-line="9">    <span class="nb">id</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="10">    <span class="n">name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span data-line="11">    <span class="n">bio</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+<input checked="checked" id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.10" for="sd-tab-item-5">
+Python 3.10+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">DefaultBase</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">MappedAsDataclass</span><span class="p">,</span> <span class="n">mapped_column</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">DataclassAuthor</span><span class="p">(</span><span class="n">MappedAsDataclass</span><span class="p">,</span> <span class="n">DefaultBase</span><span class="p">):</span>
+</span><span data-line="5">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;dataclass_author&quot;</span>
+</span><span data-line="6">
+</span><span data-line="7">    <span class="nb">id</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="8">    <span class="n">name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span data-line="9">    <span class="n">bio</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+</div>
+<p>If a field is generated by the database or SQLAlchemy itself, mark it <code class="docutils literal notranslate"><span class="pre">init=False</span></code> or provide a
+default so the generated dataclass constructor remains valid.</p>
+</section>
+<section id="customizing-declarative-base">
+<h2>Customizing Declarative Base<a class="headerlink" href="#customizing-declarative-base" title="Link to this heading">¶</a></h2>
+<p>If the built-in primary key strategies are close but not exact, start from <code class="docutils literal notranslate"><span class="pre">DefaultBase</span></code> and add
+your own columns or mixins. That keeps the Advanced Alchemy registry and table-name behavior while
+letting you replace the primary key strategy.</p>
+<div class="sd-tab-set docutils">
+<input id="sd-tab-item-6" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-6">
+Python 3.9+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">uuid4</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">DefaultBase</span>
+</span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span data-line="8">    <span class="n">Mapped</span><span class="p">,</span>
+</span><span data-line="9">    <span class="n">declared_attr</span><span class="p">,</span>
+</span><span data-line="10">    <span class="n">mapped_column</span><span class="p">,</span>
+</span><span data-line="11">    <span class="n">orm_insert_sentinel</span><span class="p">,</span>
+</span><span data-line="12"><span class="p">)</span>
+</span><span data-line="13">
+</span><span data-line="14"><span class="k">class</span><span class="w"> </span><span class="nc">ServerSideUUIDPrimaryKey</span><span class="p">:</span>
+</span><span data-line="15"><span class="w">    </span><span class="sd">&quot;&quot;&quot;UUID Primary Key Field Mixin.&quot;&quot;&quot;</span>
+</span><span data-line="16">    <span class="nb">id</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span>
+</span><span data-line="17">        <span class="n">default</span><span class="o">=</span><span class="n">uuid4</span><span class="p">,</span>
+</span><span data-line="18">        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="19">        <span class="n">server_default</span><span class="o">=</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;gen_random_uuid()&quot;</span><span class="p">),</span>
+</span><span data-line="20">    <span class="p">)</span>
+</span><span data-line="21">
+</span><span data-line="22">    <span class="nd">@declared_attr</span>
+</span><span data-line="23">    <span class="k">def</span><span class="w"> </span><span class="nf">_sentinel</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span data-line="24"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Sentinel value required for bulk DML.&quot;&quot;&quot;</span>
+</span><span data-line="25">        <span class="k">return</span> <span class="n">orm_insert_sentinel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sa_orm_sentinel&quot;</span><span class="p">)</span>
+</span><span data-line="26">
+</span><span data-line="27"><span class="k">class</span><span class="w"> </span><span class="nc">ServerSideUUIDBase</span><span class="p">(</span><span class="n">ServerSideUUIDPrimaryKey</span><span class="p">,</span> <span class="n">DefaultBase</span><span class="p">):</span>
+</span><span data-line="28">    <span class="n">__abstract__</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="29">
+</span><span data-line="30"><span class="k">class</span><span class="w"> </span><span class="nc">ServerSideUser</span><span class="p">(</span><span class="n">ServerSideUUIDBase</span><span class="p">):</span>
+</span><span data-line="31">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;server_side_user&quot;</span>
+</span><span data-line="32">
+</span><span data-line="33">    <span class="n">username</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="34">    <span class="n">email</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="35">    <span class="n">full_name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span data-line="36">    <span class="n">is_active</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="37">    <span class="n">last_login</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+<input checked="checked" id="sd-tab-item-7" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.10" for="sd-tab-item-7">
+Python 3.10+</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">uuid4</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">DefaultBase</span>
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+</span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span data-line="7">    <span class="n">Mapped</span><span class="p">,</span>
+</span><span data-line="8">    <span class="n">declared_attr</span><span class="p">,</span>
+</span><span data-line="9">    <span class="n">mapped_column</span><span class="p">,</span>
+</span><span data-line="10">    <span class="n">orm_insert_sentinel</span><span class="p">,</span>
+</span><span data-line="11"><span class="p">)</span>
+</span><span data-line="12">
+</span><span data-line="13"><span class="k">class</span><span class="w"> </span><span class="nc">ServerSideUUIDPrimaryKey</span><span class="p">:</span>
+</span><span data-line="14"><span class="w">    </span><span class="sd">&quot;&quot;&quot;UUID Primary Key Field Mixin.&quot;&quot;&quot;</span>
+</span><span data-line="15">    <span class="nb">id</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span>
+</span><span data-line="16">        <span class="n">default</span><span class="o">=</span><span class="n">uuid4</span><span class="p">,</span>
+</span><span data-line="17">        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="18">        <span class="n">server_default</span><span class="o">=</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;gen_random_uuid()&quot;</span><span class="p">),</span>
+</span><span data-line="19">    <span class="p">)</span>
+</span><span data-line="20">
+</span><span data-line="21">    <span class="nd">@declared_attr</span>
+</span><span data-line="22">    <span class="k">def</span><span class="w"> </span><span class="nf">_sentinel</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span data-line="23"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Sentinel value required for bulk DML.&quot;&quot;&quot;</span>
+</span><span data-line="24">        <span class="k">return</span> <span class="n">orm_insert_sentinel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sa_orm_sentinel&quot;</span><span class="p">)</span>
+</span><span data-line="25">
+</span><span data-line="26"><span class="k">class</span><span class="w"> </span><span class="nc">ServerSideUUIDBase</span><span class="p">(</span><span class="n">ServerSideUUIDPrimaryKey</span><span class="p">,</span> <span class="n">DefaultBase</span><span class="p">):</span>
+</span><span data-line="27">    <span class="n">__abstract__</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="28">
+</span><span data-line="29"><span class="k">class</span><span class="w"> </span><span class="nc">ServerSideUser</span><span class="p">(</span><span class="n">ServerSideUUIDBase</span><span class="p">):</span>
+</span><span data-line="30">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;server_side_user&quot;</span>
+</span><span data-line="31">
+</span><span data-line="32">    <span class="n">username</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="33">    <span class="n">email</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="34">    <span class="n">full_name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span data-line="35">    <span class="n">is_active</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="36">    <span class="n">last_login</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="caller-supplied-primary-keys-with-audit-columns">
+<span id="custom-primary-keys"></span><h2>Caller-Supplied Primary Keys with Audit Columns<a class="headerlink" href="#caller-supplied-primary-keys-with-audit-columns" title="Link to this heading">¶</a></h2>
+<p>The opinionated bases such as <code class="docutils literal notranslate"><span class="pre">UUIDAuditBase</span></code> and <code class="docutils literal notranslate"><span class="pre">BigIntAuditBase</span></code> generate the <code class="docutils literal notranslate"><span class="pre">id</span></code> value
+for you (a fresh UUID, a sequence value, and so on). When the primary key already exists – for
+example when importing rows that carry their own identifiers from an external system – combine
+<code class="docutils literal notranslate"><span class="pre">DefaultBase</span></code> with the <code class="xref py py-class docutils literal notranslate"><span class="pre">AuditColumns</span></code> mixin and declare the
+primary key yourself. <code class="docutils literal notranslate"><span class="pre">DefaultBase</span></code> supplies the Advanced Alchemy registry and table-name
+handling without adding a primary key, and <code class="docutils literal notranslate"><span class="pre">AuditColumns</span></code> adds the <code class="docutils literal notranslate"><span class="pre">created_at</span></code> and
+<code class="docutils literal notranslate"><span class="pre">updated_at</span></code> timestamps on its own.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">DefaultBase</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.mixins</span><span class="w"> </span><span class="kn">import</span> <span class="n">AuditColumns</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="k">class</span><span class="w"> </span><span class="nc">ImportedProduct</span><span class="p">(</span><span class="n">DefaultBase</span><span class="p">,</span> <span class="n">AuditColumns</span><span class="p">):</span>
+</span><span data-line="6">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;imported_product&quot;</span>
+</span><span data-line="7">
+</span><span data-line="8">    <span class="nb">id</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="9">    <span class="n">name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span></pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">id</span></code> column has no <code class="docutils literal notranslate"><span class="pre">default</span></code> and no server default, so the value is always taken from the
+instance you create. This is exactly what bulk imports need: each row keeps the identifier it
+already has.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
+</span><span data-line="2">
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_imported_products</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="5">    <span class="n">db_session</span><span class="o">.</span><span class="n">add_all</span><span class="p">(</span>
+</span><span data-line="6">        <span class="p">[</span>
+</span><span data-line="7">            <span class="n">ImportedProduct</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;SKU-001&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Widget&quot;</span><span class="p">),</span>
+</span><span data-line="8">            <span class="n">ImportedProduct</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;SKU-002&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Gadget&quot;</span><span class="p">),</span>
+</span><span data-line="9">        <span class="p">]</span>
+</span><span data-line="10">    <span class="p">)</span>
+</span><span data-line="11">    <span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span></pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">created_at</span></code> and <code class="docutils literal notranslate"><span class="pre">updated_at</span></code> timestamps are still populated automatically.</p>
+<p>For an integer primary key whose values come from the caller, disable autoincrement so the
+database does not attempt to assign one:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">DefaultBase</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.mixins</span><span class="w"> </span><span class="kn">import</span> <span class="n">AuditColumns</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="k">class</span><span class="w"> </span><span class="nc">LegacyRecord</span><span class="p">(</span><span class="n">DefaultBase</span><span class="p">,</span> <span class="n">AuditColumns</span><span class="p">):</span>
+</span><span data-line="6">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;legacy_record&quot;</span>
+</span><span data-line="7">
+</span><span data-line="8">    <span class="nb">id</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">autoincrement</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="9">    <span class="n">label</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span></pre></div>
+</div>
+<p>If you want to set a UUID yourself rather than letting the base generate one, use the same
+pattern with a <a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">uuid.UUID</span></code></a>-typed column and pass the value explicitly when constructing the
+instance.</p>
+</section>
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="index.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Modeling</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="inheritance.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Inheritance Patterns</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Litestar Organization</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a>
+<a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+  <iconify-icon icon="simple-icons:discord"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../_static/documentation_options.js?v=6f8f3740"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=a56c686a"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../../_static/togglebutton.js?v=b8b12719"></script>
+      <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../_static/shibuya.js?v=50760d75"></script></body>
+</html>
