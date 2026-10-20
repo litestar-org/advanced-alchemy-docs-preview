@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=f087ae94" />
-    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -182,6 +182,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l4"><a class="reference internal" href="../reference/extensions/litestar/plugins.html">plugin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../reference/extensions/litestar/cli.html">cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../reference/extensions/litestar/session.html">Session Backends</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/extensions/litestar/store.html">Store</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/extensions/flask/index.html">flask</a></li>
@@ -228,6 +229,17 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#pydantic-models">Pydantic Models</a></li>
 <li><a class="reference internal" href="#msgspec-structs">Msgspec Structs</a></li>
 <li><a class="reference internal" href="#attrs-classes">Attrs Classes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#multi-service-acquisition-and-composition">Multi-Service Acquisition and Composition</a><ul>
+<li><a class="reference internal" href="#using-provide-services">Using <code class="docutils literal notranslate"><span class="pre">provide_services</span></code></a></li>
+<li><a class="reference internal" href="#session-resolution-with-config-cli-workers">Session Resolution with <code class="docutils literal notranslate"><span class="pre">config=</span></code> (CLI &amp; Workers)</a></li>
+<li><a class="reference internal" href="#asgi-connection-resolution-guards-middleware">ASGI Connection Resolution (Guards &amp; Middleware)</a></li>
+<li><a class="reference internal" href="#reusable-composition-with-servicegroup">Reusable Composition with <code class="docutils literal notranslate"><span class="pre">ServiceGroup</span></code></a><ul>
+<li><a class="reference internal" href="#explicit-context-acquisition">Explicit Context Acquisition</a></li>
+<li><a class="reference internal" href="#dependency-injection">Dependency Injection</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#framework-integration">Framework Integration</a></li>
@@ -324,12 +336,12 @@ data-aria-dark="Switch to auto color mode">
   </div>
 </div><article class="yue" role="main">
           <section id="services">
-<h1>Services<a class="headerlink" href="#services" title="Link to this heading">¶</a></h1>
+<h1>Services<a class="headerlink" href="#services" title="Link to this heading">#</a></h1>
 <p>Services in Advanced Alchemy build on repositories to provide higher-level business logic, data transformation,
 and schema validation. While repositories handle raw database operations, services coordinate application rules
 and schema conversion.</p>
 <section id="understanding-services">
-<h2>Understanding Services<a class="headerlink" href="#understanding-services" title="Link to this heading">¶</a></h2>
+<h2>Understanding Services<a class="headerlink" href="#understanding-services" title="Link to this heading">#</a></h2>
 <p>Services provide:</p>
 <ul class="simple">
 <li><p>Business logic abstraction</p></li>
@@ -346,7 +358,7 @@ and schema conversion.</p>
 </div>
 </section>
 <section id="basic-service-usage">
-<h2>Basic Service Usage<a class="headerlink" href="#basic-service-usage" title="Link to this heading">¶</a></h2>
+<h2>Basic Service Usage<a class="headerlink" href="#basic-service-usage" title="Link to this heading">#</a></h2>
 <p>Let’s build upon a blog example by creating services for posts:</p>
 <div class="sd-tab-set docutils">
 <input id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
@@ -547,7 +559,7 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </div>
 </section>
 <section id="service-operations">
-<h2>Service Operations<a class="headerlink" href="#service-operations" title="Link to this heading">¶</a></h2>
+<h2>Service Operations<a class="headerlink" href="#service-operations" title="Link to this heading">#</a></h2>
 <p>Services provide high-level methods for common operations:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_post</span><span class="p">(</span><span class="n">post_service</span><span class="p">:</span> <span class="n">BlogPostService</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">BlogPostCreate</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlogPostResponse</span><span class="p">:</span>
 </span><span data-line="2">    <span class="n">post</span> <span class="o">=</span> <span class="k">await</span> <span class="n">post_service</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -584,7 +596,7 @@ dictionary containing nested dictionaries that match a model’s relationships, 
 </span></pre></div>
 </div>
 <section id="row-locking-for-update">
-<h3>Row Locking (FOR UPDATE)<a class="headerlink" href="#row-locking-for-update" title="Link to this heading">¶</a></h3>
+<h3>Row Locking (FOR UPDATE)<a class="headerlink" href="#row-locking-for-update" title="Link to this heading">#</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 1.9.0.</span></p>
 </div>
@@ -598,7 +610,7 @@ dictionary containing nested dictionaries that match a model’s relationships, 
 </div>
 </section>
 <section id="composite-primary-keys">
-<h3>Composite Primary Keys<a class="headerlink" href="#composite-primary-keys" title="Link to this heading">¶</a></h3>
+<h3>Composite Primary Keys<a class="headerlink" href="#composite-primary-keys" title="Link to this heading">#</a></h3>
 <p>Services fully support models with composite primary keys using the same formats as repositories.
 Pass primary key values as tuples or dictionaries when using <code class="docutils literal notranslate"><span class="pre">get</span></code>, <code class="docutils literal notranslate"><span class="pre">update</span></code>, or <code class="docutils literal notranslate"><span class="pre">delete</span></code> methods:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
@@ -621,7 +633,7 @@ Pass primary key values as tuples or dictionaries when using <code class="docuti
 </section>
 </section>
 <section id="complex-operations">
-<h2>Complex Operations<a class="headerlink" href="#complex-operations" title="Link to this heading">¶</a></h2>
+<h2>Complex Operations<a class="headerlink" href="#complex-operations" title="Link to this heading">#</a></h2>
 <p>Services can handle complex business logic involving multiple models.
 The code below shows a service coordinating posts and tags.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">class</span><span class="w"> </span><span class="nc">TaggedBlogPostService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">BlogPost</span><span class="p">]):</span>
@@ -672,7 +684,7 @@ The code below shows a service coordinating posts and tags.</p>
 </div>
 </section>
 <section id="working-with-slugs">
-<h2>Working with Slugs<a class="headerlink" href="#working-with-slugs" title="Link to this heading">¶</a></h2>
+<h2>Working with Slugs<a class="headerlink" href="#working-with-slugs" title="Link to this heading">#</a></h2>
 <p>Services can automatically generate URL-friendly slugs using the <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncSlugRepository</span></code>.
 Here’s an example service for managing tags with automatic slug generation:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">class</span><span class="w"> </span><span class="nc">BlogTagService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">BlogTag</span><span class="p">]):</span>
@@ -705,10 +717,10 @@ Here’s an example service for managing tags with automatic slug generation:</p
 </div>
 </section>
 <section id="schema-integration">
-<h2>Schema Integration<a class="headerlink" href="#schema-integration" title="Link to this heading">¶</a></h2>
+<h2>Schema Integration<a class="headerlink" href="#schema-integration" title="Link to this heading">#</a></h2>
 <p>Advanced Alchemy services support multiple schema libraries for data transformation and validation:</p>
 <section id="pydantic-models">
-<h3>Pydantic Models<a class="headerlink" href="#pydantic-models" title="Link to this heading">¶</a></h3>
+<h3>Pydantic Models<a class="headerlink" href="#pydantic-models" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">class</span><span class="w"> </span><span class="nc">BlogPostSchema</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 </span><span data-line="2">    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
 </span><span data-line="3">    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
@@ -724,7 +736,7 @@ Here’s an example service for managing tags with automatic slug generation:</p
 </div>
 </section>
 <section id="msgspec-structs">
-<h3>Msgspec Structs<a class="headerlink" href="#msgspec-structs" title="Link to this heading">¶</a></h3>
+<h3>Msgspec Structs<a class="headerlink" href="#msgspec-structs" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">try</span><span class="p">:</span>
 </span><span data-line="2">    <span class="kn">from</span><span class="w"> </span><span class="nn">msgspec</span><span class="w"> </span><span class="kn">import</span> <span class="n">Struct</span>
 </span><span data-line="3"><span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>  <span class="c1"># pragma: no cover - optional dependency in docs examples</span>
@@ -745,7 +757,7 @@ Here’s an example service for managing tags with automatic slug generation:</p
 </div>
 </section>
 <section id="attrs-classes">
-<h3>Attrs Classes<a class="headerlink" href="#attrs-classes" title="Link to this heading">¶</a></h3>
+<h3>Attrs Classes<a class="headerlink" href="#attrs-classes" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">try</span><span class="p">:</span>
 </span><span data-line="2">    <span class="kn">from</span><span class="w"> </span><span class="nn">attrs</span><span class="w"> </span><span class="kn">import</span> <span class="n">define</span>
 </span><span data-line="3"><span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>  <span class="c1"># pragma: no cover - optional dependency in docs examples</span>
@@ -774,8 +786,118 @@ complex types, nested structures, and custom converters.</p>
 </div>
 </section>
 </section>
+<section id="multi-service-acquisition-and-composition">
+<h2>Multi-Service Acquisition and Composition<a class="headerlink" href="#multi-service-acquisition-and-composition" title="Link to this heading">#</a></h2>
+<p>When workflows require multiple services operating on the same transaction boundaries, <code class="docutils literal notranslate"><span class="pre">provide_services</span></code> and
+<code class="docutils literal notranslate"><span class="pre">ServiceGroup</span></code> allow coordinating multiple services over a single shared SQLAlchemy session.</p>
+<p>Key capabilities include:</p>
+<ul class="simple">
+<li><p><strong>Unified Interface</strong>: Accepts either service classes (<code class="docutils literal notranslate"><span class="pre">BlogPostService</span></code>) or provider callables (generators or functions) as positional specifications.</p></li>
+<li><p><strong>Sync and Async Parity</strong>: Supports both <code class="docutils literal notranslate"><span class="pre">async</span> <span class="pre">with</span> <span class="pre">provide_services(...)</span></code> and <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">provide_services(...)</span></code>.</p></li>
+<li><p><strong>Flexible Session Resolution</strong>:
+- <code class="docutils literal notranslate"><span class="pre">session=</span></code>: Use an existing session without managing its lifecycle.
+- <code class="docutils literal notranslate"><span class="pre">config=</span></code>: Automatically acquires a new session via <code class="docutils literal notranslate"><span class="pre">config.get_session()</span></code> and commits/closes it upon block exit (ideal for CLI commands and background tasks).
+- <code class="docutils literal notranslate"><span class="pre">connection=</span></code>: Resolves the request-scoped session from an active ASGI connection (e.g. Litestar <code class="docutils literal notranslate"><span class="pre">Request</span></code> or <code class="docutils literal notranslate"><span class="pre">ASGIConnection</span></code>) via <code class="docutils literal notranslate"><span class="pre">config.provide_session()</span></code>.</p></li>
+<li><p><strong>LIFO Teardown</strong>: Cleans up generator providers in reverse order of entry, ensuring dependent resources are released safely.</p></li>
+</ul>
+<section id="using-provide-services">
+<h3>Using <code class="docutils literal notranslate"><span class="pre">provide_services</span></code><a class="headerlink" href="#using-provide-services" title="Link to this heading">#</a></h3>
+<p>Acquire multiple services inside an <code class="docutils literal notranslate"><span class="pre">async</span> <span class="pre">with</span></code> block:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">provide_services</span>
+</span><span data-line="4">
+</span><span data-line="5">
+</span><span data-line="6"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">publish_post_with_audit</span><span class="p">(</span>
+</span><span data-line="7">    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
+</span><span data-line="8">    <span class="n">post_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span data-line="9"><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="10">    <span class="k">async</span> <span class="k">with</span> <span class="n">provide_services</span><span class="p">(</span>
+</span><span data-line="11">        <span class="n">BlogPostService</span><span class="p">,</span>
+</span><span data-line="12">        <span class="n">BlogTagService</span><span class="p">,</span>
+</span><span data-line="13">        <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
+</span><span data-line="14">    <span class="p">)</span> <span class="k">as</span> <span class="p">(</span><span class="n">post_service</span><span class="p">,</span> <span class="n">tag_service</span><span class="p">):</span>
+</span><span data-line="15">        <span class="n">post</span> <span class="o">=</span> <span class="k">await</span> <span class="n">post_service</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">post_id</span><span class="p">)</span>
+</span><span data-line="16">        <span class="n">tag</span> <span class="o">=</span> <span class="k">await</span> <span class="n">tag_service</span><span class="o">.</span><span class="n">get_one_or_none</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;announcements&quot;</span><span class="p">)</span>
+</span><span data-line="17">        <span class="k">assert</span> <span class="n">post_service</span><span class="o">.</span><span class="n">session</span> <span class="ow">is</span> <span class="n">tag_service</span><span class="o">.</span><span class="n">session</span>
+</span></pre></div>
+</div>
+</section>
+<section id="session-resolution-with-config-cli-workers">
+<h3>Session Resolution with <code class="docutils literal notranslate"><span class="pre">config=</span></code> (CLI &amp; Workers)<a class="headerlink" href="#session-resolution-with-config-cli-workers" title="Link to this heading">#</a></h3>
+<p>For standalone scripts, CLI commands, or background task runners where an active session does not yet exist, pass <code class="docutils literal notranslate"><span class="pre">config=</span></code> to automatically open, provide, and tear down the session:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncConfig</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">provide_services</span>
+</span><span data-line="3">
+</span><span data-line="4">
+</span><span data-line="5"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run_nightly_batch</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="6">    <span class="k">async</span> <span class="k">with</span> <span class="n">provide_services</span><span class="p">(</span>
+</span><span data-line="7">        <span class="n">BlogPostService</span><span class="p">,</span>
+</span><span data-line="8">        <span class="n">BlogTagService</span><span class="p">,</span>
+</span><span data-line="9">        <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+</span><span data-line="10">    <span class="p">)</span> <span class="k">as</span> <span class="p">(</span><span class="n">posts</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
+</span><span data-line="11">        <span class="o">...</span>
+</span></pre></div>
+</div>
+</section>
+<section id="asgi-connection-resolution-guards-middleware">
+<h3>ASGI Connection Resolution (Guards &amp; Middleware)<a class="headerlink" href="#asgi-connection-resolution-guards-middleware" title="Link to this heading">#</a></h3>
+<p>In Litestar guards, middleware, and request interceptors, access the request-scoped session by providing both <code class="docutils literal notranslate"><span class="pre">connection=</span></code> and <code class="docutils literal notranslate"><span class="pre">config=</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar.connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">ASGIConnection</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncConfig</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">provide_services</span>
+</span><span data-line="5">
+</span><span data-line="6">
+</span><span data-line="7"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">auth_guard</span><span class="p">(</span>
+</span><span data-line="8">    <span class="n">connection</span><span class="p">:</span> <span class="n">ASGIConnection</span><span class="p">,</span>
+</span><span data-line="9">    <span class="n">config</span><span class="p">:</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">,</span>
+</span><span data-line="10"><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="11">    <span class="k">async</span> <span class="k">with</span> <span class="n">provide_services</span><span class="p">(</span>
+</span><span data-line="12">        <span class="n">BlogPostService</span><span class="p">,</span>
+</span><span data-line="13">        <span class="n">BlogTagService</span><span class="p">,</span>
+</span><span data-line="14">        <span class="n">connection</span><span class="o">=</span><span class="n">connection</span><span class="p">,</span>
+</span><span data-line="15">        <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+</span><span data-line="16">    <span class="p">)</span> <span class="k">as</span> <span class="p">(</span><span class="n">posts</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
+</span><span data-line="17">        <span class="o">...</span>
+</span></pre></div>
+</div>
+</section>
+<section id="reusable-composition-with-servicegroup">
+<h3>Reusable Composition with <code class="docutils literal notranslate"><span class="pre">ServiceGroup</span></code><a class="headerlink" href="#reusable-composition-with-servicegroup" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">ServiceGroup</span></code> defines a reusable group of services with shared default loading options and configurations:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">ServiceGroup</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="n">blog_group</span> <span class="o">=</span> <span class="n">ServiceGroup</span><span class="p">(</span><span class="n">BlogPostService</span><span class="p">,</span> <span class="n">BlogTagService</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<section id="explicit-context-acquisition">
+<h4>Explicit Context Acquisition<a class="headerlink" href="#explicit-context-acquisition" title="Link to this heading">#</a></h4>
+<p>Use <code class="docutils literal notranslate"><span class="pre">.new()</span></code> for explicit context acquisition:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">acquire_blog_services</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="2">    <span class="k">async</span> <span class="k">with</span> <span class="n">blog_group</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span> <span class="k">as</span> <span class="p">(</span><span class="n">posts</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
+</span><span data-line="3">        <span class="o">...</span>
+</span></pre></div>
+</div>
+</section>
+<section id="dependency-injection">
+<h4>Dependency Injection<a class="headerlink" href="#dependency-injection" title="Link to this heading">#</a></h4>
+<p>Use <code class="docutils literal notranslate"><span class="pre">.provide()</span></code> for dependency injection in Litestar:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar.di</span><span class="w"> </span><span class="kn">import</span> <span class="n">Provide</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="n">config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span><span class="n">connection_string</span><span class="o">=</span><span class="s2">&quot;sqlite+aiosqlite:///:memory:&quot;</span><span class="p">)</span>
+</span><span data-line="4"><span class="n">dependencies</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;blog_services&quot;</span><span class="p">:</span> <span class="n">Provide</span><span class="p">(</span><span class="n">blog_group</span><span class="o">.</span><span class="n">provide</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">))}</span>
+</span><span data-line="5">
+</span><span data-line="6">
+</span><span data-line="7"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handler</span><span class="p">(</span><span class="n">blog_services</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">BlogPostService</span><span class="p">,</span> <span class="n">BlogTagService</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="8">    <span class="n">posts</span><span class="p">,</span> <span class="n">tags</span> <span class="o">=</span> <span class="n">blog_services</span>
+</span></pre></div>
+</div>
+</section>
+</section>
+</section>
 <section id="framework-integration">
-<h2>Framework Integration<a class="headerlink" href="#framework-integration" title="Link to this heading">¶</a></h2>
+<h2>Framework Integration<a class="headerlink" href="#framework-integration" title="Link to this heading">#</a></h2>
 <p>Services integrate seamlessly with both Litestar and FastAPI.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="frameworks/litestar.html"><span class="doc">Litestar Integration</span></a></p></li>
@@ -821,12 +943,12 @@ complex types, nested structures, and custom converters.</p>
   </p>
 </div>
       <div class="sy-foot-socials">
-<a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
-  <iconify-icon icon="simple-icons:github"></iconify-icon>
-</a>
-<a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
-  <iconify-icon icon="simple-icons:discord"></iconify-icon>
-</a></div>
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div>
     </div>
   </div>
 </footer>

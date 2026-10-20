@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=f087ae94" />
-    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=2ceb65ce" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
@@ -182,6 +182,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l4"><a class="reference internal" href="reference/extensions/litestar/plugins.html">plugin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reference/extensions/litestar/cli.html">cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reference/extensions/litestar/session.html">Session Backends</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/extensions/litestar/store.html">Store</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="reference/extensions/flask/index.html">flask</a></li>
@@ -215,6 +216,18 @@ data-aria-dark="Switch to auto color mode">
       <i class="i-lucide close"></i>
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#1.12.0">1.12.0</a><ul>
+<li><a class="reference internal" href="#1.12.0-feature">Features</a></li>
+<li><a class="reference internal" href="#1.12.0-bugfix">Bugfixes</a></li>
+<li><a class="reference internal" href="#1.12.0-misc">Other changes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#1.11.0">1.11.0</a><ul>
+<li><a class="reference internal" href="#1.11.0-feature">Features</a></li>
+<li><a class="reference internal" href="#1.11.0-bugfix">Bugfixes</a></li>
+<li><a class="reference internal" href="#1.11.0-misc">Other changes</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#1.10.0">1.10.0</a><ul>
 <li><a class="reference internal" href="#1.10.0-feature">Features</a></li>
 <li><a class="reference internal" href="#1.10.0-bugfix">Bugfixes</a></li>
@@ -541,11 +554,293 @@ data-aria-dark="Switch to auto color mode">
   </div>
 </div><article class="yue" role="main">
           <section id="x-changelog">
-<h1>1.x Changelog<a class="headerlink" href="#x-changelog" title="Link to this heading">¶</a></h1>
+<h1>1.x Changelog<a class="headerlink" href="#x-changelog" title="Link to this heading">#</a></h1>
+<section id="1.12.0">
+<h2>1.12.0<a class="headerlink" href="#1.12.0" title="Link to this heading">#</a></h2>
+<strong>Released: </strong>2026-10-19<section id="1.12.0-feature">
+<h3>Features<a class="headerlink" href="#1.12.0-feature" title="Link to this heading">#</a></h3>
+<dl>
+<dt>per-dialect optimal upsert_many (MERGE / ON CONFLICT / INSERT OR UPDATE)<a class="headerlink reference internal" href="#1.12.0-per-dialect optimal upsert_many (merge / on conflict / insert or update)" id="1.12.0-per-dialect optimal upsert_many (merge / on conflict / insert or update)">#</a></dt><dd><div class="changelog-change docutils container">
+<p><code class="docutils literal notranslate"><span class="pre">Repository.upsert_many</span></code> and <code class="docutils literal notranslate"><span class="pre">Service.upsert_many</span></code> now dispatch to the
+most efficient native upsert primitive supported by the active dialect when
+<code class="docutils literal notranslate"><span class="pre">match_fields</span></code> maps to a primary key, unique constraint, or unique index:
+<code class="docutils literal notranslate"><span class="pre">INSERT</span> <span class="pre">…</span> <span class="pre">ON</span> <span class="pre">CONFLICT</span> <span class="pre">DO</span> <span class="pre">UPDATE</span></code> on PostgreSQL / CockroachDB / SQLite /
+DuckDB / MySQL / MariaDB, <code class="docutils literal notranslate"><span class="pre">MERGE</span></code> on Oracle / MSSQL, and
+primary-key <code class="docutils literal notranslate"><span class="pre">INSERT</span> <span class="pre">OR</span> <span class="pre">UPDATE</span> <span class="pre">…</span> <span class="pre">THEN</span> <span class="pre">RETURN</span></code> on Spanner — compiled to
+one statement per dialect-sized chunk.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/740">https://github.com/litestar-org/advanced-alchemy/pull/740</a></span></p>
+</div>
+</dd>
+<dt>add nulls placement to OrderBy<a class="headerlink reference internal" href="#1.12.0-add nulls placement to orderby" id="1.12.0-add nulls placement to orderby">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds an optional <code class="docutils literal notranslate"><span class="pre">nulls</span></code> parameter (<code class="docutils literal notranslate"><span class="pre">&quot;first&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;last&quot;</span></code>) to
+<code class="docutils literal notranslate"><span class="pre">OrderBy</span></code> to control where <code class="docutils literal notranslate"><span class="pre">NULL</span></code> rows sort across dialects. Dialects
+with native <code class="docutils literal notranslate"><span class="pre">NULLS</span> <span class="pre">FIRST</span></code> / <code class="docutils literal notranslate"><span class="pre">NULLS</span> <span class="pre">LAST</span></code> syntax emit the clause
+directly, while MySQL, MariaDB, and SQL Server emulate non-default
+placements with a leading <code class="docutils literal notranslate"><span class="pre">CASE</span> <span class="pre">WHEN</span> <span class="pre">col</span> <span class="pre">IS</span> <span class="pre">NULL</span></code> sort key. The
+in-memory mock repository and Litestar/FastAPI filter providers (via
+<code class="docutils literal notranslate"><span class="pre">sort_nulls</span></code>) also support the option.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/783">https://github.com/litestar-org/advanced-alchemy/pull/783</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
+<section id="1.12.0-bugfix">
+<h3>Bugfixes<a class="headerlink" href="#1.12.0-bugfix" title="Link to this heading">#</a></h3>
+<dl>
+<dt>escape LIKE wildcards in SearchFilter values<a class="headerlink reference internal" href="#1.12.0-escape like wildcards in searchfilter values" id="1.12.0-escape like wildcards in searchfilter values">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds an opt-in <code class="docutils literal notranslate"><span class="pre">escape_wildcards</span></code> flag to <code class="docutils literal notranslate"><span class="pre">SearchFilter</span></code> and
+<code class="docutils literal notranslate"><span class="pre">NotInSearchFilter</span></code> (along with public <code class="docutils literal notranslate"><span class="pre">LIKE_ESCAPE_CHAR</span></code> and
+<code class="docutils literal notranslate"><span class="pre">escape_like_value()</span></code> helpers) so <code class="docutils literal notranslate"><span class="pre">%</span></code> and <code class="docutils literal notranslate"><span class="pre">_</span></code> in search strings
+match literally when enabled. The in-memory mock repository and
+Litestar/FastAPI filter providers (via <code class="docutils literal notranslate"><span class="pre">search_escape_wildcards</span></code>)
+honor the flag as well.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/781">https://github.com/litestar-org/advanced-alchemy/pull/781</a></span></p>
+</div>
+</dd>
+<dt>unify filter provider naming and route isolation<a class="headerlink reference internal" href="#1.12.0-unify filter provider naming and route isolation" id="1.12.0-unify filter provider naming and route isolation">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Isolates generated filter dependency aggregates and cache keys per
+configuration across Litestar and FastAPI routes so one route’s query
+parameters or pagination defaults do not bleed into another. Both
+integrations also now accept <code class="docutils literal notranslate"><span class="pre">alias_generator</span></code> naming presets
+(<code class="docutils literal notranslate"><span class="pre">&quot;snake_case&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;camel_case&quot;</span></code>) or a custom callable to customize
+query parameter names.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/798">https://github.com/litestar-org/advanced-alchemy/pull/798</a></span></p>
+</div>
+</dd>
+<dt>stop calling deprecated set_async_context internally<a class="headerlink reference internal" href="#1.12.0-stop calling deprecated set_async_context internally" id="1.12.0-stop calling deprecated set_async_context internally">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Removes internal calls to the deprecated <code class="docutils literal notranslate"><span class="pre">set_async_context</span></code> no-op from
+core configs and the Litestar, Flask, Sanic, and Starlette integrations so
+providing a session no longer emits a <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> on every
+request.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/815">https://github.com/litestar-org/advanced-alchemy/issues/815</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/816">https://github.com/litestar-org/advanced-alchemy/pull/816</a></span></p>
+</div>
+</dd>
+<dt>propagate Alembic configuration options in CLI commands<a class="headerlink reference internal" href="#1.12.0-propagate alembic configuration options in cli commands" id="1.12.0-propagate alembic configuration options in cli commands">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Propagates <code class="docutils literal notranslate"><span class="pre">bind_key</span></code>, <code class="docutils literal notranslate"><span class="pre">version_table_schema</span></code>, <code class="docutils literal notranslate"><span class="pre">render_as_batch</span></code>,
+<code class="docutils literal notranslate"><span class="pre">compare_type</span></code>, and <code class="docutils literal notranslate"><span class="pre">user_module_prefix</span></code> from <code class="docutils literal notranslate"><span class="pre">AlembicAsyncConfig</span></code>
+and <code class="docutils literal notranslate"><span class="pre">AlembicSyncConfig</span></code> when constructing the Alembic <code class="docutils literal notranslate"><span class="pre">Config</span></code> in
+<code class="docutils literal notranslate"><span class="pre">AlembicCommands</span></code>.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/792">https://github.com/litestar-org/advanced-alchemy/pull/792</a></span></p>
+</div>
+</dd>
+<dt>resolve dialect from routed session bindings<a class="headerlink reference internal" href="#1.12.0-resolve dialect from routed session bindings" id="1.12.0-resolve dialect from routed session bindings">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Updates repository initialization to fall back to
+<code class="docutils literal notranslate"><span class="pre">session.get_bind().dialect</span></code> when <code class="docutils literal notranslate"><span class="pre">session.bind</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, fixing
+<code class="docutils literal notranslate"><span class="pre">AttributeError</span></code> when using <code class="docutils literal notranslate"><span class="pre">AsyncSession</span></code> or <code class="docutils literal notranslate"><span class="pre">Session</span></code> instances
+backed by routing session makers.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/793">https://github.com/litestar-org/advanced-alchemy/issues/793</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/794">https://github.com/litestar-org/advanced-alchemy/pull/794</a></span></p>
+</div>
+</dd>
+<dt>support plain DeclarativeBase models in ModelProtocol<a class="headerlink reference internal" href="#1.12.0-support plain declarativebase models in modelprotocol" id="1.12.0-support plain declarativebase models in modelprotocol">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Declares <code class="docutils literal notranslate"><span class="pre">__table__</span></code> and <code class="docutils literal notranslate"><span class="pre">__mapper__</span></code> as <code class="docutils literal notranslate"><span class="pre">ClassVar</span></code> on
+<code class="docutils literal notranslate"><span class="pre">ModelProtocol</span></code>, <code class="docutils literal notranslate"><span class="pre">BasicAttributes</span></code>, and <code class="docutils literal notranslate"><span class="pre">SQLModelBaseLike</span></code> while
+omitting <code class="docutils literal notranslate"><span class="pre">ClassVar</span></code> from <code class="docutils literal notranslate"><span class="pre">__name__</span></code>, allowing models built on plain
+SQLAlchemy <code class="docutils literal notranslate"><span class="pre">DeclarativeBase</span></code> to satisfy <code class="docutils literal notranslate"><span class="pre">ModelProtocol</span></code> under both
+mypy and pyright.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/768">https://github.com/litestar-org/advanced-alchemy/issues/768</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/769">https://github.com/litestar-org/advanced-alchemy/pull/769</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/796">https://github.com/litestar-org/advanced-alchemy/pull/796</a></span></p>
+</div>
+</dd>
+<dt>remove unreachable protocol and base-type entries from default type_annotation_map<a class="headerlink reference internal" href="#1.12.0-remove unreachable protocol and base-type entries from default type_annotation_map" id="1.12.0-remove unreachable protocol and base-type entries from default type_annotation_map">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Removes the unreachable <code class="docutils literal notranslate"><span class="pre">DataclassProtocol:</span> <span class="pre">JsonB</span></code> and
+<code class="docutils literal notranslate"><span class="pre">msgspec.Struct:</span> <span class="pre">JsonB</span></code> entries from the default <code class="docutils literal notranslate"><span class="pre">type_annotation_map</span></code>
+in <code class="docutils literal notranslate"><span class="pre">create_registry()</span></code>, since SQLAlchemy resolves mapped annotations by
+exact type identity rather than structural or supertype matching. Concrete
+dataclasses and <code class="docutils literal notranslate"><span class="pre">msgspec.Struct</span></code> subclasses should be registered via
+<code class="docutils literal notranslate"><span class="pre">custom_annotation_map</span></code>.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/477">https://github.com/litestar-org/advanced-alchemy/issues/477</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/772">https://github.com/litestar-org/advanced-alchemy/issues/772</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/771">https://github.com/litestar-org/advanced-alchemy/pull/771</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/775">https://github.com/litestar-org/advanced-alchemy/pull/775</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
+<section id="1.12.0-misc">
+<h3>Other changes<a class="headerlink" href="#1.12.0-misc" title="Link to this heading">#</a></h3>
+<dl>
+<dt>correct CLI configuration class and parameter names in docs<a class="headerlink reference internal" href="#1.12.0-correct cli configuration class and parameter names in docs" id="1.12.0-correct cli configuration class and parameter names in docs">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Updates the CLI usage documentation and global options table to reference
+<code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncConfig</span></code> / <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncConfig</span></code> and
+<code class="docutils literal notranslate"><span class="pre">connection_string</span></code>.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/728">https://github.com/litestar-org/advanced-alchemy/issues/728</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/776">https://github.com/litestar-org/advanced-alchemy/pull/776</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
+</section>
+<section id="1.11.0">
+<h2>1.11.0<a class="headerlink" href="#1.11.0" title="Link to this heading">#</a></h2>
+<strong>Released: </strong>2026-05-30<section id="1.11.0-feature">
+<h3>Features<a class="headerlink" href="#1.11.0-feature" title="Link to this heading">#</a></h3>
+<dl>
+<dt>harden crypto column types and add TOTP and one-time-code storage<a class="headerlink reference internal" href="#1.11.0-harden crypto column types and add totp and one-time-code storage" id="1.11.0-harden crypto column types and add totp and one-time-code storage">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Corrects <code class="docutils literal notranslate"><span class="pre">PGCryptoBackend</span></code> so encryption and decryption run server-side
+via <code class="docutils literal notranslate"><span class="pre">bind_expression</span></code>/<code class="docutils literal notranslate"><span class="pre">column_expression</span></code> (<code class="docutils literal notranslate"><span class="pre">pgp_sym_encrypt</span></code> /
+<code class="docutils literal notranslate"><span class="pre">pgp_sym_decrypt</span></code>), round-tripping correctly on PostgreSQL with the
+<code class="docutils literal notranslate"><span class="pre">pgcrypto</span></code> extension enabled. Deprecates the random default encryption key:
+constructing <code class="docutils literal notranslate"><span class="pre">EncryptedString</span></code>/<code class="docutils literal notranslate"><span class="pre">EncryptedText</span></code> without a <code class="docutils literal notranslate"><span class="pre">key</span></code> now
+warns, since the random default changed per process restart and left rows
+undecryptable. <code class="docutils literal notranslate"><span class="pre">PasswordHash</span></code> gains rehash-on-verify via
+<code class="docutils literal notranslate"><span class="pre">HashedPassword.verify_and_update</span></code> (backends gained <code class="docutils literal notranslate"><span class="pre">needs_rehash</span></code>). Adds
+two new column types: <code class="docutils literal notranslate"><span class="pre">TOTPSecret</span></code> (a base32 TOTP secret encrypted at rest
+with a pyotp-backed provider exposing <code class="docutils literal notranslate"><span class="pre">now</span></code>/<code class="docutils literal notranslate"><span class="pre">verify</span></code>/<code class="docutils literal notranslate"><span class="pre">provisioning_uri</span></code>
+and a <code class="docutils literal notranslate"><span class="pre">generate_totp_secret</span></code> helper) and <code class="docutils literal notranslate"><span class="pre">OneTimeCode</span></code> (a code hashed in
+a JSON column that also tracks expiry, single-use redemption, and wrong-guess
+lockout, with a <code class="docutils literal notranslate"><span class="pre">generate_one_time_code</span></code> helper). Adds the
+<code class="docutils literal notranslate"><span class="pre">cryptography</span></code> and <code class="docutils literal notranslate"><span class="pre">pyotp</span></code> optional-dependency extras; <code class="docutils literal notranslate"><span class="pre">FernetBackend</span></code>
+now raises <code class="docutils literal notranslate"><span class="pre">MissingDependencyError</span></code> when <code class="docutils literal notranslate"><span class="pre">cryptography</span></code> is absent.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/758">https://github.com/litestar-org/advanced-alchemy/pull/758</a></span></p>
+</div>
+</dd>
+<dt>add configurable schema dump settings<a class="headerlink reference internal" href="#1.11.0-add configurable schema dump settings" id="1.11.0-add configurable schema dump settings">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds <code class="docutils literal notranslate"><span class="pre">SchemaDumpConfig</span></code> for service input conversion, allowing schema
+dumping behavior to be configured once on a service or overridden for a
+single write operation. Pydantic, msgspec, attrs, and dataclass inputs
+now flow through the shared <code class="docutils literal notranslate"><span class="pre">schema_dump()</span></code> utility, with options for
+excluding unset values, <code class="docutils literal notranslate"><span class="pre">None</span></code> values, defaults, and sentinel values
+while preserving the existing partial-update defaults.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/750">https://github.com/litestar-org/advanced-alchemy/pull/750</a></span></p>
+</div>
+</dd>
+<dt>add choices and boolean filters<a class="headerlink reference internal" href="#1.11.0-add choices and boolean filters" id="1.11.0-add choices and boolean filters">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds <code class="docutils literal notranslate"><span class="pre">ChoicesFilter</span></code> for matching fields against a collection of
+allowed values and <code class="docutils literal notranslate"><span class="pre">BooleanFilter</span></code> for optional boolean query
+parameters. Both filters are exported through the public filter API and
+included in <code class="docutils literal notranslate"><span class="pre">FilterMap</span></code> for framework integration.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/72">https://github.com/litestar-org/advanced-alchemy/issues/72</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/723">https://github.com/litestar-org/advanced-alchemy/pull/723</a></span></p>
+</div>
+</dd>
+<dt>add dialect-aware vector columns<a class="headerlink reference internal" href="#1.11.0-add dialect-aware vector columns" id="1.11.0-add dialect-aware vector columns">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds <code class="docutils literal notranslate"><span class="pre">Vector</span></code> as a portable column type that selects the native vector
+implementation for Oracle 23ai and PostgreSQL/CockroachDB when
+available, and falls back to JSON storage elsewhere. Returned vector
+values are normalized to <code class="docutils literal notranslate"><span class="pre">list[float]</span></code> so callers can use one API
+across supported dialects.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/739">https://github.com/litestar-org/advanced-alchemy/pull/739</a></span></p>
+</div>
+</dd>
+<dt>add vector distance operators for similarity search<a class="headerlink reference internal" href="#1.11.0-add vector distance operators for similarity search" id="1.11.0-add vector distance operators for similarity search">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds <code class="docutils literal notranslate"><span class="pre">cosine_distance</span></code>, <code class="docutils literal notranslate"><span class="pre">l2_distance</span></code>, <code class="docutils literal notranslate"><span class="pre">l1_distance</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">max_inner_product</span></code> comparator methods to the <code class="docutils literal notranslate"><span class="pre">Vector</span></code> type so a
+vector column can be ordered by similarity directly. Each compiles to
+native SQL per dialect — pgvector operators on PostgreSQL/CockroachDB
+and <code class="docutils literal notranslate"><span class="pre">VECTOR_DISTANCE</span></code> on Oracle 23ai — and raises a clear
+<code class="docutils literal notranslate"><span class="pre">NotImplementedError</span></code> on JSON-fallback dialects.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/756">https://github.com/litestar-org/advanced-alchemy/pull/756</a></span></p>
+</div>
+</dd>
+<dt>use native Oracle JSON when available<a class="headerlink reference internal" href="#1.11.0-use native oracle json when available" id="1.11.0-use native oracle json when available">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Updates <code class="docutils literal notranslate"><span class="pre">ORA_JSONB</span></code> to prefer SQLAlchemy’s native Oracle JSON type on
+Oracle 21c and newer when running with SQLAlchemy 2.1 or newer, while
+keeping the existing BLOB plus <code class="docutils literal notranslate"><span class="pre">IS</span> <span class="pre">JSON</span></code> check-constraint fallback for
+older SQLAlchemy or Oracle versions. <code class="docutils literal notranslate"><span class="pre">JsonB</span></code> is also exposed in the
+Alembic migration templates.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/741">https://github.com/litestar-org/advanced-alchemy/pull/741</a></span></p>
+</div>
+</dd>
+<dt>add Oracle 23c-aware boolean columns<a class="headerlink reference internal" href="#1.11.0-add oracle 23c-aware boolean columns" id="1.11.0-add oracle 23c-aware boolean columns">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds <code class="docutils literal notranslate"><span class="pre">Bool</span></code> as a dialect-aware boolean type that uses native Oracle
+<code class="docutils literal notranslate"><span class="pre">BOOLEAN</span></code> support on Oracle 23c with SQLAlchemy 2.1 or newer, and
+keeps the existing SQLAlchemy boolean behavior everywhere else. The new
+type is exported from <code class="docutils literal notranslate"><span class="pre">advanced_alchemy.types</span></code> and added to the
+Alembic migration templates.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/742">https://github.com/litestar-org/advanced-alchemy/pull/742</a></span></p>
+</div>
+</dd>
+<dt>update Litestar parameter declarations<a class="headerlink reference internal" href="#1.11.0-update litestar parameter declarations" id="1.11.0-update litestar parameter declarations">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Updates Litestar integration code to use the newer parameter marker
+declarations introduced by recent Litestar releases, replacing
+deprecated parameter specification patterns.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/746">https://github.com/litestar-org/advanced-alchemy/pull/746</a></span></p>
+</div>
+</dd>
+<dt>allow delete_many to accept model instances<a class="headerlink reference internal" href="#1.11.0-allow delete_many to accept model instances" id="1.11.0-allow delete_many to accept model instances">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Updates <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepositoryService.delete_many</span></code> and
+<code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncRepositoryService.delete_many</span></code> to accept model instances
+in addition to raw primary-key values, extracting primary keys per item so
+calls can pass model instances or a mix of instances and IDs.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/654">https://github.com/litestar-org/advanced-alchemy/issues/654</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/752">https://github.com/litestar-org/advanced-alchemy/pull/752</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
+<section id="1.11.0-bugfix">
+<h3>Bugfixes<a class="headerlink" href="#1.11.0-bugfix" title="Link to this heading">#</a></h3>
+<dl>
+<dt>support Typer 0.26 in the FastAPI CLI integration<a class="headerlink reference internal" href="#1.11.0-support typer 0.26 in the fastapi cli integration" id="1.11.0-support typer 0.26 in the fastapi cli integration">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adapts FastAPI CLI registration for Typer 0.26 and newer, where Typer
+no longer accepts external Click command groups directly. The FastAPI
+extension now bridges the existing Click migration command group through
+Typer while preserving both <code class="docutils literal notranslate"><span class="pre">database</span></code> and <code class="docutils literal notranslate"><span class="pre">db</span></code> command names.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/748">https://github.com/litestar-org/advanced-alchemy/pull/748</a></span></p>
+</div>
+</dd>
+<dt>correct Litestar server-side session backend docs<a class="headerlink reference internal" href="#1.11.0-correct litestar server-side session backend docs" id="1.11.0-correct litestar server-side session backend docs">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Corrects the Litestar server-side session guide to show both supported
+database-backed wiring styles: registering <code class="docutils literal notranslate"><span class="pre">SQLAlchemyStore</span></code> under the
+session store name, or wiring <code class="docutils literal notranslate"><span class="pre">SessionMiddleware</span></code> with an explicit
+<code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncSessionBackend</span></code>. The examples are now executable docs
+coverage so the documented session rows are verified against the
+database.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/707">https://github.com/litestar-org/advanced-alchemy/issues/707</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/745">https://github.com/litestar-org/advanced-alchemy/issues/745</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/749">https://github.com/litestar-org/advanced-alchemy/pull/749</a></span></p>
+</div>
+</dd>
+<dt>index repository classes in intersphinx inventories<a class="headerlink reference internal" href="#1.11.0-index repository classes in intersphinx inventories" id="1.11.0-index repository classes in intersphinx inventories">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Fixes the repository reference page so repository classes are included
+in the generated <code class="docutils literal notranslate"><span class="pre">objects.inv</span></code> inventory for downstream Sphinx
+projects. The memory repository classes are now documented as well, and
+malformed deprecation directives in memory repository docstrings were
+corrected for warning-free docs builds.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/729">https://github.com/litestar-org/advanced-alchemy/issues/729</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/751">https://github.com/litestar-org/advanced-alchemy/pull/751</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
+<section id="1.11.0-misc">
+<h3>Other changes<a class="headerlink" href="#1.11.0-misc" title="Link to this heading">#</a></h3>
+<dl>
+<dt>deprecate DictProtocol<a class="headerlink reference internal" href="#1.11.0-deprecate dictprotocol" id="1.11.0-deprecate dictprotocol">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Deprecates <code class="docutils literal notranslate"><span class="pre">advanced_alchemy.typing.DictProtocol</span></code> and schedules it
+for removal in 2.0. Runtime code should rely on <code class="docutils literal notranslate"><span class="pre">has_dict_attribute()</span></code>
+or direct <code class="docutils literal notranslate"><span class="pre">__dict__</span></code> duck typing instead of Protocol-based instance
+checks.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/583">https://github.com/litestar-org/advanced-alchemy/issues/583</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/757">https://github.com/litestar-org/advanced-alchemy/pull/757</a></span></p>
+</div>
+</dd>
+<dt>extract provider dependency utilities<a class="headerlink reference internal" href="#1.11.0-extract provider dependency utilities" id="1.11.0-extract provider dependency utilities">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Moves shared framework dependency helpers into
+<code class="docutils literal notranslate"><span class="pre">advanced_alchemy.utils.dependencies</span></code>. Litestar and FastAPI provider
+generation now share the same primitives while preserving framework
+specific dependency caches and normalizing multi-field sort defaults
+before building <code class="docutils literal notranslate"><span class="pre">OrderBy</span></code> filters.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/602">https://github.com/litestar-org/advanced-alchemy/issues/602</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/721">https://github.com/litestar-org/advanced-alchemy/pull/721</a></span></p>
+</div>
+</dd>
+<dt>document GUID storage and UUIDv7 usage<a class="headerlink reference internal" href="#1.11.0-document guid storage and uuidv7 usage" id="1.11.0-document guid storage and uuidv7 usage">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Expands the GUID documentation with Oracle storage details and guidance
+for using UUIDv7 primary keys where time-ordered identifiers improve
+index locality.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/743">https://github.com/litestar-org/advanced-alchemy/pull/743</a></span></p>
+</div>
+</dd>
+<dt>document custom non-autogenerated primary keys<a class="headerlink reference internal" href="#1.11.0-document custom non-autogenerated primary keys" id="1.11.0-document custom non-autogenerated primary keys">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Documents how to compose <code class="docutils literal notranslate"><span class="pre">DefaultBase</span></code> with <code class="docutils literal notranslate"><span class="pre">AuditColumns</span></code> when a
+model needs caller-supplied primary keys instead of autogenerated
+identifiers, including string and integer primary-key examples.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/649">https://github.com/litestar-org/advanced-alchemy/issues/649</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/754">https://github.com/litestar-org/advanced-alchemy/pull/754</a></span></p>
+</div>
+</dd>
+<dt>document mixin column ordering<a class="headerlink reference internal" href="#1.11.0-document mixin column ordering" id="1.11.0-document mixin column ordering">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds documentation for the <code class="docutils literal notranslate"><span class="pre">sort_order</span></code> values used by Advanced
+Alchemy mixins so users can understand the physical column order
+produced for newly-created tables.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/584">https://github.com/litestar-org/advanced-alchemy/issues/584</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/753">https://github.com/litestar-org/advanced-alchemy/pull/753</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
+</section>
 <section id="1.10.0">
-<h2>1.10.0<a class="headerlink" href="#1.10.0" title="Link to this heading">¶</a></h2>
+<h2>1.10.0<a class="headerlink" href="#1.10.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2026-05-23<section id="1.10.0-feature">
-<h3>Features<a class="headerlink" href="#1.10.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#1.10.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>configurable serialization with Protocol-based architecture<a class="headerlink reference internal" href="#1.10.0-configurable serialization with protocol-based architecture" id="1.10.0-configurable serialization with protocol-based architecture">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Adds <code class="docutils literal notranslate"><span class="pre">advanced_alchemy.utils.serialization</span></code> as the canonical home for
@@ -589,7 +884,7 @@ consistently, including when <code class="docutils literal notranslate"><span cl
 </dl>
 </section>
 <section id="1.10.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.10.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.10.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>register session listeners in framework extension configs<a class="headerlink reference internal" href="#1.10.0-register session listeners in framework extension configs" id="1.10.0-register session listeners in framework extension configs">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Framework extension configs now delegate session-maker creation through
@@ -609,7 +904,7 @@ are published reliably for review.</p>
 </dl>
 </section>
 <section id="1.10.0-misc">
-<h3>Other changes<a class="headerlink" href="#1.10.0-misc" title="Link to this heading">¶</a></h3>
+<h3>Other changes<a class="headerlink" href="#1.10.0-misc" title="Link to this heading">#</a></h3>
 <dl>
 <dt>migrate object storage tests to rustfs<a class="headerlink reference internal" href="#1.10.0-migrate object storage tests to rustfs" id="1.10.0-migrate object storage tests to rustfs">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Replaces the MinIO-backed object storage test setup with
@@ -629,9 +924,9 @@ to avoid service-specific private typing shims.</p>
 </section>
 </section>
 <section id="1.9.3">
-<h2>1.9.3<a class="headerlink" href="#1.9.3" title="Link to this heading">¶</a></h2>
+<h2>1.9.3<a class="headerlink" href="#1.9.3" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2026-04-08<section id="1.9.3-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.9.3-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.9.3-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>prevent session cleanup from masking original exceptions<a class="headerlink reference internal" href="#1.9.3-prevent session cleanup from masking original exceptions" id="1.9.3-prevent session cleanup from masking original exceptions">#</a></dt><dd><div class="changelog-change docutils container">
 <ul class="simple">
@@ -646,9 +941,9 @@ to avoid service-specific private typing shims.</p>
 </section>
 </section>
 <section id="1.9.2">
-<h2>1.9.2<a class="headerlink" href="#1.9.2" title="Link to this heading">¶</a></h2>
+<h2>1.9.2<a class="headerlink" href="#1.9.2" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2026-04-03<section id="1.9.2-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.9.2-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.9.2-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>InvalidRequestError when calling create_session_maker<a class="headerlink reference internal" href="#1.9.2-invalidrequesterror when calling create_session_maker" id="1.9.2-invalidrequesterror when calling create_session_maker">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Fixes <cite>sqlalchemy.exc.InvalidRequestError: No such event ‘before_flush’ for target ‘async_sessionmaker(…)’</cite> raised when calling <cite>SQLAlchemyAsyncConfig.create_session_maker()</cite></p>
@@ -659,9 +954,9 @@ to avoid service-specific private typing shims.</p>
 </section>
 </section>
 <section id="1.9.1">
-<h2>1.9.1<a class="headerlink" href="#1.9.1" title="Link to this heading">¶</a></h2>
+<h2>1.9.1<a class="headerlink" href="#1.9.1" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2026-03-26<section id="1.9.1-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.9.1-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.9.1-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add missing Any import to alembic migration templates<a class="headerlink reference internal" href="#1.9.1-add missing any import to alembic migration templates" id="1.9.1-add missing any import to alembic migration templates">#</a></dt><dd><div class="changelog-change docutils container">
 <p>The try/except ImportError fallback for optional password hashers (Argon2Hasher, PasslibHasher, PwdlibHasher) used <cite>Any</cite> as a type placeholder, but <cite>Any</cite> was never imported. This caused a NameError when running migrations without optional dependencies installed.</p>
@@ -672,9 +967,9 @@ to avoid service-specific private typing shims.</p>
 </section>
 </section>
 <section id="1.9.0">
-<h2>1.9.0<a class="headerlink" href="#1.9.0" title="Link to this heading">¶</a></h2>
+<h2>1.9.0<a class="headerlink" href="#1.9.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2026-03-24<section id="1.9.0-feature">
-<h3>Features<a class="headerlink" href="#1.9.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#1.9.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add SQLModel compatibility<a class="headerlink reference internal" href="#1.9.0-add sqlmodel compatibility" id="1.9.0-add sqlmodel compatibility">#</a></dt><dd><div class="changelog-change docutils container">
 <p>SQLModel <code class="docutils literal notranslate"><span class="pre">table=True</span></code> models now work with Advanced Alchemy repositories and
@@ -739,7 +1034,7 @@ for API parity with <code class="docutils literal notranslate"><span class="pre"
 </dl>
 </section>
 <section id="1.9.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.9.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.9.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add <cite>was_attribute_set()</cite> guard to relationship loop in <cite>update()</cite><a class="headerlink reference internal" href="#1.9.0-add" id="1.9.0-add">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Fixes partial updates with model instances where SQLAlchemy-initialized
@@ -845,9 +1140,9 @@ across integrations.</p>
 </section>
 </section>
 <section id="1.8.2">
-<h2>1.8.2<a class="headerlink" href="#1.8.2" title="Link to this heading">¶</a></h2>
+<h2>1.8.2<a class="headerlink" href="#1.8.2" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-12-12<section id="1.8.2-feature">
-<h3>Features<a class="headerlink" href="#1.8.2-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#1.8.2-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add <cite>db</cite> group alias<a class="headerlink reference internal" href="#1.8.2-add" id="1.8.2-add">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Add a <cite>db</cite> shorthand alias to the <cite>database</cite> group.  This allows <cite>litestar|alchemy db</cite> or <cite>litestar|alchemy database</cite> to work interchangeably.</p>
@@ -857,7 +1152,7 @@ across integrations.</p>
 </dl>
 </section>
 <section id="1.8.2-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.8.2-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.8.2-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>import error while generating migrations<a class="headerlink reference internal" href="#1.8.2-import error while generating migrations" id="1.8.2-import error while generating migrations">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Fixes <cite>passlib</cite> and <cite>pwdlib</cite> import errors while creating migrations</p>
@@ -875,9 +1170,9 @@ We added the <cite>sa.PasslibHasher = PasslibHasher</cite> and <cite>sa.PwdlibHa
 </section>
 </section>
 <section id="1.8.1">
-<h2>1.8.1<a class="headerlink" href="#1.8.1" title="Link to this heading">¶</a></h2>
+<h2>1.8.1<a class="headerlink" href="#1.8.1" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-12-06<section id="1.8.1-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.8.1-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.8.1-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>pin default installed python to 3.10<a class="headerlink reference internal" href="#1.8.1-pin default installed python to 3.10" id="1.8.1-pin default installed python to 3.10">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Update the installation process to set the default Python version to 3.10 instead of 3.9.</p>
@@ -908,9 +1203,9 @@ We added the <cite>sa.PasslibHasher = PasslibHasher</cite> and <cite>sa.PwdlibHa
 </section>
 </section>
 <section id="1.8.0">
-<h2>1.8.0<a class="headerlink" href="#1.8.0" title="Link to this heading">¶</a></h2>
+<h2>1.8.0<a class="headerlink" href="#1.8.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-10-28<section id="1.8.0-feature">
-<h3>Features<a class="headerlink" href="#1.8.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#1.8.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add <cite>sort_order</cite> to mixin columns for consistent table layout<a class="headerlink reference internal" href="#1.8.0-add" id="1.8.0-add">#</a></dt><dd><div class="changelog-change docutils container">
 <ul class="simple">
@@ -944,7 +1239,7 @@ primary keys first, user columns in middle, audit/sentinel columns last.</p>
 </dl>
 </section>
 <section id="1.8.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.8.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.8.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>ensure <cite>has_dict_attribute</cite> checks for <cite>__dict__</cite> attribute<a class="headerlink reference internal" href="#1.8.0-ensure" id="1.8.0-ensure">#</a></dt><dd><div class="changelog-change docutils container">
 <p>The previous implementation used <cite>isinstance</cite> against the <cite>DictProtocol</cite> type returned <cite>True</cite> for any object.
@@ -972,9 +1267,9 @@ The <cite>isinstance</cite> call is replaced with <cite>hasattr</cite> (which sh
 </section>
 </section>
 <section id="1.7.0">
-<h2>1.7.0<a class="headerlink" href="#1.7.0" title="Link to this heading">¶</a></h2>
+<h2>1.7.0<a class="headerlink" href="#1.7.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-10-13<section id="1.7.0-feature">
-<h3>Features<a class="headerlink" href="#1.7.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#1.7.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>handle and compare <cite>numpy</cite> arrays<a class="headerlink reference internal" href="#1.7.0-handle and compare" id="1.7.0-handle and compare">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Direct equality comparisons (<cite>!=</cite>) with numpy arrays in repository update methods raised <cite>ValueError: The truth value of an array with more than one element is ambiguous</cite></p>
@@ -995,7 +1290,7 @@ The <cite>isinstance</cite> call is replaced with <cite>hasattr</cite> (which sh
 </dl>
 </section>
 <section id="1.7.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.7.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.7.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>lazy attributes getting accessed on repository update method<a class="headerlink reference internal" href="#1.7.0-lazy attributes getting accessed on repository update method" id="1.7.0-lazy attributes getting accessed on repository update method">#</a></dt><dd><div class="changelog-change docutils container">
 <p>This fixes <cite>Still errors in SQLAlchemyRepository update method with lazy</cite> by moving the guard condition up.</p>
@@ -1038,7 +1333,7 @@ attributes that have been explicitly set by the user.</p>
 </dl>
 </section>
 <section id="1.7.0-misc">
-<h3>Other changes<a class="headerlink" href="#1.7.0-misc" title="Link to this heading">¶</a></h3>
+<h3>Other changes<a class="headerlink" href="#1.7.0-misc" title="Link to this heading">#</a></h3>
 <dl>
 <dt>agent workflow and knowledge repository<a class="headerlink reference internal" href="#1.7.0-agent workflow and knowledge repository" id="1.7.0-agent workflow and knowledge repository">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Introduce a structured agent workflow and comprehensive development guides for the AI agent based development. This includes detailed instructions for agents, directory structures for requirements, and updates to existing documentation.</p>
@@ -1049,9 +1344,9 @@ attributes that have been explicitly set by the user.</p>
 </section>
 </section>
 <section id="1.6.3">
-<h2>1.6.3<a class="headerlink" href="#1.6.3" title="Link to this heading">¶</a></h2>
+<h2>1.6.3<a class="headerlink" href="#1.6.3" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-09-19<section id="1.6.3-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.6.3-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.6.3-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>additional update and update_many corrections.<a class="headerlink reference internal" href="#1.6.3-additional update and update_many corrections." id="1.6.3-additional update and update_many corrections.">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Updates <cite>update</cite> and <cite>update_many</cite> to properly handle relationships and returning support.</p>
@@ -1077,9 +1372,9 @@ attributes that have been explicitly set by the user.</p>
 </section>
 </section>
 <section id="1.6.2">
-<h2>1.6.2<a class="headerlink" href="#1.6.2" title="Link to this heading">¶</a></h2>
+<h2>1.6.2<a class="headerlink" href="#1.6.2" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-08-29<section id="1.6.2-feature">
-<h3>Features<a class="headerlink" href="#1.6.2-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#1.6.2-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>enable loading config from working directory<a class="headerlink reference internal" href="#1.6.2-enable loading config from working directory" id="1.6.2-enable loading config from working directory">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Correctly allow loading configuration from the current directory</p>
@@ -1089,7 +1384,7 @@ attributes that have been explicitly set by the user.</p>
 </dl>
 </section>
 <section id="1.6.2-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.6.2-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.6.2-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>correctly handle lazy attributes on update<a class="headerlink reference internal" href="#1.6.2-correctly handle lazy attributes on update" id="1.6.2-correctly handle lazy attributes on update">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Correctly handle <cite>viewownly</cite> and <cite>lazy</cite> loaded relationships during update.</p>
@@ -1131,9 +1426,9 @@ attributes that have been explicitly set by the user.</p>
 </section>
 </section>
 <section id="1.6.1">
-<h2>1.6.1<a class="headerlink" href="#1.6.1" title="Link to this heading">¶</a></h2>
+<h2>1.6.1<a class="headerlink" href="#1.6.1" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-08-26<section id="1.6.1-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.6.1-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.6.1-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt><cite>to_schema</cite> and <cite>attrs</cite> type hint correction<a class="headerlink reference internal" href="#1.6.1-to_schema" id="1.6.1-to_schema">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Corrects an issue where the type hint was incorrect when <cite>attrs</cite> or <cite>cattrs</cite> were not installed.</p>
@@ -1154,9 +1449,9 @@ attributes that have been explicitly set by the user.</p>
 </section>
 </section>
 <section id="1.6.0">
-<h2>1.6.0<a class="headerlink" href="#1.6.0" title="Link to this heading">¶</a></h2>
+<h2>1.6.0<a class="headerlink" href="#1.6.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-08-18<section id="1.6.0-feature">
-<h3>Features<a class="headerlink" href="#1.6.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#1.6.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>server side session backend<a class="headerlink reference internal" href="#1.6.0-server side session backend" id="1.6.0-server side session backend">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Implements a server side session backend using SQLAlchemy. Works with an Async or Sync configuration.</p>
@@ -1166,7 +1461,7 @@ attributes that have been explicitly set by the user.</p>
 </dl>
 </section>
 <section id="1.6.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.6.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.6.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>handle relationship data in model_from_dict for service.create()<a class="headerlink reference internal" href="#1.6.0-handle relationship data in model_from_dict for service.create()" id="1.6.0-handle relationship data in model_from_dict for service.create()">#</a></dt><dd><div class="changelog-change docutils container">
 <dl class="simple">
@@ -1184,9 +1479,9 @@ attributes that have been explicitly set by the user.</p>
 </section>
 </section>
 <section id="1.5.0">
-<h2>1.5.0<a class="headerlink" href="#1.5.0" title="Link to this heading">¶</a></h2>
+<h2>1.5.0<a class="headerlink" href="#1.5.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-08-13<section id="1.5.0-feature">
-<h3>Features<a class="headerlink" href="#1.5.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#1.5.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>gzip and zipped fixture support<a class="headerlink reference internal" href="#1.5.0-gzip and zipped fixture support" id="1.5.0-gzip and zipped fixture support">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Contains support for automatically extracting and loading data from zipped fixture files</p>
@@ -1206,7 +1501,7 @@ attributes that have been explicitly set by the user.</p>
 </dl>
 </section>
 <section id="1.5.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.5.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.5.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>correct typing issue in <cite>litestar</cite> example<a class="headerlink reference internal" href="#1.5.0-correct typing issue in" id="1.5.0-correct typing issue in">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Fixed typing issue in <cite>Litestar</cite> usage documentation</p>
@@ -1222,9 +1517,9 @@ attributes that have been explicitly set by the user.</p>
 </section>
 </section>
 <section id="1.4.5">
-<h2>1.4.5<a class="headerlink" href="#1.4.5" title="Link to this heading">¶</a></h2>
+<h2>1.4.5<a class="headerlink" href="#1.4.5" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-06-28<section id="1.4.5-feature">
-<h3>Features<a class="headerlink" href="#1.4.5-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#1.4.5-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add the DefaultBase class to __all__<a class="headerlink reference internal" href="#1.4.5-add the defaultbase class to __all__" id="1.4.5-add the defaultbase class to __all__">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Adds [<cite>DefaultBase</cite>](<a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/blob/6cc26ef8d53bc04f89a070337f8b0ab07a1bac46/advanced_alchemy/base.py#L517">https://github.com/litestar-org/advanced-alchemy/blob/6cc26ef8d53bc04f89a070337f8b0ab07a1bac46/advanced_alchemy/base.py#L517</a>) class to <cite>__all__</cite> to match other public classes in the module.</p>
@@ -1234,7 +1529,7 @@ attributes that have been explicitly set by the user.</p>
 </dl>
 </section>
 <section id="1.4.5-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.4.5-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.4.5-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>Update list and count<a class="headerlink reference internal" href="#1.4.5-update list and count" id="1.4.5-update list and count">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Minor adjustment to the list and count method</p>
@@ -1245,9 +1540,9 @@ attributes that have been explicitly set by the user.</p>
 </section>
 </section>
 <section id="1.4.4">
-<h2>1.4.4<a class="headerlink" href="#1.4.4" title="Link to this heading">¶</a></h2>
+<h2>1.4.4<a class="headerlink" href="#1.4.4" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-05-26<section id="1.4.4-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.4.4-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.4.4-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>support for alembic 1.16 <cite>toml_file</cite> configuration<a class="headerlink reference internal" href="#1.4.4-support for alembic 1.16" id="1.4.4-support for alembic 1.16">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Updates the AlembicCommand to use named arguments and support Alembic 1.16’s new <cite>toml_file</cite> parameter.</p>
@@ -1258,9 +1553,9 @@ attributes that have been explicitly set by the user.</p>
 </section>
 </section>
 <section id="1.4.3">
-<h2>1.4.3<a class="headerlink" href="#1.4.3" title="Link to this heading">¶</a></h2>
+<h2>1.4.3<a class="headerlink" href="#1.4.3" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-05-12<section id="1.4.3-feature">
-<h3>Features<a class="headerlink" href="#1.4.3-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#1.4.3-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add __all__ exports for password hashing backends<a class="headerlink reference internal" href="#1.4.3-add __all__ exports for password hashing backends" id="1.4.3-add __all__ exports for password hashing backends">#</a></dt><dd><div class="changelog-change docutils container">
 <p>This update adds __all__ exports for the Argon2, Passlib, and Pwdlib hashing backends, improving module visibility and usability.</p>
@@ -1276,7 +1571,7 @@ attributes that have been explicitly set by the user.</p>
 </dl>
 </section>
 <section id="1.4.3-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.4.3-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.4.3-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt><cite>wrap_exceptions</cite> is re-enabled<a class="headerlink reference internal" href="#1.4.3-wrap_exceptions" id="1.4.3-wrap_exceptions">#</a></dt><dd><div class="changelog-change docutils container">
 <p><cite>wrap_exceptions</cite> is now correctly passed into the exception handler context manager.</p>
@@ -1287,9 +1582,9 @@ attributes that have been explicitly set by the user.</p>
 </section>
 </section>
 <section id="1.4.2">
-<h2>1.4.2<a class="headerlink" href="#1.4.2" title="Link to this heading">¶</a></h2>
+<h2>1.4.2<a class="headerlink" href="#1.4.2" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-05-04<section id="1.4.2-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.4.2-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.4.2-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>correct type hints for with_for_update to ForUpdateParameter<a class="headerlink reference internal" href="#1.4.2-correct type hints for with_for_update to forupdateparameter" id="1.4.2-correct type hints for with_for_update to forupdateparameter">#</a></dt><dd><div class="changelog-change docutils container">
 <p>This change fixes the type hint for the <cite>with_for_update</cite> parameter in the repositories.</p>
@@ -1305,9 +1600,9 @@ attributes that have been explicitly set by the user.</p>
 </section>
 </section>
 <section id="1.4.1">
-<h2>1.4.1<a class="headerlink" href="#1.4.1" title="Link to this heading">¶</a></h2>
+<h2>1.4.1<a class="headerlink" href="#1.4.1" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-04-28<section id="1.4.1-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.4.1-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.4.1-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>raise if filter operator is not in <cite>operators_map</cite><a class="headerlink reference internal" href="#1.4.1-raise if filter operator is not in" id="1.4.1-raise if filter operator is not in">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Raise exception if filter operator does not exist in operators_map</p>
@@ -1323,9 +1618,9 @@ attributes that have been explicitly set by the user.</p>
 </section>
 </section>
 <section id="1.4.0">
-<h2>1.4.0<a class="headerlink" href="#1.4.0" title="Link to this heading">¶</a></h2>
+<h2>1.4.0<a class="headerlink" href="#1.4.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-04-27<section id="1.4.0-feature">
-<h3>Features<a class="headerlink" href="#1.4.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#1.4.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>PasswordHash field type<a class="headerlink reference internal" href="#1.4.0-passwordhash field type" id="1.4.0-passwordhash field type">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Implements a PasswordHash field type with multiple supported backends.</p>
@@ -1340,9 +1635,9 @@ attributes that have been explicitly set by the user.</p>
 </section>
 </section>
 <section id="1.3.2">
-<h2>1.3.2<a class="headerlink" href="#1.3.2" title="Link to this heading">¶</a></h2>
+<h2>1.3.2<a class="headerlink" href="#1.3.2" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-04-25<section id="1.3.2-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.3.2-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.3.2-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>remove stringified type hint<a class="headerlink reference internal" href="#1.3.2-remove stringified type hint" id="1.3.2-remove stringified type hint">#</a></dt><dd><div class="changelog-change docutils container">
 <p>“De-stringifies” the Filter type hints to prevent runtime type resolutions in some cases</p>
@@ -1359,9 +1654,9 @@ attributes that have been explicitly set by the user.</p>
 </section>
 </section>
 <section id="1.3.1">
-<h2>1.3.1<a class="headerlink" href="#1.3.1" title="Link to this heading">¶</a></h2>
+<h2>1.3.1<a class="headerlink" href="#1.3.1" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-04-21<section id="1.3.1-feature">
-<h3>Features<a class="headerlink" href="#1.3.1-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#1.3.1-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>allows positional args for session<a class="headerlink reference internal" href="#1.3.1-allows positional args for session" id="1.3.1-allows positional args for session">#</a></dt><dd><div class="changelog-change docutils container">
 <p>This change allows for arguments to also be matched when generating a service provider closure.</p>
@@ -1371,7 +1666,7 @@ attributes that have been explicitly set by the user.</p>
 </dl>
 </section>
 <section id="1.3.1-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.3.1-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.3.1-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>updated example <cite>litestar_service.py</cite> model<a class="headerlink reference internal" href="#1.3.1-updated example" id="1.3.1-updated example">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Updates the <code class="docutils literal notranslate"><span class="pre">litestar_service.py</span></code> example models to correctly handle
@@ -1393,9 +1688,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="1.3.0">
-<h2>1.3.0<a class="headerlink" href="#1.3.0" title="Link to this heading">¶</a></h2>
+<h2>1.3.0<a class="headerlink" href="#1.3.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-04-18<section id="1.3.0-feature">
-<h3>Features<a class="headerlink" href="#1.3.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#1.3.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add dependency provider<a class="headerlink reference internal" href="#1.3.0-add dependency provider" id="1.3.0-add dependency provider">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Add dependency factories for filters.</p>
@@ -1405,7 +1700,7 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </dl>
 </section>
 <section id="1.3.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.3.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.3.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>btn ui<a class="headerlink reference internal" href="#1.3.0-btn ui" id="1.3.0-btn ui">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Corrects the button UI in the documentation under certain viewport sizes.</p>
@@ -1416,9 +1711,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="1.2.0">
-<h2>1.2.0<a class="headerlink" href="#1.2.0" title="Link to this heading">¶</a></h2>
+<h2>1.2.0<a class="headerlink" href="#1.2.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-04-15<section id="1.2.0-feature">
-<h3>Features<a class="headerlink" href="#1.2.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#1.2.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>enable standard order by<a class="headerlink reference internal" href="#1.2.0-enable standard order by" id="1.2.0-enable standard order by">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Enables the standard <cite>UnaryOperator</cite> order by support in addition to the existing <cite>OrderingPair</cite></p>
@@ -1436,7 +1731,7 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </dl>
 </section>
 <section id="1.2.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.2.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.2.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>migration generation produces duplicated unique constraints<a class="headerlink reference internal" href="#1.2.0-migration generation produces duplicated unique constraints" id="1.2.0-migration generation produces duplicated unique constraints">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Removes column re-ordering component was incorrectly causing incorrect constraints to be genreated.</p>
@@ -1453,9 +1748,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="1.1.1">
-<h2>1.1.1<a class="headerlink" href="#1.1.1" title="Link to this heading">¶</a></h2>
+<h2>1.1.1<a class="headerlink" href="#1.1.1" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-04-07<section id="1.1.1-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.1.1-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.1.1-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>fsspec is not installed<a class="headerlink reference internal" href="#1.1.1-fsspec is not installed" id="1.1.1-fsspec is not installed">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Corrects an import issue when <cite>fsspec</cite> and <cite>obstore</cite> are both missing.</p>
@@ -1466,9 +1761,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="1.1.0">
-<h2>1.1.0<a class="headerlink" href="#1.1.0" title="Link to this heading">¶</a></h2>
+<h2>1.1.0<a class="headerlink" href="#1.1.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-04-06<section id="1.1.0-feature">
-<h3>Features<a class="headerlink" href="#1.1.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#1.1.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add stamp command<a class="headerlink reference internal" href="#1.1.0-add stamp command" id="1.1.0-add stamp command">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Adds the Alembic <cite>stamp</cite> command to the CLI that will stamp the current database state into the migrations directory.</p>
@@ -1502,9 +1797,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="1.0.2">
-<h2>1.0.2<a class="headerlink" href="#1.0.2" title="Link to this heading">¶</a></h2>
+<h2>1.0.2<a class="headerlink" href="#1.0.2" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-04-01<section id="1.0.2-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.0.2-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.0.2-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>prevent forward resolution issues<a class="headerlink reference internal" href="#1.0.2-prevent forward resolution issues" id="1.0.2-prevent forward resolution issues">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Removes some stringified representations to help with the forward resolution of <cite>datetime</cite> and <cite>Collection</cite>.</p>
@@ -1527,9 +1822,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="1.0.1">
-<h2>1.0.1<a class="headerlink" href="#1.0.1" title="Link to this heading">¶</a></h2>
+<h2>1.0.1<a class="headerlink" href="#1.0.1" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-03-19<section id="1.0.1-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.0.1-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.0.1-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>properly serialize <cite>Relationship</cite> type hints<a class="headerlink reference internal" href="#1.0.1-properly serialize" id="1.0.1-properly serialize">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Adds <cite>sqlalchemy.orm.Relationship</cite> to the supported type hints for the <cite>SQLAlchemyDTO</cite></p>
@@ -1540,9 +1835,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="1.0.0">
-<h2>1.0.0<a class="headerlink" href="#1.0.0" title="Link to this heading">¶</a></h2>
+<h2>1.0.0<a class="headerlink" href="#1.0.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-03-18<section id="1.0.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#1.0.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#1.0.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>logic correction for window function<a class="headerlink reference internal" href="#1.0.0-logic correction for window function" id="1.0.0-logic correction for window function">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Corrects the logic for using a count with a window function.</p>
@@ -1552,7 +1847,7 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </dl>
 </section>
 <section id="1.0.0-misc">
-<h3>Other changes<a class="headerlink" href="#1.0.0-misc" title="Link to this heading">¶</a></h3>
+<h3>Other changes<a class="headerlink" href="#1.0.0-misc" title="Link to this heading">#</a></h3>
 <dl>
 <dt>remove deprecated packages removed in <cite>v1.0.0</cite><a class="headerlink reference internal" href="#1.0.0-remove deprecated packages removed in" id="1.0.0-remove deprecated packages removed in">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Removes deprecated packages and prepares for 1.0 release.</p>
@@ -1563,9 +1858,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.34.0">
-<h2>0.34.0<a class="headerlink" href="#0.34.0" title="Link to this heading">¶</a></h2>
+<h2>0.34.0<a class="headerlink" href="#0.34.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-03-10<section id="0.34.0-feature">
-<h3>Features<a class="headerlink" href="#0.34.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.34.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>allow custom <cite>not_found</cite> error messages<a class="headerlink reference internal" href="#0.34.0-allow custom" id="0.34.0-allow custom">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Enhance the SQLAlchemy exception wrapper to handle NotFoundError with custom error messages and improved error handling. This includes:</p>
@@ -1595,9 +1890,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.33.2">
-<h2>0.33.2<a class="headerlink" href="#0.33.2" title="Link to this heading">¶</a></h2>
+<h2>0.33.2<a class="headerlink" href="#0.33.2" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-03-09<section id="0.33.2-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#0.33.2-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#0.33.2-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>simplify session type hints in service providers<a class="headerlink reference internal" href="#0.33.2-simplify session type hints in service providers" id="0.33.2-simplify session type hints in service providers">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Remove unnecessary scoped session type hints from service provider functions.</p>
@@ -1610,9 +1905,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.33.1">
-<h2>0.33.1<a class="headerlink" href="#0.33.1" title="Link to this heading">¶</a></h2>
+<h2>0.33.1<a class="headerlink" href="#0.33.1" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-03-07<section id="0.33.1-feature">
-<h3>Features<a class="headerlink" href="#0.33.1-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.33.1-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add session to namespace signature<a class="headerlink reference internal" href="#0.33.1-add session to namespace signature" id="0.33.1-add session to namespace signature">#</a></dt><dd><div class="changelog-change docutils container">
 <p>The new filter providers expect that the sessions are in the signature namespace.  This ensures there are no issues when configuring the plugin.</p>
@@ -1623,9 +1918,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.33.0">
-<h2>0.33.0<a class="headerlink" href="#0.33.0" title="Link to this heading">¶</a></h2>
+<h2>0.33.0<a class="headerlink" href="#0.33.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-03-07<section id="0.33.0-feature">
-<h3>Features<a class="headerlink" href="#0.33.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.33.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>Add dependency factory utilities<a class="headerlink reference internal" href="#0.33.0-add dependency factory utilities" id="0.33.0-add dependency factory utilities">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Introduces a new module <cite>advanced_alchemy.extensions.litestar.providers</cite> with comprehensive dependency injection utilities for SQLAlchemy services in Litestar. The module provides:</p>
@@ -1643,9 +1938,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.32.2">
-<h2>0.32.2<a class="headerlink" href="#0.32.2" title="Link to this heading">¶</a></h2>
+<h2>0.32.2<a class="headerlink" href="#0.32.2" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-02-26<section id="0.32.2-misc">
-<h3>Other changes<a class="headerlink" href="#0.32.2-misc" title="Link to this heading">¶</a></h3>
+<h3>Other changes<a class="headerlink" href="#0.32.2-misc" title="Link to this heading">#</a></h3>
 <dl>
 <dt>Litestar extension: Use <code class="docutils literal notranslate"><span class="pre">SerializationPlugin</span></code> instead of <code class="docutils literal notranslate"><span class="pre">SerializationPluginProtocol</span></code><a class="headerlink reference internal" href="#0.32.2-litestar extension: use" id="0.32.2-litestar extension: use">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Use <code class="docutils literal notranslate"><span class="pre">SerializationPlugin</span></code> instead of <code class="docutils literal notranslate"><span class="pre">SerializationPluginProtocol</span></code></p>
@@ -1656,9 +1951,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.32.1">
-<h2>0.32.1<a class="headerlink" href="#0.32.1" title="Link to this heading">¶</a></h2>
+<h2>0.32.1<a class="headerlink" href="#0.32.1" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-02-26<section id="0.32.1-misc">
-<h3>Other changes<a class="headerlink" href="#0.32.1-misc" title="Link to this heading">¶</a></h3>
+<h3>Other changes<a class="headerlink" href="#0.32.1-misc" title="Link to this heading">#</a></h3>
 <dl>
 <dt>Litestar extension: Use <code class="docutils literal notranslate"><span class="pre">CLIPlugin</span></code> instead of <code class="docutils literal notranslate"><span class="pre">CLIPluginProtocol</span></code><a class="headerlink reference internal" href="#0.32.1-litestar extension: use" id="0.32.1-litestar extension: use">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Internal change migrating from using Litestar’s <code class="docutils literal notranslate"><span class="pre">CLIPluginProtocol</span></code> to
@@ -1670,9 +1965,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.32.0">
-<h2>0.32.0<a class="headerlink" href="#0.32.0" title="Link to this heading">¶</a></h2>
+<h2>0.32.0<a class="headerlink" href="#0.32.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-02-23<section id="0.32.0-feature">
-<h3>Features<a class="headerlink" href="#0.32.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.32.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add Enum to default type decoders<a class="headerlink reference internal" href="#0.32.0-add enum to default type decoders" id="0.32.0-add enum to default type decoders">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Extends the default <cite>msgspec</cite> type decoders to handle Enum types by converting them to their underlying value during serialization</p>
@@ -1682,7 +1977,7 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </dl>
 </section>
 <section id="0.32.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#0.32.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#0.32.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>remove <cite>limit</cite> and <cite>offset</cite> from count statement<a class="headerlink reference internal" href="#0.32.0-remove" id="0.32.0-remove">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Remove <cite>limit</cite> and <cite>offset</cite> from count statement</p>
@@ -1692,7 +1987,7 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </dl>
 </section>
 <section id="0.32.0-misc">
-<h3>Other changes<a class="headerlink" href="#0.32.0-misc" title="Link to this heading">¶</a></h3>
+<h3>Other changes<a class="headerlink" href="#0.32.0-misc" title="Link to this heading">#</a></h3>
 <dl>
 <dt>rename <cite>force_basic_query_mode</cite><a class="headerlink reference internal" href="#0.32.0-rename" id="0.32.0-rename">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Renames <cite>force_basic_query_mode</cite> to <cite>count_with_window_function</cite>.  This is also exposed as a class/init parameter for the service and repository.</p>
@@ -1703,9 +1998,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.31.0">
-<h2>0.31.0<a class="headerlink" href="#0.31.0" title="Link to this heading">¶</a></h2>
+<h2>0.31.0<a class="headerlink" href="#0.31.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-02-18<section id="0.31.0-feature">
-<h3>Features<a class="headerlink" href="#0.31.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.31.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>remove future annotations<a class="headerlink reference internal" href="#0.31.0-remove future annotations" id="0.31.0-remove future annotations">#</a></dt><dd><div class="changelog-change docutils container">
 <p>This removes the usage of future annotations.</p>
@@ -1725,7 +2020,7 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </dl>
 </section>
 <section id="0.31.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#0.31.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#0.31.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>Fix reference in <cite>changelog.py</cite><a class="headerlink reference internal" href="#0.31.0-fix reference in" id="0.31.0-fix reference in">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Should link to the AA repo, not litestar :)</p>
@@ -1741,7 +2036,7 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </dl>
 </section>
 <section id="0.31.0-misc">
-<h3>Other changes<a class="headerlink" href="#0.31.0-misc" title="Link to this heading">¶</a></h3>
+<h3>Other changes<a class="headerlink" href="#0.31.0-misc" title="Link to this heading">#</a></h3>
 <dl>
 <dt>remove 3.8 support<a class="headerlink reference internal" href="#0.31.0-remove 3.8 support" id="0.31.0-remove 3.8 support">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Removes 3.8 support and removes future annotations in a few places for better compatibility</p>
@@ -1752,9 +2047,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.30.3">
-<h2>0.30.3<a class="headerlink" href="#0.30.3" title="Link to this heading">¶</a></h2>
+<h2>0.30.3<a class="headerlink" href="#0.30.3" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-01-26<section id="0.30.3-feature">
-<h3>Features<a class="headerlink" href="#0.30.3-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.30.3-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add <cite>wrap_exceptions</cite> option to exception handler.<a class="headerlink reference internal" href="#0.30.3-add" id="0.30.3-add">#</a></dt><dd><div class="changelog-change docutils container">
 <p>When <cite>wrap_exceptions</cite> is <cite>False</cite>, the original SQLAlchemy error message will be raised instead of the wrapped Repository error
@@ -1770,7 +2065,7 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </dl>
 </section>
 <section id="0.30.3-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#0.30.3-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#0.30.3-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>use <cite>lifespan</cite> context manager in Starlette and FastAPI<a class="headerlink reference internal" href="#0.30.3-use" id="0.30.3-use">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Modifies the Starlette and FastAPI integrations to use the <cite>lifespan</cite> context manager instead of the <cite>startup</cite>`shutdown` hooks.  If the application already has a lifespan set, it is wrapped so that both execute.</p>
@@ -1781,9 +2076,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.30.2">
-<h2>0.30.2<a class="headerlink" href="#0.30.2" title="Link to this heading">¶</a></h2>
+<h2>0.30.2<a class="headerlink" href="#0.30.2" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-01-21<section id="0.30.2-feature">
-<h3>Features<a class="headerlink" href="#0.30.2-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.30.2-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add hash to config classes<a class="headerlink reference internal" href="#0.30.2-add hash to config classes" id="0.30.2-add hash to config classes">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Adds hash function to <cite>SQLAlchemySyncConfig</cite> and <cite>SQLAlchemyAsyncConfig</cite> classes.</p>
@@ -1794,9 +2089,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.30.1">
-<h2>0.30.1<a class="headerlink" href="#0.30.1" title="Link to this heading">¶</a></h2>
+<h2>0.30.1<a class="headerlink" href="#0.30.1" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-01-20<section id="0.30.1-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#0.30.1-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#0.30.1-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>Using init db CLI command creates migrations directory in unexpected place<a class="headerlink reference internal" href="#0.30.1-using init db cli command creates migrations directory in unexpected place" id="0.30.1-using init db cli command creates migrations directory in unexpected place">#</a></dt><dd><div class="changelog-change docutils container">
 <p>When initializing migrations with the CLI, if no directory is specified, the directory from the configuration will be used.</p>
@@ -1807,9 +2102,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.30.0">
-<h2>0.30.0<a class="headerlink" href="#0.30.0" title="Link to this heading">¶</a></h2>
+<h2>0.30.0<a class="headerlink" href="#0.30.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-01-19<section id="0.30.0-feature">
-<h3>Features<a class="headerlink" href="#0.30.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.30.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>refactored integration with CLI support<a class="headerlink reference internal" href="#0.30.0-refactored integration with cli support" id="0.30.0-refactored integration with cli support">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Refactored the Starlette and FastAPI integration to support multiple configurations and sessions.  Additionally, FastAPI will now have the database commands automatically registered with the FastAPI CLI.</p>
@@ -1824,7 +2119,7 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </dl>
 </section>
 <section id="0.30.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#0.30.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#0.30.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>standardize on <cite>autocommit_include_redirect</cite><a class="headerlink reference internal" href="#0.30.0-standardize on" id="0.30.0-standardize on">#</a></dt><dd><div class="changelog-change docutils container">
 <p>The flask plugin incorrectly used the term <cite>autocommit_with_redirect</cite> instead of the existing <cite>autocommit_include_redirect</cite>.</p>
@@ -1841,9 +2136,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.29.1">
-<h2>0.29.1<a class="headerlink" href="#0.29.1" title="Link to this heading">¶</a></h2>
+<h2>0.29.1<a class="headerlink" href="#0.29.1" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-01-17<section id="0.29.1-feature">
-<h3>Features<a class="headerlink" href="#0.29.1-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.29.1-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add convenience hooks for <cite>to_model</cite> operations<a class="headerlink reference internal" href="#0.29.1-add convenience hooks for" id="0.29.1-add convenience hooks for">#</a></dt><dd><div class="changelog-change docutils container">
 <p>The service layer has always has a <cite>to_model</cite> function that accepts data and optionally an operation name.  It would return a SQLAlchemy model no matter the input you gave it.</p>
@@ -1862,9 +2157,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.29.0">
-<h2>0.29.0<a class="headerlink" href="#0.29.0" title="Link to this heading">¶</a></h2>
+<h2>0.29.0<a class="headerlink" href="#0.29.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-01-17<section id="0.29.0-feature">
-<h3>Features<a class="headerlink" href="#0.29.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.29.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>various typing improvements for services<a class="headerlink reference internal" href="#0.29.0-various typing improvements for services" id="0.29.0-various typing improvements for services">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Improved typing in the service layer and adds a additional type guards.</p>
@@ -1881,7 +2176,7 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </dl>
 </section>
 <section id="0.29.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#0.29.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#0.29.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>fully qualify all <cite>datetime</cite> module references<a class="headerlink reference internal" href="#0.29.0-fully qualify all" id="0.29.0-fully qualify all">#</a></dt><dd><div class="changelog-change docutils container">
 <p>All date time references are now full qualified to prevent any forward resolution issues with</p>
@@ -1902,9 +2197,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.28.0">
-<h2>0.28.0<a class="headerlink" href="#0.28.0" title="Link to this heading">¶</a></h2>
+<h2>0.28.0<a class="headerlink" href="#0.28.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-01-13<section id="0.28.0-feature">
-<h3>Features<a class="headerlink" href="#0.28.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.28.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add <cite>bind-key</cite> option to CLI<a class="headerlink reference internal" href="#0.28.0-add" id="0.28.0-add">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Adds a <cite>bind-key</cite> option to the Advance Alchemy CLI groups.</p>
@@ -1916,9 +2211,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.27.1">
-<h2>0.27.1<a class="headerlink" href="#0.27.1" title="Link to this heading">¶</a></h2>
+<h2>0.27.1<a class="headerlink" href="#0.27.1" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-01-11<section id="0.27.1-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#0.27.1-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#0.27.1-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>correction for <cite>3.8</cite> and <cite>3.9</cite> type hints<a class="headerlink reference internal" href="#0.27.1-correction for" id="0.27.1-correction for">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Makes a few corrections to type hints in examples and tests to ensure 3.8 and 3.9 support</p>
@@ -1929,9 +2224,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.27.0">
-<h2>0.27.0<a class="headerlink" href="#0.27.0" title="Link to this heading">¶</a></h2>
+<h2>0.27.0<a class="headerlink" href="#0.27.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-01-11<section id="0.27.0-feature">
-<h3>Features<a class="headerlink" href="#0.27.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.27.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add <cite>error_messages</cite> as class level configuration<a class="headerlink reference internal" href="#0.27.0-add" id="0.27.0-add">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Exposes <code class="docutils literal notranslate"><span class="pre">error_messages</span></code> as a class level configuration in the repository and service classes.</p>
@@ -1952,9 +2247,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.26.0">
-<h2>0.26.0<a class="headerlink" href="#0.26.0" title="Link to this heading">¶</a></h2>
+<h2>0.26.0<a class="headerlink" href="#0.26.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-01-11<section id="0.26.0-feature">
-<h3>Features<a class="headerlink" href="#0.26.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.26.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt><cite>AsyncAttrs</cite> &amp; remove <cite>noload</cite> default<a class="headerlink reference internal" href="#0.26.0-asyncattrs" id="0.26.0-asyncattrs">#</a></dt><dd><div class="changelog-change docutils container">
 <p>This PR adds the <cite>AsyncAttrs</cite> to the default declarative bases for convenience.</p>
@@ -1979,9 +2274,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.25.0">
-<h2>0.25.0<a class="headerlink" href="#0.25.0" title="Link to this heading">¶</a></h2>
+<h2>0.25.0<a class="headerlink" href="#0.25.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-01-11<section id="0.25.0-feature">
-<h3>Features<a class="headerlink" href="#0.25.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.25.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>add max length for encrypted string<a class="headerlink reference internal" href="#0.25.0-add max length for encrypted string" id="0.25.0-add max length for encrypted string">#</a></dt><dd><div class="changelog-change docutils container">
 <p>The EncryptedString field now has the ability to validate against a set length.</p>
@@ -1998,9 +2293,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.24.0">
-<h2>0.24.0<a class="headerlink" href="#0.24.0" title="Link to this heading">¶</a></h2>
+<h2>0.24.0<a class="headerlink" href="#0.24.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-01-11<section id="0.24.0-feature">
-<h3>Features<a class="headerlink" href="#0.24.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.24.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>remove lambda statement usage<a class="headerlink reference internal" href="#0.24.0-remove lambda statement usage" id="0.24.0-remove lambda statement usage">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Removes the use of lambda statements in the repository and service classes.  This has no change on the end user API, however, it should remove strange queries errors seen.</p>
@@ -2011,9 +2306,9 @@ relationship updates for <code class="docutils literal notranslate"><span class=
 </section>
 </section>
 <section id="0.23.0">
-<h2>0.23.0<a class="headerlink" href="#0.23.0" title="Link to this heading">¶</a></h2>
+<h2>0.23.0<a class="headerlink" href="#0.23.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-01-11<section id="0.23.0-feature">
-<h3>Features<a class="headerlink" href="#0.23.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.23.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>Improved typing of <cite>ModelDictT</cite><a class="headerlink reference internal" href="#0.23.0-improved typing of" id="0.23.0-improved typing of">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Fixes typing issues in service</p>
@@ -2026,7 +2321,7 @@ But at least it solves the problem of incompatibilities when they are installed<
 </dl>
 </section>
 <section id="0.23.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#0.23.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#0.23.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>regression caused by conditional import Sequence for pagination.py<a class="headerlink reference internal" href="#0.23.0-regression caused by conditional import sequence for pagination.py" id="0.23.0-regression caused by conditional import sequence for pagination.py">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Import Sequence directly from collections.abc
@@ -2044,9 +2339,9 @@ Add noqa comment to suppress potential linter warnings</p>
 </section>
 </section>
 <section id="0.22.0">
-<h2>0.22.0<a class="headerlink" href="#0.22.0" title="Link to this heading">¶</a></h2>
+<h2>0.22.0<a class="headerlink" href="#0.22.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-01-11<section id="0.22.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#0.22.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#0.22.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>CLI argument adjustment<a class="headerlink reference internal" href="#0.22.0-cli argument adjustment" id="0.22.0-cli argument adjustment">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Changes the argument name so that it matches the name given in <cite>click.option</cite>.</p>
@@ -2057,9 +2352,9 @@ Add noqa comment to suppress potential linter warnings</p>
 </section>
 </section>
 <section id="0.21.0">
-<h2>0.21.0<a class="headerlink" href="#0.21.0" title="Link to this heading">¶</a></h2>
+<h2>0.21.0<a class="headerlink" href="#0.21.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-01-11<section id="0.21.0-feature">
-<h3>Features<a class="headerlink" href="#0.21.0-feature" title="Link to this heading">¶</a></h3>
+<h3>Features<a class="headerlink" href="#0.21.0-feature" title="Link to this heading">#</a></h3>
 <dl>
 <dt>Dump all tables as JSON<a class="headerlink reference internal" href="#0.21.0-dump all tables as json" id="0.21.0-dump all tables as json">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Adds a new CLI command to export tables to JSON.  Similar to a Django dumpdata command.</p>
@@ -2069,7 +2364,7 @@ Add noqa comment to suppress potential linter warnings</p>
 </dl>
 </section>
 <section id="0.21.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#0.21.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#0.21.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>bind session to session class instead of to the session maker<a class="headerlink reference internal" href="#0.21.0-bind session to session class instead of to the session maker" id="0.21.0-bind session to session class instead of to the session maker">#</a></dt><dd><div class="changelog-change docutils container">
 <p>binds session into sanic extension as expected</p>
@@ -2088,9 +2383,9 @@ This ensures that the error detection for duplicate keys and foreign key violati
 </section>
 </section>
 <section id="&lt;=0.20.0">
-<h2>&lt;=0.20.0<a class="headerlink" href="#<=0.20.0" title="Link to this heading">¶</a></h2>
+<h2>&lt;=0.20.0<a class="headerlink" href="#<=0.20.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2025-01-11<section id="&lt;=0.20.0-bugfix">
-<h3>Bugfixes<a class="headerlink" href="#<=0.20.0-bugfix" title="Link to this heading">¶</a></h3>
+<h3>Bugfixes<a class="headerlink" href="#<=0.20.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
 <dt>CollectionFilter returns all entries if values is empty<a class="headerlink reference internal" href="#&lt;=0.20.0-collectionfilter returns all entries if values is empty" id="&lt;=0.20.0-collectionfilter returns all entries if values is empty">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Bug: CollectionFilter returns all entries if values is empty</p>
@@ -2165,12 +2460,12 @@ This ensures that the error detection for duplicate keys and foreign key violati
   </p>
 </div>
       <div class="sy-foot-socials">
-<a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
-  <iconify-icon icon="simple-icons:github"></iconify-icon>
-</a>
-<a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
-  <iconify-icon icon="simple-icons:discord"></iconify-icon>
-</a></div>
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div>
     </div>
   </div>
 </footer>
