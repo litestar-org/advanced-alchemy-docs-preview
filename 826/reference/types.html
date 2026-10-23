@@ -479,6 +479,16 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher.compare_expression"><code class="docutils literal notranslate"><span class="pre">Argon2Hasher.compare_expression()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher"><code class="docutils literal notranslate"><span class="pre">BcryptHasher</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.__init__"><code class="docutils literal notranslate"><span class="pre">BcryptHasher.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.rounds"><code class="docutils literal notranslate"><span class="pre">BcryptHasher.rounds</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.prefix"><code class="docutils literal notranslate"><span class="pre">BcryptHasher.prefix</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.hash"><code class="docutils literal notranslate"><span class="pre">BcryptHasher.hash()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.verify"><code class="docutils literal notranslate"><span class="pre">BcryptHasher.verify()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.needs_rehash"><code class="docutils literal notranslate"><span class="pre">BcryptHasher.needs_rehash()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.compare_expression"><code class="docutils literal notranslate"><span class="pre">BcryptHasher.compare_expression()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher"><code class="docutils literal notranslate"><span class="pre">PasslibHasher</span></code></a><ul>
 <li><a class="reference internal" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher.__init__"><code class="docutils literal notranslate"><span class="pre">PasslibHasher.__init__()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher.hash"><code class="docutils literal notranslate"><span class="pre">PasslibHasher.hash()</span></code></a></li>
@@ -5230,6 +5240,129 @@ type returns <code class="docutils literal notranslate"><span class="pre">False<
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>BinaryExpression[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)">bool</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.types.password_hash.bcrypt.</span></span><span class="sig-name descname"><span class="pre">BcryptHasher</span></span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/bcrypt.html#BcryptHasher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">HashingBackend</span></code></p>
+<p>Hashing backend using bcrypt via the python bcrypt library.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">b'2b'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/bcrypt.html#BcryptHasher.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.__init__" title="Link to this definition">#</a></dt>
+<dd><p>Initialize BcryptHasher.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.params.rounds"></span><strong>rounds</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.params.rounds">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of rounds (cost factor) to utilize with each generated salt.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.params.prefix"></span><strong>prefix</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.params.prefix">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a></span>) – The prefix to use for each salt being generated.</p></li>
+<li><p><strong>rounds</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>)</p></li>
+<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><em>bytes</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.MissingDependencyError" title="advanced_alchemy.exceptions.MissingDependencyError"><strong>MissingDependencyError</strong></a> – If the <code class="docutils literal notranslate"><span class="pre">bcrypt</span></code> package is not installed.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.rounds">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">rounds</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><a class="headerlink" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.rounds" title="Link to this definition">#</a></dt>
+<dd><p>Configured cost factor (log2 iterations).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.prefix">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">prefix</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><span class="pre">bytes</span></a></span><a class="headerlink" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.prefix" title="Link to this definition">#</a></dt>
+<dd><p>Configured bcrypt version prefix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.hash">
+<span class="sig-name descname"><span class="pre">hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/bcrypt.html#BcryptHasher.hash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.hash" title="Link to this definition">#</a></dt>
+<dd><p>Hash the password using Bcrypt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.hash.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.hash.params.value">¶</a> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a>]</span>) – The plain text password (will be encoded to UTF-8 if string).</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><em>bytes</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Bcrypt hash string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.verify">
+<span class="sig-name descname"><span class="pre">verify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hashed</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/bcrypt.html#BcryptHasher.verify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.verify" title="Link to this definition">#</a></dt>
+<dd><p>Verify a plain text value against a hash using the bcrypt checkpw function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.verify.params.plain"></span><strong>plain</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.verify.params.plain">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The plain text value to verify. Any non-string or non-bytes type returns <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.verify.params.hashed"></span><strong>hashed</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.verify.params.hashed">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The hash to verify against.</p></li>
+<li><p><strong>plain</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+<li><p><strong>hashed</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the plain text matches the hash, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.needs_rehash">
+<span class="sig-name descname"><span class="pre">needs_rehash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hashed</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/bcrypt.html#BcryptHasher.needs_rehash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.needs_rehash" title="Link to this definition">#</a></dt>
+<dd><p>Return True if the stored hash uses an outdated prefix or cost factor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.needs_rehash.params.hashed"></span><strong>hashed</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.needs_rehash.params.hashed">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The stored hash string.</p></li>
+<li><p><strong>hashed</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the hash should be regenerated; False for an unparsable or foreign hash.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.compare_expression">
+<span class="sig-name descname"><span class="pre">compare_expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/bcrypt.html#BcryptHasher.compare_expression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.compare_expression" title="Link to this definition">#</a></dt>
+<dd><p>Direct SQL comparison is not supported for Bcrypt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#NotImplementedError" title="(in Python v3.15)"><strong>NotImplementedError</strong></a> – Always raised.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.BinaryExpression" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryExpression</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column</strong> (<a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.ColumnElement" title="(in SQLAlchemy v2.0)"><em>ColumnElement</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>]</em>)</p></li>
+<li><p><strong>plain</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

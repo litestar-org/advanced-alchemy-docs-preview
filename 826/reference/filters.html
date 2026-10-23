@@ -783,15 +783,20 @@ It provides a generic way to perform common comparison operations.</p>
 <dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.filters.StatementFilter" title="advanced_alchemy.filters.StatementFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">StatementFilter</span></code></a></p>
 <p>Filter for EXISTS subqueries.</p>
 <p>This filter creates an EXISTS condition using a list of column expressions.
-The expressions can be combined using either AND or OR logic. The filter applies
-a correlated subquery that returns only the rows from the main query that match
-the specified conditions.</p>
-<p>For example, if searching movies with <cite>Movie.genre == “Action”</cite>, only rows where
-the genre is “Action” will be returned.</p>
+The expressions can be combined using either AND or OR logic.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><code class="docutils literal notranslate"><span class="pre">values</span></code> must include the condition that joins the subquery to the outer query.
+<a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/selectable.html#sqlalchemy.sql.expression.Select.correlate" title="(in SQLAlchemy v2.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">correlate()</span></code></a> only <em>permits</em> correlation; it cannot
+infer a join. Conditions that never mention the outer table produce a standalone subquery,
+which is true whenever any row matches it — so the filter matches <strong>every</strong> row of the outer
+query rather than raising.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span class="target" id="advanced_alchemy.filters.ExistsFilter.params.values"></span><strong>values</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.ExistsFilter.params.values">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.ColumnElement" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ColumnElement</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]]</span>) – values: List of SQLAlchemy column expressions to use in the EXISTS clause</p></li>
+<li><p><span class="target" id="advanced_alchemy.filters.ExistsFilter.params.values"></span><strong>values</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.ExistsFilter.params.values">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.ColumnElement" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ColumnElement</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]]</span>) – values: List of SQLAlchemy column expressions to use in the EXISTS clause, including the
+correlation between the outer table and the subquery table</p></li>
 <li><p><span class="target" id="advanced_alchemy.filters.ExistsFilter.params.operator"></span><strong>operator</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.ExistsFilter.params.operator">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'and'</span></code>, <code class="docutils literal notranslate"><span class="pre">'or'</span></code>]</span>) – operator: If “and”, combines conditions with AND, otherwise uses OR. Defaults to “and”.</p></li>
 <li><p><span class="target" id="advanced_alchemy.filters.ExistsFilter.params.Example"></span><strong>Example</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.ExistsFilter.params.Example">¶</a></p></li>
 <li><p><span class="target" id="advanced_alchemy.filters.ExistsFilter.params.--------"></span><strong>--------</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.ExistsFilter.params.--------">¶</a> – <p>Basic usage with AND conditions:</p>
@@ -799,14 +804,18 @@ the genre is “Action” will be returned.</p>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExistsFilter</span>
 </span><span data-line="3">
 </span><span data-line="4"><span class="nb">filter</span> <span class="o">=</span> <span class="n">ExistsFilter</span><span class="p">(</span>
-</span><span data-line="5">    <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">User</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">like</span><span class="p">(</span><span class="s2">&quot;%@example.com%&quot;</span><span class="p">)],</span>
-</span><span data-line="6"><span class="p">)</span>
-</span><span data-line="7"><span class="n">statement</span> <span class="o">=</span> <span class="nb">filter</span><span class="o">.</span><span class="n">append_to_statement</span><span class="p">(</span>
-</span><span data-line="8">    <span class="n">select</span><span class="p">(</span><span class="n">Organization</span><span class="p">),</span> <span class="n">Organization</span>
-</span><span data-line="9"><span class="p">)</span>
+</span><span data-line="5">    <span class="n">values</span><span class="o">=</span><span class="p">[</span>
+</span><span data-line="6">        <span class="n">User</span><span class="o">.</span><span class="n">organization_id</span>
+</span><span data-line="7">        <span class="o">==</span> <span class="n">Organization</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>  <span class="c1"># correlation</span>
+</span><span data-line="8">        <span class="n">User</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">like</span><span class="p">(</span><span class="s2">&quot;%@example.com%&quot;</span><span class="p">),</span>
+</span><span data-line="9">    <span class="p">],</span>
+</span><span data-line="10"><span class="p">)</span>
+</span><span data-line="11"><span class="n">statement</span> <span class="o">=</span> <span class="nb">filter</span><span class="o">.</span><span class="n">append_to_statement</span><span class="p">(</span>
+</span><span data-line="12">    <span class="n">select</span><span class="p">(</span><span class="n">Organization</span><span class="p">),</span> <span class="n">Organization</span>
+</span><span data-line="13"><span class="p">)</span>
 </span></pre></div>
 </div>
-<p>This will return only organizations where the user’s email contains “&#64;example.com”.</p>
+<p>This will return only organizations that have a user whose email contains “&#64;example.com”.</p>
 <p>Using OR conditions:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="nb">filter</span> <span class="o">=</span> <span class="n">ExistsFilter</span><span class="p">(</span>
 </span><span data-line="2">    <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">User</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s2">&quot;admin&quot;</span><span class="p">,</span> <span class="n">User</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s2">&quot;owner&quot;</span><span class="p">],</span>
@@ -814,7 +823,8 @@ the genre is “Action” will be returned.</p>
 </span><span data-line="4"><span class="p">)</span>
 </span></pre></div>
 </div>
-<p>This will return organizations where the user’s role is either “admin” OR “owner”.</p>
+<p>Note that this example is <em>not</em> correlated on its own — combine it with the correlation, or
+nest it in a <a class="reference internal" href="#advanced_alchemy.filters.FilterGroup" title="advanced_alchemy.filters.FilterGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterGroup</span></code></a>, to restrict the outer query.</p>
 </p></li>
 <li><p><span class="target" id="advanced_alchemy.filters.ExistsFilter.params.Also"></span><strong>Also</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.ExistsFilter.params.Also">¶</a> (<em>See</em>)</p></li>
 <li><p><span class="target" id="advanced_alchemy.filters.ExistsFilter.params.--------"></span><strong>--------</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.filters.ExistsFilter.params.--------">¶</a> – <a class="reference internal" href="#advanced_alchemy.filters.NotExistsFilter" title="advanced_alchemy.filters.NotExistsFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotExistsFilter</span></code></a>: The inverse of this filter
