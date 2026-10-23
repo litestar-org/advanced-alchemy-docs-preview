@@ -368,6 +368,15 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.types.OneTimeCode.process_result_value"><code class="docutils literal notranslate"><span class="pre">OneTimeCode.process_result_value()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#advanced_alchemy.types.PGCryptoBackend"><code class="docutils literal notranslate"><span class="pre">PGCryptoBackend</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.types.PGCryptoBackend.passphrase"><code class="docutils literal notranslate"><span class="pre">PGCryptoBackend.passphrase</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.PGCryptoBackend.init_engine"><code class="docutils literal notranslate"><span class="pre">PGCryptoBackend.init_engine()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.PGCryptoBackend.encrypt"><code class="docutils literal notranslate"><span class="pre">PGCryptoBackend.encrypt()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.PGCryptoBackend.decrypt"><code class="docutils literal notranslate"><span class="pre">PGCryptoBackend.decrypt()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.PGCryptoBackend.bind_expression"><code class="docutils literal notranslate"><span class="pre">PGCryptoBackend.bind_expression()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.PGCryptoBackend.column_expression"><code class="docutils literal notranslate"><span class="pre">PGCryptoBackend.column_expression()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#advanced_alchemy.types.PasswordHash"><code class="docutils literal notranslate"><span class="pre">PasswordHash</span></code></a><ul>
 <li><a class="reference internal" href="#advanced_alchemy.types.PasswordHash.impl"><code class="docutils literal notranslate"><span class="pre">PasswordHash.impl</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.PasswordHash.cache_ok"><code class="docutils literal notranslate"><span class="pre">PasswordHash.cache_ok</span></code></a></li>
@@ -468,6 +477,16 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher.verify"><code class="docutils literal notranslate"><span class="pre">Argon2Hasher.verify()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher.needs_rehash"><code class="docutils literal notranslate"><span class="pre">Argon2Hasher.needs_rehash()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.password_hash.argon2.Argon2Hasher.compare_expression"><code class="docutils literal notranslate"><span class="pre">Argon2Hasher.compare_expression()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher"><code class="docutils literal notranslate"><span class="pre">BcryptHasher</span></code></a><ul>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.__init__"><code class="docutils literal notranslate"><span class="pre">BcryptHasher.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.rounds"><code class="docutils literal notranslate"><span class="pre">BcryptHasher.rounds</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.prefix"><code class="docutils literal notranslate"><span class="pre">BcryptHasher.prefix</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.hash"><code class="docutils literal notranslate"><span class="pre">BcryptHasher.hash()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.verify"><code class="docutils literal notranslate"><span class="pre">BcryptHasher.verify()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.needs_rehash"><code class="docutils literal notranslate"><span class="pre">BcryptHasher.needs_rehash()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.compare_expression"><code class="docutils literal notranslate"><span class="pre">BcryptHasher.compare_expression()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#advanced_alchemy.types.password_hash.passlib.PasslibHasher"><code class="docutils literal notranslate"><span class="pre">PasslibHasher</span></code></a><ul>
@@ -587,7 +606,7 @@ data-aria-dark="Switch to auto color mode">
 <dd><p>Bases: <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/custom_types.html#sqlalchemy.types.TypeDecorator" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeDecorator</span></code></a></p>
 <p>Platform-independent GUID type.</p>
 <p>Uses PostgreSQL’s UUID type (Postgres, DuckDB, Cockroach),
-MSSQL’s UNIQUEIDENTIFIER type, Oracle’s RAW(16) type,
+MSSQL’s UNIQUEIDENTIFIER type, Oracle’s RAW(16) or CHAR(32) type,
 otherwise uses BINARY(16) or CHAR(32),
 storing as stringified hex values.</p>
 <p>Will accept stringified UUIDs as a hexstring or an actual UUID</p>
@@ -3304,6 +3323,125 @@ None to disable the lockout (the code stays single-use and still expires).</p></
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.types.PGCryptoBackend">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.types.</span></span><span class="sig-name descname"><span class="pre">PGCryptoBackend</span></span><a class="reference internal" href="../_modules/advanced_alchemy/types/encrypted_string.html#PGCryptoBackend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.PGCryptoBackend" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.types.EncryptionBackend" title="advanced_alchemy.types.encrypted_string.EncryptionBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">EncryptionBackend</span></code></a></p>
+<p>PostgreSQL pgcrypto-based encryption backend.</p>
+<p>This backend uses PostgreSQL’s pgcrypto extension for encryption/decryption operations.
+Requires the pgcrypto extension to be installed in the database. Encryption and
+decryption run server-side via <a class="reference internal" href="#advanced_alchemy.types.PGCryptoBackend.bind_expression" title="advanced_alchemy.types.PGCryptoBackend.bind_expression"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bind_expression()</span></code></a> and <a class="reference internal" href="#advanced_alchemy.types.PGCryptoBackend.column_expression" title="advanced_alchemy.types.PGCryptoBackend.column_expression"><code class="xref py py-meth docutils literal notranslate"><span class="pre">column_expression()</span></code></a>;
+the ASCII-armored ciphertext is stored as text so the column type is unchanged.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.types.PGCryptoBackend.passphrase">
+<span class="sig-name descname"><span class="pre">passphrase</span></span><a class="headerlink" href="#advanced_alchemy.types.PGCryptoBackend.passphrase" title="Link to this definition">#</a></dt>
+<dd><p>The base64-encoded passphrase used for encryption and decryption.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.PGCryptoBackend.init_engine">
+<span class="sig-name descname"><span class="pre">init_engine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/encrypted_string.html#PGCryptoBackend.init_engine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.PGCryptoBackend.init_engine" title="Link to this definition">#</a></dt>
+<dd><p>Initializes the pgcrypto engine with the provided key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.PGCryptoBackend.init_engine.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.PGCryptoBackend.init_engine.params.key">¶</a> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><em>bytes</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The encryption key.</p></li>
+<li><p><strong>key</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><em>bytes</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.PGCryptoBackend.encrypt">
+<span class="sig-name descname"><span class="pre">encrypt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/encrypted_string.html#PGCryptoBackend.encrypt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.PGCryptoBackend.encrypt" title="Link to this definition">#</a></dt>
+<dd><p>Returns the plaintext value to bind; encryption happens server-side.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.PGCryptoBackend.encrypt.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.PGCryptoBackend.encrypt.params.value">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The value to encrypt.</p></li>
+<li><p><strong>value</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The plaintext value passed to <a class="reference internal" href="#advanced_alchemy.types.PGCryptoBackend.bind_expression" title="advanced_alchemy.types.PGCryptoBackend.bind_expression"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bind_expression()</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.PGCryptoBackend.decrypt">
+<span class="sig-name descname"><span class="pre">decrypt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/encrypted_string.html#PGCryptoBackend.decrypt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.PGCryptoBackend.decrypt" title="Link to this definition">#</a></dt>
+<dd><p>Normalizes the server-decrypted value; decryption happens in SQL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.PGCryptoBackend.decrypt.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.PGCryptoBackend.decrypt.params.value">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The value already decrypted by <a class="reference internal" href="#advanced_alchemy.types.PGCryptoBackend.column_expression" title="advanced_alchemy.types.PGCryptoBackend.column_expression"><code class="xref py py-meth docutils literal notranslate"><span class="pre">column_expression()</span></code></a>.</p></li>
+<li><p><strong>value</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The decrypted value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.PGCryptoBackend.bind_expression">
+<span class="sig-name descname"><span class="pre">bind_expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bindvalue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/encrypted_string.html#PGCryptoBackend.bind_expression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.PGCryptoBackend.bind_expression" title="Link to this definition">#</a></dt>
+<dd><p>Wraps the bound parameter in <code class="docutils literal notranslate"><span class="pre">armor(pgp_sym_encrypt(...))</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.PGCryptoBackend.bind_expression.params.bindvalue"></span><strong>bindvalue</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.PGCryptoBackend.bind_expression.params.bindvalue">¶</a> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="advanced_alchemy.config.types.Any"><em>Any</em></a>) – The bound parameter element.</p></li>
+<li><p><strong>bindvalue</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The SQL expression producing ASCII-armored ciphertext.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="advanced_alchemy.config.types.Any">Any</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.PGCryptoBackend.column_expression">
+<span class="sig-name descname"><span class="pre">column_expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/encrypted_string.html#PGCryptoBackend.column_expression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.PGCryptoBackend.column_expression" title="Link to this definition">#</a></dt>
+<dd><p>Wraps the column in <code class="docutils literal notranslate"><span class="pre">pgp_sym_decrypt(dearmor(...))</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.PGCryptoBackend.column_expression.params.column"></span><strong>column</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.PGCryptoBackend.column_expression.params.column">¶</a> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="advanced_alchemy.config.types.Any"><em>Any</em></a>) – The column element being read.</p></li>
+<li><p><strong>column</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The SQL expression producing the decrypted plaintext.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="advanced_alchemy.config.types.Any">Any</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="advanced_alchemy.types.PasswordHash">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.types.</span></span><span class="sig-name descname"><span class="pre">PasswordHash</span></span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/base.html#PasswordHash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.PasswordHash" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/custom_types.html#sqlalchemy.types.TypeDecorator" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeDecorator</span></code></a></p>
@@ -4915,13 +5053,7 @@ the ASCII-armored ciphertext is stored as text so the column type is unchanged.<
 <dd><p>Initializes the pgcrypto engine with the provided key.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><span class="target" id="advanced_alchemy.types.encrypted_string.PGCryptoBackend.init_engine.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.init_engine.params.key">¶</a> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><em>bytes</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The encryption key.</p></li>
-<li><p><strong>key</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><em>bytes</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>]</em>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.types.encrypted_string.PGCryptoBackend.init_engine.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.init_engine.params.key">¶</a> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><em>bytes</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – The encryption key.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4972,10 +5104,7 @@ the ASCII-armored ciphertext is stored as text so the column type is unchanged.<
 <dd><p>Wraps the bound parameter in <code class="docutils literal notranslate"><span class="pre">armor(pgp_sym_encrypt(...))</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><span class="target" id="advanced_alchemy.types.encrypted_string.PGCryptoBackend.bind_expression.params.bindvalue"></span><strong>bindvalue</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.bind_expression.params.bindvalue">¶</a> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="advanced_alchemy.config.types.Any"><em>Any</em></a>) – The bound parameter element.</p></li>
-<li><p><strong>bindvalue</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
-</ul>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.types.encrypted_string.PGCryptoBackend.bind_expression.params.bindvalue"></span><strong>bindvalue</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.bind_expression.params.bindvalue">¶</a> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="advanced_alchemy.config.types.Any"><em>Any</em></a>) – The bound parameter element.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The SQL expression producing ASCII-armored ciphertext.</p>
@@ -4992,10 +5121,7 @@ the ASCII-armored ciphertext is stored as text so the column type is unchanged.<
 <dd><p>Wraps the column in <code class="docutils literal notranslate"><span class="pre">pgp_sym_decrypt(dearmor(...))</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><span class="target" id="advanced_alchemy.types.encrypted_string.PGCryptoBackend.column_expression.params.column"></span><strong>column</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.column_expression.params.column">¶</a> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="advanced_alchemy.config.types.Any"><em>Any</em></a>) – The column element being read.</p></li>
-<li><p><strong>column</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
-</ul>
+<dd class="field-odd"><p><span class="target" id="advanced_alchemy.types.encrypted_string.PGCryptoBackend.column_expression.params.column"></span><strong>column</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.encrypted_string.PGCryptoBackend.column_expression.params.column">¶</a> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="advanced_alchemy.config.types.Any"><em>Any</em></a>) – The column element being read.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The SQL expression producing the decrypted plaintext.</p>
@@ -5114,6 +5240,129 @@ type returns <code class="docutils literal notranslate"><span class="pre">False<
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>BinaryExpression[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)">bool</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.types.password_hash.bcrypt.</span></span><span class="sig-name descname"><span class="pre">BcryptHasher</span></span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/bcrypt.html#BcryptHasher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">HashingBackend</span></code></p>
+<p>Hashing backend using bcrypt via the python bcrypt library.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">b'2b'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/bcrypt.html#BcryptHasher.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.__init__" title="Link to this definition">#</a></dt>
+<dd><p>Initialize BcryptHasher.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.params.rounds"></span><strong>rounds</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.params.rounds">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of rounds (cost factor) to utilize with each generated salt.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.params.prefix"></span><strong>prefix</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.params.prefix">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a></span>) – The prefix to use for each salt being generated.</p></li>
+<li><p><strong>rounds</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>)</p></li>
+<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><em>bytes</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.MissingDependencyError" title="advanced_alchemy.exceptions.MissingDependencyError"><strong>MissingDependencyError</strong></a> – If the <code class="docutils literal notranslate"><span class="pre">bcrypt</span></code> package is not installed.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.rounds">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">rounds</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><a class="headerlink" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.rounds" title="Link to this definition">#</a></dt>
+<dd><p>Configured cost factor (log2 iterations).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.prefix">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">prefix</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><span class="pre">bytes</span></a></span><a class="headerlink" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.prefix" title="Link to this definition">#</a></dt>
+<dd><p>Configured bcrypt version prefix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.hash">
+<span class="sig-name descname"><span class="pre">hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/bcrypt.html#BcryptHasher.hash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.hash" title="Link to this definition">#</a></dt>
+<dd><p>Hash the password using Bcrypt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.hash.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.hash.params.value">¶</a> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a>]</span>) – The plain text password (will be encoded to UTF-8 if string).</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><em>bytes</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Bcrypt hash string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.verify">
+<span class="sig-name descname"><span class="pre">verify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hashed</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/bcrypt.html#BcryptHasher.verify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.verify" title="Link to this definition">#</a></dt>
+<dd><p>Verify a plain text value against a hash using the bcrypt checkpw function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.verify.params.plain"></span><strong>plain</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.verify.params.plain">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – The plain text value to verify. Any non-string or non-bytes type returns <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.verify.params.hashed"></span><strong>hashed</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.verify.params.hashed">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The hash to verify against.</p></li>
+<li><p><strong>plain</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+<li><p><strong>hashed</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the plain text matches the hash, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.needs_rehash">
+<span class="sig-name descname"><span class="pre">needs_rehash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hashed</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/bcrypt.html#BcryptHasher.needs_rehash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.needs_rehash" title="Link to this definition">#</a></dt>
+<dd><p>Return True if the stored hash uses an outdated prefix or cost factor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.needs_rehash.params.hashed"></span><strong>hashed</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.needs_rehash.params.hashed">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The stored hash string.</p></li>
+<li><p><strong>hashed</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the hash should be regenerated; False for an unparsable or foreign hash.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.compare_expression">
+<span class="sig-name descname"><span class="pre">compare_expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/password_hash/bcrypt.html#BcryptHasher.compare_expression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.password_hash.bcrypt.BcryptHasher.compare_expression" title="Link to this definition">#</a></dt>
+<dd><p>Direct SQL comparison is not supported for Bcrypt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#NotImplementedError" title="(in Python v3.15)"><strong>NotImplementedError</strong></a> – Always raised.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.BinaryExpression" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryExpression</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column</strong> (<a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.ColumnElement" title="(in SQLAlchemy v2.0)"><em>ColumnElement</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>]</em>)</p></li>
+<li><p><strong>plain</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

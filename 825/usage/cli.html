@@ -219,9 +219,10 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
 <li><a class="reference internal" href="#global-options">Global Options</a></li>
-<li><a class="reference internal" href="#config">Config</a></li>
+<li><a class="reference internal" href="#configuration-discovery">Configuration Discovery</a></li>
 <li><a class="reference internal" href="#available-commands">Available Commands</a><ul>
 <li><a class="reference internal" href="#migration-commands">Migration Commands</a><ul>
+<li><a class="reference internal" href="#show-config">show-config</a></li>
 <li><a class="reference internal" href="#show-current-revision">show-current-revision</a></li>
 <li><a class="reference internal" href="#downgrade">downgrade</a></li>
 <li><a class="reference internal" href="#upgrade">upgrade</a></li>
@@ -421,7 +422,7 @@ Poetry</label><div class="sd-tab-content docutils">
 </section>
 <section id="global-options">
 <h2>Global Options<a class="headerlink" href="#global-options" title="Link to this heading">#</a></h2>
-<p>The following options are available for all commands:</p>
+<p>The following options are available for all commands (and <code class="docutils literal notranslate"><span class="pre">--config</span></code> / <code class="docutils literal notranslate"><span class="pre">-c</span></code> and <code class="docutils literal notranslate"><span class="pre">--validate-config</span></code> can be placed either before or after the subcommand name):</p>
 <div class="table-wrapper colwidths-given docutils container" id="id6">
 <table class="docutils align-default" id="id6">
 <caption><span class="caption-text">Global options</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
@@ -435,34 +436,68 @@ Poetry</label><div class="sd-tab-content docutils">
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--config</span></code> TEXT</p></td>
-<td><p><strong>Required</strong>. Dotted path to SQLAlchemy config(s), it’s an instance of <code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncConfig</span></code> or <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncConfig</span></code>. Example: <code class="docutils literal notranslate"><span class="pre">--config</span> <span class="pre">path.to.alchemy-config.config</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-c</span></code>, <code class="docutils literal notranslate"><span class="pre">--config</span></code> TEXT</p></td>
+<td><p>Dotted (<code class="docutils literal notranslate"><span class="pre">module.attr</span></code>) or colon (<code class="docutils literal notranslate"><span class="pre">module:attr</span></code>) path to SQLAlchemy config(s) or a factory callable (sync or async). Can also be set via <code class="docutils literal notranslate"><span class="pre">ALCHEMY_CONFIG</span></code> or <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> <code class="docutils literal notranslate"><span class="pre">[tool.advanced-alchemy]</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--bind-key</span></code> TEXT</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--validate-config</span></code></p></td>
+<td><p>Optional. Validate configuration and print loaded config summary before executing the command.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--bind-key</span></code> TEXT</p></td>
 <td><p>Optional. Specify which SQLAlchemy config to use</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--no-prompt</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--no-prompt</span></code></p></td>
 <td><p>Optional. Skip confirmation prompts</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--verbose</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--verbose</span></code></p></td>
 <td><p>Optional. Enable verbose output</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 </section>
-<section id="config">
-<h2>Config<a class="headerlink" href="#config" title="Link to this heading">#</a></h2>
-<p>Here is an example of what <strong>config</strong> looks like.</p>
-<p>If the file is named <code class="docutils literal notranslate"><span class="pre">alchemy-config.py</span></code>, you would need to use it like this <code class="docutils literal notranslate"><span class="pre">--config</span> <span class="pre">path.to.alchemy-config.config</span></code></p>
+<section id="configuration-discovery">
+<h2>Configuration Discovery<a class="headerlink" href="#configuration-discovery" title="Link to this heading">#</a></h2>
+<p>The CLI resolves configuration in the following order of precedence:</p>
+<ol class="arabic">
+<li><p><strong>CLI flag</strong> (<code class="docutils literal notranslate"><span class="pre">--config</span></code> / <code class="docutils literal notranslate"><span class="pre">-c</span></code>, passed before or after the subcommand):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>--config<span class="w"> </span>myapp.config:alchemy_config<span class="w"> </span>upgrade
+</span><span data-line="2">alchemy<span class="w"> </span>upgrade<span class="w"> </span>--config<span class="w"> </span>myapp.config:alchemy_config
+</span></pre></div>
+</div>
+</li>
+<li><p><strong>Environment variable</strong> (<code class="docutils literal notranslate"><span class="pre">ALCHEMY_CONFIG</span></code>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="nb">export</span><span class="w"> </span><span class="nv">ALCHEMY_CONFIG</span><span class="o">=</span><span class="s2">&quot;myapp.config:alchemy_config&quot;</span>
+</span><span data-line="2">alchemy<span class="w"> </span>upgrade
+</span></pre></div>
+</div>
+</li>
+<li><p><strong>Project configuration</strong> (<code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>):</p>
+<p>The CLI walks upward from the current working directory (stopping at the <code class="docutils literal notranslate"><span class="pre">.git</span></code> repository root) to find <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> and reads <code class="docutils literal notranslate"><span class="pre">[tool.advanced-alchemy]</span></code> (or <code class="docutils literal notranslate"><span class="pre">[tool.alchemy]</span></code>):</p>
 <div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-text">alchemy-config.py</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-text">pyproject.toml</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">[tool.advanced-alchemy]</span>
+</span><span data-line="2"><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;myapp.config:alchemy_config&quot;</span>
+</span></pre></div>
+</div>
+</div>
+<p>Multiple configuration paths can be provided as a list or comma-separated string (deduplicated by <code class="docutils literal notranslate"><span class="pre">bind_key</span></code>):</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">pyproject.toml</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">[tool.advanced-alchemy]</span>
+</span><span data-line="2"><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;myapp.db:primary_config&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;myapp.db:analytics_config&quot;</span><span class="p">]</span>
+</span></pre></div>
+</div>
+</div>
+</li>
+</ol>
+<p>Here is an example of a configuration module (supporting direct instances, sequences, plugin/extension wrappers, or sync/async factory callables):</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">alchemy-config.py</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemySyncConfig</span>
 </span><span data-line="2">
-</span><span data-line="3"><span class="c1"># Create a test config using SQLite</span>
-</span><span data-line="4"><span class="n">config</span> <span class="o">=</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">(</span>
-</span><span data-line="5">    <span class="n">connection_string</span><span class="o">=</span><span class="s2">&quot;sqlite:///test.db&quot;</span>
-</span><span data-line="6"><span class="p">)</span>
+</span><span data-line="3"><span class="n">config</span> <span class="o">=</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">(</span>
+</span><span data-line="4">    <span class="n">connection_string</span><span class="o">=</span><span class="s2">&quot;sqlite:///test.db&quot;</span>
+</span><span data-line="5"><span class="p">)</span>
 </span></pre></div>
 </div>
 </div>
@@ -472,15 +507,22 @@ Poetry</label><div class="sd-tab-content docutils">
 <section id="migration-commands">
 <h3>Migration Commands<a class="headerlink" href="#migration-commands" title="Link to this heading">#</a></h3>
 <p>These commands manage database migrations and revisions.</p>
+<section id="show-config">
+<h4>show-config<a class="headerlink" href="#show-config" title="Link to this heading">#</a></h4>
+<p>Display all loaded configurations with migrations enabled:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>show-config<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config
+</span></pre></div>
+</div>
+</section>
 <section id="show-current-revision">
 <h4>show-current-revision<a class="headerlink" href="#show-current-revision" title="Link to this heading">#</a></h4>
 <p>Show the current revision of the database:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>show-current-revision<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config
 </span></pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container" id="id8">
-<table class="docutils align-default" id="id8">
-<caption><span class="caption-text">Options</span><a class="headerlink" href="#id8" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-given docutils container" id="id10">
+<table class="docutils align-default" id="id10">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id10" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -504,9 +546,9 @@ Poetry</label><div class="sd-tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>downgrade<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config<span class="w"> </span><span class="o">[</span>REVISION<span class="o">]</span>
 </span></pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container" id="id9">
-<table class="docutils align-default" id="id9">
-<caption><span class="caption-text">Options</span><a class="headerlink" href="#id9" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-given docutils container" id="id11">
+<table class="docutils align-default" id="id11">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id11" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -536,9 +578,9 @@ Poetry</label><div class="sd-tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>upgrade<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config<span class="w"> </span><span class="o">[</span>REVISION<span class="o">]</span>
 </span></pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container" id="id10">
-<table class="docutils align-default" id="id10">
-<caption><span class="caption-text">Options</span><a class="headerlink" href="#id10" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-given docutils container" id="id12">
+<table class="docutils align-default" id="id12">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id12" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -568,9 +610,9 @@ Poetry</label><div class="sd-tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>stamp<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config<span class="w"> </span>REVISION
 </span></pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container" id="id11">
-<table class="docutils align-default" id="id11">
-<caption><span class="caption-text">Options</span><a class="headerlink" href="#id11" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-given docutils container" id="id13">
+<table class="docutils align-default" id="id13">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id13" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -610,9 +652,9 @@ Poetry</label><div class="sd-tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>init<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config<span class="w"> </span><span class="o">[</span>DIRECTORY<span class="o">]</span>
 </span></pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container" id="id12">
-<table class="docutils align-default" id="id12">
-<caption><span class="caption-text">Options</span><a class="headerlink" href="#id12" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-given docutils container" id="id14">
+<table class="docutils align-default" id="id14">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id14" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -642,9 +684,9 @@ Poetry</label><div class="sd-tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>make-migrations<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config
 </span></pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container" id="id13">
-<table class="docutils align-default" id="id13">
-<caption><span class="caption-text">Options</span><a class="headerlink" href="#id13" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-given docutils container" id="id15">
+<table class="docutils align-default" id="id15">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id15" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 30.0%" />
 <col style="width: 70.0%" />
@@ -723,9 +765,9 @@ add <code class="docutils literal notranslate"><span class="pre">import</span> <
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>heads<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config
 </span></pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container" id="id14">
-<table class="docutils align-default" id="id14">
-<caption><span class="caption-text">Options</span><a class="headerlink" href="#id14" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-given docutils container" id="id16">
+<table class="docutils align-default" id="id16">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id16" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -758,9 +800,9 @@ add <code class="docutils literal notranslate"><span class="pre">import</span> <
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span><span class="nb">history</span><span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config
 </span></pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container" id="id15">
-<table class="docutils align-default" id="id15">
-<caption><span class="caption-text">Options</span><a class="headerlink" href="#id15" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-given docutils container" id="id17">
+<table class="docutils align-default" id="id17">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id17" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -814,9 +856,9 @@ add <code class="docutils literal notranslate"><span class="pre">import</span> <
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>branches<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config
 </span></pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container" id="id16">
-<table class="docutils align-default" id="id16">
-<caption><span class="caption-text">Options</span><a class="headerlink" href="#id16" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-given docutils container" id="id18">
+<table class="docutils align-default" id="id18">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id18" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -850,9 +892,9 @@ add <code class="docutils literal notranslate"><span class="pre">import</span> <
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>merge<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config<span class="w"> </span>REVISIONS
 </span></pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container" id="id17">
-<table class="docutils align-default" id="id17">
-<caption><span class="caption-text">Options</span><a class="headerlink" href="#id17" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-given docutils container" id="id19">
+<table class="docutils align-default" id="id19">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id19" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -918,9 +960,9 @@ add <code class="docutils literal notranslate"><span class="pre">import</span> <
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>ensure-version<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config
 </span></pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container" id="id18">
-<table class="docutils align-default" id="id18">
-<caption><span class="caption-text">Options</span><a class="headerlink" href="#id18" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-given docutils container" id="id20">
+<table class="docutils align-default" id="id20">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id20" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -977,9 +1019,9 @@ add <code class="docutils literal notranslate"><span class="pre">import</span> <
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>dump-data<span class="w"> </span>--config<span class="w"> </span>path.to.alchemy-config.config<span class="w"> </span>--table<span class="w"> </span>TABLE_NAME
 </span></pre></div>
 </div>
-<div class="table-wrapper colwidths-given docutils container" id="id19">
-<table class="docutils align-default" id="id19">
-<caption><span class="caption-text">Options</span><a class="headerlink" href="#id19" title="Link to this table">#</a></caption>
+<div class="table-wrapper colwidths-given docutils container" id="id21">
+<table class="docutils align-default" id="id21">
+<caption><span class="caption-text">Options</span><a class="headerlink" href="#id21" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -1058,8 +1100,8 @@ add <code class="docutils literal notranslate"><span class="pre">import</span> <
 <section id="typer-integration">
 <h2>Typer integration<a class="headerlink" href="#typer-integration" title="Link to this heading">#</a></h2>
 <p>You can integrate Advanced Alchemy’s CLI commands into your existing <code class="docutils literal notranslate"><span class="pre">Typer</span></code> application. Here’s how:</p>
-<div class="literal-block-wrapper docutils container" id="id20">
-<div class="code-block-caption"><span class="caption-text">cli.py</span><a class="headerlink" href="#id20" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id22">
+<div class="code-block-caption"><span class="caption-text">cli.py</span><a class="headerlink" href="#id22" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">typer</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_alchemy_group</span><span class="p">,</span> <span class="n">add_migration_commands</span>
 </span><span data-line="3">
