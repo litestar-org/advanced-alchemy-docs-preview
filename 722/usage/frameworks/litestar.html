@@ -986,6 +986,27 @@ the matching parameter in your handlers.</p>
 </span></pre></div>
 </div>
 <p>The registered store name must match <code class="docutils literal notranslate"><span class="pre">ServerSideSessionConfig.store</span></code>, which is <code class="docutils literal notranslate"><span class="pre">&quot;sessions&quot;</span></code> unless you override it.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Cleaning up expired sessions.</strong> Call <code class="docutils literal notranslate"><span class="pre">session_store.delete_expired()</span></code>
+periodically to remove expired rows.
+Expired entries stop being returned by <code class="docutils literal notranslate"><span class="pre">get()</span></code>, but their rows remain in the
+table until cleanup runs. The method works with both synchronous and asynchronous
+SQLAlchemy configurations and is awaited in either case:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">cleanup_expired_sessions</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="2">    <span class="k">await</span> <span class="n">session_store</span><span class="o">.</span><span class="n">delete_expired</span><span class="p">()</span>
+</span></pre></div>
+</div>
+<p>Cleanup only deletes entries in the store’s exact namespace whose <code class="docutils literal notranslate"><span class="pre">expires_at</span></code>
+is at or before the current time. Live entries, entries without an expiration time,
+and entries in other namespaces (including nested namespaces) are preserved.
+Each namespace needs its own cleanup call. Calling <code class="docutils literal notranslate"><span class="pre">delete_expired()</span></code> with
+<code class="docutils literal notranslate"><span class="pre">namespace=None</span></code> raises <code class="docutils literal notranslate"><span class="pre">ImproperlyConfiguredException</span></code>.</p>
+<p>Run it on a <strong>recurring</strong> schedule — a periodic task scheduler such as SAQ, or an
+external cron job. An <code class="docutils literal notranslate"><span class="pre">on_startup</span></code> hook runs only once per process start, so it
+works for an optional initial sweep but will not keep a long-running deployment
+clean on its own. Do not use <code class="docutils literal notranslate"><span class="pre">delete_all()</span></code> for this — it removes live sessions too.</p>
+</div>
 </section>
 <section id="backend-based-integration">
 <h3>Backend-Based Integration<a class="headerlink" href="#backend-based-integration" title="Link to this heading">#</a></h3>
