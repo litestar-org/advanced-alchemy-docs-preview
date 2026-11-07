@@ -724,22 +724,6 @@ Poetry</label><div class="sd-tab-content docutils">
 </tbody>
 </table>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>PostgreSQL enum changes</strong></p>
-<p>Alembic’s autogenerate does not detect changes to PostgreSQL native <code class="docutils literal notranslate"><span class="pre">ENUM</span></code>
-types on its own (for example, adding a value to an existing <code class="docutils literal notranslate"><span class="pre">StrEnum</span></code>).
-Advanced Alchemy’s migration templates automatically enable this detection
-when the optional <a class="reference external" href="https://pypi.org/project/alembic-postgresql-enum/">alembic-postgresql-enum</a> package is installed.
-Install it with the <code class="docutils literal notranslate"><span class="pre">postgresql</span></code> extra:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;advanced-alchemy[postgresql]&quot;</span>
-</span></pre></div>
-</div>
-<p>The generated <code class="docutils literal notranslate"><span class="pre">env.py</span></code> imports the package inside a <code class="docutils literal notranslate"><span class="pre">try</span></code>/<code class="docutils literal notranslate"><span class="pre">except</span></code> block,
-so no configuration is required — it activates only when the package is present.
-If you initialized your migrations with an older version of Advanced Alchemy,
-add <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">alembic_postgresql_enum</span></code> near the top of your <code class="docutils literal notranslate"><span class="pre">env.py</span></code> to enable it.</p>
-</div>
 </section>
 </section>
 <section id="inspection-commands">
@@ -1057,18 +1041,15 @@ add <code class="docutils literal notranslate"><span class="pre">import</span> <
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_alchemy_group</span><span class="p">,</span> <span class="n">add_migration_commands</span>
 </span><span data-line="2"><span class="kn">import</span><span class="w"> </span><span class="nn">click</span>
 </span><span data-line="3">
-</span><span data-line="4"><span class="c1"># Get the base group</span>
-</span><span data-line="5"><span class="n">alchemy_group</span> <span class="o">=</span> <span class="n">get_alchemy_group</span><span class="p">()</span>
-</span><span data-line="6">
-</span><span data-line="7"><span class="c1"># Add your custom commands</span>
-</span><span data-line="8"><span class="nd">@alchemy_group</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-command&quot;</span><span class="p">)</span>
-</span><span data-line="9"><span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--my-option&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom option&quot;</span><span class="p">)</span>
-</span><span data-line="10"><span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">(</span><span class="n">my_option</span><span class="p">):</span>
-</span><span data-line="11"><span class="w">    </span><span class="sd">&quot;&quot;&quot;My custom command.&quot;&quot;&quot;</span>
-</span><span data-line="12">    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running my command with option: </span><span class="si">{</span><span class="n">my_option</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span data-line="13">
-</span><span data-line="14"><span class="c1"># Add migration commands to your group</span>
-</span><span data-line="15"><span class="n">add_migration_commands</span><span class="p">(</span><span class="n">alchemy_group</span><span class="p">)</span>
+</span><span data-line="4"><span class="n">alchemy_group</span> <span class="o">=</span> <span class="n">get_alchemy_group</span><span class="p">()</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="nd">@alchemy_group</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-command&quot;</span><span class="p">)</span>
+</span><span data-line="7"><span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--my-option&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom option&quot;</span><span class="p">)</span>
+</span><span data-line="8"><span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">(</span><span class="n">my_option</span><span class="p">):</span>
+</span><span data-line="9"><span class="w">    </span><span class="sd">&quot;&quot;&quot;My custom command.&quot;&quot;&quot;</span>
+</span><span data-line="10">    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running my command with option: </span><span class="si">{</span><span class="n">my_option</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="11">
+</span><span data-line="12"><span class="n">add_migration_commands</span><span class="p">(</span><span class="n">alchemy_group</span><span class="p">)</span>
 </span></pre></div>
 </div>
 </section>
@@ -1083,16 +1064,15 @@ add <code class="docutils literal notranslate"><span class="pre">import</span> <
 </span><span data-line="6"><span class="w">    </span><span class="sd">&quot;&quot;&quot;My application CLI.&quot;&quot;&quot;</span>
 </span><span data-line="7">    <span class="k">pass</span>
 </span><span data-line="8">
-</span><span data-line="9"><span class="c1"># Add migration commands to your CLI group</span>
-</span><span data-line="10"><span class="n">add_migration_commands</span><span class="p">(</span><span class="n">cli</span><span class="p">)</span>
-</span><span data-line="11">
-</span><span data-line="12"><span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
-</span><span data-line="13"><span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
-</span><span data-line="14"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom command in your CLI.&quot;&quot;&quot;</span>
-</span><span data-line="15">    <span class="k">pass</span>
-</span><span data-line="16">
-</span><span data-line="17"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span data-line="18">    <span class="n">cli</span><span class="p">()</span>
+</span><span data-line="9"><span class="n">add_migration_commands</span><span class="p">(</span><span class="n">cli</span><span class="p">)</span>
+</span><span data-line="10">
+</span><span data-line="11"><span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+</span><span data-line="12"><span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
+</span><span data-line="13"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom command in your CLI.&quot;&quot;&quot;</span>
+</span><span data-line="14">    <span class="k">pass</span>
+</span><span data-line="15">
+</span><span data-line="16"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span data-line="17">    <span class="n">cli</span><span class="p">()</span>
 </span></pre></div>
 </div>
 </section>
@@ -1121,20 +1101,14 @@ add <code class="docutils literal notranslate"><span class="pre">import</span> <
 </span><span data-line="17">
 </span><span data-line="18"><span class="k">def</span><span class="w"> </span><span class="nf">create_cli</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">typer</span><span class="o">.</span><span class="n">Typer</span><span class="p">:</span>
 </span><span data-line="19"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create the CLI application with both Typer and Click commands.&quot;&quot;&quot;</span>
-</span><span data-line="20">    <span class="c1"># Get the Click group from advanced_alchemy</span>
-</span><span data-line="21">    <span class="n">alchemy_group</span> <span class="o">=</span> <span class="n">get_alchemy_group</span><span class="p">()</span>
-</span><span data-line="22">
-</span><span data-line="23">    <span class="c1"># Convert our Typer app to a Click command object</span>
-</span><span data-line="24">    <span class="n">typer_click_object</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">get_command</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
-</span><span data-line="25">
-</span><span data-line="26">    <span class="c1"># Add all migration commands from the alchemy group to our CLI</span>
-</span><span data-line="27">    <span class="n">typer_click_object</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">add_migration_commands</span><span class="p">(</span><span class="n">alchemy_group</span><span class="p">))</span>
-</span><span data-line="28">
-</span><span data-line="29">    <span class="k">return</span> <span class="n">typer_click_object</span>
-</span><span data-line="30">
-</span><span data-line="31"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span data-line="32">    <span class="n">cli</span> <span class="o">=</span> <span class="n">create_cli</span><span class="p">()</span>
-</span><span data-line="33">    <span class="n">cli</span><span class="p">()</span>
+</span><span data-line="20">    <span class="n">alchemy_group</span> <span class="o">=</span> <span class="n">get_alchemy_group</span><span class="p">()</span>
+</span><span data-line="21">    <span class="n">typer_click_object</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">get_command</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+</span><span data-line="22">    <span class="n">typer_click_object</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">add_migration_commands</span><span class="p">(</span><span class="n">alchemy_group</span><span class="p">))</span>
+</span><span data-line="23">    <span class="k">return</span> <span class="n">typer_click_object</span>
+</span><span data-line="24">
+</span><span data-line="25"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span data-line="26">    <span class="n">cli</span> <span class="o">=</span> <span class="n">create_cli</span><span class="p">()</span>
+</span><span data-line="27">    <span class="n">cli</span><span class="p">()</span>
 </span></pre></div>
 </div>
 </div>
