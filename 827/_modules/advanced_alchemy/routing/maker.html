@@ -579,162 +579,160 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="288">        <span class="bp">self</span><span class="o">.</span><span class="n">_engines</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">AsyncEngine</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 </span><span data-line="289">        <span class="bp">self</span><span class="o">.</span><span class="n">_selectors</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">EngineSelector</span><span class="p">[</span><span class="n">AsyncEngine</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 </span><span data-line="290">
-</span><span data-line="291">        <span class="c1"># Initialize engines and selectors for all groups</span>
-</span><span data-line="292">        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">routing_config</span><span class="o">.</span><span class="n">engines</span><span class="p">:</span>
-</span><span data-line="293">            <span class="n">engines_for_group</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AsyncEngine</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="294">            <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">routing_config</span><span class="o">.</span><span class="n">get_engine_configs</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
-</span><span data-line="295">                <span class="n">engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_engine</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">connection_string</span><span class="p">,</span> <span class="n">create_engine_callable</span><span class="p">)</span>
-</span><span data-line="296">                <span class="n">engines_for_group</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
-</span><span data-line="297">
-</span><span data-line="298">            <span class="k">if</span> <span class="n">engines_for_group</span><span class="p">:</span>
-</span><span data-line="299">                <span class="bp">self</span><span class="o">.</span><span class="n">_engines</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">engines_for_group</span>
-</span><span data-line="300">                <span class="bp">self</span><span class="o">.</span><span class="n">_selectors</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_selector</span><span class="p">(</span>
-</span><span data-line="301">                    <span class="n">engines_for_group</span><span class="p">,</span>
-</span><span data-line="302">                    <span class="n">routing_config</span><span class="o">.</span><span class="n">routing_strategy</span><span class="p">,</span>
-</span><span data-line="303">                <span class="p">)</span>
-</span><span data-line="304">
-</span><span data-line="305">        <span class="c1"># Set default engine (required)</span>
-</span><span data-line="306">        <span class="n">default_group</span> <span class="o">=</span> <span class="n">routing_config</span><span class="o">.</span><span class="n">default_group</span>
-</span><span data-line="307">        <span class="k">if</span> <span class="n">default_group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engines</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engines</span><span class="p">[</span><span class="n">default_group</span><span class="p">]:</span>
-</span><span data-line="308">            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-</span><span data-line="309">                <span class="sa">f</span><span class="s2">&quot;Default group &#39;</span><span class="si">{</span><span class="n">default_group</span><span class="si">}</span><span class="s2">&#39; has no engines configured. &quot;</span>
-</span><span data-line="310">                <span class="s2">&quot;Ensure &#39;engines&#39; contains this group or &#39;primary_connection_string&#39; is set.&quot;</span>
-</span><span data-line="311">            <span class="p">)</span>
-</span><span data-line="312">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span data-line="313">
-</span><span data-line="314">        <span class="bp">self</span><span class="o">.</span><span class="n">_default_engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engines</span><span class="p">[</span><span class="n">default_group</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+</span><span data-line="291">        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">routing_config</span><span class="o">.</span><span class="n">engines</span><span class="p">:</span>
+</span><span data-line="292">            <span class="n">engines_for_group</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AsyncEngine</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="293">            <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">routing_config</span><span class="o">.</span><span class="n">get_engine_configs</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
+</span><span data-line="294">                <span class="n">engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_engine</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">connection_string</span><span class="p">,</span> <span class="n">create_engine_callable</span><span class="p">)</span>
+</span><span data-line="295">                <span class="n">engines_for_group</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+</span><span data-line="296">
+</span><span data-line="297">            <span class="k">if</span> <span class="n">engines_for_group</span><span class="p">:</span>
+</span><span data-line="298">                <span class="bp">self</span><span class="o">.</span><span class="n">_engines</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">engines_for_group</span>
+</span><span data-line="299">                <span class="bp">self</span><span class="o">.</span><span class="n">_selectors</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_selector</span><span class="p">(</span>
+</span><span data-line="300">                    <span class="n">engines_for_group</span><span class="p">,</span>
+</span><span data-line="301">                    <span class="n">routing_config</span><span class="o">.</span><span class="n">routing_strategy</span><span class="p">,</span>
+</span><span data-line="302">                <span class="p">)</span>
+</span><span data-line="303">
+</span><span data-line="304">        <span class="n">default_group</span> <span class="o">=</span> <span class="n">routing_config</span><span class="o">.</span><span class="n">default_group</span>
+</span><span data-line="305">        <span class="k">if</span> <span class="n">default_group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engines</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engines</span><span class="p">[</span><span class="n">default_group</span><span class="p">]:</span>
+</span><span data-line="306">            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="307">                <span class="sa">f</span><span class="s2">&quot;Default group &#39;</span><span class="si">{</span><span class="n">default_group</span><span class="si">}</span><span class="s2">&#39; has no engines configured. &quot;</span>
+</span><span data-line="308">                <span class="s2">&quot;Ensure &#39;engines&#39; contains this group or &#39;primary_connection_string&#39; is set.&quot;</span>
+</span><span data-line="309">            <span class="p">)</span>
+</span><span data-line="310">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span data-line="311">
+</span><span data-line="312">        <span class="bp">self</span><span class="o">.</span><span class="n">_default_engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engines</span><span class="p">[</span><span class="n">default_group</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
 
-</span><span data-line="315">
-</span><span data-line="316">    <span class="k">def</span><span class="w"> </span><span class="nf">_create_engine</span><span class="p">(</span>
-</span><span data-line="317">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="318">        <span class="n">connection_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="319">        <span class="n">create_engine_callable</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">AsyncEngine</span><span class="p">],</span>
-</span><span data-line="320">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncEngine</span><span class="p">:</span>
-</span><span data-line="321"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an async engine with the configured options.</span>
-</span><span data-line="322">
-</span><span data-line="323"><span class="sd">        Args:</span>
-</span><span data-line="324"><span class="sd">            connection_string: Database connection string.</span>
-</span><span data-line="325"><span class="sd">            create_engine_callable: Callable to create the engine.</span>
-</span><span data-line="326">
-</span><span data-line="327"><span class="sd">        Returns:</span>
-</span><span data-line="328"><span class="sd">            The created async engine.</span>
-</span><span data-line="329"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="330">        <span class="k">try</span><span class="p">:</span>
-</span><span data-line="331">            <span class="k">return</span> <span class="n">create_engine_callable</span><span class="p">(</span><span class="n">connection_string</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_engine_config</span><span class="p">)</span>
-</span><span data-line="332">        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-</span><span data-line="333">            <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engine_config</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</span><span data-line="334">            <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;json_deserializer&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-</span><span data-line="335">            <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;json_serializer&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-</span><span data-line="336">            <span class="k">return</span> <span class="n">create_engine_callable</span><span class="p">(</span><span class="n">connection_string</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
-</span><span data-line="337">
-</span><span data-line="338">    <span class="k">def</span><span class="w"> </span><span class="nf">_create_selector</span><span class="p">(</span>
-</span><span data-line="339">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="340">        <span class="n">engines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AsyncEngine</span><span class="p">],</span>
-</span><span data-line="341">        <span class="n">strategy</span><span class="p">:</span> <span class="n">RoutingStrategy</span><span class="p">,</span>
-</span><span data-line="342">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EngineSelector</span><span class="p">[</span><span class="n">AsyncEngine</span><span class="p">]:</span>
-</span><span data-line="343"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an engine selector for the given strategy.</span>
-</span><span data-line="344">
-</span><span data-line="345"><span class="sd">        Args:</span>
-</span><span data-line="346"><span class="sd">            engines: List of replica async engines.</span>
-</span><span data-line="347"><span class="sd">            strategy: The routing strategy to use.</span>
-</span><span data-line="348">
-</span><span data-line="349"><span class="sd">        Returns:</span>
-</span><span data-line="350"><span class="sd">            The appropriate selector instance.</span>
-</span><span data-line="351"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="352">        <span class="k">if</span> <span class="n">strategy</span> <span class="o">==</span> <span class="n">RoutingStrategy</span><span class="o">.</span><span class="n">RANDOM</span><span class="p">:</span>
-</span><span data-line="353">            <span class="k">return</span> <span class="n">RandomSelector</span><span class="p">(</span><span class="n">engines</span><span class="p">)</span>
-</span><span data-line="354">        <span class="k">return</span> <span class="n">RoundRobinSelector</span><span class="p">(</span><span class="n">engines</span><span class="p">)</span>
-</span><span data-line="355">
+</span><span data-line="313">
+</span><span data-line="314">    <span class="k">def</span><span class="w"> </span><span class="nf">_create_engine</span><span class="p">(</span>
+</span><span data-line="315">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="316">        <span class="n">connection_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="317">        <span class="n">create_engine_callable</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">AsyncEngine</span><span class="p">],</span>
+</span><span data-line="318">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncEngine</span><span class="p">:</span>
+</span><span data-line="319"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an async engine with the configured options.</span>
+</span><span data-line="320">
+</span><span data-line="321"><span class="sd">        Args:</span>
+</span><span data-line="322"><span class="sd">            connection_string: Database connection string.</span>
+</span><span data-line="323"><span class="sd">            create_engine_callable: Callable to create the engine.</span>
+</span><span data-line="324">
+</span><span data-line="325"><span class="sd">        Returns:</span>
+</span><span data-line="326"><span class="sd">            The created async engine.</span>
+</span><span data-line="327"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="328">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="329">            <span class="k">return</span> <span class="n">create_engine_callable</span><span class="p">(</span><span class="n">connection_string</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_engine_config</span><span class="p">)</span>
+</span><span data-line="330">        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+</span><span data-line="331">            <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engine_config</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span data-line="332">            <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;json_deserializer&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="333">            <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;json_serializer&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="334">            <span class="k">return</span> <span class="n">create_engine_callable</span><span class="p">(</span><span class="n">connection_string</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
+</span><span data-line="335">
+</span><span data-line="336">    <span class="k">def</span><span class="w"> </span><span class="nf">_create_selector</span><span class="p">(</span>
+</span><span data-line="337">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="338">        <span class="n">engines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AsyncEngine</span><span class="p">],</span>
+</span><span data-line="339">        <span class="n">strategy</span><span class="p">:</span> <span class="n">RoutingStrategy</span><span class="p">,</span>
+</span><span data-line="340">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EngineSelector</span><span class="p">[</span><span class="n">AsyncEngine</span><span class="p">]:</span>
+</span><span data-line="341"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an engine selector for the given strategy.</span>
+</span><span data-line="342">
+</span><span data-line="343"><span class="sd">        Args:</span>
+</span><span data-line="344"><span class="sd">            engines: List of replica async engines.</span>
+</span><span data-line="345"><span class="sd">            strategy: The routing strategy to use.</span>
+</span><span data-line="346">
+</span><span data-line="347"><span class="sd">        Returns:</span>
+</span><span data-line="348"><span class="sd">            The appropriate selector instance.</span>
+</span><span data-line="349"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="350">        <span class="k">if</span> <span class="n">strategy</span> <span class="o">==</span> <span class="n">RoutingStrategy</span><span class="o">.</span><span class="n">RANDOM</span><span class="p">:</span>
+</span><span data-line="351">            <span class="k">return</span> <span class="n">RandomSelector</span><span class="p">(</span><span class="n">engines</span><span class="p">)</span>
+</span><span data-line="352">        <span class="k">return</span> <span class="n">RoundRobinSelector</span><span class="p">(</span><span class="n">engines</span><span class="p">)</span>
+</span><span data-line="353">
 <div class="viewcode-block" id="RoutingAsyncSessionMaker.__call__">
 <a class="viewcode-back" href="../../../reference/routing.html#advanced_alchemy.routing.RoutingAsyncSessionMaker.__call__">[docs]</a>
-</span><span data-line="356">    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RoutingAsyncSession</span><span class="p">:</span>
-</span><span data-line="357"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new async routing session.</span>
-</span><span data-line="358">
-</span><span data-line="359"><span class="sd">        Any ``bind`` passed in the session config is ignored because</span>
-</span><span data-line="360"><span class="sd">        routing controls bind selection.</span>
-</span><span data-line="361">
-</span><span data-line="362"><span class="sd">        Returns:</span>
-</span><span data-line="363"><span class="sd">            A new :class:`RoutingAsyncSession` instance.</span>
-</span><span data-line="364"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="365">        <span class="n">session_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session_config</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</span><span data-line="366">        <span class="n">session_config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;bind&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-</span><span data-line="367">        <span class="k">return</span> <span class="n">RoutingAsyncSession</span><span class="p">(</span>
-</span><span data-line="368">            <span class="n">routing_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_routing_config</span><span class="p">,</span>
-</span><span data-line="369">            <span class="n">selectors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_selectors</span><span class="p">,</span>
-</span><span data-line="370">            <span class="n">default_engine</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_engine</span><span class="p">,</span>
-</span><span data-line="371">            <span class="o">**</span><span class="n">session_config</span><span class="p">,</span>
-</span><span data-line="372">        <span class="p">)</span></div>
+</span><span data-line="354">    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RoutingAsyncSession</span><span class="p">:</span>
+</span><span data-line="355"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new async routing session.</span>
+</span><span data-line="356">
+</span><span data-line="357"><span class="sd">        Any ``bind`` passed in the session config is ignored because</span>
+</span><span data-line="358"><span class="sd">        routing controls bind selection.</span>
+</span><span data-line="359">
+</span><span data-line="360"><span class="sd">        Returns:</span>
+</span><span data-line="361"><span class="sd">            A new :class:`RoutingAsyncSession` instance.</span>
+</span><span data-line="362"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="363">        <span class="n">session_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session_config</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span data-line="364">        <span class="n">session_config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;bind&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="365">        <span class="k">return</span> <span class="n">RoutingAsyncSession</span><span class="p">(</span>
+</span><span data-line="366">            <span class="n">routing_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_routing_config</span><span class="p">,</span>
+</span><span data-line="367">            <span class="n">selectors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_selectors</span><span class="p">,</span>
+</span><span data-line="368">            <span class="n">default_engine</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_engine</span><span class="p">,</span>
+</span><span data-line="369">            <span class="o">**</span><span class="n">session_config</span><span class="p">,</span>
+</span><span data-line="370">        <span class="p">)</span></div>
 
-</span><span data-line="373">
+</span><span data-line="371">
 <div class="viewcode-block" id="RoutingAsyncSessionMaker.configure">
 <a class="viewcode-back" href="../../../reference/routing.html#advanced_alchemy.routing.RoutingAsyncSessionMaker.configure">[docs]</a>
-</span><span data-line="374">    <span class="k">def</span><span class="w"> </span><span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="375"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Update session configuration options in place.</span>
-</span><span data-line="376">
-</span><span data-line="377"><span class="sd">        Args:</span>
-</span><span data-line="378"><span class="sd">            **kwargs: Session configuration options to merge into the maker.</span>
-</span><span data-line="379"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="380">        <span class="bp">self</span><span class="o">.</span><span class="n">_session_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span></div>
+</span><span data-line="372">    <span class="k">def</span><span class="w"> </span><span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="373"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Update session configuration options in place.</span>
+</span><span data-line="374">
+</span><span data-line="375"><span class="sd">        Args:</span>
+</span><span data-line="376"><span class="sd">            **kwargs: Session configuration options to merge into the maker.</span>
+</span><span data-line="377"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="378">        <span class="bp">self</span><span class="o">.</span><span class="n">_session_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-</span><span data-line="381">
-</span><span data-line="382">    <span class="nd">@property</span>
-</span><span data-line="383">    <span class="k">def</span><span class="w"> </span><span class="nf">primary_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncEngine</span><span class="p">:</span>
-</span><span data-line="384"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the primary (default) async engine.</span>
-</span><span data-line="385">
-</span><span data-line="386"><span class="sd">        Returns:</span>
-</span><span data-line="387"><span class="sd">            The primary database async engine.</span>
-</span><span data-line="388"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="389">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_engine</span>
-</span><span data-line="390">
-</span><span data-line="391">    <span class="nd">@property</span>
-</span><span data-line="392">    <span class="k">def</span><span class="w"> </span><span class="nf">replica_engines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">AsyncEngine</span><span class="p">]:</span>
-</span><span data-line="393"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the replica async engines (from read_group).</span>
-</span><span data-line="394">
-</span><span data-line="395"><span class="sd">        Returns:</span>
-</span><span data-line="396"><span class="sd">            List of replica database async engines.</span>
-</span><span data-line="397"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="398">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engines</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_routing_config</span><span class="o">.</span><span class="n">read_group</span><span class="p">,</span> <span class="p">[])</span>
-</span><span data-line="399">
+</span><span data-line="379">
+</span><span data-line="380">    <span class="nd">@property</span>
+</span><span data-line="381">    <span class="k">def</span><span class="w"> </span><span class="nf">primary_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncEngine</span><span class="p">:</span>
+</span><span data-line="382"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the primary (default) async engine.</span>
+</span><span data-line="383">
+</span><span data-line="384"><span class="sd">        Returns:</span>
+</span><span data-line="385"><span class="sd">            The primary database async engine.</span>
+</span><span data-line="386"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="387">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_engine</span>
+</span><span data-line="388">
+</span><span data-line="389">    <span class="nd">@property</span>
+</span><span data-line="390">    <span class="k">def</span><span class="w"> </span><span class="nf">replica_engines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">AsyncEngine</span><span class="p">]:</span>
+</span><span data-line="391"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the replica async engines (from read_group).</span>
+</span><span data-line="392">
+</span><span data-line="393"><span class="sd">        Returns:</span>
+</span><span data-line="394"><span class="sd">            List of replica database async engines.</span>
+</span><span data-line="395"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="396">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engines</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_routing_config</span><span class="o">.</span><span class="n">read_group</span><span class="p">,</span> <span class="p">[])</span>
+</span><span data-line="397">
 <div class="viewcode-block" id="RoutingAsyncSessionMaker.close_all">
 <a class="viewcode-back" href="../../../reference/routing.html#advanced_alchemy.routing.RoutingAsyncSessionMaker.close_all">[docs]</a>
-</span><span data-line="400">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">close_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="401"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Close all engines and release connections.</span>
-</span><span data-line="402">
-</span><span data-line="403"><span class="sd">        Call this when shutting down to properly release database connections.</span>
-</span><span data-line="404"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="405">        <span class="k">for</span> <span class="n">engine_list</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engines</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-</span><span data-line="406">            <span class="k">for</span> <span class="n">engine</span> <span class="ow">in</span> <span class="n">engine_list</span><span class="p">:</span>
-</span><span data-line="407">                <span class="k">await</span> <span class="n">engine</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span></div>
+</span><span data-line="398">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">close_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="399"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Close all engines and release connections.</span>
+</span><span data-line="400">
+</span><span data-line="401"><span class="sd">        Call this when shutting down to properly release database connections.</span>
+</span><span data-line="402"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="403">        <span class="k">for</span> <span class="n">engine_list</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engines</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+</span><span data-line="404">            <span class="k">for</span> <span class="n">engine</span> <span class="ow">in</span> <span class="n">engine_list</span><span class="p">:</span>
+</span><span data-line="405">                <span class="k">await</span> <span class="n">engine</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span></div>
 </div>
 
-</span><span data-line="408">
-</span><span data-line="409">
-</span><span data-line="410"><span class="k">def</span><span class="w"> </span><span class="nf">dispose_session_maker_sync</span><span class="p">(</span><span class="n">session_maker</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="411"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Dispose all engines owned by a sync routing session maker.</span>
-</span><span data-line="412">
-</span><span data-line="413"><span class="sd">    No-op for non-routing session makers; the framework is responsible for</span>
-</span><span data-line="414"><span class="sd">    disposing ``engine_instance`` separately. Use during application shutdown</span>
-</span><span data-line="415"><span class="sd">    to release connections held by routing pools (primary + replicas).</span>
-</span><span data-line="416">
-</span><span data-line="417"><span class="sd">    Args:</span>
-</span><span data-line="418"><span class="sd">        session_maker: A session maker instance (any type).</span>
-</span><span data-line="419"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="420">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">session_maker</span><span class="p">,</span> <span class="n">RoutingSyncSessionMaker</span><span class="p">):</span>
-</span><span data-line="421">        <span class="n">session_maker</span><span class="o">.</span><span class="n">close_all</span><span class="p">()</span>
-</span><span data-line="422">
-</span><span data-line="423">
-</span><span data-line="424"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">dispose_session_maker_async</span><span class="p">(</span><span class="n">session_maker</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="425"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Dispose all engines owned by an async routing session maker.</span>
-</span><span data-line="426">
-</span><span data-line="427"><span class="sd">    No-op for non-routing session makers; the framework is responsible for</span>
-</span><span data-line="428"><span class="sd">    disposing ``engine_instance`` separately. Use during application shutdown</span>
-</span><span data-line="429"><span class="sd">    to release connections held by routing pools (primary + replicas).</span>
-</span><span data-line="430">
-</span><span data-line="431"><span class="sd">    Args:</span>
-</span><span data-line="432"><span class="sd">        session_maker: A session maker instance (any type).</span>
-</span><span data-line="433"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="434">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">session_maker</span><span class="p">,</span> <span class="n">RoutingAsyncSessionMaker</span><span class="p">):</span>
-</span><span data-line="435">        <span class="k">await</span> <span class="n">session_maker</span><span class="o">.</span><span class="n">close_all</span><span class="p">()</span>
+</span><span data-line="406">
+</span><span data-line="407">
+</span><span data-line="408"><span class="k">def</span><span class="w"> </span><span class="nf">dispose_session_maker_sync</span><span class="p">(</span><span class="n">session_maker</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="409"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Dispose all engines owned by a sync routing session maker.</span>
+</span><span data-line="410">
+</span><span data-line="411"><span class="sd">    No-op for non-routing session makers; the framework is responsible for</span>
+</span><span data-line="412"><span class="sd">    disposing ``engine_instance`` separately. Use during application shutdown</span>
+</span><span data-line="413"><span class="sd">    to release connections held by routing pools (primary + replicas).</span>
+</span><span data-line="414">
+</span><span data-line="415"><span class="sd">    Args:</span>
+</span><span data-line="416"><span class="sd">        session_maker: A session maker instance (any type).</span>
+</span><span data-line="417"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="418">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">session_maker</span><span class="p">,</span> <span class="n">RoutingSyncSessionMaker</span><span class="p">):</span>
+</span><span data-line="419">        <span class="n">session_maker</span><span class="o">.</span><span class="n">close_all</span><span class="p">()</span>
+</span><span data-line="420">
+</span><span data-line="421">
+</span><span data-line="422"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">dispose_session_maker_async</span><span class="p">(</span><span class="n">session_maker</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="423"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Dispose all engines owned by an async routing session maker.</span>
+</span><span data-line="424">
+</span><span data-line="425"><span class="sd">    No-op for non-routing session makers; the framework is responsible for</span>
+</span><span data-line="426"><span class="sd">    disposing ``engine_instance`` separately. Use during application shutdown</span>
+</span><span data-line="427"><span class="sd">    to release connections held by routing pools (primary + replicas).</span>
+</span><span data-line="428">
+</span><span data-line="429"><span class="sd">    Args:</span>
+</span><span data-line="430"><span class="sd">        session_maker: A session maker instance (any type).</span>
+</span><span data-line="431"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="432">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">session_maker</span><span class="p">,</span> <span class="n">RoutingAsyncSessionMaker</span><span class="p">):</span>
+</span><span data-line="433">        <span class="k">await</span> <span class="n">session_maker</span><span class="o">.</span><span class="n">close_all</span><span class="p">()</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
