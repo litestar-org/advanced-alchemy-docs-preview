@@ -244,6 +244,8 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.types.DateTimeUTC.impl"><code class="docutils literal notranslate"><span class="pre">DateTimeUTC.impl</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.DateTimeUTC.cache_ok"><code class="docutils literal notranslate"><span class="pre">DateTimeUTC.cache_ok</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.DateTimeUTC.python_type"><code class="docutils literal notranslate"><span class="pre">DateTimeUTC.python_type</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.DateTimeUTC.__init__"><code class="docutils literal notranslate"><span class="pre">DateTimeUTC.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.types.DateTimeUTC.load_dialect_impl"><code class="docutils literal notranslate"><span class="pre">DateTimeUTC.load_dialect_impl()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.DateTimeUTC.process_bind_param"><code class="docutils literal notranslate"><span class="pre">DateTimeUTC.process_bind_param()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.types.DateTimeUTC.process_result_value"><code class="docutils literal notranslate"><span class="pre">DateTimeUTC.process_result_value()</span></code></a></li>
 </ul>
@@ -1260,6 +1262,14 @@ this method in the subclass.  Can be <code class="docutils literal notranslate">
 <dd><p>Bases: <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/custom_types.html#sqlalchemy.types.TypeDecorator" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeDecorator</span></code></a></p>
 <p>Timezone Aware DateTime.</p>
 <p>Ensure UTC is stored in the database and that TZ aware dates are returned for all dialects.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On MySQL/MariaDB and Oracle, omitting <code class="docutils literal notranslate"><span class="pre">fsp</span></code> currently compiles to a whole-second column
+type (<code class="docutils literal notranslate"><span class="pre">DATETIME</span></code> on MySQL/MariaDB and <code class="docutils literal notranslate"><span class="pre">DATE</span></code> on Oracle) and emits a
+<a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#DeprecationWarning" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeprecationWarning</span></code></a>. Pass <code class="docutils literal notranslate"><span class="pre">fsp=6</span></code> to preserve microsecond precision, or
+<code class="docutils literal notranslate"><span class="pre">fsp=0</span></code> to explicitly retain whole-second precision. In v2.0, <code class="docutils literal notranslate"><span class="pre">fsp=6</span></code> will become
+the default.</p>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="advanced_alchemy.types.DateTimeUTC.impl">
 <span class="sig-name descname"><span class="pre">impl</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">DateTime(timezone=True)</span></span><a class="headerlink" href="#advanced_alchemy.types.DateTimeUTC.impl" title="Link to this definition">#</a></dt>
@@ -1412,6 +1422,53 @@ DBAPIs (like <code class="docutils literal notranslate"><span class="pre">int</s
 <p>Note that any type also accommodates NULL in SQL which
 means you can also get back <code class="docutils literal notranslate"><span class="pre">None</span></code> from any type
 in practice.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.DateTimeUTC.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/datetime.html#DateTimeUTC.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.DateTimeUTC.__init__" title="Link to this definition">#</a></dt>
+<dd><p>Initialize the DateTimeUTC type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.DateTimeUTC.params.*args"></span><strong>*args</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.DateTimeUTC.params.*args">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Positional arguments forwarded to <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/custom_types.html#sqlalchemy.types.TypeDecorator" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.types.TypeDecorator</span></code></a>.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.DateTimeUTC.params.fsp"></span><strong>fsp</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.DateTimeUTC.params.fsp">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – Fractional seconds precision (<cite>0</cite> to <cite>6</cite>) for MySQL/MariaDB and Oracle.
+Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code> in v1.x (emitting a <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#DeprecationWarning" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeprecationWarning</span></code></a> on
+MySQL/MariaDB and Oracle) and will default to <code class="docutils literal notranslate"><span class="pre">6</span></code> in v2.0.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.DateTimeUTC.params.precision"></span><strong>precision</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.DateTimeUTC.params.precision">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – Alias for <code class="docutils literal notranslate"><span class="pre">fsp</span></code>.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.DateTimeUTC.params.timezone"></span><strong>timezone</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.DateTimeUTC.params.timezone">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether the underlying column type is timezone-aware.</p></li>
+<li><p><span class="target" id="advanced_alchemy.types.DateTimeUTC.params.**kwargs"></span><strong>**kwargs</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.DateTimeUTC.params.**kwargs">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Keyword arguments forwarded to <a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/custom_types.html#sqlalchemy.types.TypeDecorator" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.types.TypeDecorator</span></code></a>.</p></li>
+<li><p><strong>args</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+<li><p><strong>fsp</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>timezone</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>)</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><em>Any</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.types.DateTimeUTC.load_dialect_impl">
+<span class="sig-name descname"><span class="pre">load_dialect_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dialect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/types/datetime.html#DateTimeUTC.load_dialect_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.types.DateTimeUTC.load_dialect_impl" title="Link to this definition">#</a></dt>
+<dd><p>Resolve the dialect-specific type descriptor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="advanced_alchemy.types.DateTimeUTC.load_dialect_impl.params.dialect"></span><strong>dialect</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.types.DateTimeUTC.load_dialect_impl.params.dialect">¶</a> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/internals.html#sqlalchemy.engine.Dialect" title="(in SQLAlchemy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dialect</span></code></a></span>) – Target SQLAlchemy dialect.</p></li>
+<li><p><strong>dialect</strong> (<a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/internals.html#sqlalchemy.engine.Dialect" title="(in SQLAlchemy v2.0)"><em>Dialect</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="config/types.html#advanced_alchemy.config.types.Any" title="typing.Any"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dialect-specific type descriptor.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
