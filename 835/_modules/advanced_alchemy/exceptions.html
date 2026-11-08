@@ -311,367 +311,499 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="39">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^.*\b1062\b.*Duplicate entry &#39;(?P&lt;value&gt;.*)&#39; for key &#39;(?P&lt;columns&gt;[^&#39;]+)&#39;.*$&quot;</span><span class="p">),</span>
 </span><span data-line="40">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^.*\b1062\b.*Duplicate entry </span><span class="se">\\</span><span class="s2">&#39;(?P&lt;value&gt;.*)</span><span class="se">\\</span><span class="s2">&#39; for key </span><span class="se">\\</span><span class="s2">&#39;(?P&lt;columns&gt;.+)</span><span class="se">\\</span><span class="s2">&#39;.*$&quot;</span><span class="p">),</span>
 </span><span data-line="41">    <span class="p">],</span>
-</span><span data-line="42">    <span class="s2">&quot;oracle&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="43">    <span class="s2">&quot;spanner+spanner&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="44">    <span class="s2">&quot;duckdb&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="45">    <span class="s2">&quot;mssql&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="46">    <span class="s2">&quot;bigquery&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="47">    <span class="s2">&quot;cockroach&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="48"><span class="p">}</span>
-</span><span data-line="49">
-</span><span data-line="50"><span class="n">FOREIGN_KEY_REGEXES</span> <span class="o">=</span> <span class="p">{</span>
-</span><span data-line="51">    <span class="s2">&quot;postgresql&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="42">    <span class="s2">&quot;mariadb&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="43">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^.*\b1062\b.*Duplicate entry &#39;(?P&lt;value&gt;.*)&#39; for key &#39;(?P&lt;columns&gt;[^&#39;]+)&#39;.*$&quot;</span><span class="p">),</span>
+</span><span data-line="44">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^.*\b1062\b.*Duplicate entry </span><span class="se">\\</span><span class="s2">&#39;(?P&lt;value&gt;.*)</span><span class="se">\\</span><span class="s2">&#39; for key </span><span class="se">\\</span><span class="s2">&#39;(?P&lt;columns&gt;.+)</span><span class="se">\\</span><span class="s2">&#39;.*$&quot;</span><span class="p">),</span>
+</span><span data-line="45">    <span class="p">],</span>
+</span><span data-line="46">    <span class="s2">&quot;oracle&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="47">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;ORA-00001:\s*unique\s+constraint\s*\((?P&lt;columns&gt;[^)]+)\)\s*violated&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">),</span>
+</span><span data-line="48">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bORA-00001:&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">),</span>
+</span><span data-line="49">    <span class="p">],</span>
+</span><span data-line="50">    <span class="s2">&quot;spanner+spanner&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span data-line="51">    <span class="s2">&quot;duckdb&quot;</span><span class="p">:</span> <span class="p">[</span>
 </span><span data-line="52">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-</span><span data-line="53">            <span class="sa">r</span><span class="s2">&quot;.*on table </span><span class="se">\&quot;</span><span class="s2">(?P&lt;table&gt;[^</span><span class="se">\&quot;</span><span class="s2">]+)</span><span class="se">\&quot;</span><span class="s2"> violates &quot;</span>
-</span><span data-line="54">            <span class="sa">r</span><span class="s2">&quot;foreign key constraint </span><span class="se">\&quot;</span><span class="s2">(?P&lt;constraint&gt;[^</span><span class="se">\&quot;</span><span class="s2">]+)</span><span class="se">\&quot;</span><span class="s2">.*\n&quot;</span>
-</span><span data-line="55">            <span class="sa">r</span><span class="s2">&quot;DETAIL:  Key \((?P&lt;key&gt;.+)\)=\(.+\) &quot;</span>
-</span><span data-line="56">            <span class="sa">r</span><span class="s2">&quot;is (not present in|still referenced from) table &quot;</span>
-</span><span data-line="57">            <span class="sa">r</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">(?P&lt;key_table&gt;[^</span><span class="se">\&quot;</span><span class="s2">]+)</span><span class="se">\&quot;</span><span class="s2">.&quot;</span><span class="p">,</span>
-</span><span data-line="58">        <span class="p">),</span>
-</span><span data-line="59">    <span class="p">],</span>
-</span><span data-line="60">    <span class="s2">&quot;sqlite&quot;</span><span class="p">:</span> <span class="p">[</span>
-</span><span data-line="61">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?i).*foreign key constraint failed&quot;</span><span class="p">),</span>
-</span><span data-line="62">    <span class="p">],</span>
-</span><span data-line="63">    <span class="s2">&quot;mysql&quot;</span><span class="p">:</span> <span class="p">[</span>
-</span><span data-line="64">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-</span><span data-line="65">            <span class="sa">r</span><span class="s2">&quot;.*Cannot (add|delete) or update a (child|parent) row: &quot;</span>
-</span><span data-line="66">            <span class="sa">r</span><span class="s1">&#39;a foreign key constraint fails \([`&quot;].+[`&quot;]\.[`&quot;](?P&lt;table&gt;.+)[`&quot;], &#39;</span>
-</span><span data-line="67">            <span class="sa">r</span><span class="s1">&#39;CONSTRAINT [`&quot;](?P&lt;constraint&gt;.+)[`&quot;] FOREIGN KEY &#39;</span>
-</span><span data-line="68">            <span class="sa">r</span><span class="s1">&#39;\([`&quot;](?P&lt;key&gt;.+)[`&quot;]\) REFERENCES [`&quot;](?P&lt;key_table&gt;.+)[`&quot;] &#39;</span><span class="p">,</span>
-</span><span data-line="69">        <span class="p">),</span>
-</span><span data-line="70">    <span class="p">],</span>
-</span><span data-line="71">    <span class="s2">&quot;oracle&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="72">    <span class="s2">&quot;spanner+spanner&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="73">    <span class="s2">&quot;duckdb&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="74">    <span class="s2">&quot;mssql&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="75">    <span class="s2">&quot;bigquery&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="76">    <span class="s2">&quot;cockroach&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="77"><span class="p">}</span>
-</span><span data-line="78">
-</span><span data-line="79"><span class="n">CHECK_CONSTRAINT_REGEXES</span> <span class="o">=</span> <span class="p">{</span>
-</span><span data-line="80">    <span class="s2">&quot;postgresql&quot;</span><span class="p">:</span> <span class="p">[</span>
-</span><span data-line="81">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;.*new row for relation </span><span class="se">\&quot;</span><span class="s2">(?P&lt;table&gt;.+)</span><span class="se">\&quot;</span><span class="s2"> violates check constraint (?P&lt;check_name&gt;.+)&quot;</span><span class="p">),</span>
-</span><span data-line="82">    <span class="p">],</span>
-</span><span data-line="83">    <span class="s2">&quot;sqlite&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="84">    <span class="s2">&quot;mysql&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="85">    <span class="s2">&quot;oracle&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="86">    <span class="s2">&quot;spanner+spanner&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="87">    <span class="s2">&quot;duckdb&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="88">    <span class="s2">&quot;mssql&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="89">    <span class="s2">&quot;bigquery&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="90">    <span class="s2">&quot;cockroach&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span data-line="91"><span class="p">}</span>
-</span><span data-line="92">
-</span><span data-line="93"><span class="n">SQLSTATE_TO_ERROR_KEY</span> <span class="o">=</span> <span class="p">{</span>
-</span><span data-line="94">    <span class="s2">&quot;23505&quot;</span><span class="p">:</span> <span class="s2">&quot;duplicate_key&quot;</span><span class="p">,</span>
-</span><span data-line="95">    <span class="s2">&quot;23503&quot;</span><span class="p">:</span> <span class="s2">&quot;foreign_key&quot;</span><span class="p">,</span>
-</span><span data-line="96">    <span class="s2">&quot;23514&quot;</span><span class="p">:</span> <span class="s2">&quot;check_constraint&quot;</span><span class="p">,</span>
-</span><span data-line="97"><span class="p">}</span>
-</span><span data-line="98">
-</span><span data-line="99">
+</span><span data-line="53">            <span class="sa">r</span><span class="s2">&quot;^.*Duplicate\s+key\s+</span><span class="se">\&quot;</span><span class="s2">(?P&lt;columns&gt;[^</span><span class="se">\&quot;</span><span class="s2">]+)</span><span class="se">\&quot;</span><span class="s2">\s+violates\s+(primary\s+key|unique)\s+constraint.*$&quot;</span><span class="p">,</span>
+</span><span data-line="54">            <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">,</span>
+</span><span data-line="55">        <span class="p">),</span>
+</span><span data-line="56">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+</span><span data-line="57">            <span class="sa">r</span><span class="s2">&quot;^.*Duplicate\s+key.*violates\s+(primary\s+key|unique)\s+constraint.*$&quot;</span><span class="p">,</span>
+</span><span data-line="58">            <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">,</span>
+</span><span data-line="59">        <span class="p">),</span>
+</span><span data-line="60">    <span class="p">],</span>
+</span><span data-line="61">    <span class="s2">&quot;mssql&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span data-line="62">    <span class="s2">&quot;bigquery&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span data-line="63">    <span class="s2">&quot;cockroach&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span data-line="64"><span class="p">}</span>
+</span><span data-line="65">
+</span><span data-line="66"><span class="n">FOREIGN_KEY_REGEXES</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="67">    <span class="s2">&quot;postgresql&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="68">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+</span><span data-line="69">            <span class="sa">r</span><span class="s2">&quot;.*on table </span><span class="se">\&quot;</span><span class="s2">(?P&lt;table&gt;[^</span><span class="se">\&quot;</span><span class="s2">]+)</span><span class="se">\&quot;</span><span class="s2"> violates &quot;</span>
+</span><span data-line="70">            <span class="sa">r</span><span class="s2">&quot;foreign key constraint </span><span class="se">\&quot;</span><span class="s2">(?P&lt;constraint&gt;[^</span><span class="se">\&quot;</span><span class="s2">]+)</span><span class="se">\&quot;</span><span class="s2">.*\n&quot;</span>
+</span><span data-line="71">            <span class="sa">r</span><span class="s2">&quot;DETAIL:  Key \((?P&lt;key&gt;.+)\)=\(.+\) &quot;</span>
+</span><span data-line="72">            <span class="sa">r</span><span class="s2">&quot;is (not present in|still referenced from) table &quot;</span>
+</span><span data-line="73">            <span class="sa">r</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">(?P&lt;key_table&gt;[^</span><span class="se">\&quot;</span><span class="s2">]+)</span><span class="se">\&quot;</span><span class="s2">.&quot;</span><span class="p">,</span>
+</span><span data-line="74">        <span class="p">),</span>
+</span><span data-line="75">    <span class="p">],</span>
+</span><span data-line="76">    <span class="s2">&quot;sqlite&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="77">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?i).*foreign key constraint failed&quot;</span><span class="p">),</span>
+</span><span data-line="78">    <span class="p">],</span>
+</span><span data-line="79">    <span class="s2">&quot;mysql&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="80">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+</span><span data-line="81">            <span class="sa">r</span><span class="s2">&quot;.*Cannot (add|delete) or update a (child|parent) row: &quot;</span>
+</span><span data-line="82">            <span class="sa">r</span><span class="s1">&#39;a foreign key constraint fails \([`&quot;].+[`&quot;]\.[`&quot;](?P&lt;table&gt;.+)[`&quot;], &#39;</span>
+</span><span data-line="83">            <span class="sa">r</span><span class="s1">&#39;CONSTRAINT [`&quot;](?P&lt;constraint&gt;.+)[`&quot;] FOREIGN KEY &#39;</span>
+</span><span data-line="84">            <span class="sa">r</span><span class="s1">&#39;\([`&quot;](?P&lt;key&gt;.+)[`&quot;]\) REFERENCES [`&quot;](?P&lt;key_table&gt;.+)[`&quot;] &#39;</span><span class="p">,</span>
+</span><span data-line="85">        <span class="p">),</span>
+</span><span data-line="86">    <span class="p">],</span>
+</span><span data-line="87">    <span class="s2">&quot;mariadb&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="88">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+</span><span data-line="89">            <span class="sa">r</span><span class="s2">&quot;.*Cannot (add|delete) or update a (child|parent) row: &quot;</span>
+</span><span data-line="90">            <span class="sa">r</span><span class="s1">&#39;a foreign key constraint fails \([`&quot;].+[`&quot;]\.[`&quot;](?P&lt;table&gt;.+)[`&quot;], &#39;</span>
+</span><span data-line="91">            <span class="sa">r</span><span class="s1">&#39;CONSTRAINT [`&quot;](?P&lt;constraint&gt;.+)[`&quot;] FOREIGN KEY &#39;</span>
+</span><span data-line="92">            <span class="sa">r</span><span class="s1">&#39;\([`&quot;](?P&lt;key&gt;.+)[`&quot;]\) REFERENCES [`&quot;](?P&lt;key_table&gt;.+)[`&quot;] &#39;</span><span class="p">,</span>
+</span><span data-line="93">        <span class="p">),</span>
+</span><span data-line="94">    <span class="p">],</span>
+</span><span data-line="95">    <span class="s2">&quot;oracle&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="96">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;ORA-0229[12]:\s*integrity\s+constraint\s*\((?P&lt;constraint&gt;[^)]+)\)\s*violated&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">),</span>
+</span><span data-line="97">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bORA-0229[12]:&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">),</span>
+</span><span data-line="98">    <span class="p">],</span>
+</span><span data-line="99">    <span class="s2">&quot;spanner+spanner&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span data-line="100">    <span class="s2">&quot;duckdb&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="101">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;.*Violates\s+foreign\s+key\s+constraint.*&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">),</span>
+</span><span data-line="102">    <span class="p">],</span>
+</span><span data-line="103">    <span class="s2">&quot;mssql&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span data-line="104">    <span class="s2">&quot;bigquery&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span data-line="105">    <span class="s2">&quot;cockroach&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span data-line="106"><span class="p">}</span>
+</span><span data-line="107">
+</span><span data-line="108"><span class="n">CHECK_CONSTRAINT_REGEXES</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="109">    <span class="s2">&quot;postgresql&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="110">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;.*new row for relation </span><span class="se">\&quot;</span><span class="s2">(?P&lt;table&gt;.+)</span><span class="se">\&quot;</span><span class="s2"> violates check constraint (?P&lt;check_name&gt;.+)&quot;</span><span class="p">),</span>
+</span><span data-line="111">    <span class="p">],</span>
+</span><span data-line="112">    <span class="s2">&quot;sqlite&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="113">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?i).*CHECK constraint failed.*&quot;</span><span class="p">),</span>
+</span><span data-line="114">    <span class="p">],</span>
+</span><span data-line="115">    <span class="s2">&quot;mysql&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="116">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?i).*check constraint .* is violated.*&quot;</span><span class="p">),</span>
+</span><span data-line="117">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?i).*CONSTRAINT .* failed.*&quot;</span><span class="p">),</span>
+</span><span data-line="118">    <span class="p">],</span>
+</span><span data-line="119">    <span class="s2">&quot;mariadb&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="120">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?i).*CONSTRAINT .* failed.*&quot;</span><span class="p">),</span>
+</span><span data-line="121">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?i).*check constraint .* is violated.*&quot;</span><span class="p">),</span>
+</span><span data-line="122">    <span class="p">],</span>
+</span><span data-line="123">    <span class="s2">&quot;oracle&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="124">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;ORA-02290:\s*check\s+constraint\s*\((?P&lt;check_name&gt;[^)]+)\)\s*violated&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">),</span>
+</span><span data-line="125">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bORA-02290:&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">),</span>
+</span><span data-line="126">    <span class="p">],</span>
+</span><span data-line="127">    <span class="s2">&quot;spanner+spanner&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span data-line="128">    <span class="s2">&quot;duckdb&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="129">        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;.*CHECK\s+constraint\s+failed.*&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">),</span>
+</span><span data-line="130">    <span class="p">],</span>
+</span><span data-line="131">    <span class="s2">&quot;mssql&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span data-line="132">    <span class="s2">&quot;bigquery&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span data-line="133">    <span class="s2">&quot;cockroach&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span data-line="134"><span class="p">}</span>
+</span><span data-line="135">
+</span><span data-line="136"><span class="n">SQLSTATE_TO_ERROR_KEY</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="137">    <span class="s2">&quot;23505&quot;</span><span class="p">:</span> <span class="s2">&quot;duplicate_key&quot;</span><span class="p">,</span>
+</span><span data-line="138">    <span class="s2">&quot;23503&quot;</span><span class="p">:</span> <span class="s2">&quot;foreign_key&quot;</span><span class="p">,</span>
+</span><span data-line="139">    <span class="s2">&quot;23514&quot;</span><span class="p">:</span> <span class="s2">&quot;check_constraint&quot;</span><span class="p">,</span>
+</span><span data-line="140"><span class="p">}</span>
+</span><span data-line="141">
+</span><span data-line="142"><span class="n">ORACLE_ERROR_CODE_TO_ERROR_KEY</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="143">    <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;duplicate_key&quot;</span><span class="p">,</span>
+</span><span data-line="144">    <span class="mi">2291</span><span class="p">:</span> <span class="s2">&quot;foreign_key&quot;</span><span class="p">,</span>
+</span><span data-line="145">    <span class="mi">2292</span><span class="p">:</span> <span class="s2">&quot;foreign_key&quot;</span><span class="p">,</span>
+</span><span data-line="146">    <span class="mi">2290</span><span class="p">:</span> <span class="s2">&quot;check_constraint&quot;</span><span class="p">,</span>
+</span><span data-line="147"><span class="p">}</span>
+</span><span data-line="148">
+</span><span data-line="149"><span class="n">DUCKDB_ERROR_TYPE_TO_KEY</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="150">    <span class="s2">&quot;duplicate_key&quot;</span><span class="p">:</span> <span class="s2">&quot;duplicate_key&quot;</span><span class="p">,</span>
+</span><span data-line="151">    <span class="s2">&quot;primary_key&quot;</span><span class="p">:</span> <span class="s2">&quot;duplicate_key&quot;</span><span class="p">,</span>
+</span><span data-line="152">    <span class="s2">&quot;unique&quot;</span><span class="p">:</span> <span class="s2">&quot;duplicate_key&quot;</span><span class="p">,</span>
+</span><span data-line="153">    <span class="s2">&quot;foreign_key&quot;</span><span class="p">:</span> <span class="s2">&quot;foreign_key&quot;</span><span class="p">,</span>
+</span><span data-line="154">    <span class="s2">&quot;check_constraint&quot;</span><span class="p">:</span> <span class="s2">&quot;check_constraint&quot;</span><span class="p">,</span>
+</span><span data-line="155">    <span class="s2">&quot;check&quot;</span><span class="p">:</span> <span class="s2">&quot;check_constraint&quot;</span><span class="p">,</span>
+</span><span data-line="156"><span class="p">}</span>
+</span><span data-line="157">
+</span><span data-line="158"><span class="n">SQLITE_ERRORCODE_TO_ERROR_KEY</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="159">    <span class="mi">2067</span><span class="p">:</span> <span class="s2">&quot;duplicate_key&quot;</span><span class="p">,</span>
+</span><span data-line="160">    <span class="mi">1555</span><span class="p">:</span> <span class="s2">&quot;duplicate_key&quot;</span><span class="p">,</span>
+</span><span data-line="161">    <span class="mi">787</span><span class="p">:</span> <span class="s2">&quot;foreign_key&quot;</span><span class="p">,</span>
+</span><span data-line="162">    <span class="mi">275</span><span class="p">:</span> <span class="s2">&quot;check_constraint&quot;</span><span class="p">,</span>
+</span><span data-line="163"><span class="p">}</span>
+</span><span data-line="164">
+</span><span data-line="165"><span class="n">MYSQL_ERRNO_TO_ERROR_KEY</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="166">    <span class="mi">1062</span><span class="p">:</span> <span class="s2">&quot;duplicate_key&quot;</span><span class="p">,</span>
+</span><span data-line="167">    <span class="mi">1169</span><span class="p">:</span> <span class="s2">&quot;duplicate_key&quot;</span><span class="p">,</span>
+</span><span data-line="168">    <span class="mi">1586</span><span class="p">:</span> <span class="s2">&quot;duplicate_key&quot;</span><span class="p">,</span>
+</span><span data-line="169">    <span class="mi">1216</span><span class="p">:</span> <span class="s2">&quot;foreign_key&quot;</span><span class="p">,</span>
+</span><span data-line="170">    <span class="mi">1217</span><span class="p">:</span> <span class="s2">&quot;foreign_key&quot;</span><span class="p">,</span>
+</span><span data-line="171">    <span class="mi">1451</span><span class="p">:</span> <span class="s2">&quot;foreign_key&quot;</span><span class="p">,</span>
+</span><span data-line="172">    <span class="mi">1452</span><span class="p">:</span> <span class="s2">&quot;foreign_key&quot;</span><span class="p">,</span>
+</span><span data-line="173">    <span class="mi">3819</span><span class="p">:</span> <span class="s2">&quot;check_constraint&quot;</span><span class="p">,</span>
+</span><span data-line="174">    <span class="mi">4025</span><span class="p">:</span> <span class="s2">&quot;check_constraint&quot;</span><span class="p">,</span>
+</span><span data-line="175"><span class="p">}</span>
+</span><span data-line="176">
+</span><span data-line="177">
 <div class="viewcode-block" id="AdvancedAlchemyError">
 <a class="viewcode-back" href="../../reference/exceptions.html#advanced_alchemy.exceptions.AdvancedAlchemyError">[docs]</a>
-</span><span data-line="100"><span class="k">class</span><span class="w"> </span><span class="nc">AdvancedAlchemyError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-</span><span data-line="101"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Base exception class from which all Advanced Alchemy exceptions inherit.&quot;&quot;&quot;</span>
-</span><span data-line="102">
-</span><span data-line="103">    <span class="n">detail</span><span class="p">:</span> <span class="nb">str</span>
-</span><span data-line="104">
+</span><span data-line="178"><span class="k">class</span><span class="w"> </span><span class="nc">AdvancedAlchemyError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+</span><span data-line="179"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Base exception class from which all Advanced Alchemy exceptions inherit.&quot;&quot;&quot;</span>
+</span><span data-line="180">
+</span><span data-line="181">    <span class="n">detail</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="182">
 <div class="viewcode-block" id="AdvancedAlchemyError.__init__">
 <a class="viewcode-back" href="../../reference/exceptions.html#advanced_alchemy.exceptions.AdvancedAlchemyError.__init__">[docs]</a>
-</span><span data-line="105">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">detail</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="106"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize ``AdvancedAlchemyException``.</span>
-</span><span data-line="107">
-</span><span data-line="108"><span class="sd">        Args:</span>
-</span><span data-line="109"><span class="sd">            *args: args are converted to :class:`str` before passing to :class:`Exception`</span>
-</span><span data-line="110"><span class="sd">            detail: detail of the exception.</span>
-</span><span data-line="111"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="112">        <span class="n">str_args</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span> <span class="k">if</span> <span class="n">arg</span><span class="p">]</span>
-</span><span data-line="113">        <span class="k">if</span> <span class="ow">not</span> <span class="n">detail</span><span class="p">:</span>
-</span><span data-line="114">            <span class="k">if</span> <span class="n">str_args</span><span class="p">:</span>
-</span><span data-line="115">                <span class="n">detail</span><span class="p">,</span> <span class="o">*</span><span class="n">str_args</span> <span class="o">=</span> <span class="n">str_args</span>
-</span><span data-line="116">            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;detail&quot;</span><span class="p">):</span>
-</span><span data-line="117">                <span class="n">detail</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detail</span>
-</span><span data-line="118">        <span class="bp">self</span><span class="o">.</span><span class="n">detail</span> <span class="o">=</span> <span class="n">detail</span>
-</span><span data-line="119">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">str_args</span><span class="p">)</span></div>
+</span><span data-line="183">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">detail</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="184"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize ``AdvancedAlchemyException``.</span>
+</span><span data-line="185">
+</span><span data-line="186"><span class="sd">        Args:</span>
+</span><span data-line="187"><span class="sd">            *args: args are converted to :class:`str` before passing to :class:`Exception`</span>
+</span><span data-line="188"><span class="sd">            detail: detail of the exception.</span>
+</span><span data-line="189"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="190">        <span class="n">str_args</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span> <span class="k">if</span> <span class="n">arg</span><span class="p">]</span>
+</span><span data-line="191">        <span class="k">if</span> <span class="ow">not</span> <span class="n">detail</span><span class="p">:</span>
+</span><span data-line="192">            <span class="k">if</span> <span class="n">str_args</span><span class="p">:</span>
+</span><span data-line="193">                <span class="n">detail</span><span class="p">,</span> <span class="o">*</span><span class="n">str_args</span> <span class="o">=</span> <span class="n">str_args</span>
+</span><span data-line="194">            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;detail&quot;</span><span class="p">):</span>
+</span><span data-line="195">                <span class="n">detail</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detail</span>
+</span><span data-line="196">        <span class="bp">self</span><span class="o">.</span><span class="n">detail</span> <span class="o">=</span> <span class="n">detail</span>
+</span><span data-line="197">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">str_args</span><span class="p">)</span></div>
 
-</span><span data-line="120">
-</span><span data-line="121">    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span data-line="122">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">detail</span><span class="p">:</span>
-</span><span data-line="123">            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">detail</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span data-line="124">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-</span><span data-line="125">
-</span><span data-line="126">    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span data-line="127">        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">detail</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
+</span><span data-line="198">
+</span><span data-line="199">    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="200">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">detail</span><span class="p">:</span>
+</span><span data-line="201">            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">detail</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="202">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+</span><span data-line="203">
+</span><span data-line="204">    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="205">        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">detail</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
 
-</span><span data-line="128">
-</span><span data-line="129">
+</span><span data-line="206">
+</span><span data-line="207">
 <div class="viewcode-block" id="MissingDependencyError">
 <a class="viewcode-back" href="../../reference/exceptions.html#advanced_alchemy.exceptions.MissingDependencyError">[docs]</a>
-</span><span data-line="130"><span class="k">class</span><span class="w"> </span><span class="nc">MissingDependencyError</span><span class="p">(</span><span class="n">AdvancedAlchemyError</span><span class="p">,</span> <span class="ne">ImportError</span><span class="p">):</span>
-</span><span data-line="131"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Missing optional dependency.</span>
-</span><span data-line="132">
-</span><span data-line="133"><span class="sd">    This exception is raised when a module depends on a dependency that has not been installed.</span>
-</span><span data-line="134">
-</span><span data-line="135"><span class="sd">    Args:</span>
-</span><span data-line="136"><span class="sd">        package: Name of the missing package.</span>
-</span><span data-line="137"><span class="sd">        install_package: Optional alternative package name to install.</span>
-</span><span data-line="138"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="139">
+</span><span data-line="208"><span class="k">class</span><span class="w"> </span><span class="nc">MissingDependencyError</span><span class="p">(</span><span class="n">AdvancedAlchemyError</span><span class="p">,</span> <span class="ne">ImportError</span><span class="p">):</span>
+</span><span data-line="209"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Missing optional dependency.</span>
+</span><span data-line="210">
+</span><span data-line="211"><span class="sd">    This exception is raised when a module depends on a dependency that has not been installed.</span>
+</span><span data-line="212">
+</span><span data-line="213"><span class="sd">    Args:</span>
+</span><span data-line="214"><span class="sd">        package: Name of the missing package.</span>
+</span><span data-line="215"><span class="sd">        install_package: Optional alternative package name to install.</span>
+</span><span data-line="216"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="217">
 <div class="viewcode-block" id="MissingDependencyError.__init__">
 <a class="viewcode-back" href="../../reference/exceptions.html#advanced_alchemy.exceptions.MissingDependencyError.__init__">[docs]</a>
-</span><span data-line="140">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">install_package</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="141">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-</span><span data-line="142">            <span class="sa">f</span><span class="s2">&quot;Package </span><span class="si">{</span><span class="n">package</span><span class="si">!r}</span><span class="s2"> is not installed but required. You can install it by running &quot;</span>
-</span><span data-line="143">            <span class="sa">f</span><span class="s2">&quot;&#39;pip install advanced_alchemy[</span><span class="si">{</span><span class="n">install_package</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">package</span><span class="si">}</span><span class="s2">]&#39; to install advanced_alchemy with the required extra &quot;</span>
-</span><span data-line="144">            <span class="sa">f</span><span class="s2">&quot;or &#39;pip install </span><span class="si">{</span><span class="n">install_package</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">package</span><span class="si">}</span><span class="s2">&#39; to install the package separately&quot;</span><span class="p">,</span>
-</span><span data-line="145">        <span class="p">)</span></div>
+</span><span data-line="218">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">install_package</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="219">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="220">            <span class="sa">f</span><span class="s2">&quot;Package </span><span class="si">{</span><span class="n">package</span><span class="si">!r}</span><span class="s2"> is not installed but required. You can install it by running &quot;</span>
+</span><span data-line="221">            <span class="sa">f</span><span class="s2">&quot;&#39;pip install advanced_alchemy[</span><span class="si">{</span><span class="n">install_package</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">package</span><span class="si">}</span><span class="s2">]&#39; to install advanced_alchemy with the required extra &quot;</span>
+</span><span data-line="222">            <span class="sa">f</span><span class="s2">&quot;or &#39;pip install </span><span class="si">{</span><span class="n">install_package</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">package</span><span class="si">}</span><span class="s2">&#39; to install the package separately&quot;</span><span class="p">,</span>
+</span><span data-line="223">        <span class="p">)</span></div>
 </div>
 
-</span><span data-line="146">
-</span><span data-line="147">
+</span><span data-line="224">
+</span><span data-line="225">
 <div class="viewcode-block" id="ImproperConfigurationError">
 <a class="viewcode-back" href="../../reference/exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError">[docs]</a>
-</span><span data-line="148"><span class="k">class</span><span class="w"> </span><span class="nc">ImproperConfigurationError</span><span class="p">(</span><span class="n">AdvancedAlchemyError</span><span class="p">):</span>
-</span><span data-line="149"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Improper Configuration error.</span>
-</span><span data-line="150">
-</span><span data-line="151"><span class="sd">    This exception is raised when there is an issue with the configuration of a module.</span>
-</span><span data-line="152">
-</span><span data-line="153"><span class="sd">    Args:</span>
-</span><span data-line="154"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
-</span><span data-line="155"><span class="sd">        detail: Detailed error message.</span>
-</span><span data-line="156"><span class="sd">    &quot;&quot;&quot;</span></div>
+</span><span data-line="226"><span class="k">class</span><span class="w"> </span><span class="nc">ImproperConfigurationError</span><span class="p">(</span><span class="n">AdvancedAlchemyError</span><span class="p">):</span>
+</span><span data-line="227"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Improper Configuration error.</span>
+</span><span data-line="228">
+</span><span data-line="229"><span class="sd">    This exception is raised when there is an issue with the configuration of a module.</span>
+</span><span data-line="230">
+</span><span data-line="231"><span class="sd">    Args:</span>
+</span><span data-line="232"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
+</span><span data-line="233"><span class="sd">        detail: Detailed error message.</span>
+</span><span data-line="234"><span class="sd">    &quot;&quot;&quot;</span></div>
 
-</span><span data-line="157">
-</span><span data-line="158">
+</span><span data-line="235">
+</span><span data-line="236">
 <div class="viewcode-block" id="SerializationError">
 <a class="viewcode-back" href="../../reference/exceptions.html#advanced_alchemy.exceptions.SerializationError">[docs]</a>
-</span><span data-line="159"><span class="k">class</span><span class="w"> </span><span class="nc">SerializationError</span><span class="p">(</span><span class="n">AdvancedAlchemyError</span><span class="p">):</span>
-</span><span data-line="160"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Encoding or decoding error.</span>
-</span><span data-line="161">
-</span><span data-line="162"><span class="sd">    This exception is raised when serialization or deserialization of an object fails.</span>
-</span><span data-line="163">
-</span><span data-line="164"><span class="sd">    Args:</span>
-</span><span data-line="165"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
-</span><span data-line="166"><span class="sd">        detail: Detailed error message.</span>
-</span><span data-line="167"><span class="sd">    &quot;&quot;&quot;</span></div>
+</span><span data-line="237"><span class="k">class</span><span class="w"> </span><span class="nc">SerializationError</span><span class="p">(</span><span class="n">AdvancedAlchemyError</span><span class="p">):</span>
+</span><span data-line="238"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Encoding or decoding error.</span>
+</span><span data-line="239">
+</span><span data-line="240"><span class="sd">    This exception is raised when serialization or deserialization of an object fails.</span>
+</span><span data-line="241">
+</span><span data-line="242"><span class="sd">    Args:</span>
+</span><span data-line="243"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
+</span><span data-line="244"><span class="sd">        detail: Detailed error message.</span>
+</span><span data-line="245"><span class="sd">    &quot;&quot;&quot;</span></div>
 
-</span><span data-line="168">
-</span><span data-line="169">
+</span><span data-line="246">
+</span><span data-line="247">
 <div class="viewcode-block" id="RepositoryError">
 <a class="viewcode-back" href="../../reference/exceptions.html#advanced_alchemy.exceptions.RepositoryError">[docs]</a>
-</span><span data-line="170"><span class="k">class</span><span class="w"> </span><span class="nc">RepositoryError</span><span class="p">(</span><span class="n">AdvancedAlchemyError</span><span class="p">):</span>
-</span><span data-line="171"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Base repository exception type.</span>
-</span><span data-line="172">
-</span><span data-line="173"><span class="sd">    Args:</span>
-</span><span data-line="174"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
-</span><span data-line="175"><span class="sd">        detail: Detailed error message.</span>
-</span><span data-line="176"><span class="sd">    &quot;&quot;&quot;</span></div>
+</span><span data-line="248"><span class="k">class</span><span class="w"> </span><span class="nc">RepositoryError</span><span class="p">(</span><span class="n">AdvancedAlchemyError</span><span class="p">):</span>
+</span><span data-line="249"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Base repository exception type.</span>
+</span><span data-line="250">
+</span><span data-line="251"><span class="sd">    Args:</span>
+</span><span data-line="252"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
+</span><span data-line="253"><span class="sd">        detail: Detailed error message.</span>
+</span><span data-line="254"><span class="sd">    &quot;&quot;&quot;</span></div>
 
-</span><span data-line="177">
-</span><span data-line="178">
+</span><span data-line="255">
+</span><span data-line="256">
 <div class="viewcode-block" id="IntegrityError">
 <a class="viewcode-back" href="../../reference/exceptions.html#advanced_alchemy.exceptions.IntegrityError">[docs]</a>
-</span><span data-line="179"><span class="k">class</span><span class="w"> </span><span class="nc">IntegrityError</span><span class="p">(</span><span class="n">RepositoryError</span><span class="p">):</span>
-</span><span data-line="180"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data integrity error.</span>
-</span><span data-line="181">
-</span><span data-line="182"><span class="sd">    Args:</span>
-</span><span data-line="183"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
-</span><span data-line="184"><span class="sd">        detail: Detailed error message.</span>
-</span><span data-line="185"><span class="sd">    &quot;&quot;&quot;</span></div>
+</span><span data-line="257"><span class="k">class</span><span class="w"> </span><span class="nc">IntegrityError</span><span class="p">(</span><span class="n">RepositoryError</span><span class="p">):</span>
+</span><span data-line="258"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Data integrity error.</span>
+</span><span data-line="259">
+</span><span data-line="260"><span class="sd">    Args:</span>
+</span><span data-line="261"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
+</span><span data-line="262"><span class="sd">        detail: Detailed error message.</span>
+</span><span data-line="263"><span class="sd">    &quot;&quot;&quot;</span></div>
 
-</span><span data-line="186">
-</span><span data-line="187">
+</span><span data-line="264">
+</span><span data-line="265">
 <div class="viewcode-block" id="DuplicateKeyError">
 <a class="viewcode-back" href="../../reference/exceptions.html#advanced_alchemy.exceptions.DuplicateKeyError">[docs]</a>
-</span><span data-line="188"><span class="k">class</span><span class="w"> </span><span class="nc">DuplicateKeyError</span><span class="p">(</span><span class="n">IntegrityError</span><span class="p">):</span>
-</span><span data-line="189"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Duplicate key error.</span>
-</span><span data-line="190">
-</span><span data-line="191"><span class="sd">    Args:</span>
-</span><span data-line="192"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
-</span><span data-line="193"><span class="sd">        detail: Detailed error message.</span>
-</span><span data-line="194"><span class="sd">    &quot;&quot;&quot;</span></div>
+</span><span data-line="266"><span class="k">class</span><span class="w"> </span><span class="nc">DuplicateKeyError</span><span class="p">(</span><span class="n">IntegrityError</span><span class="p">):</span>
+</span><span data-line="267"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Duplicate key error.</span>
+</span><span data-line="268">
+</span><span data-line="269"><span class="sd">    Args:</span>
+</span><span data-line="270"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
+</span><span data-line="271"><span class="sd">        detail: Detailed error message.</span>
+</span><span data-line="272"><span class="sd">    &quot;&quot;&quot;</span></div>
 
-</span><span data-line="195">
-</span><span data-line="196">
+</span><span data-line="273">
+</span><span data-line="274">
 <div class="viewcode-block" id="ForeignKeyError">
 <a class="viewcode-back" href="../../reference/exceptions.html#advanced_alchemy.exceptions.ForeignKeyError">[docs]</a>
-</span><span data-line="197"><span class="k">class</span><span class="w"> </span><span class="nc">ForeignKeyError</span><span class="p">(</span><span class="n">IntegrityError</span><span class="p">):</span>
-</span><span data-line="198"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Foreign key error.</span>
-</span><span data-line="199">
-</span><span data-line="200"><span class="sd">    Args:</span>
-</span><span data-line="201"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
-</span><span data-line="202"><span class="sd">        detail: Detailed error message.</span>
-</span><span data-line="203"><span class="sd">    &quot;&quot;&quot;</span></div>
+</span><span data-line="275"><span class="k">class</span><span class="w"> </span><span class="nc">ForeignKeyError</span><span class="p">(</span><span class="n">IntegrityError</span><span class="p">):</span>
+</span><span data-line="276"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Foreign key error.</span>
+</span><span data-line="277">
+</span><span data-line="278"><span class="sd">    Args:</span>
+</span><span data-line="279"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
+</span><span data-line="280"><span class="sd">        detail: Detailed error message.</span>
+</span><span data-line="281"><span class="sd">    &quot;&quot;&quot;</span></div>
 
-</span><span data-line="204">
-</span><span data-line="205">
+</span><span data-line="282">
+</span><span data-line="283">
 <div class="viewcode-block" id="NotFoundError">
 <a class="viewcode-back" href="../../reference/exceptions.html#advanced_alchemy.exceptions.NotFoundError">[docs]</a>
-</span><span data-line="206"><span class="k">class</span><span class="w"> </span><span class="nc">NotFoundError</span><span class="p">(</span><span class="n">RepositoryError</span><span class="p">):</span>
-</span><span data-line="207"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Not found error.</span>
-</span><span data-line="208">
-</span><span data-line="209"><span class="sd">    This exception is raised when a requested resource is not found.</span>
-</span><span data-line="210">
-</span><span data-line="211"><span class="sd">    Args:</span>
-</span><span data-line="212"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
-</span><span data-line="213"><span class="sd">        detail: Detailed error message.</span>
-</span><span data-line="214"><span class="sd">    &quot;&quot;&quot;</span></div>
+</span><span data-line="284"><span class="k">class</span><span class="w"> </span><span class="nc">NotFoundError</span><span class="p">(</span><span class="n">RepositoryError</span><span class="p">):</span>
+</span><span data-line="285"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Not found error.</span>
+</span><span data-line="286">
+</span><span data-line="287"><span class="sd">    This exception is raised when a requested resource is not found.</span>
+</span><span data-line="288">
+</span><span data-line="289"><span class="sd">    Args:</span>
+</span><span data-line="290"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
+</span><span data-line="291"><span class="sd">        detail: Detailed error message.</span>
+</span><span data-line="292"><span class="sd">    &quot;&quot;&quot;</span></div>
 
-</span><span data-line="215">
-</span><span data-line="216">
+</span><span data-line="293">
+</span><span data-line="294">
 <div class="viewcode-block" id="MultipleResultsFoundError">
 <a class="viewcode-back" href="../../reference/exceptions.html#advanced_alchemy.exceptions.MultipleResultsFoundError">[docs]</a>
-</span><span data-line="217"><span class="k">class</span><span class="w"> </span><span class="nc">MultipleResultsFoundError</span><span class="p">(</span><span class="n">RepositoryError</span><span class="p">):</span>
-</span><span data-line="218"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Multiple results found error.</span>
-</span><span data-line="219">
-</span><span data-line="220"><span class="sd">    This exception is raised when a single result was expected but multiple were found.</span>
-</span><span data-line="221">
-</span><span data-line="222"><span class="sd">    Args:</span>
-</span><span data-line="223"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
-</span><span data-line="224"><span class="sd">        detail: Detailed error message.</span>
-</span><span data-line="225"><span class="sd">    &quot;&quot;&quot;</span></div>
+</span><span data-line="295"><span class="k">class</span><span class="w"> </span><span class="nc">MultipleResultsFoundError</span><span class="p">(</span><span class="n">RepositoryError</span><span class="p">):</span>
+</span><span data-line="296"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Multiple results found error.</span>
+</span><span data-line="297">
+</span><span data-line="298"><span class="sd">    This exception is raised when a single result was expected but multiple were found.</span>
+</span><span data-line="299">
+</span><span data-line="300"><span class="sd">    Args:</span>
+</span><span data-line="301"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
+</span><span data-line="302"><span class="sd">        detail: Detailed error message.</span>
+</span><span data-line="303"><span class="sd">    &quot;&quot;&quot;</span></div>
 
-</span><span data-line="226">
-</span><span data-line="227">
-</span><span data-line="228"><span class="k">class</span><span class="w"> </span><span class="nc">InvalidRequestError</span><span class="p">(</span><span class="n">RepositoryError</span><span class="p">):</span>
-</span><span data-line="229"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Invalid request error.</span>
-</span><span data-line="230">
-</span><span data-line="231"><span class="sd">    This exception is raised when SQLAlchemy is unable to complete the request due to a runtime error</span>
-</span><span data-line="232">
-</span><span data-line="233"><span class="sd">    Args:</span>
-</span><span data-line="234"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
-</span><span data-line="235"><span class="sd">        detail: Detailed error message.</span>
-</span><span data-line="236"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="237">
-</span><span data-line="238">
+</span><span data-line="304">
+</span><span data-line="305">
+</span><span data-line="306"><span class="k">class</span><span class="w"> </span><span class="nc">InvalidRequestError</span><span class="p">(</span><span class="n">RepositoryError</span><span class="p">):</span>
+</span><span data-line="307"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Invalid request error.</span>
+</span><span data-line="308">
+</span><span data-line="309"><span class="sd">    This exception is raised when SQLAlchemy is unable to complete the request due to a runtime error</span>
+</span><span data-line="310">
+</span><span data-line="311"><span class="sd">    Args:</span>
+</span><span data-line="312"><span class="sd">        *args: Variable length argument list passed to parent class.</span>
+</span><span data-line="313"><span class="sd">        detail: Detailed error message.</span>
+</span><span data-line="314"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="315">
+</span><span data-line="316">
 <div class="viewcode-block" id="ErrorMessages">
 <a class="viewcode-back" href="../../reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages">[docs]</a>
-</span><span data-line="239"><span class="k">class</span><span class="w"> </span><span class="nc">ErrorMessages</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-</span><span data-line="240">    <span class="n">duplicate_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span>
-</span><span data-line="241">    <span class="n">integrity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span>
-</span><span data-line="242">    <span class="n">foreign_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span>
-</span><span data-line="243">    <span class="n">multiple_rows</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span>
-</span><span data-line="244">    <span class="n">check_constraint</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span>
-</span><span data-line="245">    <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span>
-</span><span data-line="246">    <span class="n">not_found</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span></div>
+</span><span data-line="317"><span class="k">class</span><span class="w"> </span><span class="nc">ErrorMessages</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+</span><span data-line="318">    <span class="n">duplicate_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span>
+</span><span data-line="319">    <span class="n">integrity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span>
+</span><span data-line="320">    <span class="n">foreign_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span>
+</span><span data-line="321">    <span class="n">multiple_rows</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span>
+</span><span data-line="322">    <span class="n">check_constraint</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span>
+</span><span data-line="323">    <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span>
+</span><span data-line="324">    <span class="n">not_found</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span></div>
 
-</span><span data-line="247">
-</span><span data-line="248">
-</span><span data-line="249"><span class="k">def</span><span class="w"> </span><span class="nf">_get_error_message</span><span class="p">(</span><span class="n">error_messages</span><span class="p">:</span> <span class="n">ErrorMessages</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span data-line="250">    <span class="n">template</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">error_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> error: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore[assignment]</span>
-</span><span data-line="251">    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">template</span><span class="p">):</span>  <span class="c1"># pyright: ignore[reportUnknownArgumentType]</span>
-</span><span data-line="252">        <span class="n">template</span> <span class="o">=</span> <span class="n">template</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownVariableType]</span>
-</span><span data-line="253">    <span class="k">return</span> <span class="n">template</span>  <span class="c1"># pyright: ignore[reportUnknownVariableType]</span>
-</span><span data-line="254">
-</span><span data-line="255">
+</span><span data-line="325">
+</span><span data-line="326">
+</span><span data-line="327"><span class="k">def</span><span class="w"> </span><span class="nf">_get_error_message</span><span class="p">(</span><span class="n">error_messages</span><span class="p">:</span> <span class="n">ErrorMessages</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="328">    <span class="n">template</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="ne">Exception</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">error_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> error: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore[assignment]</span>
+</span><span data-line="329">    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">template</span><span class="p">):</span>  <span class="c1"># pyright: ignore[reportUnknownArgumentType]</span>
+</span><span data-line="330">        <span class="n">template</span> <span class="o">=</span> <span class="n">template</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownVariableType]</span>
+</span><span data-line="331">    <span class="k">return</span> <span class="n">template</span>  <span class="c1"># pyright: ignore[reportUnknownVariableType]</span>
+</span><span data-line="332">
+</span><span data-line="333">
+</span><span data-line="334"><span class="k">def</span><span class="w"> </span><span class="nf">_get_error_key_by_code</span><span class="p">(</span><span class="n">orig</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">],</span> <span class="n">dialect_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span data-line="335"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Classify a DBAPI integrity error by the native error code exposed by the driver.</span>
+</span><span data-line="336">
+</span><span data-line="337"><span class="sd">    Checks ``error_type`` for DuckDB, ``sqlstate`` / ``pgcode`` for PostgreSQL and</span>
+</span><span data-line="338"><span class="sd">    CockroachDB, ``sqlite_errorcode`` for SQLite on Python 3.11+, ``errno`` or</span>
+</span><span data-line="339"><span class="sd">    ``args[0]`` for MySQL and MariaDB drivers, and ``args[0].code`` for Oracle</span>
+</span><span data-line="340"><span class="sd">    ``oracledb``.</span>
+</span><span data-line="341">
+</span><span data-line="342"><span class="sd">    Args:</span>
+</span><span data-line="343"><span class="sd">        orig: The underlying DBAPI exception, if present.</span>
+</span><span data-line="344"><span class="sd">        dialect_name: The normalized SQLAlchemy dialect name.</span>
+</span><span data-line="345">
+</span><span data-line="346"><span class="sd">    Returns:</span>
+</span><span data-line="347"><span class="sd">        The matching ``ErrorMessages`` key, or ``None`` when no mapped code is present.</span>
+</span><span data-line="348"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="349">    <span class="k">if</span> <span class="n">orig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="350">        <span class="k">return</span> <span class="kc">None</span>
+</span><span data-line="351">    <span class="n">error_type</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">orig</span><span class="p">,</span> <span class="s2">&quot;error_type&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="352">    <span class="k">if</span> <span class="p">(</span>
+</span><span data-line="353">        <span class="nb">isinstance</span><span class="p">(</span><span class="n">error_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+</span><span data-line="354">        <span class="ow">and</span> <span class="p">(</span><span class="n">key</span> <span class="o">:=</span> <span class="n">DUCKDB_ERROR_TYPE_TO_KEY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">error_type</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span data-line="355">    <span class="p">):</span>
+</span><span data-line="356">        <span class="k">return</span> <span class="n">key</span>
+</span><span data-line="357">    <span class="n">sqlstate</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">orig</span><span class="p">,</span> <span class="s2">&quot;sqlstate&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">orig</span><span class="p">,</span> <span class="s2">&quot;pgcode&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="358">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sqlstate</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">key</span> <span class="o">:=</span> <span class="n">SQLSTATE_TO_ERROR_KEY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">sqlstate</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="359">        <span class="k">return</span> <span class="n">key</span>
+</span><span data-line="360">    <span class="n">sqlite_errorcode</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">orig</span><span class="p">,</span> <span class="s2">&quot;sqlite_errorcode&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="361">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sqlite_errorcode</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sqlite_errorcode</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+</span><span data-line="362">        <span class="k">return</span> <span class="n">SQLITE_ERRORCODE_TO_ERROR_KEY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">sqlite_errorcode</span><span class="p">)</span>
+</span><span data-line="363">    <span class="n">driver_args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">orig</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">,</span> <span class="p">())</span>
+</span><span data-line="364">    <span class="n">dialect_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="365">    <span class="k">if</span> <span class="n">dialect_name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;mysql&quot;</span><span class="p">,</span> <span class="s2">&quot;mariadb&quot;</span><span class="p">}:</span>
+</span><span data-line="366">        <span class="n">mysql_errno</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">orig</span><span class="p">,</span> <span class="s2">&quot;errno&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="367">        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">mysql_errno</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mysql_errno</span><span class="p">,</span> <span class="nb">bool</span><span class="p">))</span> <span class="ow">and</span> <span class="n">driver_args</span><span class="p">:</span>
+</span><span data-line="368">            <span class="n">mysql_errno</span> <span class="o">=</span> <span class="n">driver_args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="369">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mysql_errno</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mysql_errno</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+</span><span data-line="370">            <span class="n">dialect_key</span> <span class="o">=</span> <span class="n">MYSQL_ERRNO_TO_ERROR_KEY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">mysql_errno</span><span class="p">)</span>
+</span><span data-line="371">    <span class="k">elif</span> <span class="n">dialect_name</span> <span class="o">==</span> <span class="s2">&quot;oracle&quot;</span> <span class="ow">and</span> <span class="n">driver_args</span><span class="p">:</span>
+</span><span data-line="372">        <span class="n">oracle_code</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">driver_args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;code&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="373">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">oracle_code</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">oracle_code</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+</span><span data-line="374">            <span class="n">dialect_key</span> <span class="o">=</span> <span class="n">ORACLE_ERROR_CODE_TO_ERROR_KEY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">oracle_code</span><span class="p">)</span>
+</span><span data-line="375">    <span class="k">return</span> <span class="n">dialect_key</span>
+</span><span data-line="376">
+</span><span data-line="377">
 <div class="viewcode-block" id="wrap_sqlalchemy_exception">
 <a class="viewcode-back" href="../../reference/exceptions.html#advanced_alchemy.exceptions.wrap_sqlalchemy_exception">[docs]</a>
-</span><span data-line="256"><span class="nd">@contextmanager</span>
-</span><span data-line="257"><span class="k">def</span><span class="w"> </span><span class="nf">wrap_sqlalchemy_exception</span><span class="p">(</span>  <span class="c1"># noqa: C901, PLR0915</span>
-</span><span data-line="258">    <span class="n">error_messages</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ErrorMessages</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="259">    <span class="n">dialect_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="260">    <span class="n">wrap_exceptions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span data-line="261"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span data-line="262"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Do something within context to raise a ``RepositoryError`` chained</span>
-</span><span data-line="263"><span class="sd">    from an original ``SQLAlchemyError``.</span>
-</span><span data-line="264">
-</span><span data-line="265"><span class="sd">        &gt;&gt;&gt; try:</span>
-</span><span data-line="266"><span class="sd">        ...     with wrap_sqlalchemy_exception():</span>
-</span><span data-line="267"><span class="sd">        ...         raise SQLAlchemyError(&quot;Original Exception&quot;)</span>
-</span><span data-line="268"><span class="sd">        ... except RepositoryError as exc:</span>
-</span><span data-line="269"><span class="sd">        ...     print(</span>
-</span><span data-line="270"><span class="sd">        ...         f&quot;caught repository exception from {type(exc.__context__)}&quot;</span>
-</span><span data-line="271"><span class="sd">        ...     )</span>
-</span><span data-line="272"><span class="sd">        caught repository exception from &lt;class &#39;sqlalchemy.exc.SQLAlchemyError&#39;&gt;</span>
-</span><span data-line="273">
-</span><span data-line="274"><span class="sd">    Args:</span>
-</span><span data-line="275"><span class="sd">        error_messages: Error messages to use for the exception.</span>
-</span><span data-line="276"><span class="sd">        dialect_name: The name of the dialect to use for the exception.</span>
-</span><span data-line="277"><span class="sd">        wrap_exceptions: Wrap SQLAlchemy exceptions in a ``RepositoryError``.  When set to ``False``, the original exception will be raised.</span>
-</span><span data-line="278">
-</span><span data-line="279"><span class="sd">    Raises:</span>
-</span><span data-line="280"><span class="sd">        NotFoundError: Raised when no rows matched the specified data.</span>
-</span><span data-line="281"><span class="sd">        MultipleResultsFound: Raised when multiple rows matched the specified data.</span>
-</span><span data-line="282"><span class="sd">        IntegrityError: Raised when an integrity error occurs.</span>
-</span><span data-line="283"><span class="sd">        InvalidRequestError: Raised when an invalid request was made to SQLAlchemy.</span>
-</span><span data-line="284"><span class="sd">        RepositoryError: Raised for other SQLAlchemy errors.</span>
-</span><span data-line="285"><span class="sd">        AttributeError: Raised when an attribute error occurs during processing.</span>
-</span><span data-line="286"><span class="sd">        SQLAlchemyError: Raised for general SQLAlchemy errors.</span>
-</span><span data-line="287"><span class="sd">        StatementError: Raised when there is an issue processing the statement.</span>
-</span><span data-line="288"><span class="sd">        MultipleResultsFoundError: Raised when multiple rows matched the specified data.</span>
-</span><span data-line="289">
-</span><span data-line="290"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="291">    <span class="k">try</span><span class="p">:</span>
-</span><span data-line="292">        <span class="k">yield</span>
-</span><span data-line="293">
-</span><span data-line="294">    <span class="k">except</span> <span class="n">NotFoundError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-</span><span data-line="295">        <span class="k">if</span> <span class="n">wrap_exceptions</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-</span><span data-line="296">            <span class="k">raise</span>
-</span><span data-line="297">        <span class="k">if</span> <span class="n">error_messages</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="298">            <span class="n">msg</span> <span class="o">=</span> <span class="n">_get_error_message</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;not_found&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="n">exc</span><span class="p">)</span>
-</span><span data-line="299">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="300">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No rows matched the specified data&quot;</span>
-</span><span data-line="301">        <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">(</span><span class="n">detail</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
-</span><span data-line="302">    <span class="k">except</span> <span class="n">MultipleResultsFound</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-</span><span data-line="303">        <span class="k">if</span> <span class="n">wrap_exceptions</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-</span><span data-line="304">            <span class="k">raise</span>
-</span><span data-line="305">        <span class="k">if</span> <span class="n">error_messages</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="306">            <span class="n">msg</span> <span class="o">=</span> <span class="n">_get_error_message</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;multiple_rows&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="n">exc</span><span class="p">)</span>
-</span><span data-line="307">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="308">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Multiple rows matched the specified data&quot;</span>
-</span><span data-line="309">        <span class="k">raise</span> <span class="n">MultipleResultsFoundError</span><span class="p">(</span><span class="n">detail</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
-</span><span data-line="310">    <span class="k">except</span> <span class="n">SQLAlchemyIntegrityError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-</span><span data-line="311">        <span class="k">if</span> <span class="n">wrap_exceptions</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-</span><span data-line="312">            <span class="k">raise</span>
-</span><span data-line="313">        <span class="k">if</span> <span class="n">error_messages</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dialect_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="314">            <span class="n">keys_to_regex</span> <span class="o">=</span> <span class="p">{</span>
-</span><span data-line="315">                <span class="s2">&quot;duplicate_key&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">DUPLICATE_KEY_REGEXES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dialect_name</span><span class="p">,</span> <span class="p">[]),</span> <span class="n">DuplicateKeyError</span><span class="p">),</span>
-</span><span data-line="316">                <span class="s2">&quot;check_constraint&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">CHECK_CONSTRAINT_REGEXES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dialect_name</span><span class="p">,</span> <span class="p">[]),</span> <span class="n">IntegrityError</span><span class="p">),</span>
-</span><span data-line="317">                <span class="s2">&quot;foreign_key&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">FOREIGN_KEY_REGEXES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dialect_name</span><span class="p">,</span> <span class="p">[]),</span> <span class="n">ForeignKeyError</span><span class="p">),</span>
-</span><span data-line="318">            <span class="p">}</span>
-</span><span data-line="319">            <span class="n">sqlstate</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">exc</span><span class="o">.</span><span class="n">orig</span><span class="p">,</span> <span class="s2">&quot;sqlstate&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">exc</span><span class="o">.</span><span class="n">orig</span><span class="p">,</span> <span class="s2">&quot;pgcode&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-</span><span data-line="320">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sqlstate</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">key</span> <span class="o">:=</span> <span class="n">SQLSTATE_TO_ERROR_KEY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">sqlstate</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="321">                <span class="k">raise</span> <span class="n">keys_to_regex</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">1</span><span class="p">](</span>
-</span><span data-line="322">                    <span class="n">detail</span><span class="o">=</span><span class="n">_get_error_message</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="n">exc</span><span class="p">),</span>
-</span><span data-line="323">                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
-</span><span data-line="324">            <span class="n">detail</span> <span class="o">=</span> <span class="s2">&quot; - &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">exc_arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">exc_arg</span> <span class="ow">in</span> <span class="n">exc</span><span class="o">.</span><span class="n">orig</span><span class="o">.</span><span class="n">args</span><span class="p">)</span> <span class="k">if</span> <span class="n">exc</span><span class="o">.</span><span class="n">orig</span><span class="o">.</span><span class="n">args</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>  <span class="c1"># type: ignore[union-attr] # pyright: ignore[reportArgumentType,reportOptionalMemberAccess]</span>
-</span><span data-line="325">            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="p">(</span><span class="n">regexes</span><span class="p">,</span> <span class="n">exception</span><span class="p">)</span> <span class="ow">in</span> <span class="n">keys_to_regex</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-</span><span data-line="326">                <span class="k">for</span> <span class="n">regex</span> <span class="ow">in</span> <span class="n">regexes</span><span class="p">:</span>
-</span><span data-line="327">                    <span class="k">if</span> <span class="p">(</span><span class="n">match</span> <span class="o">:=</span> <span class="n">regex</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">detail</span><span class="p">))</span> <span class="ow">and</span> <span class="n">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-</span><span data-line="328">                        <span class="k">raise</span> <span class="n">exception</span><span class="p">(</span>
-</span><span data-line="329">                            <span class="n">detail</span><span class="o">=</span><span class="n">_get_error_message</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="n">exc</span><span class="p">),</span>
-</span><span data-line="330">                        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
-</span><span data-line="331">
-</span><span data-line="332">            <span class="k">raise</span> <span class="n">IntegrityError</span><span class="p">(</span>
-</span><span data-line="333">                <span class="n">detail</span><span class="o">=</span><span class="n">_get_error_message</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;integrity&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="n">exc</span><span class="p">),</span>
-</span><span data-line="334">            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
-</span><span data-line="335">        <span class="k">raise</span> <span class="n">IntegrityError</span><span class="p">(</span><span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;An integrity error occurred: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
-</span><span data-line="336">    <span class="k">except</span> <span class="n">SQLAlchemyInvalidRequestError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-</span><span data-line="337">        <span class="k">if</span> <span class="n">wrap_exceptions</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-</span><span data-line="338">            <span class="k">raise</span>
-</span><span data-line="339">        <span class="k">raise</span> <span class="n">InvalidRequestError</span><span class="p">(</span><span class="n">detail</span><span class="o">=</span><span class="s2">&quot;An invalid request was made.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
-</span><span data-line="340">    <span class="k">except</span> <span class="n">StatementError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-</span><span data-line="341">        <span class="k">if</span> <span class="n">wrap_exceptions</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-</span><span data-line="342">            <span class="k">raise</span>
-</span><span data-line="343">        <span class="k">raise</span> <span class="n">IntegrityError</span><span class="p">(</span>
-</span><span data-line="344">            <span class="n">detail</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">exc</span><span class="o">.</span><span class="n">orig</span><span class="p">,</span> <span class="s2">&quot;detail&quot;</span><span class="p">,</span> <span class="s2">&quot;There was an issue processing the statement.&quot;</span><span class="p">))</span>
-</span><span data-line="345">        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
-</span><span data-line="346">    <span class="k">except</span> <span class="n">SQLAlchemyError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-</span><span data-line="347">        <span class="k">if</span> <span class="n">wrap_exceptions</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-</span><span data-line="348">            <span class="k">raise</span>
-</span><span data-line="349">        <span class="k">if</span> <span class="n">error_messages</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="350">            <span class="n">msg</span> <span class="o">=</span> <span class="n">_get_error_message</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;other&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="n">exc</span><span class="p">)</span>
-</span><span data-line="351">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="352">            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;An exception occurred: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span data-line="353">        <span class="k">raise</span> <span class="n">RepositoryError</span><span class="p">(</span><span class="n">detail</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
-</span><span data-line="354">    <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-</span><span data-line="355">        <span class="k">if</span> <span class="n">wrap_exceptions</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-</span><span data-line="356">            <span class="k">raise</span>
-</span><span data-line="357">        <span class="k">if</span> <span class="n">error_messages</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="358">            <span class="n">msg</span> <span class="o">=</span> <span class="n">_get_error_message</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;other&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="n">exc</span><span class="p">)</span>
-</span><span data-line="359">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="360">            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;An attribute error occurred during processing: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span data-line="361">        <span class="k">raise</span> <span class="n">RepositoryError</span><span class="p">(</span><span class="n">detail</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
+</span><span data-line="378"><span class="nd">@contextmanager</span>
+</span><span data-line="379"><span class="k">def</span><span class="w"> </span><span class="nf">wrap_sqlalchemy_exception</span><span class="p">(</span>  <span class="c1"># noqa: C901, PLR0915</span>
+</span><span data-line="380">    <span class="n">error_messages</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ErrorMessages</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="381">    <span class="n">dialect_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="382">    <span class="n">wrap_exceptions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span data-line="383"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span data-line="384"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Do something within context to raise a ``RepositoryError`` chained</span>
+</span><span data-line="385"><span class="sd">    from an original ``SQLAlchemyError``.</span>
+</span><span data-line="386">
+</span><span data-line="387"><span class="sd">        &gt;&gt;&gt; try:</span>
+</span><span data-line="388"><span class="sd">        ...     with wrap_sqlalchemy_exception():</span>
+</span><span data-line="389"><span class="sd">        ...         raise SQLAlchemyError(&quot;Original Exception&quot;)</span>
+</span><span data-line="390"><span class="sd">        ... except RepositoryError as exc:</span>
+</span><span data-line="391"><span class="sd">        ...     print(</span>
+</span><span data-line="392"><span class="sd">        ...         f&quot;caught repository exception from {type(exc.__context__)}&quot;</span>
+</span><span data-line="393"><span class="sd">        ...     )</span>
+</span><span data-line="394"><span class="sd">        caught repository exception from &lt;class &#39;sqlalchemy.exc.SQLAlchemyError&#39;&gt;</span>
+</span><span data-line="395">
+</span><span data-line="396"><span class="sd">    Args:</span>
+</span><span data-line="397"><span class="sd">        error_messages: Error messages to use for the exception.</span>
+</span><span data-line="398"><span class="sd">        dialect_name: The name of the dialect to use for the exception.</span>
+</span><span data-line="399"><span class="sd">        wrap_exceptions: Wrap SQLAlchemy exceptions in a ``RepositoryError``.  When set to ``False``, the original exception will be raised.</span>
+</span><span data-line="400">
+</span><span data-line="401"><span class="sd">    Raises:</span>
+</span><span data-line="402"><span class="sd">        NotFoundError: Raised when no rows matched the specified data.</span>
+</span><span data-line="403"><span class="sd">        MultipleResultsFound: Raised when multiple rows matched the specified data.</span>
+</span><span data-line="404"><span class="sd">        IntegrityError: Raised when an integrity error occurs.</span>
+</span><span data-line="405"><span class="sd">        InvalidRequestError: Raised when an invalid request was made to SQLAlchemy.</span>
+</span><span data-line="406"><span class="sd">        RepositoryError: Raised for other SQLAlchemy errors.</span>
+</span><span data-line="407"><span class="sd">        AttributeError: Raised when an attribute error occurs during processing.</span>
+</span><span data-line="408"><span class="sd">        SQLAlchemyError: Raised for general SQLAlchemy errors.</span>
+</span><span data-line="409"><span class="sd">        StatementError: Raised when there is an issue processing the statement.</span>
+</span><span data-line="410"><span class="sd">        MultipleResultsFoundError: Raised when multiple rows matched the specified data.</span>
+</span><span data-line="411">
+</span><span data-line="412"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="413">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="414">        <span class="k">yield</span>
+</span><span data-line="415">
+</span><span data-line="416">    <span class="k">except</span> <span class="n">NotFoundError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+</span><span data-line="417">        <span class="k">if</span> <span class="n">wrap_exceptions</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+</span><span data-line="418">            <span class="k">raise</span>
+</span><span data-line="419">        <span class="k">if</span> <span class="n">error_messages</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="420">            <span class="n">msg</span> <span class="o">=</span> <span class="n">_get_error_message</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;not_found&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="n">exc</span><span class="p">)</span>
+</span><span data-line="421">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="422">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No rows matched the specified data&quot;</span>
+</span><span data-line="423">        <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">(</span><span class="n">detail</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+</span><span data-line="424">    <span class="k">except</span> <span class="n">MultipleResultsFound</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+</span><span data-line="425">        <span class="k">if</span> <span class="n">wrap_exceptions</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+</span><span data-line="426">            <span class="k">raise</span>
+</span><span data-line="427">        <span class="k">if</span> <span class="n">error_messages</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="428">            <span class="n">msg</span> <span class="o">=</span> <span class="n">_get_error_message</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;multiple_rows&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="n">exc</span><span class="p">)</span>
+</span><span data-line="429">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="430">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Multiple rows matched the specified data&quot;</span>
+</span><span data-line="431">        <span class="k">raise</span> <span class="n">MultipleResultsFoundError</span><span class="p">(</span><span class="n">detail</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+</span><span data-line="432">    <span class="k">except</span> <span class="n">SQLAlchemyIntegrityError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+</span><span data-line="433">        <span class="k">if</span> <span class="n">wrap_exceptions</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+</span><span data-line="434">            <span class="k">raise</span>
+</span><span data-line="435">        <span class="k">if</span> <span class="n">error_messages</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dialect_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="436">            <span class="n">base_dialect</span> <span class="o">=</span> <span class="n">dialect_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="437">            <span class="n">keys_to_regex</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="438">                <span class="s2">&quot;duplicate_key&quot;</span><span class="p">:</span> <span class="p">(</span>
+</span><span data-line="439">                    <span class="n">DUPLICATE_KEY_REGEXES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dialect_name</span><span class="p">)</span> <span class="ow">or</span> <span class="n">DUPLICATE_KEY_REGEXES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base_dialect</span><span class="p">,</span> <span class="p">[]),</span>
+</span><span data-line="440">                    <span class="n">DuplicateKeyError</span><span class="p">,</span>
+</span><span data-line="441">                <span class="p">),</span>
+</span><span data-line="442">                <span class="s2">&quot;check_constraint&quot;</span><span class="p">:</span> <span class="p">(</span>
+</span><span data-line="443">                    <span class="n">CHECK_CONSTRAINT_REGEXES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dialect_name</span><span class="p">)</span> <span class="ow">or</span> <span class="n">CHECK_CONSTRAINT_REGEXES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base_dialect</span><span class="p">,</span> <span class="p">[]),</span>
+</span><span data-line="444">                    <span class="n">IntegrityError</span><span class="p">,</span>
+</span><span data-line="445">                <span class="p">),</span>
+</span><span data-line="446">                <span class="s2">&quot;foreign_key&quot;</span><span class="p">:</span> <span class="p">(</span>
+</span><span data-line="447">                    <span class="n">FOREIGN_KEY_REGEXES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dialect_name</span><span class="p">)</span> <span class="ow">or</span> <span class="n">FOREIGN_KEY_REGEXES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base_dialect</span><span class="p">,</span> <span class="p">[]),</span>
+</span><span data-line="448">                    <span class="n">ForeignKeyError</span><span class="p">,</span>
+</span><span data-line="449">                <span class="p">),</span>
+</span><span data-line="450">            <span class="p">}</span>
+</span><span data-line="451">            <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="o">:=</span> <span class="n">_get_error_key_by_code</span><span class="p">(</span><span class="n">exc</span><span class="o">.</span><span class="n">orig</span><span class="p">,</span> <span class="n">base_dialect</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="452">                <span class="k">raise</span> <span class="n">keys_to_regex</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">1</span><span class="p">](</span>
+</span><span data-line="453">                    <span class="n">detail</span><span class="o">=</span><span class="n">_get_error_message</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="n">exc</span><span class="p">),</span>
+</span><span data-line="454">                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+</span><span data-line="455">            <span class="n">driver_args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">exc</span><span class="o">.</span><span class="n">orig</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">,</span> <span class="p">())</span>
+</span><span data-line="456">            <span class="n">detail</span> <span class="o">=</span> <span class="s2">&quot; - &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">exc_arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">exc_arg</span> <span class="ow">in</span> <span class="n">driver_args</span><span class="p">)</span> <span class="k">if</span> <span class="n">driver_args</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+</span><span data-line="457">            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="p">(</span><span class="n">regexes</span><span class="p">,</span> <span class="n">exception</span><span class="p">)</span> <span class="ow">in</span> <span class="n">keys_to_regex</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span data-line="458">                <span class="k">for</span> <span class="n">regex</span> <span class="ow">in</span> <span class="n">regexes</span><span class="p">:</span>
+</span><span data-line="459">                    <span class="k">if</span> <span class="n">regex</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">detail</span><span class="p">):</span>
+</span><span data-line="460">                        <span class="k">raise</span> <span class="n">exception</span><span class="p">(</span>
+</span><span data-line="461">                            <span class="n">detail</span><span class="o">=</span><span class="n">_get_error_message</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="n">exc</span><span class="p">),</span>
+</span><span data-line="462">                        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+</span><span data-line="463">
+</span><span data-line="464">            <span class="k">raise</span> <span class="n">IntegrityError</span><span class="p">(</span>
+</span><span data-line="465">                <span class="n">detail</span><span class="o">=</span><span class="n">_get_error_message</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;integrity&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="n">exc</span><span class="p">),</span>
+</span><span data-line="466">            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+</span><span data-line="467">        <span class="k">raise</span> <span class="n">IntegrityError</span><span class="p">(</span><span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;An integrity error occurred: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+</span><span data-line="468">    <span class="k">except</span> <span class="n">SQLAlchemyInvalidRequestError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+</span><span data-line="469">        <span class="k">if</span> <span class="n">wrap_exceptions</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+</span><span data-line="470">            <span class="k">raise</span>
+</span><span data-line="471">        <span class="k">raise</span> <span class="n">InvalidRequestError</span><span class="p">(</span><span class="n">detail</span><span class="o">=</span><span class="s2">&quot;An invalid request was made.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+</span><span data-line="472">    <span class="k">except</span> <span class="n">StatementError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+</span><span data-line="473">        <span class="k">if</span> <span class="n">wrap_exceptions</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+</span><span data-line="474">            <span class="k">raise</span>
+</span><span data-line="475">        <span class="k">raise</span> <span class="n">IntegrityError</span><span class="p">(</span>
+</span><span data-line="476">            <span class="n">detail</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">exc</span><span class="o">.</span><span class="n">orig</span><span class="p">,</span> <span class="s2">&quot;detail&quot;</span><span class="p">,</span> <span class="s2">&quot;There was an issue processing the statement.&quot;</span><span class="p">))</span>
+</span><span data-line="477">        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+</span><span data-line="478">    <span class="k">except</span> <span class="n">SQLAlchemyError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+</span><span data-line="479">        <span class="k">if</span> <span class="n">wrap_exceptions</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+</span><span data-line="480">            <span class="k">raise</span>
+</span><span data-line="481">        <span class="k">if</span> <span class="n">error_messages</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="482">            <span class="n">msg</span> <span class="o">=</span> <span class="n">_get_error_message</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;other&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="n">exc</span><span class="p">)</span>
+</span><span data-line="483">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="484">            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;An exception occurred: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="485">        <span class="k">raise</span> <span class="n">RepositoryError</span><span class="p">(</span><span class="n">detail</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+</span><span data-line="486">    <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+</span><span data-line="487">        <span class="k">if</span> <span class="n">wrap_exceptions</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+</span><span data-line="488">            <span class="k">raise</span>
+</span><span data-line="489">        <span class="k">if</span> <span class="n">error_messages</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="490">            <span class="n">msg</span> <span class="o">=</span> <span class="n">_get_error_message</span><span class="p">(</span><span class="n">error_messages</span><span class="o">=</span><span class="n">error_messages</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;other&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="n">exc</span><span class="p">)</span>
+</span><span data-line="491">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="492">            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;An attribute error occurred during processing: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="493">        <span class="k">raise</span> <span class="n">RepositoryError</span><span class="p">(</span><span class="n">detail</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
 
 </span></pre></div>
         </article><button class="back-to-top" type="button">
