@@ -230,6 +230,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.get"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyStore.get()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.delete"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyStore.delete()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.delete_all"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyStore.delete_all()</span></code></a></li>
+<li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.delete_expired"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyStore.delete_expired()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.exists"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyStore.exists()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.expires_in"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyStore.expires_in()</span></code></a></li>
 <li><a class="reference internal" href="#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.with_namespace"><code class="docutils literal notranslate"><span class="pre">SQLAlchemyStore.with_namespace()</span></code></a></li>
@@ -383,7 +384,7 @@ server-side session middleware with your SQLAlchemy database.</p>
 <li><p><span class="target" id="advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.params.model"></span><strong>model</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.params.model">¶</a> – The SQLAlchemy model to use for storing data. Defaults to <code class="xref py py-class docutils literal notranslate"><span class="pre">StoreItem</span></code>.</p></li>
 <li><p><span class="target" id="advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.params.namespace"></span><strong>namespace</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.params.namespace">¶</a> – A virtual namespace for keys. If not given, defaults to <code class="docutils literal notranslate"><span class="pre">LITESTAR</span></code>.
 Namespacing can be explicitly disabled by passing <code class="docutils literal notranslate"><span class="pre">None</span></code>. This will make
-<a class="reference internal" href="#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.delete_all" title="advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.delete_all"><code class="xref py py-meth docutils literal notranslate"><span class="pre">delete_all()</span></code></a> unavailable.</p></li>
+<a class="reference internal" href="#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.delete_all" title="advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.delete_all"><code class="xref py py-meth docutils literal notranslate"><span class="pre">delete_all()</span></code></a> and <a class="reference internal" href="#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.delete_expired" title="advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.delete_expired"><code class="xref py py-meth docutils literal notranslate"><span class="pre">delete_expired()</span></code></a> unavailable.</p></li>
 </ul>
 </dd>
 </dl>
@@ -453,6 +454,23 @@ Namespacing can be explicitly disabled by passing <code class="docutils literal 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="target" id="advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.delete_all.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.delete_all.params.key">¶</a> – The key to delete.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.delete_expired">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">delete_expired</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/store.html#SQLAlchemyStore.delete_expired"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.store.SQLAlchemyStore.delete_expired" title="Link to this definition">#</a></dt>
+<dd><p>Delete expired values in this namespace using either a sync or async backend.</p>
+<p>Values expiring at or before the current time are deleted. Values without an
+expiration time and values in other namespaces are preserved. Call this method
+periodically to reclaim storage; expired values are otherwise only hidden by reads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ImproperlyConfiguredException</strong> – If no namespace is configured.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>

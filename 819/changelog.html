@@ -670,6 +670,15 @@ dataclasses and <code class="docutils literal notranslate"><span class="pre">msg
 <strong>Released: </strong>2026-05-30<section id="1.11.0-feature">
 <h3>Features<a class="headerlink" href="#1.11.0-feature" title="Link to this heading">#</a></h3>
 <dl>
+<dt>add expired-entry cleanup to the Litestar SQLAlchemy store<a class="headerlink reference internal" href="#1.11.0-add expired-entry cleanup to the litestar sqlalchemy store" id="1.11.0-add expired-entry cleanup to the litestar sqlalchemy store">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds <code class="docutils literal notranslate"><span class="pre">SQLAlchemyStore.delete_expired()</span></code> for periodic cleanup with both
+synchronous and asynchronous SQLAlchemy configurations. Cleanup removes
+expired rows in the store’s exact namespace while preserving live entries,
+entries without an expiration time, and entries in other namespaces.
+The session guide documents how to call it on a recurring schedule.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/787">https://github.com/litestar-org/advanced-alchemy/issues/787</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/788">https://github.com/litestar-org/advanced-alchemy/pull/788</a></span></p>
+</div>
+</dd>
 <dt>harden crypto column types and add TOTP and one-time-code storage<a class="headerlink reference internal" href="#1.11.0-harden crypto column types and add totp and one-time-code storage" id="1.11.0-harden crypto column types and add totp and one-time-code storage">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Corrects <code class="docutils literal notranslate"><span class="pre">PGCryptoBackend</span></code> so encryption and decryption run server-side
 via <code class="docutils literal notranslate"><span class="pre">bind_expression</span></code>/<code class="docutils literal notranslate"><span class="pre">column_expression</span></code> (<code class="docutils literal notranslate"><span class="pre">pgp_sym_encrypt</span></code> /
