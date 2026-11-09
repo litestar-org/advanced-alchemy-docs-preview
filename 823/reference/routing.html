@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="amber" data-content_root="../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Replica Routing - Advanced Alchemy</title><link rel="shortcut icon" href="../_static/favicon.svg"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Caching" href="cache.html" /><link rel="prev" title="Custom Types" href="types.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=43bd62f4" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9db1225a" />
+    <link rel="stylesheet" type="text/css" href="../_static/syntax-highlighting.css?v=64e51511" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="Replica Routing"/>
+  <meta property="og:image" content="https://docs.advanced-alchemy.litestar.dev/latest/_static/og-social-dark.png"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="/">
+      <img class="light-logo" src="../_static/logo.svg" alt="Advanced Alchemy" height="28" loading="lazy" />
+      <img class="dark-logo" src="../_static/logo.svg" alt="Advanced Alchemy" height="28" loading="lazy" />
+      <strong>Advanced Alchemy</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul>
+      <li class="link"><a class="js-menu" href="../usage/index.html" id="nav-trigger-1" aria-controls="nav-children-1">
+            <span>Learn</span>
+            <i class="i-lucide chevron-down"></i>
+          </a>
+        <ul id="nav-children-1" aria-labelledby="nav-trigger-1"><li><a href="../getting-started.html">
+                <span>Getting Started</span>
+                <small>Install and configure Advanced Alchemy</small>
+              </a></li><li><a href="../usage/modeling/index.html">
+                <span>Data Modeling</span>
+                <small>Declarative bases, mixins, and custom types</small>
+              </a></li><li><a href="../usage/repositories/index.html">
+                <span>Repositories</span>
+                <small>Async and sync data access and filtering</small>
+              </a></li><li><a href="../usage/services.html">
+                <span>Services</span>
+                <small>Business logic and schema/DTO hydration</small>
+              </a></li><li><a href="../usage/routing.html">
+                <span>Replica Routing</span>
+                <small>Read/write replica session routing</small>
+              </a></li><li><a href="../usage/caching.html">
+                <span>Caching</span>
+                <small>Dogpile L2 query and entity caching</small>
+              </a></li><li><a href="../usage/cli.html">
+                <span>CLI & Migrations</span>
+                <small>Alembic CLI and database workflows</small>
+              </a></li></ul>
+      </li>
+      <li class="link"><a class="js-menu" href="../usage/frameworks/index.html" id="nav-trigger-2" aria-controls="nav-children-2">
+            <span>Frameworks</span>
+            <i class="i-lucide chevron-down"></i>
+          </a>
+        <ul id="nav-children-2" aria-labelledby="nav-trigger-2"><li><a href="../usage/frameworks/index.html">
+                <span>Overview</span>
+                <small>Capabilities and components across all supported frameworks</small>
+              </a></li><li><a href="../usage/frameworks/litestar.html">
+                <span>Litestar</span>
+                <small>Plugin, DI providers, DTOs, storage, and session stores</small>
+              </a></li><li><a href="../usage/frameworks/fastapi.html">
+                <span>FastAPI</span>
+                <small>Extension, lifespan, Annotated dependencies, and storage</small>
+              </a></li><li><a href="../usage/frameworks/starlette.html">
+                <span>Starlette</span>
+                <small>ASGI middleware and request-scoped sessions</small>
+              </a></li><li><a href="../usage/frameworks/flask.html">
+                <span>Flask</span>
+                <small>WSGI and async Flask integration</small>
+              </a></li><li><a href="../usage/frameworks/sanic.html">
+                <span>Sanic</span>
+                <small>Sanic extension and dependency injection</small>
+              </a></li></ul>
+      </li><li class="link"><a href="index.html">Reference</a></li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-4" aria-controls="nav-children-4">
+            <span>About</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-4" aria-labelledby="nav-trigger-4"><li><a href="../changelog.html">
+                <span>Changelog</span>
+                <small>All changes for Advanced Alchemy</small>
+              </a></li><li><a href="https://litestar.dev/about/organization">
+                <span>Litestar Organization</span>
+                <small>Details about the Litestar organization, the team behind Advanced Alchemy</small>
+              </a></li><li><a href="../releases.html">
+                <span>Releases</span>
+                <small>Explore the release process, versioning, and deprecation policy for Advanced Alchemy</small>
+              </a></li><li><a href="../contribution-guide.html">
+                <span>Contributing</span>
+                <small>Learn how to contribute to the Advanced Alchemy project</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file">
+                <span>Code of Conduct</span>
+                <small>Review the etiquette for interacting with the Advanced Alchemy community</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file#security-ov-file">
+                <span>Security</span>
+                <small>Overview of Advanced Alchemy's security protocols</small>
+              </a></li><li><a href="https://discord.gg/dSDXd4mKhp">
+                <span>Discord Help Forum</span>
+                <small>Ask questions and get help in Discord</small>
+              </a></li><li><a href="https://github.com/litestar-org/advanced-alchemy/discussions">
+                <span>GitHub Discussions</span>
+                <small>Discuss ideas and patterns with the community</small>
+              </a></li><li><a href="https://github.com/sponsors/Litestar-Org">Sponsor</a></li></ul>
+      </li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="2"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Usage Guide</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/index.html">Overview</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/modeling/index.html">Data Modeling</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/basics.html">Modeling Basics</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/inheritance.html">Inheritance Patterns</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/sqlmodel.html">SQLModel Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/types.html">Portable Column Types</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/security_and_storage_types.html">Security and File Storage Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/repositories/index.html">Repositories</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/repositories/basics.html">Repository Basics</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/repositories/filtering.html">Filtering and Pagination</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/repositories/advanced.html">Advanced Repository</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/services.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/routing.html">Read/Write Routing</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/caching.html">Caching</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/cli.html">CLI &amp; Migrations</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/cli_commands.html">Command Workflows</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/database_seeding.html">Database Seeding</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Framework Integrations</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/index.html">Overview</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/litestar.html">Litestar</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/litestar_dtos.html">Services, Filters &amp; DTOs</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/litestar_sessions.html">Database &amp; Server Sessions</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/litestar_storage.html">File &amp; Object Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/fastapi.html">FastAPI</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/fastapi_dependencies.html">Services &amp; Filter Depends</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/fastapi_storage.html">File Storage &amp; Multi-Binds</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/starlette.html">Starlette</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/flask.html">Flask</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/sanic.html">Sanic</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 _expand"><a class="reference internal" href="index.html">Overview</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="base.html">Declarative Base</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="mixins/index.html">Mixins</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/unique.html">Unique Key</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/nanoid.html">NanoID</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/uuid.html">UUID</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/sentinel.html">Sentinel</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/bigint.html">BigInt</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/audit.html">Audit</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/slug.html">Slug</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="config/index.html">Configuration</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/asyncio.html">Asyncio</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/common.html">Common</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/engine.html">Engine</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/routing.html">Routing</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/sync.html">Sync</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="repository.html">Repositories</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="repository_memory.html">Memory Repositories</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="service.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="operations.html">Bulk Operations</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="types.html">Custom Types</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Replica Routing</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="cache.html">Caching</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="extensions/index.html">Framework Extensions</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/litestar/index.html">Litestar</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/plugins.html">Plugins &amp; Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/dto.html">Data Transfer Objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/session.html">Session Backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/store.html">SQLAlchemy Store</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/cli.html">CLI Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/fastapi/index.html">FastAPI</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/starlette/index.html">Starlette</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/flask/index.html">Flask</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/sanic/index.html">Sanic</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="alembic/index.html">Alembic</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="alembic/commands.html">Commands</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="alembic/utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="cli.html">CLI Commands</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="utils.html">Utilities</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../changelog.html">1.x Changelog</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../contribution-guide.html">Contribution Guide</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/search?q=user%3Alitestar-org+state%3Aopen+label%3A%22good+first+issue%22+++no%3Aassignee+repo%3A%22advanced-alchemy%22&amp;type=issues">Available Issues</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/litestar-org/.github?tab=coc-ov-file#readme">Code of Conduct</a></li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#routing-sessions-session-makers">Routing Sessions &amp; Session Makers</a></li>
+<li><a class="reference internal" href="#module-advanced_alchemy.routing.selectors">Replica Selectors</a></li>
+<li><a class="reference internal" href="#routing-context-managers-state">Routing Context Managers &amp; State</a></li>
+</ul>
+</div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
+  data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
+  <span class="w-8 flex items-center justify-around shrink-0 text-3xl">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </span>
+  <span class="flex-grow px-2 break-all">
+    
+    
+      <span>advanced-alchemy</span>
+    
+    <span class="flex text-sm repo-stats-count">
+      <span class="flex items-center pr-3">
+        <iconify-icon icon="lucide:star"></iconify-icon>
+        <strong class="js-repo-stars ml-1">0</strong>
+      </span>
+      <span class="flex items-center">
+        <iconify-icon icon="lucide:git-fork"></iconify-icon>
+        <strong class="js-repo-forks ml-1">0</strong>
+      </span>
+    </span>
+  </span>
+</a><div class="edit-this-page">
+  <a href="https://github.com/litestar-org/advanced-alchemy/blob/main/docs/reference/routing.rst">Edit this page</a>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Advanced Alchemy</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Replica Routing</strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <div class="copy-page-wrapper relative pb-4 lg:absolute lg:top-8 lg:right-6 xl:right-12">
+  <div id="copy-page-trigger">
+    <button
+      type="button"
+      class="js-copy px-3 py-1 inline-flex items-center gap-1"
+      data-url="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/routing.rst.txt"
+    >
+      <i class="i-lucide" data-icon="copy"></i>
+      <span>Copy page</span>
+    </button>
+    <button class="js-menu px-2 py-1" type="button" aria-label="More actions"
+      aria-haspopup="menu" aria-expanded="false" aria-controls="copy-page-content">
+      <i class="i-lucide chevron-down"></i>
+    </button>
+  </div>
+  <div id="copy-page-content" role="menu" aria-orientation="vertical" aria-hidden="true">
+    <div role="presentation">
+      <div class="flex flex-col" role="group">
+        <button class="js-copy" type="button" role="menuitem"
+          data-url="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/routing.rst.txt">
+          <span class="iconify-icon">
+            <i class="i-lucide" data-icon="copy"></i>
+          </span>
+          <span>Copy page</span>
+        </button>
+        <a role="menuitem" href="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/routing.rst.txt" target="_blank" rel="nofollow"><iconify-icon icon="bi:code-slash"></iconify-icon>
+            <span>View Source</span></a><a role="menuitem" href="https://chatgpt.com/?hints=search&q=Read%20https%3A//raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/routing.rst.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:openai"></iconify-icon>
+          <span>Open in ChatGPT</span>
+        </a><a role="menuitem" href="https://claude.ai/new?q=Read%20https%3A//raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/routing.rst.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:claude"></iconify-icon>
+          <span>Open in Claude</span>
+        </a></div>
+    </div>
+  </div>
+</div><article class="yue" role="main">
+          <section id="module-advanced_alchemy.routing">
+<span id="replica-routing"></span><h1>Replica Routing<a class="headerlink" href="#module-advanced_alchemy.routing" title="Link to this heading">#</a></h1>
+<p>Read/write replica session routing for SQLAlchemy engines and sessions. See
+<a class="reference internal" href="config/routing.html#advanced_alchemy.config.routing.RoutingConfig" title="advanced_alchemy.config.routing.RoutingConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoutingConfig</span></code></a>,
+<a class="reference internal" href="config/routing.html#advanced_alchemy.config.routing.ReplicaConfig" title="advanced_alchemy.config.routing.ReplicaConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReplicaConfig</span></code></a>, and
+<a class="reference internal" href="config/routing.html#advanced_alchemy.config.routing.RoutingStrategy" title="advanced_alchemy.config.routing.RoutingStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoutingStrategy</span></code></a> for configuration.</p>
+<section id="routing-sessions-session-makers">
+<h2>Routing Sessions &amp; Session Makers<a class="headerlink" href="#routing-sessions-session-makers" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.RoutingAsyncSession">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.routing.</span></span><span class="sig-name descname"><span class="pre">RoutingAsyncSession</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">routing_config</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">selectors</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">default_engine</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.routing.RoutingAsyncSession" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncSession</span></code></p>
+<p>Async session with read/write routing support.</p>
+<p>Wraps <a class="reference internal" href="#advanced_alchemy.routing.RoutingSyncSession" title="advanced_alchemy.routing.RoutingSyncSession"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoutingSyncSession</span></code></a> to provide async routing capabilities.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.RoutingSyncSession">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.routing.</span></span><span class="sig-name descname"><span class="pre">RoutingSyncSession</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">routing_config</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">selectors</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">default_engine</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.routing.RoutingSyncSession" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></p>
+<p>Synchronous session with read/write routing via <code class="docutils literal notranslate"><span class="pre">get_bind()</span></code>.</p>
+<p>This session class extends SQLAlchemy’s <code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code> to provide
+automatic routing of operations to different engine groups (e.g. writer/reader).</p>
+<p>The routing decision is made in <code class="docutils literal notranslate"><span class="pre">get_bind()</span></code> based on:
+1. Execution options (<code class="docutils literal notranslate"><span class="pre">bind_group</span></code>)
+2. Context variables (<code class="docutils literal notranslate"><span class="pre">bind_group</span></code>, <code class="docutils literal notranslate"><span class="pre">force_primary</span></code>)
+3. Stickiness state
+4. Operation type (Write vs Read)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>_default_engine</strong> (<em>Engine</em>) – The default (write) database engine.</p></li>
+<li><p><strong>_selectors</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#advanced_alchemy.routing.selectors.EngineSelector" title="advanced_alchemy.routing.selectors.EngineSelector"><em>EngineSelector</em></a><em>[</em><em>Engine</em><em>]</em><em>]</em>) – Map of group names to engine selectors.</p></li>
+<li><p><strong>_routing_config</strong> (<a class="reference internal" href="config/routing.html#advanced_alchemy.config.routing.RoutingConfig" title="advanced_alchemy.routing.RoutingConfig"><em>RoutingConfig</em></a>) – Configuration for routing behavior.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.RoutingSyncSession.get_bind">
+<span class="sig-name descname"><span class="pre">get_bind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clause</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.routing.RoutingSyncSession.get_bind" title="Link to this definition">#</a></dt>
+<dd><p>Route to appropriate engine based on operation and context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mapper</strong> (<em>Mapper</em><em>[</em><em>Any</em><em>] </em><em>| </em><em>type</em><em>[</em><em>Any</em><em>] </em><em>| </em><em>None</em>) – Optional mapper for the operation.</p></li>
+<li><p><strong>clause</strong> (<em>Any</em><em> | </em><em>None</em>) – The SQL clause being executed.</p></li>
+<li><p><strong>**kwargs</strong> (<em>Any</em>) – Additional keyword arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The selected engine.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Engine</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.RoutingAsyncSessionMaker">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.routing.</span></span><span class="sig-name descname"><span class="pre">RoutingAsyncSessionMaker</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">routing_config</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">engine_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">session_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">create_engine_callable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">create_async_engine</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.routing.RoutingAsyncSessionMaker" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Factory for creating async routing sessions.</p>
+<p>This class creates <a class="reference internal" href="#advanced_alchemy.routing.RoutingAsyncSession" title="advanced_alchemy.routing.RoutingAsyncSession"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoutingAsyncSession</span></code></a> instances with properly
+configured async engines and routing selectors.</p>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<p>Creating an async routing session maker:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">maker</span> <span class="o">=</span> <span class="n">RoutingAsyncSessionMaker</span><span class="p">(</span>
+</span><span data-line="2">    <span class="n">routing_config</span><span class="o">=</span><span class="n">RoutingConfig</span><span class="p">(</span>
+</span><span data-line="3">        <span class="n">engines</span><span class="o">=</span><span class="p">{</span>
+</span><span data-line="4">            <span class="s2">&quot;writer&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;postgresql+asyncpg://primary&quot;</span><span class="p">],</span>
+</span><span data-line="5">            <span class="s2">&quot;reader&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;postgresql+asyncpg://replica1&quot;</span><span class="p">],</span>
+</span><span data-line="6">        <span class="p">}</span>
+</span><span data-line="7">    <span class="p">),</span>
+</span><span data-line="8">    <span class="n">engine_config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;pool_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+</span><span data-line="9"><span class="p">)</span>
+</span><span data-line="10">
+</span><span data-line="11"><span class="k">async</span> <span class="k">with</span> <span class="n">maker</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span data-line="12">    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">User</span><span class="p">))</span>
+</span></pre></div>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.RoutingAsyncSessionMaker.close_all">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">close_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.routing.RoutingAsyncSessionMaker.close_all" title="Link to this definition">#</a></dt>
+<dd><p>Close all engines and release connections.</p>
+<p>Call this when shutting down to properly release database connections.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.RoutingSyncSessionMaker">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.routing.</span></span><span class="sig-name descname"><span class="pre">RoutingSyncSessionMaker</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">routing_config</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">engine_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">session_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">create_engine_callable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">create_engine</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.routing.RoutingSyncSessionMaker" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Factory for creating sync routing sessions.</p>
+<p>This class creates <a class="reference internal" href="#advanced_alchemy.routing.RoutingSyncSession" title="advanced_alchemy.routing.RoutingSyncSession"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoutingSyncSession</span></code></a> instances with properly
+configured engines and routing selectors.</p>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<p>Creating a routing session maker:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">maker</span> <span class="o">=</span> <span class="n">RoutingSyncSessionMaker</span><span class="p">(</span>
+</span><span data-line="2">    <span class="n">routing_config</span><span class="o">=</span><span class="n">RoutingConfig</span><span class="p">(</span>
+</span><span data-line="3">        <span class="n">engines</span><span class="o">=</span><span class="p">{</span>
+</span><span data-line="4">            <span class="s2">&quot;writer&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;postgresql://primary&quot;</span><span class="p">],</span>
+</span><span data-line="5">            <span class="s2">&quot;reader&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;postgresql://replica1&quot;</span><span class="p">],</span>
+</span><span data-line="6">        <span class="p">}</span>
+</span><span data-line="7">    <span class="p">),</span>
+</span><span data-line="8">    <span class="n">engine_config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;pool_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+</span><span data-line="9"><span class="p">)</span>
+</span><span data-line="10">
+</span><span data-line="11"><span class="n">session</span> <span class="o">=</span> <span class="n">maker</span><span class="p">()</span>
+</span></pre></div>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.RoutingSyncSessionMaker.close_all">
+<span class="sig-name descname"><span class="pre">close_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.routing.RoutingSyncSessionMaker.close_all" title="Link to this definition">#</a></dt>
+<dd><p>Close all engines and release connections.</p>
+<p>Call this when shutting down to properly release database connections.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.dispose_session_maker_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.routing.</span></span><span class="sig-name descname"><span class="pre">dispose_session_maker_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_maker</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.routing.dispose_session_maker_async" title="Link to this definition">#</a></dt>
+<dd><p>Dispose all engines owned by an async routing session maker.</p>
+<p>No-op for non-routing session makers; the framework is responsible for
+disposing <code class="docutils literal notranslate"><span class="pre">engine_instance</span></code> separately. Use during application shutdown
+to release connections held by routing pools (primary + replicas).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>session_maker</strong> (<em>Any</em>) – A session maker instance (any type).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.dispose_session_maker_sync">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.routing.</span></span><span class="sig-name descname"><span class="pre">dispose_session_maker_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_maker</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.routing.dispose_session_maker_sync" title="Link to this definition">#</a></dt>
+<dd><p>Dispose all engines owned by a sync routing session maker.</p>
+<p>No-op for non-routing session makers; the framework is responsible for
+disposing <code class="docutils literal notranslate"><span class="pre">engine_instance</span></code> separately. Use during application shutdown
+to release connections held by routing pools (primary + replicas).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>session_maker</strong> (<em>Any</em>) – A session maker instance (any type).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-advanced_alchemy.routing.selectors">
+<span id="replica-selectors"></span><h2>Replica Selectors<a class="headerlink" href="#module-advanced_alchemy.routing.selectors" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.selectors.EngineSelector">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.routing.selectors.</span></span><span class="sig-name descname"><span class="pre">EngineSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/routing/selectors.html#EngineSelector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.routing.selectors.EngineSelector" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">EngineT</span></code>]</p>
+<p>Abstract base class for engine selection strategies.</p>
+<p>Subclasses implement different algorithms for choosing which
+engine to use for operations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>_engines</strong> – List of engines to select from.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.selectors.EngineSelector.next">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/routing/selectors.html#EngineSelector.next"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.routing.selectors.EngineSelector.next" title="Link to this definition">#</a></dt>
+<dd><p>Select the next engine to use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The selected engine.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – If no engines are available.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>EngineT</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.ReplicaSelector">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.routing.</span></span><span class="sig-name descname"><span class="pre">ReplicaSelector</span></span><a class="headerlink" href="#advanced_alchemy.routing.ReplicaSelector" title="Link to this definition">#</a></dt>
+<dd><p>alias of <a class="reference internal" href="#advanced_alchemy.routing.selectors.EngineSelector" title="advanced_alchemy.routing.selectors.EngineSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">EngineSelector</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.RoundRobinSelector">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.routing.</span></span><span class="sig-name descname"><span class="pre">RoundRobinSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engines</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.routing.RoundRobinSelector" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.routing.selectors.EngineSelector" title="advanced_alchemy.routing.selectors.EngineSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">EngineSelector</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">EngineT</span></code>]</p>
+<p>Round-robin engine selection.</p>
+<p>Cycles through engines in order, distributing load evenly
+across all available engines.</p>
+<p>This selector is thread-safe.</p>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<p>Creating a round-robin selector:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">selector</span> <span class="o">=</span> <span class="n">RoundRobinSelector</span><span class="p">(</span><span class="n">engines</span><span class="p">)</span>
+</span><span data-line="2"><span class="n">engine1</span> <span class="o">=</span> <span class="n">selector</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+</span><span data-line="3"><span class="n">engine2</span> <span class="o">=</span> <span class="n">selector</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+</span><span data-line="4"><span class="n">engine3</span> <span class="o">=</span> <span class="n">selector</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+</span></pre></div>
+</div>
+<p>This cycles through engines in order and wraps back to the first.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.RoundRobinSelector.next">
+<span class="sig-name descname"><span class="pre">next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.routing.RoundRobinSelector.next" title="Link to this definition">#</a></dt>
+<dd><p>Select the next engine in round-robin order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The next engine in the cycle.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – If no engines are configured.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>EngineT</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.RandomSelector">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.routing.</span></span><span class="sig-name descname"><span class="pre">RandomSelector</span></span><a class="headerlink" href="#advanced_alchemy.routing.RandomSelector" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.routing.selectors.EngineSelector" title="advanced_alchemy.routing.selectors.EngineSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">EngineSelector</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">EngineT</span></code>]</p>
+<p>Random engine selection.</p>
+<p>Selects engines randomly, which can help with load distribution
+when engines have varying capacity or when you want to avoid
+predictable patterns.</p>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<p>Creating a random selector:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">selector</span> <span class="o">=</span> <span class="n">RandomSelector</span><span class="p">(</span><span class="n">engines</span><span class="p">)</span>
+</span><span data-line="2"><span class="n">engine</span> <span class="o">=</span> <span class="n">selector</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+</span></pre></div>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.RandomSelector.next">
+<span class="sig-name descname"><span class="pre">next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.routing.RandomSelector.next" title="Link to this definition">#</a></dt>
+<dd><p>Select a random engine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A randomly selected engine.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – If no engines are configured.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>EngineT</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="routing-context-managers-state">
+<h2>Routing Context Managers &amp; State<a class="headerlink" href="#routing-context-managers-state" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.primary_context">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.routing.</span></span><span class="sig-name descname"><span class="pre">primary_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.routing.primary_context" title="Link to this definition">#</a></dt>
+<dd><p>Force all operations to use primary within this context.</p>
+<p>Use this context manager when you need to ensure all database operations
+(including reads) go to the primary database.</p>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<p>Force a specific query to use the primary database:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">primary_context</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">with</span> <span class="n">primary_context</span><span class="p">():</span>
+</span><span data-line="4">    <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+</span><span data-line="5">    <span class="n">orders</span> <span class="o">=</span> <span class="k">await</span> <span class="n">order_repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">()</span>
+</span></pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Generator</em>[<em>None</em>, <em>None</em>, <em>None</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.replica_context">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.routing.</span></span><span class="sig-name descname"><span class="pre">replica_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.routing.replica_context" title="Link to this definition">#</a></dt>
+<dd><p>Force read operations to use replicas (temporarily disable stickiness).</p>
+<p>Use this context manager when you want to explicitly allow reads to go
+to replicas, even if a previous write has set the sticky-to-primary state.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Use with caution! This can lead to read-after-write inconsistency
+if you’re reading data that was recently written.</p>
+</div>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<p>Allow reads to use replicas after a write:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">replica_context</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+</span><span data-line="6">
+</span><span data-line="7"><span class="k">with</span> <span class="n">replica_context</span><span class="p">():</span>
+</span><span data-line="8">    <span class="n">users</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">()</span>
+</span></pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Generator</em>[<em>None</em>, <em>None</em>, <em>None</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.use_bind_group">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.routing.</span></span><span class="sig-name descname"><span class="pre">use_bind_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.routing.use_bind_group" title="Link to this definition">#</a></dt>
+<dd><p>Force operations to use a specific bind group.</p>
+<p>Use this context manager to route operations to a specific group of engines,
+such as “analytics” or “reporting”.</p>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<p>Route a query to the analytics database:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">use_bind_group</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">with</span> <span class="n">use_bind_group</span><span class="p">(</span><span class="s2">&quot;analytics&quot;</span><span class="p">):</span>
+</span><span data-line="4">    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">()</span>
+</span></pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Name of the bind group to use.</p>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Generator</em>[<em>None</em>, <em>None</em>, <em>None</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.reset_routing_context">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.routing.</span></span><span class="sig-name descname"><span class="pre">reset_routing_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.routing.reset_routing_context" title="Link to this definition">#</a></dt>
+<dd><p>Reset all routing context variables to their defaults.</p>
+<p>This is typically called after a commit or rollback to allow
+subsequent reads to use replicas again.</p>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<p>Manual reset after transaction:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">reset_routing_context</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span><span data-line="4"><span class="n">reset_routing_context</span><span class="p">()</span>
+</span></pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.stick_to_primary_var">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.routing.</span></span><span class="sig-name descname"><span class="pre">stick_to_primary_var</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">contextvars.ContextVar</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#advanced_alchemy.routing.stick_to_primary_var" title="Link to this definition">#</a></dt>
+<dd><p>Context variable tracking whether subsequent reads should stick to the primary after a write.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="advanced_alchemy.routing.force_primary_var">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.routing.</span></span><span class="sig-name descname"><span class="pre">force_primary_var</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">contextvars.ContextVar</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#advanced_alchemy.routing.force_primary_var" title="Link to this definition">#</a></dt>
+<dd><p>Context variable forcing operations onto the primary engine.</p>
+</dd></dl>
+
+</section>
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="types.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Custom Types</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="cache.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Caching</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Litestar Organization</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../_static/documentation_options.js?v=4f3eadab"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=a56c686a"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=b8b12719"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/shibuya.js?v=50760d75"></script></body>
+</html>
