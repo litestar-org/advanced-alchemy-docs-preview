@@ -273,7 +273,7 @@ data-aria-dark="Switch to auto color mode">
 <span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncGenerator</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">asynccontextmanager</span>
 </span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
-</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
 </span><span data-line="5">
 </span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncConnection</span><span class="p">,</span> <span class="n">AsyncEngine</span><span class="p">,</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">async_sessionmaker</span><span class="p">,</span> <span class="n">create_async_engine</span>
 </span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">sessionmaker</span> <span class="k">as</span> <span class="n">sync_sessionmaker</span>
@@ -425,60 +425,63 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="143">            <span class="n">AsyncFileObjectListener</span><span class="p">,</span>
 </span><span data-line="144">            <span class="n">touch_updated_timestamp</span><span class="p">,</span>
 </span><span data-line="145">        <span class="p">)</span>
-</span><span data-line="146">
-</span><span data-line="147">        <span class="c1"># Use routing session maker if routing is configured</span>
+</span><span data-line="146">        <span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoutingAsyncSessionMaker</span><span class="p">,</span> <span class="n">RoutingSyncSession</span>
+</span><span data-line="147">
 </span><span data-line="148">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">routing_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="149">            <span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoutingAsyncSessionMaker</span>
-</span><span data-line="150">
-</span><span data-line="151">            <span class="n">routing_maker</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">AsyncSession</span><span class="p">]</span> <span class="o">=</span> <span class="n">RoutingAsyncSessionMaker</span><span class="p">(</span>
-</span><span data-line="152">                <span class="n">routing_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">routing_config</span><span class="p">,</span>
-</span><span data-line="153">                <span class="n">engine_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">engine_config_dict</span><span class="p">,</span>
-</span><span data-line="154">                <span class="n">session_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">session_config_dict</span><span class="p">,</span>
-</span><span data-line="155">            <span class="p">)</span>
-</span><span data-line="156">            <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span> <span class="o">=</span> <span class="n">routing_maker</span>
-</span><span data-line="157">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="158">            <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;Callable[[], AsyncSession]&quot;</span><span class="p">,</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">create_session_maker</span><span class="p">())</span>  <span class="c1"># type: ignore[redundant-cast]</span>
-</span><span data-line="159">
-</span><span data-line="160">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">,</span> <span class="n">async_sessionmaker</span><span class="p">):</span>
-</span><span data-line="161">            <span class="n">session_maker</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span>
-</span><span data-line="162">                <span class="s2">&quot;async_sessionmaker[AsyncSession]&quot;</span><span class="p">,</span>
-</span><span data-line="163">                <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">,</span>  <span class="c1"># pyright: ignore[reportUnknownMemberType]</span>
-</span><span data-line="164">            <span class="p">)</span>
-</span><span data-line="165">
-</span><span data-line="166">            <span class="c1"># async_sessionmaker does not support Session-level events directly.</span>
-</span><span data-line="167">            <span class="c1"># Create a sync sessionmaker, register events on it, and inject it</span>
-</span><span data-line="168">            <span class="c1"># as sync_session_class so events fire on the underlying sync Session.</span>
-</span><span data-line="169">            <span class="n">sync_maker</span> <span class="o">=</span> <span class="n">sync_sessionmaker</span><span class="p">()</span>
-</span><span data-line="170">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_file_object_listener</span><span class="p">:</span>
-</span><span data-line="171">                <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">sync_maker</span><span class="p">,</span> <span class="s2">&quot;before_flush&quot;</span><span class="p">,</span> <span class="n">AsyncFileObjectListener</span><span class="o">.</span><span class="n">before_flush</span><span class="p">)</span>
-</span><span data-line="172">                <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">sync_maker</span><span class="p">,</span> <span class="s2">&quot;after_commit&quot;</span><span class="p">,</span> <span class="n">AsyncFileObjectListener</span><span class="o">.</span><span class="n">after_commit</span><span class="p">)</span>
-</span><span data-line="173">                <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">sync_maker</span><span class="p">,</span> <span class="s2">&quot;after_rollback&quot;</span><span class="p">,</span> <span class="n">AsyncFileObjectListener</span><span class="o">.</span><span class="n">after_rollback</span><span class="p">)</span>
-</span><span data-line="174">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_touch_updated_timestamp_listener</span><span class="p">:</span>
-</span><span data-line="175">                <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">sync_maker</span><span class="p">,</span> <span class="s2">&quot;before_flush&quot;</span><span class="p">,</span> <span class="n">touch_updated_timestamp</span><span class="p">)</span>
-</span><span data-line="176">            <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">sync_maker</span><span class="p">,</span> <span class="s2">&quot;after_commit&quot;</span><span class="p">,</span> <span class="n">AsyncCacheListener</span><span class="o">.</span><span class="n">after_commit</span><span class="p">)</span>
-</span><span data-line="177">            <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">sync_maker</span><span class="p">,</span> <span class="s2">&quot;after_rollback&quot;</span><span class="p">,</span> <span class="n">AsyncCacheListener</span><span class="o">.</span><span class="n">after_rollback</span><span class="p">)</span>
-</span><span data-line="178">            <span class="n">session_maker</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">sync_session_class</span><span class="o">=</span><span class="n">sync_maker</span><span class="p">)</span>
-</span><span data-line="179">
-</span><span data-line="180">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pyright: ignore</span>
-</span><span data-line="181">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Session maker was not initialized.&quot;</span>  <span class="c1"># type: ignore[unreachable]</span>
-</span><span data-line="182">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span data-line="183">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;async_sessionmaker[AsyncSession]&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownMemberType]</span></div>
+</span><span data-line="149">            <span class="n">routing_maker</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">AsyncSession</span><span class="p">]</span> <span class="o">=</span> <span class="n">RoutingAsyncSessionMaker</span><span class="p">(</span>
+</span><span data-line="150">                <span class="n">routing_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">routing_config</span><span class="p">,</span>
+</span><span data-line="151">                <span class="n">engine_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">engine_config_dict</span><span class="p">,</span>
+</span><span data-line="152">                <span class="n">session_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">session_config_dict</span><span class="p">,</span>
+</span><span data-line="153">            <span class="p">)</span>
+</span><span data-line="154">            <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span> <span class="o">=</span> <span class="n">routing_maker</span>
+</span><span data-line="155">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="156">            <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;Callable[[], AsyncSession]&quot;</span><span class="p">,</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">create_session_maker</span><span class="p">())</span>  <span class="c1"># type: ignore[redundant-cast]</span>
+</span><span data-line="157">
+</span><span data-line="158">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">,</span> <span class="p">(</span><span class="n">async_sessionmaker</span><span class="p">,</span> <span class="n">RoutingAsyncSessionMaker</span><span class="p">)):</span>
+</span><span data-line="159">            <span class="n">is_routing_maker</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span>
+</span><span data-line="160">                <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">,</span>  <span class="c1"># pyright: ignore[reportUnknownMemberType]</span>
+</span><span data-line="161">                <span class="n">RoutingAsyncSessionMaker</span><span class="p">,</span>
+</span><span data-line="162">            <span class="p">)</span>
+</span><span data-line="163">            <span class="n">sync_maker</span><span class="p">:</span> <span class="n">sync_sessionmaker</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="164">                <span class="n">sync_sessionmaker</span><span class="p">(</span><span class="n">class_</span><span class="o">=</span><span class="n">RoutingSyncSession</span><span class="p">)</span> <span class="k">if</span> <span class="n">is_routing_maker</span> <span class="k">else</span> <span class="n">sync_sessionmaker</span><span class="p">()</span>
+</span><span data-line="165">            <span class="p">)</span>
+</span><span data-line="166">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_file_object_listener</span><span class="p">:</span>
+</span><span data-line="167">                <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">sync_maker</span><span class="p">,</span> <span class="s2">&quot;before_flush&quot;</span><span class="p">,</span> <span class="n">AsyncFileObjectListener</span><span class="o">.</span><span class="n">before_flush</span><span class="p">)</span>
+</span><span data-line="168">                <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">sync_maker</span><span class="p">,</span> <span class="s2">&quot;after_commit&quot;</span><span class="p">,</span> <span class="n">AsyncFileObjectListener</span><span class="o">.</span><span class="n">after_commit</span><span class="p">)</span>
+</span><span data-line="169">                <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">sync_maker</span><span class="p">,</span> <span class="s2">&quot;after_rollback&quot;</span><span class="p">,</span> <span class="n">AsyncFileObjectListener</span><span class="o">.</span><span class="n">after_rollback</span><span class="p">)</span>
+</span><span data-line="170">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_touch_updated_timestamp_listener</span><span class="p">:</span>
+</span><span data-line="171">                <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">sync_maker</span><span class="p">,</span> <span class="s2">&quot;before_flush&quot;</span><span class="p">,</span> <span class="n">touch_updated_timestamp</span><span class="p">)</span>
+</span><span data-line="172">            <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">sync_maker</span><span class="p">,</span> <span class="s2">&quot;after_commit&quot;</span><span class="p">,</span> <span class="n">AsyncCacheListener</span><span class="o">.</span><span class="n">after_commit</span><span class="p">)</span>
+</span><span data-line="173">            <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">sync_maker</span><span class="p">,</span> <span class="s2">&quot;after_rollback&quot;</span><span class="p">,</span> <span class="n">AsyncCacheListener</span><span class="o">.</span><span class="n">after_rollback</span><span class="p">)</span>
+</span><span data-line="174">            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">,</span> <span class="n">RoutingAsyncSessionMaker</span><span class="p">):</span>  <span class="c1"># pyright: ignore[reportUnknownMemberType]</span>
+</span><span data-line="175">                <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">sync_session_class</span><span class="o">=</span><span class="n">sync_maker</span><span class="p">)</span>
+</span><span data-line="176">            <span class="k">else</span><span class="p">:</span>
+</span><span data-line="177">                <span class="n">session_maker</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span>
+</span><span data-line="178">                    <span class="s2">&quot;async_sessionmaker[AsyncSession]&quot;</span><span class="p">,</span>
+</span><span data-line="179">                    <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">,</span>  <span class="c1"># pyright: ignore[reportUnknownMemberType]</span>
+</span><span data-line="180">                <span class="p">)</span>
+</span><span data-line="181">                <span class="n">session_maker</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">sync_session_class</span><span class="o">=</span><span class="n">sync_maker</span><span class="p">)</span>
+</span><span data-line="182">
+</span><span data-line="183">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pyright: ignore</span>
+</span><span data-line="184">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Session maker was not initialized.&quot;</span>  <span class="c1"># type: ignore[unreachable]</span>
+</span><span data-line="185">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span data-line="186">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;async_sessionmaker[AsyncSession]&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownMemberType]</span></div>
 
-</span><span data-line="184">
+</span><span data-line="187">
 <div class="viewcode-block" id="SQLAlchemyAsyncConfig.get_session">
 <a class="viewcode-back" href="../../../reference/config/asyncio.html#advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig.get_session">[docs]</a>
-</span><span data-line="185">    <span class="nd">@asynccontextmanager</span>
-</span><span data-line="186">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_session</span><span class="p">(</span>
-</span><span data-line="187">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="188">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="n">AsyncSession</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span data-line="189"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a session from the session maker.</span>
-</span><span data-line="190">
-</span><span data-line="191"><span class="sd">        Yields:</span>
-</span><span data-line="192"><span class="sd">            AsyncGenerator[AsyncSession, None]: An async context manager that yields an AsyncSession.</span>
-</span><span data-line="193"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="194">        <span class="n">session_maker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_session_maker</span><span class="p">()</span>
-</span><span data-line="195">        <span class="k">async</span> <span class="k">with</span> <span class="n">session_maker</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-</span><span data-line="196">            <span class="k">yield</span> <span class="n">session</span></div>
+</span><span data-line="188">    <span class="nd">@asynccontextmanager</span>
+</span><span data-line="189">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_session</span><span class="p">(</span>
+</span><span data-line="190">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="191">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="n">AsyncSession</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span data-line="192"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a session from the session maker.</span>
+</span><span data-line="193">
+</span><span data-line="194"><span class="sd">        Yields:</span>
+</span><span data-line="195"><span class="sd">            AsyncGenerator[AsyncSession, None]: An async context manager that yields an AsyncSession.</span>
+</span><span data-line="196"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="197">        <span class="n">session_maker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_session_maker</span><span class="p">()</span>
+</span><span data-line="198">        <span class="k">async</span> <span class="k">with</span> <span class="n">session_maker</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span data-line="199">            <span class="k">yield</span> <span class="n">session</span></div>
 </div>
 
 </span></pre></div>
