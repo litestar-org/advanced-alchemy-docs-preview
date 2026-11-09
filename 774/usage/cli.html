@@ -729,43 +729,43 @@ Poetry</label><div class="sd-tab-content docutils">
 <p><strong>PostgreSQL enum changes</strong></p>
 <p>Alembic’s autogenerate does not detect changes to PostgreSQL native <code class="docutils literal notranslate"><span class="pre">ENUM</span></code>
 types on its own (for example, adding a value to an existing <code class="docutils literal notranslate"><span class="pre">StrEnum</span></code>).
-Advanced Alchemy’s migration templates automatically enable this detection
-when the optional <a class="reference external" href="https://pypi.org/project/alembic-postgresql-enum/">alembic-postgresql-enum</a> package is installed.
-Install it with the <code class="docutils literal notranslate"><span class="pre">postgresql</span></code> extra:</p>
+Advanced Alchemy automatically enables this detection for PostgreSQL
+connections when <a class="reference external" href="https://pypi.org/project/alembic-postgresql-enum/">alembic-postgresql-enum</a> is installed (included
+automatically with the <code class="docutils literal notranslate"><span class="pre">asyncpg</span></code>, <code class="docutils literal notranslate"><span class="pre">psycopg</span></code>, and <code class="docutils literal notranslate"><span class="pre">psycopg2</span></code> extras):</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" for="sd-tab-item-5">
 uv</label><div class="sd-tab-content docutils">
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">uv<span class="w"> </span>add<span class="w"> </span><span class="s2">&quot;advanced-alchemy[postgresql]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">uv<span class="w"> </span>add<span class="w"> </span><span class="s2">&quot;advanced-alchemy[asyncpg]&quot;</span>
 </span></pre></div>
 </div>
 </div>
 <input id="sd-tab-item-6" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" for="sd-tab-item-6">
 pip</label><div class="sd-tab-content docutils">
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;advanced-alchemy[postgresql]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;advanced-alchemy[asyncpg]&quot;</span>
 </span></pre></div>
 </div>
 </div>
 <input id="sd-tab-item-7" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" for="sd-tab-item-7">
 pdm</label><div class="sd-tab-content docutils">
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">pdm<span class="w"> </span>add<span class="w"> </span><span class="s2">&quot;advanced-alchemy[postgresql]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">pdm<span class="w"> </span>add<span class="w"> </span><span class="s2">&quot;advanced-alchemy[asyncpg]&quot;</span>
 </span></pre></div>
 </div>
 </div>
 <input id="sd-tab-item-8" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" for="sd-tab-item-8">
 poetry</label><div class="sd-tab-content docutils">
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">poetry<span class="w"> </span>add<span class="w"> </span><span class="s2">&quot;advanced-alchemy[postgresql]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">poetry<span class="w"> </span>add<span class="w"> </span><span class="s2">&quot;advanced-alchemy[asyncpg]&quot;</span>
 </span></pre></div>
 </div>
 </div>
 </div>
-<p>The generated <code class="docutils literal notranslate"><span class="pre">env.py</span></code> imports the package inside <code class="docutils literal notranslate"><span class="pre">contextlib.suppress(ModuleNotFoundError)</span></code>,
-so no configuration is required — it activates only when the package is present.
-If you initialized your migrations with an older version of Advanced Alchemy,
-add <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">alembic_postgresql_enum</span></code> near the top of your <code class="docutils literal notranslate"><span class="pre">env.py</span></code> to enable it.</p>
+<p>Both <a class="reference internal" href="../reference/alembic/commands.html#advanced_alchemy.alembic.commands.AlembicCommandConfig" title="advanced_alchemy.alembic.commands.AlembicCommandConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlembicCommandConfig</span></code></a> and the
+generated <code class="docutils literal notranslate"><span class="pre">env.py</span></code> load <code class="docutils literal notranslate"><span class="pre">alembic_postgresql_enum</span></code> inside
+<code class="docutils literal notranslate"><span class="pre">contextlib.suppress(ModuleNotFoundError)</span></code> when the target dialect is
+PostgreSQL, so no manual configuration is required.</p>
 </div>
 </section>
 </section>
