@@ -6298,6 +6298,23 @@ Select record by slug value.
 - **Returns**: The model instance or None if not found.
 - **Return type**: [*ModelT*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT) | *None*
 
+##### `get_available_slug`
+
+```python
+async get_available_slug(value_to_slugify, **kwargs)
+```
+
+Get a unique slug for the supplied value.
+
+If the value is found to exist, a random 4 digit character is appended to the end.
+
+Override this method to change the default behavior
+
+- **Parameters**: - **value_to_slugify** (`str`) – A string that should be converted to a unique slug.
+- ****kwargs** (*Any*) – Additional parameters.
+- **Returns**: a unique slug for the supplied value. This is safe for URLs and other unique identifiers.
+- **Return type**: *str*
+
 ### `advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository`
 
 ```python
@@ -6506,19 +6523,6 @@ For relationship attributes, values can be:
 - Model instance: Passed through unchanged
 - **Returns**: A new instance of the model populated with the provided values.
 - **Return type**: [*ModelT*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)
-
-### `advanced_alchemy.repository.resolve_generic_type_args`
-
-```python
-advanced_alchemy.repository.resolve_generic_type_args(cls, target_origin)
-```
-
-Extract concrete generic type arguments for `target_origin` from `cls.__mro__`.
-
-- **Parameters**: - **cls** (*type**[**Any**]*) – The subclass being inspected.
-- **target_origin** (*type**[**Any**]*) – The generic base class or protocol to match.
-- **Returns**: Tuple of type arguments from the first matching generic base with concrete arguments.
-- **Return type**: *tuple*[*Any*, …]
 
 ### `advanced_alchemy.repository.DEFAULT_ERROR_MESSAGE_TEMPLATES`
 
