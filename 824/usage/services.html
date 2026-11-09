@@ -410,14 +410,10 @@ data-aria-dark="Switch to auto color mode">
 <input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
 <label class="sd-tab-label" for="sd-tab-item-2">
 3. Service Class</label><div class="sd-tab-content docutils">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepository</span>
-</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepositoryService</span>
-</span><span data-line="3">
-</span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">BlogPostService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">BlogPost</span><span class="p">]):</span>
-</span><span data-line="5">    <span class="k">class</span><span class="w"> </span><span class="nc">Repo</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepository</span><span class="p">[</span><span class="n">BlogPost</span><span class="p">]):</span>
-</span><span data-line="6">        <span class="n">model_type</span> <span class="o">=</span> <span class="n">BlogPost</span>
-</span><span data-line="7">
-</span><span data-line="8">    <span class="n">repository_type</span> <span class="o">=</span> <span class="n">Repo</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepositoryService</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="k">class</span><span class="w"> </span><span class="nc">BlogPostService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">BlogPost</span><span class="p">]):</span>
+</span><span data-line="4">    <span class="k">pass</span>
 </span></pre></div>
 </div>
 </div>
@@ -442,17 +438,12 @@ data-aria-dark="Switch to auto color mode">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncSlugRepository</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelDictT</span><span class="p">,</span> <span class="n">is_dict_with_field</span><span class="p">,</span> <span class="n">is_dict_without_field</span><span class="p">,</span> <span class="n">schema_dump</span>
 </span><span data-line="3">
-</span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">BlogTagService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">BlogTag</span><span class="p">]):</span>
-</span><span data-line="5">    <span class="k">class</span><span class="w"> </span><span class="nc">Repo</span><span class="p">(</span><span class="n">SQLAlchemyAsyncSlugRepository</span><span class="p">[</span><span class="n">BlogTag</span><span class="p">]):</span>
-</span><span data-line="6">        <span class="n">model_type</span> <span class="o">=</span> <span class="n">BlogTag</span>
-</span><span data-line="7">
-</span><span data-line="8">    <span class="n">repository_type</span> <span class="o">=</span> <span class="n">Repo</span>
-</span><span data-line="9">
-</span><span data-line="10">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">to_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">ModelDictT</span><span class="p">[</span><span class="n">BlogTag</span><span class="p">],</span> <span class="n">operation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlogTag</span><span class="p">:</span>
-</span><span data-line="11">        <span class="n">dumped</span> <span class="o">=</span> <span class="n">schema_dump</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span data-line="12">        <span class="k">if</span> <span class="n">is_dict_without_field</span><span class="p">(</span><span class="n">dumped</span><span class="p">,</span> <span class="s2">&quot;slug&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_dict_with_field</span><span class="p">(</span><span class="n">dumped</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">):</span>
-</span><span data-line="13">            <span class="n">dumped</span><span class="p">[</span><span class="s2">&quot;slug&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_available_slug</span><span class="p">(</span><span class="n">dumped</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
-</span><span data-line="14">        <span class="k">return</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">dumped</span><span class="p">,</span> <span class="n">operation</span><span class="p">)</span>
+</span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">BlogTagService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">BlogTag</span><span class="p">,</span> <span class="n">SQLAlchemyAsyncSlugRepository</span><span class="p">[</span><span class="n">BlogTag</span><span class="p">]]):</span>
+</span><span data-line="5">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">to_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">ModelDictT</span><span class="p">[</span><span class="n">BlogTag</span><span class="p">],</span> <span class="n">operation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlogTag</span><span class="p">:</span>
+</span><span data-line="6">        <span class="n">dumped</span> <span class="o">=</span> <span class="n">schema_dump</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="7">        <span class="k">if</span> <span class="n">is_dict_without_field</span><span class="p">(</span><span class="n">dumped</span><span class="p">,</span> <span class="s2">&quot;slug&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_dict_with_field</span><span class="p">(</span><span class="n">dumped</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">):</span>
+</span><span data-line="8">            <span class="n">dumped</span><span class="p">[</span><span class="s2">&quot;slug&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_available_slug</span><span class="p">(</span><span class="n">dumped</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+</span><span data-line="9">        <span class="k">return</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_model</span><span class="p">(</span><span class="n">dumped</span><span class="p">,</span> <span class="n">operation</span><span class="p">)</span>
 </span></pre></div>
 </div>
 </section>
@@ -538,9 +529,7 @@ SQLModel</label><div class="sd-tab-content docutils">
 </span><span data-line="10">    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
 </span><span data-line="11">
 </span><span data-line="12"><span class="k">class</span><span class="w"> </span><span class="nc">ArticleService</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepositoryService</span><span class="p">[</span><span class="n">ArticleRow</span><span class="p">]):</span>
-</span><span data-line="13">    <span class="k">class</span><span class="w"> </span><span class="nc">Repo</span><span class="p">(</span><span class="n">SQLAlchemyAsyncRepository</span><span class="p">[</span><span class="n">ArticleRow</span><span class="p">]):</span>
-</span><span data-line="14">        <span class="n">model_type</span> <span class="o">=</span> <span class="n">ArticleRow</span>
-</span><span data-line="15">    <span class="n">repository_type</span> <span class="o">=</span> <span class="n">Repo</span>
+</span><span data-line="13">    <span class="k">pass</span>
 </span></pre></div>
 </div>
 </div>
