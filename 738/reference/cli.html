@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="amber" data-content_root="../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Command-Line Interface - Advanced Alchemy</title><link rel="shortcut icon" href="../_static/favicon.svg"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Exceptions" href="exceptions.html" /><link rel="prev" title="Utilities" href="alembic/utils.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=43bd62f4" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9db1225a" />
+    <link rel="stylesheet" type="text/css" href="../_static/syntax-highlighting.css?v=64e51511" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="Command-Line Interface"/>
+  <meta property="og:image" content="https://docs.advanced-alchemy.litestar.dev/latest/_static/og-social-dark.png"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="/">
+      <img class="light-logo" src="../_static/logo.svg" alt="Advanced Alchemy" height="28" loading="lazy" />
+      <img class="dark-logo" src="../_static/logo.svg" alt="Advanced Alchemy" height="28" loading="lazy" />
+      <strong>Advanced Alchemy</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul>
+      <li class="link"><a class="js-menu" href="../usage/index.html" id="nav-trigger-1" aria-controls="nav-children-1">
+            <span>Learn</span>
+            <i class="i-lucide chevron-down"></i>
+          </a>
+        <ul id="nav-children-1" aria-labelledby="nav-trigger-1"><li><a href="../getting-started.html">
+                <span>Getting Started</span>
+                <small>Install and configure Advanced Alchemy</small>
+              </a></li><li><a href="../usage/modeling/index.html">
+                <span>Data Modeling</span>
+                <small>Declarative bases, mixins, and custom types</small>
+              </a></li><li><a href="../usage/repositories/index.html">
+                <span>Repositories</span>
+                <small>Async and sync data access and filtering</small>
+              </a></li><li><a href="../usage/services.html">
+                <span>Services</span>
+                <small>Business logic and schema/DTO hydration</small>
+              </a></li><li><a href="../usage/routing.html">
+                <span>Replica Routing</span>
+                <small>Read/write replica session routing</small>
+              </a></li><li><a href="../usage/caching.html">
+                <span>Caching</span>
+                <small>Dogpile L2 query and entity caching</small>
+              </a></li><li><a href="../usage/cli.html">
+                <span>CLI & Migrations</span>
+                <small>Alembic CLI and database workflows</small>
+              </a></li></ul>
+      </li>
+      <li class="link"><a class="js-menu" href="../usage/frameworks/index.html" id="nav-trigger-2" aria-controls="nav-children-2">
+            <span>Frameworks</span>
+            <i class="i-lucide chevron-down"></i>
+          </a>
+        <ul id="nav-children-2" aria-labelledby="nav-trigger-2"><li><a href="../usage/frameworks/index.html">
+                <span>Overview</span>
+                <small>Capabilities and components across all supported frameworks</small>
+              </a></li><li><a href="../usage/frameworks/litestar.html">
+                <span>Litestar</span>
+                <small>Plugin, DI providers, DTOs, storage, and session stores</small>
+              </a></li><li><a href="../usage/frameworks/fastapi.html">
+                <span>FastAPI</span>
+                <small>Extension, lifespan, Annotated dependencies, and storage</small>
+              </a></li><li><a href="../usage/frameworks/starlette.html">
+                <span>Starlette</span>
+                <small>ASGI middleware and request-scoped sessions</small>
+              </a></li><li><a href="../usage/frameworks/flask.html">
+                <span>Flask</span>
+                <small>WSGI and async Flask integration</small>
+              </a></li><li><a href="../usage/frameworks/sanic.html">
+                <span>Sanic</span>
+                <small>Sanic extension and dependency injection</small>
+              </a></li></ul>
+      </li><li class="link"><a href="index.html">Reference</a></li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-4" aria-controls="nav-children-4">
+            <span>About</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-4" aria-labelledby="nav-trigger-4"><li><a href="../changelog.html">
+                <span>Changelog</span>
+                <small>All changes for Advanced Alchemy</small>
+              </a></li><li><a href="https://litestar.dev/about/organization">
+                <span>Litestar Organization</span>
+                <small>Details about the Litestar organization, the team behind Advanced Alchemy</small>
+              </a></li><li><a href="../releases.html">
+                <span>Releases</span>
+                <small>Explore the release process, versioning, and deprecation policy for Advanced Alchemy</small>
+              </a></li><li><a href="../contribution-guide.html">
+                <span>Contributing</span>
+                <small>Learn how to contribute to the Advanced Alchemy project</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file">
+                <span>Code of Conduct</span>
+                <small>Review the etiquette for interacting with the Advanced Alchemy community</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file#security-ov-file">
+                <span>Security</span>
+                <small>Overview of Advanced Alchemy's security protocols</small>
+              </a></li><li><a href="https://discord.gg/dSDXd4mKhp">
+                <span>Discord Help Forum</span>
+                <small>Ask questions and get help in Discord</small>
+              </a></li><li><a href="https://github.com/litestar-org/advanced-alchemy/discussions">
+                <span>GitHub Discussions</span>
+                <small>Discuss ideas and patterns with the community</small>
+              </a></li><li><a href="https://github.com/sponsors/Litestar-Org">Sponsor</a></li></ul>
+      </li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="2"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Usage Guide</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/index.html">Overview</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/modeling/index.html">Data Modeling</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/basics.html">Modeling Basics</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/inheritance.html">Inheritance Patterns</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/sqlmodel.html">SQLModel Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/types.html">Portable Column Types</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/security_and_storage_types.html">Security and File Storage Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/repositories/index.html">Repositories</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/repositories/basics.html">Repository Basics</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/repositories/filtering.html">Filtering and Pagination</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/repositories/advanced.html">Advanced Repository</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/services.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/routing.html">Read/Write Routing</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/caching.html">Caching</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/cli.html">CLI &amp; Migrations</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/cli_commands.html">Command Workflows</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/database_seeding.html">Database Seeding</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Framework Integrations</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/index.html">Overview</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/litestar.html">Litestar</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/litestar_dtos.html">Services, Filters &amp; DTOs</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/litestar_sessions.html">Database &amp; Server Sessions</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/litestar_storage.html">File &amp; Object Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/fastapi.html">FastAPI</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/fastapi_dependencies.html">Services &amp; Filter Depends</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/fastapi_storage.html">File Storage &amp; Multi-Binds</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/starlette.html">Starlette</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/flask.html">Flask</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/sanic.html">Sanic</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/adk/index.html">Google ADK</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/adk/getting-started.html">Getting Started</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/adk/sessions.html">Sessions</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/adk/artifacts.html">Artifacts</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/adk/memory.html">Memory</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/adk/frameworks.html">Frameworks</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/adk/migration.html">Migrating from ADK DatabaseSessionService</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 _expand"><a class="reference internal" href="index.html">Overview</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="base.html">Declarative Base</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="mixins/index.html">Mixins</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/unique.html">Unique Key</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/nanoid.html">NanoID</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/uuid.html">UUID</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/sentinel.html">Sentinel</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/bigint.html">BigInt</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/audit.html">Audit</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/slug.html">Slug</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="config/index.html">Configuration</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/asyncio.html">Asyncio</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/common.html">Common</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/engine.html">Engine</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/routing.html">Routing</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/sync.html">Sync</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="repository.html">Repositories</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="repository_memory.html">Memory Repositories</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="service.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="operations.html">Bulk Operations</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="types.html">Custom Types</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="routing.html">Replica Routing</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="cache.html">Caching</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="extensions/index.html">Framework Extensions</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/litestar/index.html">Litestar</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/plugins.html">Plugins &amp; Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/dto.html">Data Transfer Objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/session.html">Session Backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/store.html">SQLAlchemy Store</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/cli.html">CLI Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/fastapi/index.html">FastAPI</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/starlette/index.html">Starlette</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/flask/index.html">Flask</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/sanic/index.html">Sanic</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/adk.html">ADK</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="adk-compatibility-matrix.html">ADK Compatibility Matrix</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="alembic/index.html">Alembic</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="alembic/commands.html">Commands</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="alembic/utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CLI Commands</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="utils.html">Utilities</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../changelog.html">1.x Changelog</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../contribution-guide.html">Contribution Guide</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/search?q=user%3Alitestar-org+state%3Aopen+label%3A%22good+first+issue%22+++no%3Aassignee+repo%3A%22advanced-alchemy%22&amp;type=issues">Available Issues</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/litestar-org/.github?tab=coc-ov-file#readme">Code of Conduct</a></li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#cli-commands">CLI Commands</a></li>
+<li><a class="reference internal" href="#configuration-discovery-helpers">Configuration &amp; Discovery Helpers</a></li>
+</ul>
+</div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
+  data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
+  <span class="w-8 flex items-center justify-around shrink-0 text-3xl">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </span>
+  <span class="flex-grow px-2 break-all">
+    
+    
+      <span>advanced-alchemy</span>
+    
+    <span class="flex text-sm repo-stats-count">
+      <span class="flex items-center pr-3">
+        <iconify-icon icon="lucide:star"></iconify-icon>
+        <strong class="js-repo-stars ml-1">0</strong>
+      </span>
+      <span class="flex items-center">
+        <iconify-icon icon="lucide:git-fork"></iconify-icon>
+        <strong class="js-repo-forks ml-1">0</strong>
+      </span>
+    </span>
+  </span>
+</a><div class="edit-this-page">
+  <a href="https://github.com/litestar-org/advanced-alchemy/blob/main/docs/reference/cli.rst">Edit this page</a>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Advanced Alchemy</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Command-Line Interface</strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <div class="copy-page-wrapper relative pb-4 lg:absolute lg:top-8 lg:right-6 xl:right-12">
+  <div id="copy-page-trigger">
+    <button
+      type="button"
+      class="js-copy px-3 py-1 inline-flex items-center gap-1"
+      data-url="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/cli.rst.txt"
+    >
+      <i class="i-lucide" data-icon="copy"></i>
+      <span>Copy page</span>
+    </button>
+    <button class="js-menu px-2 py-1" type="button" aria-label="More actions"
+      aria-haspopup="menu" aria-expanded="false" aria-controls="copy-page-content">
+      <i class="i-lucide chevron-down"></i>
+    </button>
+  </div>
+  <div id="copy-page-content" role="menu" aria-orientation="vertical" aria-hidden="true">
+    <div role="presentation">
+      <div class="flex flex-col" role="group">
+        <button class="js-copy" type="button" role="menuitem"
+          data-url="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/cli.rst.txt">
+          <span class="iconify-icon">
+            <i class="i-lucide" data-icon="copy"></i>
+          </span>
+          <span>Copy page</span>
+        </button>
+        <a role="menuitem" href="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/cli.rst.txt" target="_blank" rel="nofollow"><iconify-icon icon="bi:code-slash"></iconify-icon>
+            <span>View Source</span></a><a role="menuitem" href="https://chatgpt.com/?hints=search&q=Read%20https%3A//raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/cli.rst.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:openai"></iconify-icon>
+          <span>Open in ChatGPT</span>
+        </a><a role="menuitem" href="https://claude.ai/new?q=Read%20https%3A//raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/cli.rst.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:claude"></iconify-icon>
+          <span>Open in Claude</span>
+        </a></div>
+    </div>
+  </div>
+</div><article class="yue" role="main">
+          <section id="module-advanced_alchemy.cli">
+<span id="command-line-interface"></span><h1>Command-Line Interface<a class="headerlink" href="#module-advanced_alchemy.cli" title="Link to this heading">#</a></h1>
+<p>Command-line interface and migration commands for Advanced Alchemy.</p>
+<section id="cli-commands">
+<h2>CLI Commands<a class="headerlink" href="#cli-commands" title="Link to this heading">#</a></h2>
+<section id="alchemy">
+<h3>alchemy<a class="headerlink" href="#alchemy" title="Link to this heading">#</a></h3>
+<p>Advanced Alchemy CLI commands.</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-c">
+<span id="cmdoption-alchemy-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+<section id="alchemy-branches">
+<h4>branches<a class="headerlink" href="#alchemy-branches" title="Link to this heading">#</a></h4>
+<p>Show current branch points in the migration history</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>branches<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-branches-c">
+<span id="cmdoption-alchemy-branches-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-branches-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-branches-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-branches-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-branches-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-branches-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-branches-verbose">
+<span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-branches-verbose" title="Link to this definition">#</a></dt>
+<dd><p>Enable verbose output.</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-branches-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-branches-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-check">
+<h4>check<a class="headerlink" href="#alchemy-check" title="Link to this heading">#</a></h4>
+<p>Check if the target database is up to date</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>check<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-check-c">
+<span id="cmdoption-alchemy-check-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-check-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-check-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-check-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-check-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-check-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-check-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-check-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-downgrade">
+<h4>downgrade<a class="headerlink" href="#alchemy-downgrade" title="Link to this heading">#</a></h4>
+<p>Downgrade database to a specific revision.</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>downgrade<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>REVISION<span class="o">]</span>
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-downgrade-c">
+<span id="cmdoption-alchemy-downgrade-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-downgrade-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-downgrade-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-downgrade-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-downgrade-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-downgrade-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-downgrade-sql">
+<span class="sig-name descname"><span class="pre">--sql</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-downgrade-sql" title="Link to this definition">#</a></dt>
+<dd><p>Generate SQL output for offline migrations.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-downgrade-tag">
+<span class="sig-name descname"><span class="pre">--tag</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;tag&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-downgrade-tag" title="Link to this definition">#</a></dt>
+<dd><p>an arbitrary ‘tag’ that can be intercepted by custom env.py scripts via the .EnvironmentContext.get_tag_argument method.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-downgrade-no-prompt">
+<span class="sig-name descname"><span class="pre">--no-prompt</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-downgrade-no-prompt" title="Link to this definition">#</a></dt>
+<dd><p>Do not prompt for confirmation before executing the command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-downgrade-arg-REVISION">
+<span class="sig-name descname"><span class="pre">REVISION</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-downgrade-arg-REVISION" title="Link to this definition">#</a></dt>
+<dd><p>Optional argument</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-downgrade-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-downgrade-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-drop-all">
+<h4>drop-all<a class="headerlink" href="#alchemy-drop-all" title="Link to this heading">#</a></h4>
+<p>Drop all tables from the database.</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>drop-all<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-drop-all-c">
+<span id="cmdoption-alchemy-drop-all-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-drop-all-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-drop-all-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-drop-all-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-drop-all-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-drop-all-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-drop-all-no-prompt">
+<span class="sig-name descname"><span class="pre">--no-prompt</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-drop-all-no-prompt" title="Link to this definition">#</a></dt>
+<dd><p>Do not prompt for confirmation before executing the command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-drop-all-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-drop-all-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-dump-data">
+<h4>dump-data<a class="headerlink" href="#alchemy-dump-data" title="Link to this heading">#</a></h4>
+<p>Dump specified tables from the database to JSON files.</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>dump-data<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-dump-data-c">
+<span id="cmdoption-alchemy-dump-data-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-dump-data-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-dump-data-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-dump-data-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-dump-data-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-dump-data-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-dump-data-table">
+<span class="sig-name descname"><span class="pre">--table</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;table_names&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-dump-data-table" title="Link to this definition">#</a></dt>
+<dd><p><strong>Required</strong> Name of the table to dump. Multiple tables can be specified. Use ‘*’ to dump all tables.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-dump-data-dir">
+<span class="sig-name descname"><span class="pre">--dir</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;dump_dir&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-dump-data-dir" title="Link to this definition">#</a></dt>
+<dd><p>Directory to save the JSON files. Defaults to WORKDIR/fixtures</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-dump-data-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-dump-data-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-edit">
+<h4>edit<a class="headerlink" href="#alchemy-edit" title="Link to this heading">#</a></h4>
+<p>Edit a revision file using $EDITOR</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>edit<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>REVISION
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-edit-c">
+<span id="cmdoption-alchemy-edit-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-edit-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-edit-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-edit-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-edit-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-edit-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-edit-arg-REVISION">
+<span class="sig-name descname"><span class="pre">REVISION</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-edit-arg-REVISION" title="Link to this definition">#</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-edit-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-edit-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-ensure-version">
+<h4>ensure-version<a class="headerlink" href="#alchemy-ensure-version" title="Link to this heading">#</a></h4>
+<p>Create the alembic version table if it doesn’t exist</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>ensure-version<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-ensure-version-c">
+<span id="cmdoption-alchemy-ensure-version-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-ensure-version-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-ensure-version-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-ensure-version-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-ensure-version-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-ensure-version-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-ensure-version-sql">
+<span class="sig-name descname"><span class="pre">--sql</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-ensure-version-sql" title="Link to this definition">#</a></dt>
+<dd><p>Generate SQL output instead of executing</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-ensure-version-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-ensure-version-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-heads">
+<h4>heads<a class="headerlink" href="#alchemy-heads" title="Link to this heading">#</a></h4>
+<p>Show current available heads in the script directory</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>heads<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-heads-c">
+<span id="cmdoption-alchemy-heads-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-heads-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-heads-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-heads-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-heads-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-heads-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-heads-verbose">
+<span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-heads-verbose" title="Link to this definition">#</a></dt>
+<dd><p>Enable verbose output.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-heads-resolve-dependencies">
+<span class="sig-name descname"><span class="pre">--resolve-dependencies</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-heads-resolve-dependencies" title="Link to this definition">#</a></dt>
+<dd><p>Resolve dependencies between heads</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-heads-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-heads-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-history">
+<h4>history<a class="headerlink" href="#alchemy-history" title="Link to this heading">#</a></h4>
+<p>List changeset scripts in chronological order</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span><span class="nb">history</span><span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-history-c">
+<span id="cmdoption-alchemy-history-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-history-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-history-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-history-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-history-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-history-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-history-verbose">
+<span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-history-verbose" title="Link to this definition">#</a></dt>
+<dd><p>Enable verbose output.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-history-rev-range">
+<span class="sig-name descname"><span class="pre">--rev-range</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;rev_range&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-history-rev-range" title="Link to this definition">#</a></dt>
+<dd><p>Revision range (e.g., ‘base:head’, ‘abc:def’)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-history-indicate-current">
+<span class="sig-name descname"><span class="pre">--indicate-current</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-history-indicate-current" title="Link to this definition">#</a></dt>
+<dd><p>Indicate the current revision</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-history-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-history-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-init">
+<h4>init<a class="headerlink" href="#alchemy-init" title="Link to this heading">#</a></h4>
+<p>Initialize migrations for the project.</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>init<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>DIRECTORY<span class="o">]</span>
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-init-c">
+<span id="cmdoption-alchemy-init-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-init-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-init-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-init-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-init-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-init-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-init-multidb">
+<span class="sig-name descname"><span class="pre">--multidb</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-init-multidb" title="Link to this definition">#</a></dt>
+<dd><p>Support multiple databases</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-init-package">
+<span class="sig-name descname"><span class="pre">--package</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-init-package" title="Link to this definition">#</a></dt>
+<dd><p>Create <cite>__init__.py</cite> for created folder</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-init-no-prompt">
+<span class="sig-name descname"><span class="pre">--no-prompt</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-init-no-prompt" title="Link to this definition">#</a></dt>
+<dd><p>Do not prompt for confirmation before executing the command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-init-arg-DIRECTORY">
+<span class="sig-name descname"><span class="pre">DIRECTORY</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-init-arg-DIRECTORY" title="Link to this definition">#</a></dt>
+<dd><p>Optional argument</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-init-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-init-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-list-templates">
+<h4>list-templates<a class="headerlink" href="#alchemy-list-templates" title="Link to this heading">#</a></h4>
+<p>List available Alembic migration templates</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>list-templates<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-list-templates-c">
+<span id="cmdoption-alchemy-list-templates-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-list-templates-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-list-templates-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-list-templates-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-list-templates-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-list-templates-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-list-templates-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-list-templates-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-make-migrations">
+<h4>make-migrations<a class="headerlink" href="#alchemy-make-migrations" title="Link to this heading">#</a></h4>
+<p>Create a new migration revision.</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>make-migrations<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-make-migrations-c">
+<span id="cmdoption-alchemy-make-migrations-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-make-migrations-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-make-migrations-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-make-migrations-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-make-migrations-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-make-migrations-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-make-migrations-m">
+<span id="cmdoption-alchemy-make-migrations-message"></span><span class="sig-name descname"><span class="pre">-m</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--message</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;message&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-make-migrations-m" title="Link to this definition">#</a></dt>
+<dd><p>Revision message</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-make-migrations-autogenerate">
+<span id="cmdoption-alchemy-make-migrations-no-autogenerate"></span><span class="sig-name descname"><span class="pre">--autogenerate</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-autogenerate</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-make-migrations-autogenerate" title="Link to this definition">#</a></dt>
+<dd><p>Automatically populate revision with detected changes</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-make-migrations-sql">
+<span class="sig-name descname"><span class="pre">--sql</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-make-migrations-sql" title="Link to this definition">#</a></dt>
+<dd><p>Export to <cite>.sql</cite> instead of writing to the database.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-make-migrations-head">
+<span class="sig-name descname"><span class="pre">--head</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;head&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-make-migrations-head" title="Link to this definition">#</a></dt>
+<dd><p>Specify head revision to use as base for new revision.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-make-migrations-splice">
+<span class="sig-name descname"><span class="pre">--splice</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-make-migrations-splice" title="Link to this definition">#</a></dt>
+<dd><p>Allow a non-head revision as the “head” to splice onto</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-make-migrations-branch-label">
+<span class="sig-name descname"><span class="pre">--branch-label</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;branch_label&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-make-migrations-branch-label" title="Link to this definition">#</a></dt>
+<dd><p>Specify a branch label to apply to the new revision</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-make-migrations-version-path">
+<span class="sig-name descname"><span class="pre">--version-path</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;version_path&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-make-migrations-version-path" title="Link to this definition">#</a></dt>
+<dd><p>Specify specific path from config for version file</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-make-migrations-rev-id">
+<span class="sig-name descname"><span class="pre">--rev-id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;rev_id&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-make-migrations-rev-id" title="Link to this definition">#</a></dt>
+<dd><p>Specify a ID to use for revision.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-make-migrations-no-prompt">
+<span class="sig-name descname"><span class="pre">--no-prompt</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-make-migrations-no-prompt" title="Link to this definition">#</a></dt>
+<dd><p>Do not prompt for confirmation before executing the command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-make-migrations-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-make-migrations-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-merge">
+<h4>merge<a class="headerlink" href="#alchemy-merge" title="Link to this heading">#</a></h4>
+<p>Merge two revisions together, creating a new migration file</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>merge<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>REVISIONS
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-merge-c">
+<span id="cmdoption-alchemy-merge-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-merge-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-merge-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-merge-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-merge-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-merge-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-merge-m">
+<span id="cmdoption-alchemy-merge-message"></span><span class="sig-name descname"><span class="pre">-m</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--message</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;message&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-merge-m" title="Link to this definition">#</a></dt>
+<dd><p>Merge message</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-merge-branch-label">
+<span class="sig-name descname"><span class="pre">--branch-label</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;branch_label&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-merge-branch-label" title="Link to this definition">#</a></dt>
+<dd><p>Branch label for merge revision</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-merge-rev-id">
+<span class="sig-name descname"><span class="pre">--rev-id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;rev_id&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-merge-rev-id" title="Link to this definition">#</a></dt>
+<dd><p>Specify custom revision ID</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-merge-no-prompt">
+<span class="sig-name descname"><span class="pre">--no-prompt</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-merge-no-prompt" title="Link to this definition">#</a></dt>
+<dd><p>Do not prompt for confirmation before executing the command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-merge-arg-REVISIONS">
+<span class="sig-name descname"><span class="pre">REVISIONS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-merge-arg-REVISIONS" title="Link to this definition">#</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-merge-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-merge-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-show">
+<h4>show<a class="headerlink" href="#alchemy-show" title="Link to this heading">#</a></h4>
+<p>Show the revision denoted by the given symbol</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>show<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>REVISION
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-show-c">
+<span id="cmdoption-alchemy-show-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-show-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-show-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-show-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-show-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-show-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-show-arg-REVISION">
+<span class="sig-name descname"><span class="pre">REVISION</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-show-arg-REVISION" title="Link to this definition">#</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-show-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-show-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-show-config">
+<h4>show-config<a class="headerlink" href="#alchemy-show-config" title="Link to this heading">#</a></h4>
+<p>Show all configurations with migrations enabled.</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>show-config<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-show-config-c">
+<span id="cmdoption-alchemy-show-config-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-show-config-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-show-config-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-show-config-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-show-config-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-show-config-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-show-config-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-show-config-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-show-current-revision">
+<h4>show-current-revision<a class="headerlink" href="#alchemy-show-current-revision" title="Link to this heading">#</a></h4>
+<p>Shows the current revision for the database.</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>show-current-revision<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-show-current-revision-c">
+<span id="cmdoption-alchemy-show-current-revision-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-show-current-revision-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-show-current-revision-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-show-current-revision-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-show-current-revision-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-show-current-revision-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-show-current-revision-verbose">
+<span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-show-current-revision-verbose" title="Link to this definition">#</a></dt>
+<dd><p>Enable verbose output.</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-show-current-revision-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-show-current-revision-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-stamp">
+<h4>stamp<a class="headerlink" href="#alchemy-stamp" title="Link to this heading">#</a></h4>
+<p>Stamp the revision table with the given revision; don’t run any migrations</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>stamp<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>REVISION
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-stamp-c">
+<span id="cmdoption-alchemy-stamp-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-stamp-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-stamp-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-stamp-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-stamp-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-stamp-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-stamp-sql">
+<span class="sig-name descname"><span class="pre">--sql</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-stamp-sql" title="Link to this definition">#</a></dt>
+<dd><p>Generate SQL output for offline migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-stamp-tag">
+<span class="sig-name descname"><span class="pre">--tag</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;tag&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-stamp-tag" title="Link to this definition">#</a></dt>
+<dd><p>Arbitrary ‘tag’ that can be intercepted by custom env.py scripts</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-stamp-purge">
+<span class="sig-name descname"><span class="pre">--purge</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-stamp-purge" title="Link to this definition">#</a></dt>
+<dd><p>Delete all entries in version table before stamping</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-stamp-arg-REVISION">
+<span class="sig-name descname"><span class="pre">REVISION</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-stamp-arg-REVISION" title="Link to this definition">#</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-stamp-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-stamp-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="alchemy-upgrade">
+<h4>upgrade<a class="headerlink" href="#alchemy-upgrade" title="Link to this heading">#</a></h4>
+<p>Upgrade database to a specific revision.</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>upgrade<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>REVISION<span class="o">]</span>
+</span></pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-upgrade-c">
+<span id="cmdoption-alchemy-upgrade-config"></span><span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--config</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;config&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-upgrade-c" title="Link to this definition">#</a></dt>
+<dd><p>Dotted or colon path to SQLAlchemy config(s) or factory callable (env: ALCHEMY_CONFIG)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-upgrade-validate-config">
+<span class="sig-name descname"><span class="pre">--validate-config</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-upgrade-validate-config" title="Link to this definition">#</a></dt>
+<dd><p>Validate configuration before executing migrations</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-upgrade-bind-key">
+<span class="sig-name descname"><span class="pre">--bind-key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;bind_key&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-upgrade-bind-key" title="Link to this definition">#</a></dt>
+<dd><p>Specify which SQLAlchemy config to use by bind key</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-upgrade-sql">
+<span class="sig-name descname"><span class="pre">--sql</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-upgrade-sql" title="Link to this definition">#</a></dt>
+<dd><p>Generate SQL output for offline migrations.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-upgrade-tag">
+<span class="sig-name descname"><span class="pre">--tag</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;tag&gt;</span></span><a class="headerlink" href="#cmdoption-alchemy-upgrade-tag" title="Link to this definition">#</a></dt>
+<dd><p>an arbitrary ‘tag’ that can be intercepted by custom env.py scripts via the .EnvironmentContext.get_tag_argument method.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-upgrade-no-prompt">
+<span class="sig-name descname"><span class="pre">--no-prompt</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-upgrade-no-prompt" title="Link to this definition">#</a></dt>
+<dd><p>Do not prompt for confirmation before executing the command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-alchemy-upgrade-arg-REVISION">
+<span class="sig-name descname"><span class="pre">REVISION</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-alchemy-upgrade-arg-REVISION" title="Link to this definition">#</a></dt>
+<dd><p>Optional argument</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<dl class="std envvar" id="alchemy-upgrade-config-alchemy-config">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">ALCHEMY_CONFIG</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-alchemy-upgrade-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="configuration-discovery-helpers">
+<h2>Configuration &amp; Discovery Helpers<a class="headerlink" href="#configuration-discovery-helpers" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.cli.add_migration_commands">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.cli.</span></span><span class="sig-name descname"><span class="pre">add_migration_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cli.html#add_migration_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cli.add_migration_commands" title="Link to this definition">#</a></dt>
+<dd><p>Add migration commands to the database group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>database_group</strong> (<em>Group</em><em> | </em><em>None</em>) – The database group to add the commands to.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The database group with the migration commands added.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Group</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.cli.get_alchemy_group">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.cli.</span></span><span class="sig-name descname"><span class="pre">get_alchemy_group</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cli.html#get_alchemy_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cli.get_alchemy_group" title="Link to this definition">#</a></dt>
+<dd><p>Get the Advanced Alchemy CLI group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.MissingDependencyError" title="advanced_alchemy.exceptions.MissingDependencyError"><strong>MissingDependencyError</strong></a> – If the <code class="docutils literal notranslate"><span class="pre">click</span></code> package is not installed.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Advanced Alchemy CLI group.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Group</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.cli.discover_config_from_pyproject">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.cli.</span></span><span class="sig-name descname"><span class="pre">discover_config_from_pyproject</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cli.html#discover_config_from_pyproject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cli.discover_config_from_pyproject" title="Link to this definition">#</a></dt>
+<dd><p>Find and parse <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> for Advanced Alchemy CLI configuration.</p>
+<p>Walks upward from the current working directory to locate <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>
+and parses <code class="docutils literal notranslate"><span class="pre">[tool.advanced-alchemy]</span></code> (or <code class="docutils literal notranslate"><span class="pre">[tool.advanced_alchemy]</span></code> /
+<code class="docutils literal notranslate"><span class="pre">[tool.alchemy]</span></code>) for the <code class="docutils literal notranslate"><span class="pre">config</span></code> key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Configured path string (comma-separated when configured as a list), or
+<code class="docutils literal notranslate"><span class="pre">None</span></code> when not found.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>str</em> | <em>None</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.cli.find_pyproject_toml">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.cli.</span></span><span class="sig-name descname"><span class="pre">find_pyproject_toml</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cli.html#find_pyproject_toml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cli.find_pyproject_toml" title="Link to this definition">#</a></dt>
+<dd><p>Walk the filesystem upward from <code class="docutils literal notranslate"><span class="pre">Path.cwd()</span></code> to find <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p>
+<p>Stops at a <code class="docutils literal notranslate"><span class="pre">.git</span></code> directory boundary (repository root) or the filesystem root.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path to <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if not found.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Path</em> | <em>None</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.cli.parse_pyproject_config">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.cli.</span></span><span class="sig-name descname"><span class="pre">parse_pyproject_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyproject_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cli.html#parse_pyproject_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cli.parse_pyproject_config" title="Link to this definition">#</a></dt>
+<dd><p>Parse <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> for Advanced Alchemy CLI configuration.</p>
+<p>Checks <code class="docutils literal notranslate"><span class="pre">[tool.advanced-alchemy]</span></code>, <code class="docutils literal notranslate"><span class="pre">[tool.advanced_alchemy]</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">[tool.alchemy]</span></code> in order for a <code class="docutils literal notranslate"><span class="pre">config</span></code> entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pyproject_path</strong> (<em>Path</em>) – Path to the <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Config path(s) as a string (converting a list of strings to a
+comma-separated string), or <code class="docutils literal notranslate"><span class="pre">None</span></code> if no config is defined.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> file cannot be parsed or the
+    <code class="docutils literal notranslate"><span class="pre">config</span></code> value is not a string or list of strings.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>str</em> | <em>None</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.cli.resolve_config_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.cli.</span></span><span class="sig-name descname"><span class="pre">resolve_config_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cli.html#resolve_config_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cli.resolve_config_async" title="Link to this definition">#</a></dt>
+<dd><p>Resolve configuration asynchronously from a dotted or colon-separated path.</p>
+<p>Supports direct config instances, sequences of configs, wrapper objects exposing
+<code class="docutils literal notranslate"><span class="pre">.config</span></code> (such as <code class="docutils literal notranslate"><span class="pre">SQLAlchemyInitPlugin</span></code> or <code class="docutils literal notranslate"><span class="pre">AdvancedAlchemy</span></code>), synchronous
+factory callables, and asynchronous coroutine factories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config_path</strong> (<em>str</em>) – <code class="docutils literal notranslate"><span class="pre">module.attribute</span></code> or <code class="docutils literal notranslate"><span class="pre">module:attribute</span></code> path to a config
+object or factory callable.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A resolved config instance or list of config instances.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError" title="advanced_alchemy.exceptions.ImproperConfigurationError"><strong>ImproperConfigurationError</strong></a> – If importing, executing, or validating the
+    configuration fails.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Union</em>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list" title="advanced_alchemy.repository.SQLAlchemyAsyncRepository.list"><em>list</em></a>[<em>Union</em>[<a class="reference internal" href="config/asyncio.html#advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig" title="advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig"><em>SQLAlchemyAsyncConfig</em></a>, <a class="reference internal" href="config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig" title="advanced_alchemy.config.sync.SQLAlchemySyncConfig"><em>SQLAlchemySyncConfig</em></a>]], <a class="reference internal" href="config/asyncio.html#advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig" title="advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig"><em>SQLAlchemyAsyncConfig</em></a>, <a class="reference internal" href="config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig" title="advanced_alchemy.config.sync.SQLAlchemySyncConfig"><em>SQLAlchemySyncConfig</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.cli.resolve_config_sync">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.cli.</span></span><span class="sig-name descname"><span class="pre">resolve_config_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/cli.html#resolve_config_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.cli.resolve_config_sync" title="Link to this definition">#</a></dt>
+<dd><p>Resolve configuration synchronously from a dotted or colon-separated path.</p>
+<p>Supports direct config instances, sequences of configs, wrapper objects exposing
+<code class="docutils literal notranslate"><span class="pre">.config</span></code> (such as <code class="docutils literal notranslate"><span class="pre">SQLAlchemyInitPlugin</span></code> or <code class="docutils literal notranslate"><span class="pre">AdvancedAlchemy</span></code>), synchronous
+factory callables, and asynchronous coroutine factories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config_path</strong> (<em>str</em>) – <code class="docutils literal notranslate"><span class="pre">module.attribute</span></code> or <code class="docutils literal notranslate"><span class="pre">module:attribute</span></code> path to a config
+object or factory callable.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A resolved config instance or list of config instances.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError" title="advanced_alchemy.exceptions.ImproperConfigurationError"><strong>ImproperConfigurationError</strong></a> – If importing, executing, or validating the
+    configuration fails.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Union</em>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list" title="advanced_alchemy.repository.SQLAlchemyAsyncRepository.list"><em>list</em></a>[<em>Union</em>[<a class="reference internal" href="config/asyncio.html#advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig" title="advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig"><em>SQLAlchemyAsyncConfig</em></a>, <a class="reference internal" href="config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig" title="advanced_alchemy.config.sync.SQLAlchemySyncConfig"><em>SQLAlchemySyncConfig</em></a>]], <a class="reference internal" href="config/asyncio.html#advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig" title="advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig"><em>SQLAlchemyAsyncConfig</em></a>, <a class="reference internal" href="config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig" title="advanced_alchemy.config.sync.SQLAlchemySyncConfig"><em>SQLAlchemySyncConfig</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="alembic/utils.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Utilities</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="exceptions.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Exceptions</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Litestar Organization</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../_static/documentation_options.js?v=6f8f3740"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=a56c686a"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=b8b12719"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/shibuya.js?v=50760d75"></script></body>
+</html>

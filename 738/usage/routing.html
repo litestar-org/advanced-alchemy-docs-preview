@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="amber" data-content_root="../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Read/Write Routing - Advanced Alchemy</title><link rel="shortcut icon" href="../_static/favicon.svg"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Caching" href="caching.html" /><link rel="prev" title="Services" href="services.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=43bd62f4" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9db1225a" />
+    <link rel="stylesheet" type="text/css" href="../_static/syntax-highlighting.css?v=64e51511" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="Read/Write Routing"/>
+  <meta property="og:image" content="https://docs.advanced-alchemy.litestar.dev/latest/_static/og-social-dark.png"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="/">
+      <img class="light-logo" src="../_static/logo.svg" alt="Advanced Alchemy" height="28" loading="lazy" />
+      <img class="dark-logo" src="../_static/logo.svg" alt="Advanced Alchemy" height="28" loading="lazy" />
+      <strong>Advanced Alchemy</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul>
+      <li class="link"><a class="js-menu" href="index.html" id="nav-trigger-1" aria-controls="nav-children-1">
+            <span>Learn</span>
+            <i class="i-lucide chevron-down"></i>
+          </a>
+        <ul id="nav-children-1" aria-labelledby="nav-trigger-1"><li><a href="../getting-started.html">
+                <span>Getting Started</span>
+                <small>Install and configure Advanced Alchemy</small>
+              </a></li><li><a href="modeling/index.html">
+                <span>Data Modeling</span>
+                <small>Declarative bases, mixins, and custom types</small>
+              </a></li><li><a href="repositories/index.html">
+                <span>Repositories</span>
+                <small>Async and sync data access and filtering</small>
+              </a></li><li><a href="services.html">
+                <span>Services</span>
+                <small>Business logic and schema/DTO hydration</small>
+              </a></li><li><a href="#">
+                <span>Replica Routing</span>
+                <small>Read/write replica session routing</small>
+              </a></li><li><a href="caching.html">
+                <span>Caching</span>
+                <small>Dogpile L2 query and entity caching</small>
+              </a></li><li><a href="cli.html">
+                <span>CLI & Migrations</span>
+                <small>Alembic CLI and database workflows</small>
+              </a></li></ul>
+      </li>
+      <li class="link"><a class="js-menu" href="frameworks/index.html" id="nav-trigger-2" aria-controls="nav-children-2">
+            <span>Frameworks</span>
+            <i class="i-lucide chevron-down"></i>
+          </a>
+        <ul id="nav-children-2" aria-labelledby="nav-trigger-2"><li><a href="frameworks/index.html">
+                <span>Overview</span>
+                <small>Capabilities and components across all supported frameworks</small>
+              </a></li><li><a href="frameworks/litestar.html">
+                <span>Litestar</span>
+                <small>Plugin, DI providers, DTOs, storage, and session stores</small>
+              </a></li><li><a href="frameworks/fastapi.html">
+                <span>FastAPI</span>
+                <small>Extension, lifespan, Annotated dependencies, and storage</small>
+              </a></li><li><a href="frameworks/starlette.html">
+                <span>Starlette</span>
+                <small>ASGI middleware and request-scoped sessions</small>
+              </a></li><li><a href="frameworks/flask.html">
+                <span>Flask</span>
+                <small>WSGI and async Flask integration</small>
+              </a></li><li><a href="frameworks/sanic.html">
+                <span>Sanic</span>
+                <small>Sanic extension and dependency injection</small>
+              </a></li></ul>
+      </li><li class="link"><a href="../reference/index.html">Reference</a></li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-4" aria-controls="nav-children-4">
+            <span>About</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-4" aria-labelledby="nav-trigger-4"><li><a href="../changelog.html">
+                <span>Changelog</span>
+                <small>All changes for Advanced Alchemy</small>
+              </a></li><li><a href="https://litestar.dev/about/organization">
+                <span>Litestar Organization</span>
+                <small>Details about the Litestar organization, the team behind Advanced Alchemy</small>
+              </a></li><li><a href="../releases.html">
+                <span>Releases</span>
+                <small>Explore the release process, versioning, and deprecation policy for Advanced Alchemy</small>
+              </a></li><li><a href="../contribution-guide.html">
+                <span>Contributing</span>
+                <small>Learn how to contribute to the Advanced Alchemy project</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file">
+                <span>Code of Conduct</span>
+                <small>Review the etiquette for interacting with the Advanced Alchemy community</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file#security-ov-file">
+                <span>Security</span>
+                <small>Overview of Advanced Alchemy's security protocols</small>
+              </a></li><li><a href="https://discord.gg/dSDXd4mKhp">
+                <span>Discord Help Forum</span>
+                <small>Ask questions and get help in Discord</small>
+              </a></li><li><a href="https://github.com/litestar-org/advanced-alchemy/discussions">
+                <span>GitHub Discussions</span>
+                <small>Discuss ideas and patterns with the community</small>
+              </a></li><li><a href="https://github.com/sponsors/Litestar-Org">Sponsor</a></li></ul>
+      </li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="2"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Usage Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 _expand"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="index.html">Overview</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="modeling/index.html">Data Modeling</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="modeling/basics.html">Modeling Basics</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="modeling/inheritance.html">Inheritance Patterns</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="modeling/sqlmodel.html">SQLModel Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="modeling/types.html">Portable Column Types</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="modeling/security_and_storage_types.html">Security and File Storage Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="repositories/index.html">Repositories</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="repositories/basics.html">Repository Basics</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="repositories/filtering.html">Filtering and Pagination</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="repositories/advanced.html">Advanced Repository</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="services.html">Services</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Read/Write Routing</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="caching.html">Caching</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="cli.html">CLI &amp; Migrations</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="cli_commands.html">Command Workflows</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="database_seeding.html">Database Seeding</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Framework Integrations</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="frameworks/index.html">Overview</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="frameworks/litestar.html">Litestar</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="frameworks/litestar_dtos.html">Services, Filters &amp; DTOs</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="frameworks/litestar_sessions.html">Database &amp; Server Sessions</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="frameworks/litestar_storage.html">File &amp; Object Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="frameworks/fastapi.html">FastAPI</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="frameworks/fastapi_dependencies.html">Services &amp; Filter Depends</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="frameworks/fastapi_storage.html">File Storage &amp; Multi-Binds</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="frameworks/starlette.html">Starlette</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="frameworks/flask.html">Flask</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="frameworks/sanic.html">Sanic</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="adk/index.html">Google ADK</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="adk/getting-started.html">Getting Started</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="adk/sessions.html">Sessions</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="adk/artifacts.html">Artifacts</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="adk/memory.html">Memory</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="adk/frameworks.html">Frameworks</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="adk/migration.html">Migrating from ADK DatabaseSessionService</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/index.html">Overview</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/base.html">Declarative Base</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/mixins/index.html">Mixins</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/mixins/unique.html">Unique Key</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/mixins/nanoid.html">NanoID</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/mixins/uuid.html">UUID</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/mixins/sentinel.html">Sentinel</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/mixins/bigint.html">BigInt</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/mixins/audit.html">Audit</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/mixins/slug.html">Slug</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/config/index.html">Configuration</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/config/asyncio.html">Asyncio</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/config/common.html">Common</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/config/engine.html">Engine</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/config/routing.html">Routing</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/config/sync.html">Sync</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/config/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/repository.html">Repositories</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/repository_memory.html">Memory Repositories</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/service.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/filters.html">Filters</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/operations.html">Bulk Operations</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/types.html">Custom Types</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/routing.html">Replica Routing</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/cache.html">Caching</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/extensions/index.html">Framework Extensions</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/extensions/litestar/index.html">Litestar</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/extensions/litestar/plugins.html">Plugins &amp; Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/extensions/litestar/dto.html">Data Transfer Objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/extensions/litestar/session.html">Session Backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/extensions/litestar/store.html">SQLAlchemy Store</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/extensions/litestar/cli.html">CLI Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/extensions/fastapi/index.html">FastAPI</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/extensions/starlette/index.html">Starlette</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/extensions/flask/index.html">Flask</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/extensions/sanic/index.html">Sanic</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/extensions/adk.html">ADK</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/adk-compatibility-matrix.html">ADK Compatibility Matrix</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/alembic/index.html">Alembic</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/alembic/commands.html">Commands</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../reference/alembic/utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/cli.html">CLI Commands</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/exceptions.html">Exceptions</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/utils.html">Utilities</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../changelog.html">1.x Changelog</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../contribution-guide.html">Contribution Guide</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/search?q=user%3Alitestar-org+state%3Aopen+label%3A%22good+first+issue%22+++no%3Aassignee+repo%3A%22advanced-alchemy%22&amp;type=issues">Available Issues</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/litestar-org/.github?tab=coc-ov-file#readme">Code of Conduct</a></li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#how-your-own-changes-stay-fresh">How Your Own Changes Stay Fresh</a></li>
+<li><a class="reference internal" href="#setting-up-primary-and-replica-pools">Setting Up Primary and Replica Pools</a></li>
+<li><a class="reference internal" href="#choosing-a-pool-manually">Choosing a Pool Manually</a></li>
+<li><a class="reference internal" href="#complete-runnable-example">Complete Runnable Example</a></li>
+</ul>
+</div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
+  data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
+  <span class="w-8 flex items-center justify-around shrink-0 text-3xl">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </span>
+  <span class="flex-grow px-2 break-all">
+    
+    
+      <span>advanced-alchemy</span>
+    
+    <span class="flex text-sm repo-stats-count">
+      <span class="flex items-center pr-3">
+        <iconify-icon icon="lucide:star"></iconify-icon>
+        <strong class="js-repo-stars ml-1">0</strong>
+      </span>
+      <span class="flex items-center">
+        <iconify-icon icon="lucide:git-fork"></iconify-icon>
+        <strong class="js-repo-forks ml-1">0</strong>
+      </span>
+    </span>
+  </span>
+</a><div class="edit-this-page">
+  <a href="https://github.com/litestar-org/advanced-alchemy/blob/main/docs/usage/routing.rst">Edit this page</a>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Advanced Alchemy</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Read/Write Routing</strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <div class="copy-page-wrapper relative pb-4 lg:absolute lg:top-8 lg:right-6 xl:right-12">
+  <div id="copy-page-trigger">
+    <button
+      type="button"
+      class="js-copy px-3 py-1 inline-flex items-center gap-1"
+      data-url="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/usage/routing.rst.txt"
+    >
+      <i class="i-lucide" data-icon="copy"></i>
+      <span>Copy page</span>
+    </button>
+    <button class="js-menu px-2 py-1" type="button" aria-label="More actions"
+      aria-haspopup="menu" aria-expanded="false" aria-controls="copy-page-content">
+      <i class="i-lucide chevron-down"></i>
+    </button>
+  </div>
+  <div id="copy-page-content" role="menu" aria-orientation="vertical" aria-hidden="true">
+    <div role="presentation">
+      <div class="flex flex-col" role="group">
+        <button class="js-copy" type="button" role="menuitem"
+          data-url="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/usage/routing.rst.txt">
+          <span class="iconify-icon">
+            <i class="i-lucide" data-icon="copy"></i>
+          </span>
+          <span>Copy page</span>
+        </button>
+        <a role="menuitem" href="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/usage/routing.rst.txt" target="_blank" rel="nofollow"><iconify-icon icon="bi:code-slash"></iconify-icon>
+            <span>View Source</span></a><a role="menuitem" href="https://chatgpt.com/?hints=search&q=Read%20https%3A//raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/usage/routing.rst.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:openai"></iconify-icon>
+          <span>Open in ChatGPT</span>
+        </a><a role="menuitem" href="https://claude.ai/new?q=Read%20https%3A//raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/usage/routing.rst.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:claude"></iconify-icon>
+          <span>Open in Claude</span>
+        </a></div>
+    </div>
+  </div>
+</div><article class="yue" role="main">
+          <section id="read-write-routing">
+<h1>Read/Write Routing<a class="headerlink" href="#read-write-routing" title="Link to this heading">#</a></h1>
+<p>As your app grows, most database traffic is reading data—loading feeds, search pages, and dashboards—while only a fraction is saving changes.</p>
+<p>Read/write routing lets you add <strong>Read Replicas</strong> alongside your main <strong>Primary Database</strong> without rewriting your repository calls:</p>
+<div class="aa-diagram">
+    <img src="../_static/diagrams/routing-topology-light.svg" alt="How Read and Write Routing Works" class="aa-diagram--light" />
+    <img src="../_static/diagrams/routing-topology-dark.svg" alt="How Read and Write Routing Works" class="aa-diagram--dark" />
+</div><section id="how-your-own-changes-stay-fresh">
+<h2>How Your Own Changes Stay Fresh<a class="headerlink" href="#how-your-own-changes-stay-fresh" title="Link to this heading">#</a></h2>
+<p>Replicas take a few milliseconds to copy new data from Primary. What happens if a user creates a new blog post and your code immediately loads that post on the next line?</p>
+<p>Advanced Alchemy solves replica lag automatically: as soon as a session writes data, subsequent reads in that transaction stay pinned to Primary until <code class="docutils literal notranslate"><span class="pre">commit()</span></code> or <code class="docutils literal notranslate"><span class="pre">rollback()</span></code> finishes:</p>
+<div class="aa-diagram">
+    <img src="../_static/diagrams/routing-sticky-light.gif" alt="Reading Your Own Changes Without Stale Data" class="aa-diagram--light" />
+    <img src="../_static/diagrams/routing-sticky-dark.gif" alt="Reading Your Own Changes Without Stale Data" class="aa-diagram--dark" />
+</div></section>
+<section id="setting-up-primary-and-replica-pools">
+<h2>Setting Up Primary and Replica Pools<a class="headerlink" href="#setting-up-primary-and-replica-pools" title="Link to this heading">#</a></h2>
+<p>Define your <code class="docutils literal notranslate"><span class="pre">&quot;default&quot;</span></code> writer and <code class="docutils literal notranslate"><span class="pre">&quot;read&quot;</span></code> replica pools in <code class="docutils literal notranslate"><span class="pre">RoutingConfig</span></code> and pass it to <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncConfig</span></code> (or <code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncConfig</span></code>):</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+Weighted Replicas</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncConfig</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">EngineConfig</span><span class="p">,</span> <span class="n">RoutingConfig</span><span class="p">,</span> <span class="n">RoutingStrategy</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="n">config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
+</span><span data-line="5">    <span class="n">routing_config</span><span class="o">=</span><span class="n">RoutingConfig</span><span class="p">(</span>
+</span><span data-line="6">        <span class="n">engines</span><span class="o">=</span><span class="p">{</span>
+</span><span data-line="7">            <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;postgresql+asyncpg://user:pass@primary:5432/db&quot;</span><span class="p">],</span>
+</span><span data-line="8">            <span class="s2">&quot;read&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="9">                <span class="n">EngineConfig</span><span class="p">(</span>
+</span><span data-line="10">                    <span class="n">connection_string</span><span class="o">=</span><span class="s2">&quot;postgresql+asyncpg://user:pass@replica-1:5432/db&quot;</span><span class="p">,</span>
+</span><span data-line="11">                    <span class="n">weight</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+</span><span data-line="12">                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;replica-east&quot;</span><span class="p">,</span>
+</span><span data-line="13">                <span class="p">),</span>
+</span><span data-line="14">                <span class="n">EngineConfig</span><span class="p">(</span>
+</span><span data-line="15">                    <span class="n">connection_string</span><span class="o">=</span><span class="s2">&quot;postgresql+asyncpg://user:pass@replica-2:5432/db&quot;</span><span class="p">,</span>
+</span><span data-line="16">                    <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span data-line="17">                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;replica-west&quot;</span><span class="p">,</span>
+</span><span data-line="18">                <span class="p">),</span>
+</span><span data-line="19">            <span class="p">],</span>
+</span><span data-line="20">            <span class="s2">&quot;analytics&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;postgresql+asyncpg://user:pass@analytics:5432/db&quot;</span><span class="p">],</span>
+</span><span data-line="21">        <span class="p">},</span>
+</span><span data-line="22">        <span class="n">routing_strategy</span><span class="o">=</span><span class="n">RoutingStrategy</span><span class="o">.</span><span class="n">ROUND_ROBIN</span><span class="p">,</span>
+</span><span data-line="23">        <span class="n">sticky_after_write</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="24">    <span class="p">),</span>
+</span><span data-line="25"><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+Cloud SQL</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoutingConfig</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="n">cloud_sql_routing</span> <span class="o">=</span> <span class="n">RoutingConfig</span><span class="p">(</span>
+</span><span data-line="4">    <span class="n">engines</span><span class="o">=</span><span class="p">{</span>
+</span><span data-line="5">        <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;postgresql+asyncpg://user:pass@primary-ip:5432/mydb&quot;</span><span class="p">],</span>
+</span><span data-line="6">        <span class="s2">&quot;read&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="7">            <span class="s2">&quot;postgresql+asyncpg://user:pass@replica-1-ip:5432/mydb&quot;</span><span class="p">,</span>
+</span><span data-line="8">            <span class="s2">&quot;postgresql+asyncpg://user:pass@replica-2-ip:5432/mydb&quot;</span><span class="p">,</span>
+</span><span data-line="9">        <span class="p">],</span>
+</span><span data-line="10">    <span class="p">},</span>
+</span><span data-line="11"><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-2">
+AlloyDB &amp; Aurora</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoutingConfig</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="n">pool_endpoint_routing</span> <span class="o">=</span> <span class="n">RoutingConfig</span><span class="p">(</span>
+</span><span data-line="4">    <span class="n">engines</span><span class="o">=</span><span class="p">{</span>
+</span><span data-line="5">        <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;postgresql+asyncpg://user:pass@writer.db.internal:5432/mydb&quot;</span><span class="p">],</span>
+</span><span data-line="6">        <span class="s2">&quot;read&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;postgresql+asyncpg://user:pass@reader-pool.db.internal:5432/mydb&quot;</span><span class="p">],</span>
+</span><span data-line="7">    <span class="p">},</span>
+</span><span data-line="8"><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-3">
+Turn Off in Local Dev</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoutingConfig</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="n">local_routing</span> <span class="o">=</span> <span class="n">RoutingConfig</span><span class="p">(</span>
+</span><span data-line="4">    <span class="n">engines</span><span class="o">=</span><span class="p">{</span>
+</span><span data-line="5">        <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;postgresql+asyncpg://user:pass@localhost:5432/mydb&quot;</span><span class="p">],</span>
+</span><span data-line="6">    <span class="p">},</span>
+</span><span data-line="7">    <span class="n">enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span data-line="8"><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="choosing-a-pool-manually">
+<h2>Choosing a Pool Manually<a class="headerlink" href="#choosing-a-pool-manually" title="Link to this heading">#</a></h2>
+<p>Most routes never need manual overrides. When a critical checkout check must read from Primary—or a slow report should run on an <code class="docutils literal notranslate"><span class="pre">&quot;analytics&quot;</span></code> replica—wrap the call in a context manager or pass <code class="docutils literal notranslate"><span class="pre">bind_group</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">primary_context</span><span class="p">,</span> <span class="n">replica_context</span><span class="p">,</span> <span class="n">use_bind_group</span>
+</span><span data-line="3">
+</span><span data-line="4">
+</span><span data-line="5"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run_targeted_queries</span><span class="p">(</span><span class="n">repo</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">item_id</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span data-line="6">    <span class="k">with</span> <span class="n">primary_context</span><span class="p">():</span>
+</span><span data-line="7">        <span class="n">fresh_row</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item_id</span><span class="p">)</span>
+</span><span data-line="8">
+</span><span data-line="9">    <span class="k">with</span> <span class="n">replica_context</span><span class="p">():</span>
+</span><span data-line="10">        <span class="n">feed_rows</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">()</span>
+</span><span data-line="11">
+</span><span data-line="12">    <span class="k">with</span> <span class="n">use_bind_group</span><span class="p">(</span><span class="s2">&quot;analytics&quot;</span><span class="p">):</span>
+</span><span data-line="13">        <span class="n">report_count</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</span><span data-line="14">
+</span><span data-line="15">    <span class="k">return</span> <span class="n">fresh_row</span><span class="p">,</span> <span class="n">feed_rows</span><span class="p">,</span> <span class="n">report_count</span>
+</span></pre></div>
+</div>
+</section>
+<section id="complete-runnable-example">
+<h2>Complete Runnable Example<a class="headerlink" href="#complete-runnable-example" title="Link to this heading">#</a></h2>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-icon"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-code" viewBox="0 0 16 16" aria-hidden="true"><path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L2.06 8l3.72 3.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L.47 8.53a.75.75 0 0 1 0-1.06Z"></path></svg></span><span class="sd-summary-text">View Complete SQLite Primary &amp; Replica Script</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="sd">&quot;&quot;&quot;Runnable read/write replica routing example for Advanced Alchemy.&quot;&quot;&quot;</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+</span><span data-line="4"><span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+</span><span data-line="6">
+</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_engine</span>
+</span><span data-line="8"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span>
+</span><span data-line="9">
+</span><span data-line="10"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BigIntAuditBase</span>
+</span><span data-line="11"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemySyncConfig</span>
+</span><span data-line="12"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">EngineConfig</span><span class="p">,</span> <span class="n">RoutingConfig</span><span class="p">,</span> <span class="n">RoutingStrategy</span>
+</span><span data-line="13"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemySyncRepository</span>
+</span><span data-line="14"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">primary_context</span><span class="p">,</span> <span class="n">replica_context</span><span class="p">,</span> <span class="n">reset_routing_context</span>
+</span><span data-line="15">
+</span><span data-line="16"><span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="17">    <span class="s2">&quot;Article&quot;</span><span class="p">,</span>
+</span><span data-line="18">    <span class="s2">&quot;ArticleRepository&quot;</span><span class="p">,</span>
+</span><span data-line="19">    <span class="s2">&quot;main&quot;</span><span class="p">,</span>
+</span><span data-line="20"><span class="p">)</span>
+</span><span data-line="21">
+</span><span data-line="22">
+</span><span data-line="23"><span class="k">class</span><span class="w"> </span><span class="nc">Article</span><span class="p">(</span><span class="n">BigIntAuditBase</span><span class="p">):</span>
+</span><span data-line="24"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Article model used to verify read/write replica routing.&quot;&quot;&quot;</span>
+</span><span data-line="25">
+</span><span data-line="26">    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;routing_example_article&quot;</span>
+</span><span data-line="27">
+</span><span data-line="28">    <span class="n">title</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span data-line="29">
+</span><span data-line="30">
+</span><span data-line="31"><span class="k">class</span><span class="w"> </span><span class="nc">ArticleRepository</span><span class="p">(</span><span class="n">SQLAlchemySyncRepository</span><span class="p">[</span><span class="n">Article</span><span class="p">]):</span>
+</span><span data-line="32"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Synchronous repository for routed Article persistence.&quot;&quot;&quot;</span>
+</span><span data-line="33">
+</span><span data-line="34">    <span class="n">model_type</span> <span class="o">=</span> <span class="n">Article</span>
+</span><span data-line="35">
+</span><span data-line="36">
+</span><span data-line="37"><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="38"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Execute a complete primary-write and replica-read routing workflow.&quot;&quot;&quot;</span>
+</span><span data-line="39">    <span class="n">reset_routing_context</span><span class="p">()</span>
+</span><span data-line="40">    <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmp_dir</span><span class="p">:</span>
+</span><span data-line="41">        <span class="n">primary_db</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;primary.sqlite&quot;</span>
+</span><span data-line="42">        <span class="n">replica_db</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;replica.sqlite&quot;</span>
+</span><span data-line="43">        <span class="n">primary_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sqlite:///</span><span class="si">{</span><span class="n">primary_db</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="44">        <span class="n">replica_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sqlite:///</span><span class="si">{</span><span class="n">replica_db</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="45">
+</span><span data-line="46">        <span class="n">primary_init_engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="n">primary_url</span><span class="p">)</span>
+</span><span data-line="47">        <span class="n">Article</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">(</span><span class="n">primary_init_engine</span><span class="p">)</span>
+</span><span data-line="48">        <span class="n">primary_init_engine</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span>
+</span><span data-line="49">        <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">primary_db</span><span class="p">,</span> <span class="n">replica_db</span><span class="p">)</span>
+</span><span data-line="50">
+</span><span data-line="51">        <span class="n">config</span> <span class="o">=</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">(</span>
+</span><span data-line="52">            <span class="n">routing_config</span><span class="o">=</span><span class="n">RoutingConfig</span><span class="p">(</span>
+</span><span data-line="53">                <span class="n">engines</span><span class="o">=</span><span class="p">{</span>
+</span><span data-line="54">                    <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">EngineConfig</span><span class="p">(</span><span class="n">connection_string</span><span class="o">=</span><span class="n">primary_url</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;writer&quot;</span><span class="p">)],</span>
+</span><span data-line="55">                    <span class="s2">&quot;read&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">EngineConfig</span><span class="p">(</span><span class="n">connection_string</span><span class="o">=</span><span class="n">replica_url</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;reader-1&quot;</span><span class="p">)],</span>
+</span><span data-line="56">                <span class="p">},</span>
+</span><span data-line="57">                <span class="n">routing_strategy</span><span class="o">=</span><span class="n">RoutingStrategy</span><span class="o">.</span><span class="n">ROUND_ROBIN</span><span class="p">,</span>
+</span><span data-line="58">                <span class="n">sticky_after_write</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="59">            <span class="p">),</span>
+</span><span data-line="60">        <span class="p">)</span>
+</span><span data-line="61">
+</span><span data-line="62">        <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span data-line="63">            <span class="n">repo</span> <span class="o">=</span> <span class="n">ArticleRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="64">            <span class="n">created</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Article</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Primary Write&quot;</span><span class="p">))</span>
+</span><span data-line="65">            <span class="n">created_id</span> <span class="o">=</span> <span class="n">created</span><span class="o">.</span><span class="n">id</span>
+</span><span data-line="66">            <span class="n">sticky_read</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">created_id</span><span class="p">)</span>
+</span><span data-line="67">            <span class="k">if</span> <span class="n">sticky_read</span><span class="o">.</span><span class="n">title</span> <span class="o">!=</span> <span class="s2">&quot;Primary Write&quot;</span><span class="p">:</span>
+</span><span data-line="68">                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Unexpected sticky read title: </span><span class="si">{</span><span class="n">sticky_read</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="69">                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span data-line="70">            <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span><span data-line="71">
+</span><span data-line="72">        <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">primary_db</span><span class="p">,</span> <span class="n">replica_db</span><span class="p">)</span>
+</span><span data-line="73">
+</span><span data-line="74">        <span class="k">with</span> <span class="n">config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span data-line="75">            <span class="n">repo</span> <span class="o">=</span> <span class="n">ArticleRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+</span><span data-line="76">            <span class="k">with</span> <span class="n">replica_context</span><span class="p">():</span>
+</span><span data-line="77">                <span class="n">replica_articles</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">()</span>
+</span><span data-line="78">                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">replica_articles</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">replica_articles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">title</span> <span class="o">!=</span> <span class="s2">&quot;Primary Write&quot;</span><span class="p">:</span>
+</span><span data-line="79">                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Unexpected replica articles: </span><span class="si">{</span><span class="n">replica_articles</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="80">                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span data-line="81">
+</span><span data-line="82">            <span class="k">with</span> <span class="n">primary_context</span><span class="p">():</span>
+</span><span data-line="83">                <span class="n">primary_article</span> <span class="o">=</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Primary Write&quot;</span><span class="p">)</span>
+</span><span data-line="84">                <span class="k">if</span> <span class="n">primary_article</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">created_id</span><span class="p">:</span>
+</span><span data-line="85">                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Unexpected primary article id: </span><span class="si">{</span><span class="n">primary_article</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="86">                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+</details><p>See <a class="reference internal" href="../reference/routing.html"><span class="doc">Replica Routing</span></a> for the full routing API reference.</p>
+</section>
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="services.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Services</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="caching.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Caching</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Litestar Organization</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../_static/documentation_options.js?v=6f8f3740"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=a56c686a"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=b8b12719"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/shibuya.js?v=50760d75"></script></body>
+</html>
