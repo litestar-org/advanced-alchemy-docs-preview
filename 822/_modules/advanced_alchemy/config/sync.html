@@ -274,7 +274,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="2">
 </span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
 </span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
-</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">cast</span>
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">cast</span>
 </span><span data-line="6">
 </span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Engine</span><span class="p">,</span> <span class="n">create_engine</span>
 </span><span data-line="8"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">sessionmaker</span>
@@ -408,58 +408,61 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="126">            <span class="n">SyncFileObjectListener</span><span class="p">,</span>
 </span><span data-line="127">            <span class="n">touch_updated_timestamp</span><span class="p">,</span>
 </span><span data-line="128">        <span class="p">)</span>
-</span><span data-line="129">
-</span><span data-line="130">        <span class="c1"># Use routing session maker if routing is configured</span>
+</span><span data-line="129">        <span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoutingSyncSessionMaker</span>
+</span><span data-line="130">
 </span><span data-line="131">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">routing_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="132">            <span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoutingSyncSessionMaker</span>
-</span><span data-line="133">
-</span><span data-line="134">            <span class="n">routing_maker</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Session</span><span class="p">]</span> <span class="o">=</span> <span class="n">RoutingSyncSessionMaker</span><span class="p">(</span>
-</span><span data-line="135">                <span class="n">routing_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">routing_config</span><span class="p">,</span>
-</span><span data-line="136">                <span class="n">engine_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">engine_config_dict</span><span class="p">,</span>
-</span><span data-line="137">                <span class="n">session_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">session_config_dict</span><span class="p">,</span>
-</span><span data-line="138">            <span class="p">)</span>
-</span><span data-line="139">            <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span> <span class="o">=</span> <span class="n">routing_maker</span>
-</span><span data-line="140">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="141">            <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">create_session_maker</span><span class="p">()</span>
-</span><span data-line="142">
-</span><span data-line="143">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">,</span> <span class="n">sessionmaker</span><span class="p">):</span>
-</span><span data-line="144">            <span class="n">session_maker</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span>
-</span><span data-line="145">                <span class="s2">&quot;sessionmaker[Session]&quot;</span><span class="p">,</span>
-</span><span data-line="146">                <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">,</span>  <span class="c1"># pyright: ignore[reportUnknownMemberType]</span>
-</span><span data-line="147">            <span class="p">)</span>
-</span><span data-line="148">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_file_object_listener</span><span class="p">:</span>
-</span><span data-line="149">                <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">session_maker</span><span class="p">,</span> <span class="s2">&quot;before_flush&quot;</span><span class="p">,</span> <span class="n">SyncFileObjectListener</span><span class="o">.</span><span class="n">before_flush</span><span class="p">)</span>
-</span><span data-line="150">                <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">session_maker</span><span class="p">,</span> <span class="s2">&quot;after_commit&quot;</span><span class="p">,</span> <span class="n">SyncFileObjectListener</span><span class="o">.</span><span class="n">after_commit</span><span class="p">)</span>
-</span><span data-line="151">                <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">session_maker</span><span class="p">,</span> <span class="s2">&quot;after_rollback&quot;</span><span class="p">,</span> <span class="n">SyncFileObjectListener</span><span class="o">.</span><span class="n">after_rollback</span><span class="p">)</span>
-</span><span data-line="152">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_touch_updated_timestamp_listener</span><span class="p">:</span>
-</span><span data-line="153">                <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">session_maker</span><span class="p">,</span> <span class="s2">&quot;before_flush&quot;</span><span class="p">,</span> <span class="n">touch_updated_timestamp</span><span class="p">)</span>
-</span><span data-line="154">            <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">session_maker</span><span class="p">,</span> <span class="s2">&quot;after_commit&quot;</span><span class="p">,</span> <span class="n">SyncCacheListener</span><span class="o">.</span><span class="n">after_commit</span><span class="p">)</span>
-</span><span data-line="155">            <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">session_maker</span><span class="p">,</span> <span class="s2">&quot;after_rollback&quot;</span><span class="p">,</span> <span class="n">SyncCacheListener</span><span class="o">.</span><span class="n">after_rollback</span><span class="p">)</span>
-</span><span data-line="156">
-</span><span data-line="157">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pyright: ignore</span>
-</span><span data-line="158">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Session maker was not initialized.&quot;</span>  <span class="c1"># type: ignore[unreachable]</span>
-</span><span data-line="159">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span data-line="160">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;sessionmaker[Session]&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownMemberType]</span></div>
+</span><span data-line="132">            <span class="n">routing_maker</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Session</span><span class="p">]</span> <span class="o">=</span> <span class="n">RoutingSyncSessionMaker</span><span class="p">(</span>
+</span><span data-line="133">                <span class="n">routing_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">routing_config</span><span class="p">,</span>
+</span><span data-line="134">                <span class="n">engine_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">engine_config_dict</span><span class="p">,</span>
+</span><span data-line="135">                <span class="n">session_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">session_config_dict</span><span class="p">,</span>
+</span><span data-line="136">            <span class="p">)</span>
+</span><span data-line="137">            <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span> <span class="o">=</span> <span class="n">routing_maker</span>
+</span><span data-line="138">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="139">            <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">create_session_maker</span><span class="p">()</span>
+</span><span data-line="140">
+</span><span data-line="141">        <span class="n">event_target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">sessionmaker</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="142">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">,</span> <span class="n">sessionmaker</span><span class="p">):</span>
+</span><span data-line="143">            <span class="n">event_target</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span>
+</span><span data-line="144">                <span class="s2">&quot;sessionmaker[Session]&quot;</span><span class="p">,</span>
+</span><span data-line="145">                <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">,</span>  <span class="c1"># pyright: ignore[reportUnknownMemberType]</span>
+</span><span data-line="146">            <span class="p">)</span>
+</span><span data-line="147">        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">,</span> <span class="n">RoutingSyncSessionMaker</span><span class="p">):</span>
+</span><span data-line="148">            <span class="n">event_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="o">.</span><span class="n">session_maker</span>
+</span><span data-line="149">
+</span><span data-line="150">        <span class="k">if</span> <span class="n">event_target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="151">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_file_object_listener</span><span class="p">:</span>
+</span><span data-line="152">                <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">event_target</span><span class="p">,</span> <span class="s2">&quot;before_flush&quot;</span><span class="p">,</span> <span class="n">SyncFileObjectListener</span><span class="o">.</span><span class="n">before_flush</span><span class="p">)</span>
+</span><span data-line="153">                <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">event_target</span><span class="p">,</span> <span class="s2">&quot;after_commit&quot;</span><span class="p">,</span> <span class="n">SyncFileObjectListener</span><span class="o">.</span><span class="n">after_commit</span><span class="p">)</span>
+</span><span data-line="154">                <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">event_target</span><span class="p">,</span> <span class="s2">&quot;after_rollback&quot;</span><span class="p">,</span> <span class="n">SyncFileObjectListener</span><span class="o">.</span><span class="n">after_rollback</span><span class="p">)</span>
+</span><span data-line="155">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_touch_updated_timestamp_listener</span><span class="p">:</span>
+</span><span data-line="156">                <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">event_target</span><span class="p">,</span> <span class="s2">&quot;before_flush&quot;</span><span class="p">,</span> <span class="n">touch_updated_timestamp</span><span class="p">)</span>
+</span><span data-line="157">            <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">event_target</span><span class="p">,</span> <span class="s2">&quot;after_commit&quot;</span><span class="p">,</span> <span class="n">SyncCacheListener</span><span class="o">.</span><span class="n">after_commit</span><span class="p">)</span>
+</span><span data-line="158">            <span class="n">event</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">event_target</span><span class="p">,</span> <span class="s2">&quot;after_rollback&quot;</span><span class="p">,</span> <span class="n">SyncCacheListener</span><span class="o">.</span><span class="n">after_rollback</span><span class="p">)</span>
+</span><span data-line="159">
+</span><span data-line="160">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pyright: ignore</span>
+</span><span data-line="161">            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Session maker was not initialized.&quot;</span>  <span class="c1"># type: ignore[unreachable]</span>
+</span><span data-line="162">            <span class="k">raise</span> <span class="n">ImproperConfigurationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span data-line="163">        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;sessionmaker[Session]&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_maker</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportUnknownMemberType]</span></div>
 
-</span><span data-line="161">
+</span><span data-line="164">
 <div class="viewcode-block" id="SQLAlchemySyncConfig.get_session">
 <a class="viewcode-back" href="../../../reference/config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig.get_session">[docs]</a>
-</span><span data-line="162">    <span class="nd">@contextmanager</span>
-</span><span data-line="163">    <span class="k">def</span><span class="w"> </span><span class="nf">get_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Generator[Session, None, None]&quot;</span><span class="p">:</span>
-</span><span data-line="164"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a session context manager.</span>
-</span><span data-line="165">
-</span><span data-line="166"><span class="sd">        Yields:</span>
-</span><span data-line="167"><span class="sd">            Generator[sqlalchemy.orm.Session, None, None]: A context manager yielding an active SQLAlchemy Session.</span>
+</span><span data-line="165">    <span class="nd">@contextmanager</span>
+</span><span data-line="166">    <span class="k">def</span><span class="w"> </span><span class="nf">get_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Generator[Session, None, None]&quot;</span><span class="p">:</span>
+</span><span data-line="167"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a session context manager.</span>
 </span><span data-line="168">
-</span><span data-line="169"><span class="sd">        Examples:</span>
-</span><span data-line="170"><span class="sd">            Using the session context manager:</span>
+</span><span data-line="169"><span class="sd">        Yields:</span>
+</span><span data-line="170"><span class="sd">            Generator[sqlalchemy.orm.Session, None, None]: A context manager yielding an active SQLAlchemy Session.</span>
 </span><span data-line="171">
-</span><span data-line="172"><span class="sd">            &gt;&gt;&gt; with config.get_session() as session:</span>
-</span><span data-line="173"><span class="sd">            ...     session.execute(...)</span>
-</span><span data-line="174"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="175">        <span class="n">session_maker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_session_maker</span><span class="p">()</span>
-</span><span data-line="176">        <span class="k">with</span> <span class="n">session_maker</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-</span><span data-line="177">            <span class="k">yield</span> <span class="n">session</span></div>
+</span><span data-line="172"><span class="sd">        Examples:</span>
+</span><span data-line="173"><span class="sd">            Using the session context manager:</span>
+</span><span data-line="174">
+</span><span data-line="175"><span class="sd">            &gt;&gt;&gt; with config.get_session() as session:</span>
+</span><span data-line="176"><span class="sd">            ...     session.execute(...)</span>
+</span><span data-line="177"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="178">        <span class="n">session_maker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_session_maker</span><span class="p">()</span>
+</span><span data-line="179">        <span class="k">with</span> <span class="n">session_maker</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+</span><span data-line="180">            <span class="k">yield</span> <span class="n">session</span></div>
 </div>
 
 </span></pre></div>
