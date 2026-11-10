@@ -265,6 +265,12 @@ data-aria-dark="Switch to auto color mode">
       <i class="i-lucide close"></i>
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#1.13.0">1.13.0</a><ul>
+<li><a class="reference internal" href="#1.13.0-feature">Features</a></li>
+<li><a class="reference internal" href="#1.13.0-bugfix">Bugfixes</a></li>
+<li><a class="reference internal" href="#1.13.0-misc">Other changes</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#1.12.0">1.12.0</a><ul>
 <li><a class="reference internal" href="#1.12.0-feature">Features</a></li>
 <li><a class="reference internal" href="#1.12.0-bugfix">Bugfixes</a></li>
@@ -604,6 +610,71 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="x-changelog">
 <h1>1.x Changelog<a class="headerlink" href="#x-changelog" title="Link to this heading">#</a></h1>
+<section id="1.13.0">
+<h2>1.13.0<a class="headerlink" href="#1.13.0" title="Link to this heading">#</a></h2>
+<section id="1.13.0-feature">
+<h3>Features<a class="headerlink" href="#1.13.0-feature" title="Link to this heading">#</a></h3>
+<dl>
+<dt>infer service model and repository types from generic parameters<a class="headerlink reference internal" href="#1.13.0-infer service model and repository types from generic parameters" id="1.13.0-infer service model and repository types from generic parameters">#</a></dt><dd><div class="changelog-change docutils container">
+<p><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepositoryService[Model]</span></code> and
+<code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncRepositoryService[Model]</span></code> subclasses no longer need an inline
+<code class="docutils literal notranslate"><span class="pre">repository_type</span></code>; the model and a default repository are inferred from the
+generic parameters, and <code class="docutils literal notranslate"><span class="pre">model_type=</span></code> / <code class="docutils literal notranslate"><span class="pre">repository_type=</span></code> can be passed
+when instantiating directly. <code class="docutils literal notranslate"><span class="pre">Service.repository</span></code> is now typed as the SQL or
+mock repository for the model instead of <code class="docutils literal notranslate"><span class="pre">Any</span></code>. To type custom repository
+methods, pass the repository as the second generic parameter, for example
+<code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepositoryService[Widget,</span> <span class="pre">WidgetRepository]</span></code>.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/824">https://github.com/litestar-org/advanced-alchemy/pull/824</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
+<section id="1.13.0-bugfix">
+<h3>Bugfixes<a class="headerlink" href="#1.13.0-bugfix" title="Link to this heading">#</a></h3>
+<dl>
+<dt>partial update hydration and single-query service updates<a class="headerlink reference internal" href="#1.13.0-partial update hydration and single-query service updates" id="1.13.0-partial update hydration and single-query service updates">#</a></dt><dd><div class="changelog-change docutils container">
+<p><code class="docutils literal notranslate"><span class="pre">Service.update</span></code> now builds the update model with
+<code class="docutils literal notranslate"><span class="pre">partial_model_from_dict</span></code> so omitted fields stay unset instead of being
+filled with constructor defaults, fixing <code class="docutils literal notranslate"><span class="pre">MappedAsDataclass</span></code> and SQLModel
+table models where defaults overwrote stored values or required fields raised
+<code class="docutils literal notranslate"><span class="pre">TypeError</span></code>. Models that define their own <code class="docutils literal notranslate"><span class="pre">__init__</span></code> keep calling it so
+constructor-derived attributes are still applied. <code class="docutils literal notranslate"><span class="pre">Service.update(item_id=...)</span></code>
+delegates directly to <code class="docutils literal notranslate"><span class="pre">Repository.update</span></code>, removing a duplicate <code class="docutils literal notranslate"><span class="pre">SELECT</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">item_id</span></code> takes precedence over an identifier present in the payload.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/824">https://github.com/litestar-org/advanced-alchemy/pull/824</a></span></p>
+</div>
+</dd>
+<dt>mock repository filter parity<a class="headerlink reference internal" href="#1.13.0-mock repository filter parity" id="1.13.0-mock repository filter parity">#</a></dt><dd><div class="changelog-change docutils container">
+<p><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncMockRepository</span></code> and <code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncMockRepository</span></code> support
+<code class="docutils literal notranslate"><span class="pre">NotInCollectionFilter</span></code>, <code class="docutils literal notranslate"><span class="pre">NotInSearchFilter</span></code>, <code class="docutils literal notranslate"><span class="pre">ComparisonFilter</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ExistsFilter</span></code>, <code class="docutils literal notranslate"><span class="pre">NotExistsFilter</span></code>, <code class="docutils literal notranslate"><span class="pre">MultiFilter</span></code>, <code class="docutils literal notranslate"><span class="pre">between()</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">is_(None)</span></code>. <code class="docutils literal notranslate"><span class="pre">LimitOffset</span></code> slices <code class="docutils literal notranslate"><span class="pre">offset:offset</span> <span class="pre">+</span> <span class="pre">limit</span></code>, <code class="docutils literal notranslate"><span class="pre">BeforeAfter</span></code>
+applies both bounds, and <code class="docutils literal notranslate"><span class="pre">get_many_and_count</span></code> returns the count before
+pagination. Unsupported SQL expressions now raise <code class="docutils literal notranslate"><span class="pre">RepositoryError</span></code> instead of
+silently returning no rows, so tests that relied on the previous results may
+need to be updated.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/824">https://github.com/litestar-org/advanced-alchemy/pull/824</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
+<section id="1.13.0-misc">
+<h3>Other changes<a class="headerlink" href="#1.13.0-misc" title="Link to this heading">#</a></h3>
+<dl>
+<dt>deprecate ignoring explicit None for columns with defaults on update<a class="headerlink reference internal" href="#1.13.0-deprecate ignoring explicit none for columns with defaults on update" id="1.13.0-deprecate ignoring explicit none for columns with defaults on update">#</a></dt><dd><div class="changelog-change docutils container">
+<p><code class="docutils literal notranslate"><span class="pre">Repository.update</span></code> and <code class="docutils literal notranslate"><span class="pre">Service.update</span></code> continue to ignore an explicit
+<code class="docutils literal notranslate"><span class="pre">None</span></code> assigned to a column that defines a <code class="docutils literal notranslate"><span class="pre">default</span></code>, <code class="docutils literal notranslate"><span class="pre">server_default</span></code>,
+<code class="docutils literal notranslate"><span class="pre">onupdate</span></code>, or <code class="docutils literal notranslate"><span class="pre">server_onupdate</span></code>, and now emit a <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code>
+naming the model and field. In v2.0 the <code class="docutils literal notranslate"><span class="pre">None</span></code> will be written, clearing
+nullable columns and raising <code class="docutils literal notranslate"><span class="pre">IntegrityError</span></code> on <code class="docutils literal notranslate"><span class="pre">NOT</span> <span class="pre">NULL</span></code> columns. Omit
+the field from the update payload to keep the stored value. The in-memory mock
+repositories follow the same behavior.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/824">https://github.com/litestar-org/advanced-alchemy/pull/824</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
+</section>
 <section id="1.12.0">
 <h2>1.12.0<a class="headerlink" href="#1.12.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2026-10-19<section id="1.12.0-feature">
