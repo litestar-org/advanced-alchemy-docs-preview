@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="amber" data-content_root="../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Fixtures - Advanced Alchemy</title><link rel="shortcut icon" href="../_static/favicon.svg"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Utilities" href="utils.html" /><link rel="prev" title="Exceptions" href="exceptions.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=43bd62f4" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9db1225a" />
+    <link rel="stylesheet" type="text/css" href="../_static/syntax-highlighting.css?v=64e51511" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="Fixtures"/>
+  <meta property="og:image" content="https://docs.advanced-alchemy.litestar.dev/latest/_static/og-social-dark.png"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="/">
+      <img class="light-logo" src="../_static/logo.svg" alt="Advanced Alchemy" height="28" loading="lazy" />
+      <img class="dark-logo" src="../_static/logo.svg" alt="Advanced Alchemy" height="28" loading="lazy" />
+      <strong>Advanced Alchemy</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul>
+      <li class="link"><a class="js-menu" href="../usage/index.html" id="nav-trigger-1" aria-controls="nav-children-1">
+            <span>Learn</span>
+            <i class="i-lucide chevron-down"></i>
+          </a>
+        <ul id="nav-children-1" aria-labelledby="nav-trigger-1"><li><a href="../getting-started.html">
+                <span>Getting Started</span>
+                <small>Install and configure Advanced Alchemy</small>
+              </a></li><li><a href="../usage/modeling/index.html">
+                <span>Data Modeling</span>
+                <small>Declarative bases, mixins, and custom types</small>
+              </a></li><li><a href="../usage/repositories/index.html">
+                <span>Repositories</span>
+                <small>Async and sync data access and filtering</small>
+              </a></li><li><a href="../usage/services.html">
+                <span>Services</span>
+                <small>Business logic and schema/DTO hydration</small>
+              </a></li><li><a href="../usage/routing.html">
+                <span>Replica Routing</span>
+                <small>Read/write replica session routing</small>
+              </a></li><li><a href="../usage/caching.html">
+                <span>Caching</span>
+                <small>Dogpile L2 query and entity caching</small>
+              </a></li><li><a href="../usage/cli.html">
+                <span>CLI & Migrations</span>
+                <small>Alembic CLI and database workflows</small>
+              </a></li></ul>
+      </li>
+      <li class="link"><a class="js-menu" href="../usage/frameworks/index.html" id="nav-trigger-2" aria-controls="nav-children-2">
+            <span>Frameworks</span>
+            <i class="i-lucide chevron-down"></i>
+          </a>
+        <ul id="nav-children-2" aria-labelledby="nav-trigger-2"><li><a href="../usage/frameworks/index.html">
+                <span>Overview</span>
+                <small>Capabilities and components across all supported frameworks</small>
+              </a></li><li><a href="../usage/frameworks/litestar.html">
+                <span>Litestar</span>
+                <small>Plugin, DI providers, DTOs, storage, and session stores</small>
+              </a></li><li><a href="../usage/frameworks/fastapi.html">
+                <span>FastAPI</span>
+                <small>Extension, lifespan, Annotated dependencies, and storage</small>
+              </a></li><li><a href="../usage/frameworks/starlette.html">
+                <span>Starlette</span>
+                <small>ASGI middleware and request-scoped sessions</small>
+              </a></li><li><a href="../usage/frameworks/flask.html">
+                <span>Flask</span>
+                <small>WSGI and async Flask integration</small>
+              </a></li><li><a href="../usage/frameworks/sanic.html">
+                <span>Sanic</span>
+                <small>Sanic extension and dependency injection</small>
+              </a></li></ul>
+      </li><li class="link"><a href="index.html">Reference</a></li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-4" aria-controls="nav-children-4">
+            <span>About</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-4" aria-labelledby="nav-trigger-4"><li><a href="../changelog.html">
+                <span>Changelog</span>
+                <small>All changes for Advanced Alchemy</small>
+              </a></li><li><a href="https://litestar.dev/about/organization">
+                <span>Litestar Organization</span>
+                <small>Details about the Litestar organization, the team behind Advanced Alchemy</small>
+              </a></li><li><a href="../releases.html">
+                <span>Releases</span>
+                <small>Explore the release process, versioning, and deprecation policy for Advanced Alchemy</small>
+              </a></li><li><a href="../contribution-guide.html">
+                <span>Contributing</span>
+                <small>Learn how to contribute to the Advanced Alchemy project</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file">
+                <span>Code of Conduct</span>
+                <small>Review the etiquette for interacting with the Advanced Alchemy community</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file#security-ov-file">
+                <span>Security</span>
+                <small>Overview of Advanced Alchemy's security protocols</small>
+              </a></li><li><a href="https://discord.gg/dSDXd4mKhp">
+                <span>Discord Help Forum</span>
+                <small>Ask questions and get help in Discord</small>
+              </a></li><li><a href="https://github.com/litestar-org/advanced-alchemy/discussions">
+                <span>GitHub Discussions</span>
+                <small>Discuss ideas and patterns with the community</small>
+              </a></li><li><a href="https://github.com/sponsors/Litestar-Org">Sponsor</a></li></ul>
+      </li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="2"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Usage Guide</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/index.html">Overview</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/modeling/index.html">Data Modeling</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/basics.html">Modeling Basics</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/inheritance.html">Inheritance Patterns</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/sqlmodel.html">SQLModel Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/types.html">Portable Column Types</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/security_and_storage_types.html">Security and File Storage Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/repositories/index.html">Repositories</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/repositories/basics.html">Repository Basics</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/repositories/filtering.html">Filtering and Pagination</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/repositories/advanced.html">Advanced Repository</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/services.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/routing.html">Read/Write Routing</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/caching.html">Caching</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/cli.html">CLI &amp; Migrations</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/cli_commands.html">Command Workflows</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/database_seeding.html">Database Seeding</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Framework Integrations</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/index.html">Overview</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/litestar.html">Litestar</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/litestar_dtos.html">Services, Filters &amp; DTOs</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/litestar_sessions.html">Database &amp; Server Sessions</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/litestar_storage.html">File &amp; Object Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/fastapi.html">FastAPI</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/fastapi_dependencies.html">Services &amp; Filter Depends</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/fastapi_storage.html">File Storage &amp; Multi-Binds</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/starlette.html">Starlette</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/flask.html">Flask</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/sanic.html">Sanic</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 _expand"><a class="reference internal" href="index.html">Overview</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="base.html">Declarative Base</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="mixins/index.html">Mixins</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/unique.html">Unique Key</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/nanoid.html">NanoID</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/uuid.html">UUID</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/sentinel.html">Sentinel</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/bigint.html">BigInt</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/audit.html">Audit</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/slug.html">Slug</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="config/index.html">Configuration</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/asyncio.html">Asyncio</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/common.html">Common</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/engine.html">Engine</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/routing.html">Routing</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/sync.html">Sync</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="repository.html">Repositories</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="repository_memory.html">Memory Repositories</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="service.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="operations.html">Bulk Operations</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="types.html">Custom Types</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="routing.html">Replica Routing</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="cache.html">Caching</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="extensions/index.html">Framework Extensions</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/litestar/index.html">Litestar</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/plugins.html">Plugins &amp; Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/dto.html">Data Transfer Objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/session.html">Session Backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/store.html">SQLAlchemy Store</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/cli.html">CLI Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/fastapi/index.html">FastAPI</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/starlette/index.html">Starlette</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/flask/index.html">Flask</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/sanic/index.html">Sanic</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="alembic/index.html">Alembic</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="alembic/commands.html">Commands</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="alembic/utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="cli.html">CLI Commands</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Fixtures</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="utils.html">Utilities</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../changelog.html">1.x Changelog</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../contribution-guide.html">Contribution Guide</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/search?q=user%3Alitestar-org+state%3Aopen+label%3A%22good+first+issue%22+++no%3Aassignee+repo%3A%22advanced-alchemy%22&amp;type=issues">Available Issues</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/litestar-org/.github?tab=coc-ov-file#readme">Code of Conduct</a></li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#fixture-formats-readers">Fixture Formats &amp; Readers</a></li>
+<li><a class="reference internal" href="#streaming-writing-legacy-alias">Streaming, Writing &amp; Legacy Alias</a></li>
+</ul>
+</div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
+  data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
+  <span class="w-8 flex items-center justify-around shrink-0 text-3xl">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </span>
+  <span class="flex-grow px-2 break-all">
+    
+    
+      <span>advanced-alchemy</span>
+    
+    <span class="flex text-sm repo-stats-count">
+      <span class="flex items-center pr-3">
+        <iconify-icon icon="lucide:star"></iconify-icon>
+        <strong class="js-repo-stars ml-1">0</strong>
+      </span>
+      <span class="flex items-center">
+        <iconify-icon icon="lucide:git-fork"></iconify-icon>
+        <strong class="js-repo-forks ml-1">0</strong>
+      </span>
+    </span>
+  </span>
+</a><div class="edit-this-page">
+  <a href="https://github.com/litestar-org/advanced-alchemy/blob/main/docs/reference/fixtures.rst">Edit this page</a>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Advanced Alchemy</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Fixtures</strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <div class="copy-page-wrapper relative pb-4 lg:absolute lg:top-8 lg:right-6 xl:right-12">
+  <div id="copy-page-trigger">
+    <button
+      type="button"
+      class="js-copy px-3 py-1 inline-flex items-center gap-1"
+      data-url="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/fixtures.rst.txt"
+    >
+      <i class="i-lucide" data-icon="copy"></i>
+      <span>Copy page</span>
+    </button>
+    <button class="js-menu px-2 py-1" type="button" aria-label="More actions"
+      aria-haspopup="menu" aria-expanded="false" aria-controls="copy-page-content">
+      <i class="i-lucide chevron-down"></i>
+    </button>
+  </div>
+  <div id="copy-page-content" role="menu" aria-orientation="vertical" aria-hidden="true">
+    <div role="presentation">
+      <div class="flex flex-col" role="group">
+        <button class="js-copy" type="button" role="menuitem"
+          data-url="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/fixtures.rst.txt">
+          <span class="iconify-icon">
+            <i class="i-lucide" data-icon="copy"></i>
+          </span>
+          <span>Copy page</span>
+        </button>
+        <a role="menuitem" href="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/fixtures.rst.txt" target="_blank" rel="nofollow"><iconify-icon icon="bi:code-slash"></iconify-icon>
+            <span>View Source</span></a><a role="menuitem" href="https://chatgpt.com/?hints=search&q=Read%20https%3A//raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/fixtures.rst.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:openai"></iconify-icon>
+          <span>Open in ChatGPT</span>
+        </a><a role="menuitem" href="https://claude.ai/new?q=Read%20https%3A//raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/fixtures.rst.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:claude"></iconify-icon>
+          <span>Open in Claude</span>
+        </a></div>
+    </div>
+  </div>
+</div><article class="yue" role="main">
+          <section id="module-advanced_alchemy.utils.fixtures">
+<span id="fixtures"></span><h1>Fixtures<a class="headerlink" href="#module-advanced_alchemy.utils.fixtures" title="Link to this heading">#</a></h1>
+<p>Streaming fixture loaders, batch iterators, sharded writers, and format aliases.</p>
+<section id="fixture-formats-readers">
+<h2>Fixture Formats &amp; Readers<a class="headerlink" href="#fixture-formats-readers" title="Link to this heading">#</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="advanced_alchemy.utils.fixtures.FixtureFormat">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.utils.fixtures.</span></span><span class="sig-name descname"><span class="pre">FixtureFormat</span></span><a class="headerlink" href="#advanced_alchemy.utils.fixtures.FixtureFormat" title="Link to this definition">#</a></dt>
+<dd><p>Supported fixture file serialization format (<code class="docutils literal notranslate"><span class="pre">&quot;json&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;jsonl&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;csv&quot;</span></code>).</p>
+<p>alias of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Literal</span></code>[‘json’, ‘jsonl’, ‘csv’]</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="advanced_alchemy.utils.fixtures.FixtureCompression">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.utils.fixtures.</span></span><span class="sig-name descname"><span class="pre">FixtureCompression</span></span><a class="headerlink" href="#advanced_alchemy.utils.fixtures.FixtureCompression" title="Link to this definition">#</a></dt>
+<dd><p>Supported fixture archive compression format (<code class="docutils literal notranslate"><span class="pre">&quot;gzip&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;zip&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p>
+<p>alias of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Literal</span></code>[‘gzip’, ‘zip’]</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.utils.fixtures.open_fixture_sync">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.utils.fixtures.</span></span><span class="sig-name descname"><span class="pre">open_fixture_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixtures_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixture_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/utils/fixtures.html#open_fixture_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.utils.fixtures.open_fixture_sync" title="Link to this definition">#</a></dt>
+<dd><p>Load a JSON, JSONL, or CSV fixture synchronously.</p>
+<p>Supports plain files, gzip-compressed files (<code class="docutils literal notranslate"><span class="pre">.gz</span></code>), and zip archives (<code class="docutils literal notranslate"><span class="pre">.zip</span></code>).
+Formats are resolved in priority order: <code class="docutils literal notranslate"><span class="pre">json</span></code> &gt; <code class="docutils literal notranslate"><span class="pre">jsonl</span></code> &gt; <code class="docutils literal notranslate"><span class="pre">csv</span></code>. Both
+lowercase and uppercase fixture names are checked according to format and
+compression rules. Text is decoded using <code class="docutils literal notranslate"><span class="pre">utf-8-sig</span></code>.</p>
+<p>Unsharded <code class="docutils literal notranslate"><span class="pre">json</span></code> fixtures return the decoded top-level JSON value unchanged.
+Unsharded <code class="docutils literal notranslate"><span class="pre">jsonl</span></code> and <code class="docutils literal notranslate"><span class="pre">csv</span></code> fixtures return a list of decoded records or
+dictionaries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fixtures_path</strong> (<em>Union</em><em>[</em><em>Path</em><em>, </em><em>AsyncPath</em><em>]</em>) – Directory path containing fixture files. Can be a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.Path</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">anyio.Path</span></code> instance.</p></li>
+<li><p><strong>fixture_name</strong> (<em>str</em>) – Fixture base name without file extension.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If no matching fixture file exists.</p></li>
+<li><p><strong>OSError</strong> – If an I/O or decompression error occurs while reading the file.</p></li>
+<li><p><strong>ValueError</strong> – If a zip archive contains no matching member, a JSONL line
+    contains invalid JSON, or a JSON fixture read as records is not an array.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Decoded JSON data or a list of records.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Any</em></p>
+</dd>
+</dl>
+<div class="admonition-examples admonition">
+<p class="admonition-title">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">fixtures_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./fixtures&quot;</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">open_fixture_sync</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;users&quot;</span><span class="p">)</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="5"><span class="go">[{&quot;id&quot;: 1, &quot;name&quot;: &quot;Alice&quot;}, {&quot;id&quot;: 2, &quot;name&quot;: &quot;Bob&quot;}]</span>
+</span></pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.utils.fixtures.open_fixture_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.utils.fixtures.</span></span><span class="sig-name descname"><span class="pre">open_fixture_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixtures_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixture_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/utils/fixtures.html#open_fixture_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.utils.fixtures.open_fixture_async" title="Link to this definition">#</a></dt>
+<dd><p>Load a JSON, JSONL, or CSV fixture asynchronously.</p>
+<p>Offloads synchronous fixture resolution, decompression, and parsing to a
+worker thread via <a class="reference internal" href="utils.html#advanced_alchemy.utils.sync_tools.async_" title="advanced_alchemy.utils.sync_tools.async_"><code class="xref py py-func docutils literal notranslate"><span class="pre">async_()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fixtures_path</strong> (<em>Union</em><em>[</em><em>Path</em><em>, </em><em>AsyncPath</em><em>]</em>) – Directory path containing fixture files. Can be a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.Path</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">anyio.Path</span></code> instance.</p></li>
+<li><p><strong>fixture_name</strong> (<em>str</em>) – Fixture base name without file extension.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If no matching fixture file exists.</p></li>
+<li><p><strong>OSError</strong> – If an I/O or decompression error occurs while reading the file.</p></li>
+<li><p><strong>ValueError</strong> – If a zip archive contains no matching member, a JSONL line
+    contains invalid JSON, or a JSON fixture read as records is not an array.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Decoded JSON data or a list of records.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Any</em></p>
+</dd>
+</dl>
+<div class="admonition-examples admonition">
+<p class="admonition-title">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">fixtures_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./fixtures&quot;</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">open_fixture_async</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;users&quot;</span><span class="p">)</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="5"><span class="go">[{&quot;id&quot;: 1, &quot;name&quot;: &quot;Alice&quot;}, {&quot;id&quot;: 2, &quot;name&quot;: &quot;Bob&quot;}]</span>
+</span></pre></div>
+</div>
+</div>
+</dd></dl>
+
+</section>
+<section id="streaming-writing-legacy-alias">
+<h2>Streaming, Writing &amp; Legacy Alias<a class="headerlink" href="#streaming-writing-legacy-alias" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.utils.fixtures.iter_fixture_sync">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.utils.fixtures.</span></span><span class="sig-name descname"><span class="pre">iter_fixture_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixtures_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixture_name</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/utils/fixtures.html#iter_fixture_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.utils.fixtures.iter_fixture_sync" title="Link to this definition">#</a></dt>
+<dd><p>Stream decoded fixture records in non-empty batches synchronously.</p>
+<p>Validates <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> and resolves the fixture file or numbered shards
+eagerly at call time, then yields non-empty batches of at most
+<code class="docutils literal notranslate"><span class="pre">batch_size</span></code> records across shard boundaries. Closing the returned
+iterator early releases any open file handle immediately.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fixtures_path</strong> (<em>Union</em><em>[</em><em>Path</em><em>, </em><em>AsyncPath</em><em>]</em>) – Directory path containing fixture files. Can be a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.Path</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">anyio.Path</span></code> instance.</p></li>
+<li><p><strong>fixture_name</strong> (<em>str</em>) – Fixture base name without file extension.</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em>) – Maximum number of records per yielded batch. Must be at least 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If no matching fixture file exists.</p></li>
+<li><p><strong>OSError</strong> – If an I/O or decompression error occurs while reading a file.</p></li>
+<li><p><strong>ValueError</strong> – If <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> is less than 1, both an unsharded file and
+    numbered shards exist, shard validation fails, a zip archive contains
+    no matching member, a JSONL line contains invalid JSON, or a JSON
+    fixture is not an array.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Iterator yielding non-empty lists of records.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Iterator</em>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list" title="advanced_alchemy.repository.SQLAlchemyAsyncRepository.list"><em>list</em></a>[<em>Any</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.utils.fixtures.iter_fixture_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.utils.fixtures.</span></span><span class="sig-name descname"><span class="pre">iter_fixture_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixtures_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixture_name</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/utils/fixtures.html#iter_fixture_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.utils.fixtures.iter_fixture_async" title="Link to this definition">#</a></dt>
+<dd><p>Stream decoded fixture records in non-empty batches asynchronously.</p>
+<p>Offloads fixture resolution, batch reads, and generator teardown to worker
+threads via <a class="reference internal" href="utils.html#advanced_alchemy.utils.sync_tools.async_" title="advanced_alchemy.utils.sync_tools.async_"><code class="xref py py-func docutils literal notranslate"><span class="pre">async_()</span></code></a>. Validation
+and resolution run on the first iteration step. Callers exiting early must
+call <code class="docutils literal notranslate"><span class="pre">aclose()</span></code> or consume the iterator completely so underlying file
+handles are closed promptly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fixtures_path</strong> (<em>Union</em><em>[</em><em>Path</em><em>, </em><em>AsyncPath</em><em>]</em>) – Directory path containing fixture files. Can be a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.Path</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">anyio.Path</span></code> instance.</p></li>
+<li><p><strong>fixture_name</strong> (<em>str</em>) – Fixture base name without file extension.</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em>) – Maximum number of records per yielded batch. Must be at least 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If no matching fixture file exists.</p></li>
+<li><p><strong>OSError</strong> – If an I/O or decompression error occurs while reading a file.</p></li>
+<li><p><strong>ValueError</strong> – If <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> is less than 1, both an unsharded file and
+    numbered shards exist, shard validation fails, a zip archive contains
+    no matching member, a JSONL line contains invalid JSON, or a JSON
+    fixture is not an array.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list[Any]</span></code> – Non-empty batch of decoded records.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>AsyncIterator</em>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list" title="advanced_alchemy.repository.SQLAlchemyAsyncRepository.list"><em>list</em></a>[<em>Any</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.utils.fixtures.write_fixture_sync">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.utils.fixtures.</span></span><span class="sig-name descname"><span class="pre">write_fixture_sync</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">fixtures_path</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">fixture_name</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">records</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'json'</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">max_bytes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">max_records</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/utils/fixtures.html#write_fixture_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.utils.fixtures.write_fixture_sync" title="Link to this definition">#</a></dt>
+<dd><p>Write fixture records synchronously in JSON, JSONL, or CSV format.</p>
+<p>Streams encoded records into temporary <code class="docutils literal notranslate"><span class="pre">.tmp</span></code> files, removes any existing
+fixture files matching <code class="docutils literal notranslate"><span class="pre">fixture_name</span></code> across all formats, compressions,
+and shard layouts upon completion, and atomically renames temporary files
+into place.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fixtures_path</strong> (<em>Union</em><em>[</em><em>Path</em><em>, </em><em>AsyncPath</em><em>]</em>) – Target directory path for fixture files. Created if it
+does not exist. Can be a <code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.Path</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">anyio.Path</span></code>.</p></li>
+<li><p><strong>fixture_name</strong> (<em>str</em>) – Fixture base name without file extension.</p></li>
+<li><p><strong>records</strong> (<em>Iterable</em><em>[</em><em>Any</em><em>]</em>) – Iterable of records to write.</p></li>
+<li><p><strong>file_format</strong> (<em>'json'</em><em> | </em><em>'jsonl'</em><em> | </em><em>'csv'</em>) – Output format (<code class="docutils literal notranslate"><span class="pre">&quot;json&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;jsonl&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;csv&quot;</span></code>).</p></li>
+<li><p><strong>compression</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="#advanced_alchemy.utils.fixtures.FixtureCompression" title="advanced_alchemy.utils.fixtures.FixtureCompression"><em>FixtureCompression</em></a><em>]</em>) – Optional compression (<code class="docutils literal notranslate"><span class="pre">&quot;gzip&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;zip&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p></li>
+<li><p><strong>max_bytes</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Optional maximum on-disk byte size per shard. Must be at least 1.</p></li>
+<li><p><strong>max_records</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Optional maximum record count per shard. Must be at least 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If <code class="docutils literal notranslate"><span class="pre">file_format</span></code>, <code class="docutils literal notranslate"><span class="pre">compression</span></code>, <code class="docutils literal notranslate"><span class="pre">max_bytes</span></code>, or
+    <code class="docutils literal notranslate"><span class="pre">max_records</span></code> is invalid, or if CSV records introduce keys absent
+    from the header.</p></li>
+<li><p><strong>TypeError</strong> – If <code class="docutils literal notranslate"><span class="pre">file_format</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;csv&quot;</span></code> and a record is not a mapping.</p></li>
+<li><p><strong>OSError</strong> – If writing, deleting stale files, or renaming files fails.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Final written fixture paths in shard order.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list" title="advanced_alchemy.repository.SQLAlchemyAsyncRepository.list"><em>list</em></a>[Path]</p>
+</dd>
+</dl>
+<div class="admonition-examples admonition">
+<p class="admonition-title">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">fixtures_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./fixtures&quot;</span><span class="p">)</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">paths</span> <span class="o">=</span> <span class="n">write_fixture_sync</span><span class="p">(</span>
+</span><span data-line="4"><span class="gp">... </span>    <span class="n">fixtures_path</span><span class="p">,</span>
+</span><span data-line="5"><span class="gp">... </span>    <span class="s2">&quot;users&quot;</span><span class="p">,</span>
+</span><span data-line="6"><span class="gp">... </span>    <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Alice&quot;</span><span class="p">}],</span>
+</span><span data-line="7"><span class="gp">... </span>    <span class="n">file_format</span><span class="o">=</span><span class="s2">&quot;jsonl&quot;</span><span class="p">,</span>
+</span><span data-line="8"><span class="gp">... </span>    <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">,</span>
+</span><span data-line="9"><span class="gp">... </span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.utils.fixtures.write_fixture_async">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.utils.fixtures.</span></span><span class="sig-name descname"><span class="pre">write_fixture_async</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">fixtures_path</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">fixture_name</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">records</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'json'</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">max_bytes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">max_records</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/utils/fixtures.html#write_fixture_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.utils.fixtures.write_fixture_async" title="Link to this definition">#</a></dt>
+<dd><p>Write fixture records asynchronously in JSON, JSONL, or CSV format.</p>
+<p>Streams records from a synchronous or asynchronous iterable in batches of
+<code class="docutils literal notranslate"><span class="pre">batch_size</span></code> into temporary <code class="docutils literal notranslate"><span class="pre">.tmp</span></code> files, offloads writer construction,
+batch writes, commit, and abort to worker threads via
+<a class="reference internal" href="utils.html#advanced_alchemy.utils.sync_tools.async_" title="advanced_alchemy.utils.sync_tools.async_"><code class="xref py py-func docutils literal notranslate"><span class="pre">async_()</span></code></a>, removes stale fixture
+files matching <code class="docutils literal notranslate"><span class="pre">fixture_name</span></code> on completion, and atomically renames
+temporary files into place.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fixtures_path</strong> (<em>Union</em><em>[</em><em>Path</em><em>, </em><em>AsyncPath</em><em>]</em>) – Target directory path for fixture files. Created if it
+does not exist. Can be a <code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.Path</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">anyio.Path</span></code>.</p></li>
+<li><p><strong>fixture_name</strong> (<em>str</em>) – Fixture base name without file extension.</p></li>
+<li><p><strong>records</strong> (<em>Union</em><em>[</em><em>Iterable</em><em>[</em><em>Any</em><em>]</em><em>, </em><em>AsyncIterable</em><em>[</em><em>Any</em><em>]</em><em>]</em>) – Synchronous or asynchronous iterable of records to write.</p></li>
+<li><p><strong>file_format</strong> (<em>'json'</em><em> | </em><em>'jsonl'</em><em> | </em><em>'csv'</em>) – Output format (<code class="docutils literal notranslate"><span class="pre">&quot;json&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;jsonl&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;csv&quot;</span></code>).</p></li>
+<li><p><strong>compression</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="#advanced_alchemy.utils.fixtures.FixtureCompression" title="advanced_alchemy.utils.fixtures.FixtureCompression"><em>FixtureCompression</em></a><em>]</em>) – Optional compression (<code class="docutils literal notranslate"><span class="pre">&quot;gzip&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;zip&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p></li>
+<li><p><strong>max_bytes</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Optional maximum on-disk byte size per shard. Must be at least 1.</p></li>
+<li><p><strong>max_records</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Optional maximum record count per shard. Must be at least 1.</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em>) – Maximum number of records buffered before offloading a batch
+write to a worker thread. Must be at least 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If <code class="docutils literal notranslate"><span class="pre">batch_size</span></code>, <code class="docutils literal notranslate"><span class="pre">file_format</span></code>, <code class="docutils literal notranslate"><span class="pre">compression</span></code>,
+    <code class="docutils literal notranslate"><span class="pre">max_bytes</span></code>, or <code class="docutils literal notranslate"><span class="pre">max_records</span></code> is invalid, or if CSV records
+    introduce keys absent from the header.</p></li>
+<li><p><strong>TypeError</strong> – If <code class="docutils literal notranslate"><span class="pre">file_format</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;csv&quot;</span></code> and a record is not a mapping.</p></li>
+<li><p><strong>OSError</strong> – If writing, deleting stale files, or renaming files fails.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Final written fixture paths in shard order.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list" title="advanced_alchemy.repository.SQLAlchemyAsyncRepository.list"><em>list</em></a>[Path]</p>
+</dd>
+</dl>
+<div class="admonition-examples admonition">
+<p class="admonition-title">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">stream_users</span><span class="p">():</span>
+</span><span data-line="3"><span class="gp">... </span>    <span class="k">yield</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Alice&quot;</span><span class="p">}</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="n">paths</span> <span class="o">=</span> <span class="k">await</span> <span class="n">write_fixture_async</span><span class="p">(</span>
+</span><span data-line="5"><span class="gp">... </span>    <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./fixtures&quot;</span><span class="p">),</span>
+</span><span data-line="6"><span class="gp">... </span>    <span class="s2">&quot;users&quot;</span><span class="p">,</span>
+</span><span data-line="7"><span class="gp">... </span>    <span class="n">stream_users</span><span class="p">(),</span>
+</span><span data-line="8"><span class="gp">... </span>    <span class="n">file_format</span><span class="o">=</span><span class="s2">&quot;jsonl&quot;</span><span class="p">,</span>
+</span><span data-line="9"><span class="gp">... </span>    <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">,</span>
+</span><span data-line="10"><span class="gp">... </span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.utils.fixtures.open_fixture">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.utils.fixtures.</span></span><span class="sig-name descname"><span class="pre">open_fixture</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixtures_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixture_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/utils/fixtures.html#open_fixture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.utils.fixtures.open_fixture" title="Link to this definition">#</a></dt>
+<dd><p>Load a JSON, JSONL, or CSV fixture synchronously.</p>
+<p>Deprecated since 1.13.0 and scheduled for removal in 2.0. Use
+<a class="reference internal" href="#advanced_alchemy.utils.fixtures.open_fixture_sync" title="advanced_alchemy.utils.fixtures.open_fixture_sync"><code class="xref py py-func docutils literal notranslate"><span class="pre">open_fixture_sync()</span></code></a> instead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fixtures_path</strong> (<em>Union</em><em>[</em><em>Path</em><em>, </em><em>AsyncPath</em><em>]</em>) – Directory path containing fixture files. Can be a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.Path</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">anyio.Path</span></code> instance.</p></li>
+<li><p><strong>fixture_name</strong> (<em>str</em>) – Fixture base name without file extension.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If no matching fixture file exists.</p></li>
+<li><p><strong>OSError</strong> – If an I/O or decompression error occurs while reading the file.</p></li>
+<li><p><strong>ValueError</strong> – If a zip archive contains no matching member, a JSONL line
+    contains invalid JSON, or a JSON fixture read as records is not an array.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Decoded JSON data or a list of records.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Any</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="exceptions.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Exceptions</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="utils.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Utilities</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Litestar Organization</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../_static/documentation_options.js?v=6f8f3740"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=a56c686a"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=b8b12719"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/shibuya.js?v=50760d75"></script></body>
+</html>
