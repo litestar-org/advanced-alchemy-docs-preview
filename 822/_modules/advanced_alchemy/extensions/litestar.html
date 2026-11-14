@@ -429,19 +429,21 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="108"><span class="p">)</span>
 </span><span data-line="109">
 </span><span data-line="110">
-</span><span data-line="111"><span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">attr_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
-</span><span data-line="112"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Lazily import Litestar extension submodules.&quot;&quot;&quot;</span>
-</span><span data-line="113">    <span class="k">if</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">_LAZY_SUBMODULES</span><span class="p">:</span>
-</span><span data-line="114">        <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;advanced_alchemy.extensions.litestar.</span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span data-line="115">        <span class="nb">globals</span><span class="p">()[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">module</span>
-</span><span data-line="116">        <span class="k">return</span> <span class="n">module</span>
-</span><span data-line="117">    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;module </span><span class="si">{</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2"> has no attribute </span><span class="si">{</span><span class="n">attr_name</span><span class="si">!r}</span><span class="s2">&quot;</span>
-</span><span data-line="118">    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span data-line="119">
-</span><span data-line="120">
-</span><span data-line="121"><span class="k">def</span><span class="w"> </span><span class="fm">__dir__</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-</span><span data-line="122"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Return package attributes including lazily re-exported submodules.&quot;&quot;&quot;</span>
-</span><span data-line="123">    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">globals</span><span class="p">())</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">__all__</span><span class="p">))</span>
+</span><span data-line="111"><span class="k">if</span> <span class="ow">not</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+</span><span data-line="112">
+</span><span data-line="113">    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">attr_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+</span><span data-line="114"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Lazily import Litestar extension submodules.&quot;&quot;&quot;</span>
+</span><span data-line="115">        <span class="k">if</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">_LAZY_SUBMODULES</span><span class="p">:</span>
+</span><span data-line="116">            <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;advanced_alchemy.extensions.litestar.</span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="117">            <span class="nb">globals</span><span class="p">()[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">module</span>
+</span><span data-line="118">            <span class="k">return</span> <span class="n">module</span>
+</span><span data-line="119">        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;module </span><span class="si">{</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2"> has no attribute </span><span class="si">{</span><span class="n">attr_name</span><span class="si">!r}</span><span class="s2">&quot;</span>
+</span><span data-line="120">        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span data-line="121">
+</span><span data-line="122">
+</span><span data-line="123"><span class="k">def</span><span class="w"> </span><span class="fm">__dir__</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span data-line="124"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Return package attributes including lazily re-exported submodules.&quot;&quot;&quot;</span>
+</span><span data-line="125">    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">globals</span><span class="p">())</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">__all__</span><span class="p">))</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
