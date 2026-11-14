@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="amber" data-content_root="../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Repositories - Advanced Alchemy</title><link rel="shortcut icon" href="../_static/favicon.svg"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Memory Repositories" href="repository_memory.html" /><link rel="prev" title="Types" href="config/types.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=43bd62f4" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9db1225a" />
+    <link rel="stylesheet" type="text/css" href="../_static/syntax-highlighting.css?v=64e51511" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="Repositories"/>
+  <meta property="og:image" content="https://docs.advanced-alchemy.litestar.dev/latest/_static/og-social-dark.png"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="/">
+      <img class="light-logo" src="../_static/logo.svg" alt="Advanced Alchemy" height="28" loading="lazy" />
+      <img class="dark-logo" src="../_static/logo.svg" alt="Advanced Alchemy" height="28" loading="lazy" />
+      <strong>Advanced Alchemy</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul>
+      <li class="link"><a class="js-menu" href="../usage/index.html" id="nav-trigger-1" aria-controls="nav-children-1">
+            <span>Learn</span>
+            <i class="i-lucide chevron-down"></i>
+          </a>
+        <ul id="nav-children-1" aria-labelledby="nav-trigger-1"><li><a href="../getting-started.html">
+                <span>Getting Started</span>
+                <small>Install and configure Advanced Alchemy</small>
+              </a></li><li><a href="../usage/modeling/index.html">
+                <span>Data Modeling</span>
+                <small>Declarative bases, mixins, and custom types</small>
+              </a></li><li><a href="../usage/repositories/index.html">
+                <span>Repositories</span>
+                <small>Async and sync data access and filtering</small>
+              </a></li><li><a href="../usage/services.html">
+                <span>Services</span>
+                <small>Business logic and schema/DTO hydration</small>
+              </a></li><li><a href="../usage/routing.html">
+                <span>Replica Routing</span>
+                <small>Read/write replica session routing</small>
+              </a></li><li><a href="../usage/caching.html">
+                <span>Caching</span>
+                <small>Dogpile L2 query and entity caching</small>
+              </a></li><li><a href="../usage/cli.html">
+                <span>CLI & Migrations</span>
+                <small>Alembic CLI and database workflows</small>
+              </a></li></ul>
+      </li>
+      <li class="link"><a class="js-menu" href="../usage/frameworks/index.html" id="nav-trigger-2" aria-controls="nav-children-2">
+            <span>Frameworks</span>
+            <i class="i-lucide chevron-down"></i>
+          </a>
+        <ul id="nav-children-2" aria-labelledby="nav-trigger-2"><li><a href="../usage/frameworks/index.html">
+                <span>Overview</span>
+                <small>Capabilities and components across all supported frameworks</small>
+              </a></li><li><a href="../usage/frameworks/litestar.html">
+                <span>Litestar</span>
+                <small>Plugin, DI providers, DTOs, storage, and session stores</small>
+              </a></li><li><a href="../usage/frameworks/fastapi.html">
+                <span>FastAPI</span>
+                <small>Extension, lifespan, Annotated dependencies, and storage</small>
+              </a></li><li><a href="../usage/frameworks/starlette.html">
+                <span>Starlette</span>
+                <small>ASGI middleware and request-scoped sessions</small>
+              </a></li><li><a href="../usage/frameworks/flask.html">
+                <span>Flask</span>
+                <small>WSGI and async Flask integration</small>
+              </a></li><li><a href="../usage/frameworks/sanic.html">
+                <span>Sanic</span>
+                <small>Sanic extension and dependency injection</small>
+              </a></li></ul>
+      </li><li class="link"><a href="index.html">Reference</a></li>
+      <li class="link"><button class="js-menu" type="button" id="nav-trigger-4" aria-controls="nav-children-4">
+            <span>About</span>
+            <i class="i-lucide chevron-down"></i>
+          </button>
+        <ul id="nav-children-4" aria-labelledby="nav-trigger-4"><li><a href="../changelog.html">
+                <span>Changelog</span>
+                <small>All changes for Advanced Alchemy</small>
+              </a></li><li><a href="https://litestar.dev/about/organization">
+                <span>Litestar Organization</span>
+                <small>Details about the Litestar organization, the team behind Advanced Alchemy</small>
+              </a></li><li><a href="../releases.html">
+                <span>Releases</span>
+                <small>Explore the release process, versioning, and deprecation policy for Advanced Alchemy</small>
+              </a></li><li><a href="../contribution-guide.html">
+                <span>Contributing</span>
+                <small>Learn how to contribute to the Advanced Alchemy project</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file">
+                <span>Code of Conduct</span>
+                <small>Review the etiquette for interacting with the Advanced Alchemy community</small>
+              </a></li><li><a href="https://github.com/litestar-org/.github?tab=coc-ov-file#security-ov-file">
+                <span>Security</span>
+                <small>Overview of Advanced Alchemy's security protocols</small>
+              </a></li><li><a href="https://discord.gg/dSDXd4mKhp">
+                <span>Discord Help Forum</span>
+                <small>Ask questions and get help in Discord</small>
+              </a></li><li><a href="https://github.com/litestar-org/advanced-alchemy/discussions">
+                <span>GitHub Discussions</span>
+                <small>Discuss ideas and patterns with the community</small>
+              </a></li><li><a href="https://github.com/sponsors/Litestar-Org">Sponsor</a></li></ul>
+      </li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="2"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Usage Guide</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/index.html">Overview</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/modeling/index.html">Data Modeling</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/basics.html">Modeling Basics</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/inheritance.html">Inheritance Patterns</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/sqlmodel.html">SQLModel Integration</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/types.html">Portable Column Types</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/modeling/security_and_storage_types.html">Security and File Storage Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/repositories/index.html">Repositories</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/repositories/basics.html">Repository Basics</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/repositories/filtering.html">Filtering and Pagination</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/repositories/advanced.html">Advanced Repository</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/services.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/routing.html">Read/Write Routing</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/caching.html">Caching</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/cli.html">CLI &amp; Migrations</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/cli_commands.html">Command Workflows</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/database_seeding.html">Database Seeding</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Framework Integrations</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/index.html">Overview</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/litestar.html">Litestar</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/litestar_dtos.html">Services, Filters &amp; DTOs</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/litestar_sessions.html">Database &amp; Server Sessions</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/litestar_storage.html">File &amp; Object Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/fastapi.html">FastAPI</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/fastapi_dependencies.html">Services &amp; Filter Depends</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="../usage/frameworks/fastapi_storage.html">File Storage &amp; Multi-Binds</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/starlette.html">Starlette</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/flask.html">Flask</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/frameworks/sanic.html">Sanic</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 _expand"><a class="reference internal" href="index.html">Overview</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="base.html">Declarative Base</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="mixins/index.html">Mixins</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/unique.html">Unique Key</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/nanoid.html">NanoID</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/uuid.html">UUID</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/sentinel.html">Sentinel</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/bigint.html">BigInt</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/audit.html">Audit</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="mixins/slug.html">Slug</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="config/index.html">Configuration</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/asyncio.html">Asyncio</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/common.html">Common</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/engine.html">Engine</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/routing.html">Routing</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/sync.html">Sync</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="config/types.html">Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Repositories</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="repository_memory.html">Memory Repositories</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="service.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="operations.html">Bulk Operations</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="types.html">Custom Types</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="routing.html">Replica Routing</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="cache.html">Caching</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="extensions/index.html">Framework Extensions</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/litestar/index.html">Litestar</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/plugins.html">Plugins &amp; Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/dto.html">Data Transfer Objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/session.html">Session Backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/store.html">SQLAlchemy Store</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extensions/litestar/cli.html">CLI Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/fastapi/index.html">FastAPI</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/starlette/index.html">Starlette</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/flask/index.html">Flask</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="extensions/sanic/index.html">Sanic</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="alembic/index.html">Alembic</a><ul>
+<li class="toctree-l2 _expand"><a class="reference internal" href="alembic/commands.html">Commands</a></li>
+<li class="toctree-l2 _expand"><a class="reference internal" href="alembic/utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="cli.html">CLI Commands</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="utils.html">Utilities</a></li>
+</ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../changelog.html">1.x Changelog</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../contribution-guide.html">Contribution Guide</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/search?q=user%3Alitestar-org+state%3Aopen+label%3A%22good+first+issue%22+++no%3Aassignee+repo%3A%22advanced-alchemy%22&amp;type=issues">Available Issues</a></li>
+<li class="toctree-l1 _expand"><a class="reference external" href="https://github.com/litestar-org/.github?tab=coc-ov-file#readme">Code of Conduct</a></li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#async-repositories">Async Repositories</a></li>
+<li><a class="reference internal" href="#sync-repositories">Sync Repositories</a></li>
+<li><a class="reference internal" href="#protocols-base-mixins">Protocols &amp; Base Mixins</a></li>
+<li><a class="reference internal" href="#helpers-type-definitions">Helpers &amp; Type Definitions</a></li>
+</ul>
+</div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
+  data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
+  <span class="w-8 flex items-center justify-around shrink-0 text-3xl">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </span>
+  <span class="flex-grow px-2 break-all">
+    
+    
+      <span>advanced-alchemy</span>
+    
+    <span class="flex text-sm repo-stats-count">
+      <span class="flex items-center pr-3">
+        <iconify-icon icon="lucide:star"></iconify-icon>
+        <strong class="js-repo-stars ml-1">0</strong>
+      </span>
+      <span class="flex items-center">
+        <iconify-icon icon="lucide:git-fork"></iconify-icon>
+        <strong class="js-repo-forks ml-1">0</strong>
+      </span>
+    </span>
+  </span>
+</a><div class="edit-this-page">
+  <a href="https://github.com/litestar-org/advanced-alchemy/blob/main/docs/reference/repository.rst">Edit this page</a>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Advanced Alchemy</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Repositories</strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <div class="copy-page-wrapper relative pb-4 lg:absolute lg:top-8 lg:right-6 xl:right-12">
+  <div id="copy-page-trigger">
+    <button
+      type="button"
+      class="js-copy px-3 py-1 inline-flex items-center gap-1"
+      data-url="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/repository.rst.txt"
+    >
+      <i class="i-lucide" data-icon="copy"></i>
+      <span>Copy page</span>
+    </button>
+    <button class="js-menu px-2 py-1" type="button" aria-label="More actions"
+      aria-haspopup="menu" aria-expanded="false" aria-controls="copy-page-content">
+      <i class="i-lucide chevron-down"></i>
+    </button>
+  </div>
+  <div id="copy-page-content" role="menu" aria-orientation="vertical" aria-hidden="true">
+    <div role="presentation">
+      <div class="flex flex-col" role="group">
+        <button class="js-copy" type="button" role="menuitem"
+          data-url="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/repository.rst.txt">
+          <span class="iconify-icon">
+            <i class="i-lucide" data-icon="copy"></i>
+          </span>
+          <span>Copy page</span>
+        </button>
+        <a role="menuitem" href="https://raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/repository.rst.txt" target="_blank" rel="nofollow"><iconify-icon icon="bi:code-slash"></iconify-icon>
+            <span>View Source</span></a><a role="menuitem" href="https://chatgpt.com/?hints=search&q=Read%20https%3A//raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/repository.rst.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:openai"></iconify-icon>
+          <span>Open in ChatGPT</span>
+        </a><a role="menuitem" href="https://claude.ai/new?q=Read%20https%3A//raw.githubusercontent.com/litestar-org/advanced-alchemy/refs/heads/main/docs/reference/repository.rst.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:claude"></iconify-icon>
+          <span>Open in Claude</span>
+        </a></div>
+    </div>
+  </div>
+</div><article class="yue" role="main">
+          <section id="module-advanced_alchemy.repository">
+<span id="repositories"></span><h1>Repositories<a class="headerlink" href="#module-advanced_alchemy.repository" title="Link to this heading">#</a></h1>
+<section id="async-repositories">
+<h2>Async Repositories<a class="headerlink" href="#async-repositories" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemyAsyncRepository</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">statement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_expunge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_refresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Empty</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">execution_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">wrap_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">uniquify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">count_with_window_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">cache_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepository" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepositoryProtocol" title="advanced_alchemy.repository._async.SQLAlchemyAsyncRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepositoryProtocol</span></code></a>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>], <a class="reference internal" href="#advanced_alchemy.repository.FilterableRepository" title="advanced_alchemy.repository._util.FilterableRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterableRepository</span></code></a>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
+<p>Async SQLAlchemy repository implementation.</p>
+<p>Provides a complete implementation of async database operations using SQLAlchemy,
+including CRUD operations, filtering, and relationship loading.</p>
+<dl class="simple">
+<dt>Type Parameters:</dt><dd><p>ModelT: The SQLAlchemy model type this repository handles.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#advanced_alchemy.repository.FilterableRepository" title="advanced_alchemy.repository._util.FilterableRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterableRepository</span></code></a></p>
+</div>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncRepository.add">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_expunge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_refresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Empty</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepository.add" title="Link to this definition">#</a></dt>
+<dd><p>Add <code class="docutils literal notranslate"><span class="pre">data</span></code> to the collection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><em>ModelT</em></a>) – Instance to be added to the collection.</p></li>
+<li><p><strong>auto_expunge</strong> (<em>bool</em><em> | </em><em>None</em>) – Remove object from session before returning.</p></li>
+<li><p><strong>auto_refresh</strong> (<em>bool</em><em> | </em><em>None</em>) – Refresh object from session before returning.</p></li>
+<li><p><strong>auto_commit</strong> (<em>bool</em><em> | </em><em>None</em>) – Commit objects before returning.</p></li>
+<li><p><strong>error_messages</strong> (<a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.ErrorMessages" title="advanced_alchemy.exceptions.ErrorMessages"><em>ErrorMessages</em></a><em> | </em><em>type</em><em>[</em><a class="reference internal" href="utils.html#advanced_alchemy.utils.dataclass.Empty" title="advanced_alchemy.utils.dataclass.Empty"><em>Empty</em></a><em>] </em><em>| </em><em>None</em>) – An optional dictionary of templates to use
+for friendlier error messages to clients</p></li>
+<li><p><strong>bind_group</strong> (<em>str</em><em> | </em><em>None</em>) – Optional routing group for multi-master configurations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The added instance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><em>ModelT</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncRepository.delete">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">item_id</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_expunge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">id_attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Empty</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">execution_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">uniquify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepository.delete" title="Link to this definition">#</a></dt>
+<dd><p>Delete instance identified by <code class="docutils literal notranslate"><span class="pre">item_id</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item_id</strong> (<em>Any</em><em> | </em><em>tuple</em><em>[</em><em>Any</em><em>, </em><em>...</em><em>] </em><em>| </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – Identifier of instance to be deleted. For single primary keys,
+pass a scalar value. For composite primary keys, pass a tuple of values
+in column order or a dict mapping attribute names to values.</p></li>
+<li><p><strong>auto_expunge</strong> (<em>bool</em><em> | </em><em>None</em>) – Remove object from session before returning.</p></li>
+<li><p><strong>auto_commit</strong> (<em>bool</em><em> | </em><em>None</em>) – Commit objects before returning.</p></li>
+<li><p><strong>id_attribute</strong> (<em>str</em><em> | </em><em>InstrumentedAttribute</em><em>[</em><em>Any</em><em>] </em><em>| </em><em>None</em>) – Allows customization of the unique identifier to use for model fetching.
+Defaults to <cite>id</cite>, but can reference any surrogate or candidate key for the table.
+Note: Only applies to single-column lookups.</p></li>
+<li><p><strong>error_messages</strong> (<a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.ErrorMessages" title="advanced_alchemy.exceptions.ErrorMessages"><em>ErrorMessages</em></a><em> | </em><em>type</em><em>[</em><a class="reference internal" href="utils.html#advanced_alchemy.utils.dataclass.Empty" title="advanced_alchemy.utils.dataclass.Empty"><em>Empty</em></a><em>] </em><em>| </em><em>None</em>) – An optional dictionary of templates to use
+for friendlier error messages to clients</p></li>
+<li><p><strong>load</strong> (<a class="reference internal" href="#advanced_alchemy.repository.LoadSpec" title="advanced_alchemy.repository.LoadSpec"><em>LoadSpec</em></a><em> | </em><em>None</em>) – Set default relationships to be loaded</p></li>
+<li><p><strong>execution_options</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em>) – Set default execution options</p></li>
+<li><p><strong>uniquify</strong> (<em>bool</em><em> | </em><em>None</em>) – Optionally apply the <code class="docutils literal notranslate"><span class="pre">unique()</span></code> method to results before returning.</p></li>
+<li><p><strong>bind_group</strong> (<em>str</em><em> | </em><em>None</em>) – Optional routing group for multi-master configurations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The deleted instance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><em>ModelT</em></a></p>
+</dd>
+</dl>
+<div class="admonition-examples admonition">
+<p class="admonition-title">Examples</p>
+<p># Single primary key
+&gt;&gt;&gt; deleted = await user_repo.delete(123)</p>
+<p># Composite primary key
+&gt;&gt;&gt; deleted = await user_role_repo.delete((user_id, role_id))</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncRepository.get">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">item_id</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_expunge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">statement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">id_attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Empty</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">execution_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">uniquify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">with_for_update</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">use_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepository.get" title="Link to this definition">#</a></dt>
+<dd><p>Get instance identified by <cite>item_id</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item_id</strong> (<em>Any</em><em> | </em><em>tuple</em><em>[</em><em>Any</em><em>, </em><em>...</em><em>] </em><em>| </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – Identifier of the instance to be retrieved. For single primary keys,
+pass a scalar value (int, str, UUID, etc.). For composite primary keys,
+pass a tuple of values in column order or a dict mapping attribute names to values.</p></li>
+<li><p><strong>auto_expunge</strong> (<em>bool</em><em> | </em><em>None</em>) – Remove object from session before returning.</p></li>
+<li><p><strong>statement</strong> (<em>Select</em><em> | </em><em>None</em>) – To facilitate customization of the underlying select query.</p></li>
+<li><p><strong>id_attribute</strong> (<em>str</em><em> | </em><em>InstrumentedAttribute</em><em>[</em><em>Any</em><em>] </em><em>| </em><em>None</em>) – Allows customization of the unique identifier to use for model fetching.
+Defaults to <cite>id</cite>, but can reference any surrogate or candidate key for the table.
+Note: Only applies to single-column lookups. For composite primary keys,
+this parameter is ignored and the primary key columns are used automatically.</p></li>
+<li><p><strong>error_messages</strong> (<a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.ErrorMessages" title="advanced_alchemy.exceptions.ErrorMessages"><em>ErrorMessages</em></a><em> | </em><em>type</em><em>[</em><a class="reference internal" href="utils.html#advanced_alchemy.utils.dataclass.Empty" title="advanced_alchemy.utils.dataclass.Empty"><em>Empty</em></a><em>] </em><em>| </em><em>None</em>) – An optional dictionary of templates to use
+for friendlier error messages to clients</p></li>
+<li><p><strong>load</strong> (<a class="reference internal" href="#advanced_alchemy.repository.LoadSpec" title="advanced_alchemy.repository.LoadSpec"><em>LoadSpec</em></a><em> | </em><em>None</em>) – Set relationships to be loaded</p></li>
+<li><p><strong>execution_options</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em>) – Set default execution options</p></li>
+<li><p><strong>uniquify</strong> (<em>bool</em><em> | </em><em>None</em>) – Optionally apply the <code class="docutils literal notranslate"><span class="pre">unique()</span></code> method to results before returning.</p></li>
+<li><p><strong>with_for_update</strong> (<em>TypeAliasForwardRef</em><em>(</em><em>'sqlalchemy.sql.selectable.ForUpdateArg'</em><em>) </em><em>| </em><em>None</em><em> | </em><em>bool</em><em> | </em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – Optional FOR UPDATE clause / parameters to apply to the SELECT statement.</p></li>
+<li><p><strong>use_cache</strong> (<em>bool</em>) – Whether to use caching for this query (default True).</p></li>
+<li><p><strong>bind_group</strong> (<em>str</em><em> | </em><em>None</em>) – Optional routing group to use for the operation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The retrieved instance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><em>ModelT</em></a></p>
+</dd>
+</dl>
+<div class="admonition-examples admonition">
+<p class="admonition-title">Examples</p>
+<p># Single primary key
+&gt;&gt;&gt; user = await user_repo.get(123)</p>
+<p># Composite primary key (tuple format)
+&gt;&gt;&gt; assignment = await user_role_repo.get((user_id, role_id))</p>
+<p># Composite primary key (dict format)
+&gt;&gt;&gt; assignment = await user_role_repo.get(
+…     {
+…         “user_id”: 1,
+…         “role_id”: 5,
+…     }
+… )</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.NotFoundError" title="advanced_alchemy.exceptions.NotFoundError"><strong>NotFoundError</strong></a> – If no instance is found with the given primary key.</p></li>
+<li><p><strong>ValueError</strong> – If the input format doesn’t match the primary key structure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><em>ModelT</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncRepository.count">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">count</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">filters</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">statement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Empty</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">execution_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">uniquify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepository.count" title="Link to this definition">#</a></dt>
+<dd><p>Get the count of records returned by a query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*filters</strong> (<a class="reference internal" href="filters.html#advanced_alchemy.filters.StatementFilter" title="advanced_alchemy.filters.StatementFilter"><em>StatementFilter</em></a><em> | </em><em>ColumnElement</em><em>[</em><em>bool</em><em>]</em>) – Types for specific filtering operations.</p></li>
+<li><p><strong>statement</strong> (<em>Select</em><em> | </em><em>None</em>) – To facilitate customization of the underlying select query.</p></li>
+<li><p><strong>error_messages</strong> (<a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.ErrorMessages" title="advanced_alchemy.exceptions.ErrorMessages"><em>ErrorMessages</em></a><em> | </em><em>type</em><em>[</em><a class="reference internal" href="utils.html#advanced_alchemy.utils.dataclass.Empty" title="advanced_alchemy.utils.dataclass.Empty"><em>Empty</em></a><em>] </em><em>| </em><em>None</em>) – An optional dictionary of templates to use
+for friendlier error messages to clients</p></li>
+<li><p><strong>load</strong> (<a class="reference internal" href="#advanced_alchemy.repository.LoadSpec" title="advanced_alchemy.repository.LoadSpec"><em>LoadSpec</em></a><em> | </em><em>None</em>) – Set relationships to be loaded</p></li>
+<li><p><strong>execution_options</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em>) – Set default execution options</p></li>
+<li><p><strong>uniquify</strong> (<em>bool</em><em> | </em><em>None</em>) – Optionally apply the <code class="docutils literal notranslate"><span class="pre">unique()</span></code> method to results before returning.</p></li>
+<li><p><strong>bind_group</strong> (<em>str</em><em> | </em><em>None</em>) – Optional routing group to use for the operation.</p></li>
+<li><p><strong>**kwargs</strong> (<em>Any</em>) – Instance attribute value filters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Count of records returned by query, ignoring pagination.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>int</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncRepository.update">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">attribute_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">with_for_update</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_expunge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_refresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">id_attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Empty</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">execution_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">uniquify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepository.update" title="Link to this definition">#</a></dt>
+<dd><p>Update instance with the attribute values present on <cite>data</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><em>ModelT</em></a>) – An instance that should have a value for <cite>self.id_attribute</cite> that
+exists in the collection.</p></li>
+<li><p><strong>attribute_names</strong> (<em>Iterable</em><em>[</em><em>str</em><em>] </em><em>| </em><em>None</em>) – an iterable of attribute names to pass into the <code class="docutils literal notranslate"><span class="pre">update</span></code>
+method.</p></li>
+<li><p><strong>with_for_update</strong> (<em>TypeAliasForwardRef</em><em>(</em><em>'sqlalchemy.sql.selectable.ForUpdateArg'</em><em>) </em><em>| </em><em>None</em><em> | </em><em>bool</em><em> | </em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – indicating FOR UPDATE should be used, or may be a
+dictionary containing flags to indicate a more specific set of
+FOR UPDATE flags for the SELECT</p></li>
+<li><p><strong>auto_expunge</strong> (<em>bool</em><em> | </em><em>None</em>) – Remove object from session before returning.</p></li>
+<li><p><strong>auto_refresh</strong> (<em>bool</em><em> | </em><em>None</em>) – Refresh object from session before returning.</p></li>
+<li><p><strong>auto_commit</strong> (<em>bool</em><em> | </em><em>None</em>) – Commit objects before returning.</p></li>
+<li><p><strong>id_attribute</strong> (<em>str</em><em> | </em><em>InstrumentedAttribute</em><em>[</em><em>Any</em><em>] </em><em>| </em><em>None</em>) – Allows customization of the unique identifier to use for model fetching.
+Defaults to <cite>id</cite>, but can reference any surrogate or candidate key for the table.</p></li>
+<li><p><strong>error_messages</strong> (<a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.ErrorMessages" title="advanced_alchemy.exceptions.ErrorMessages"><em>ErrorMessages</em></a><em> | </em><em>type</em><em>[</em><a class="reference internal" href="utils.html#advanced_alchemy.utils.dataclass.Empty" title="advanced_alchemy.utils.dataclass.Empty"><em>Empty</em></a><em>] </em><em>| </em><em>None</em>) – An optional dictionary of templates to use
+for friendlier error messages to clients</p></li>
+<li><p><strong>load</strong> (<a class="reference internal" href="#advanced_alchemy.repository.LoadSpec" title="advanced_alchemy.repository.LoadSpec"><em>LoadSpec</em></a><em> | </em><em>None</em>) – Set relationships to be loaded</p></li>
+<li><p><strong>execution_options</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em>) – Set default execution options</p></li>
+<li><p><strong>uniquify</strong> (<em>bool</em><em> | </em><em>None</em>) – Optionally apply the <code class="docutils literal notranslate"><span class="pre">unique()</span></code> method to results before returning.</p></li>
+<li><p><strong>bind_group</strong> (<em>str</em><em> | </em><em>None</em>) – Optional routing group for multi-master configurations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The updated instance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><em>ModelT</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncRepository.list_and_count">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">list_and_count</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">filters</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">statement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_expunge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">count_with_window_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Empty</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">execution_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">uniquify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">use_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list_and_count" title="Link to this definition">#</a></dt>
+<dd><p>Get records with total count.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.10.0: </span>Use <a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepository" title="advanced_alchemy.repository.SQLAlchemyAsyncRepository.get_many_and_count"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_many_and_count()</span></code></a> instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>tuple</em>[<em>List</em>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><em>ModelT</em></a>], <em>int</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncRepository.list">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">list</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">filters</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_expunge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">statement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Empty</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">execution_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">uniquify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">use_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list" title="Link to this definition">#</a></dt>
+<dd><p>Get a list of instances, optionally filtered.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.10.0: </span>Use <a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepository" title="advanced_alchemy.repository.SQLAlchemyAsyncRepository.get_many"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_many()</span></code></a> instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>List</em>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><em>ModelT</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncSlugRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemyAsyncSlugRepository</span></span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepository" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepository" title="advanced_alchemy.repository._async.SQLAlchemyAsyncRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepository</span></code></a>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>], <a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepositoryProtocol" title="advanced_alchemy.repository._async.SQLAlchemyAsyncSlugRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyAsyncSlugRepositoryProtocol</span></code></a>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
+<p>Extends the repository to include slug model features..</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncSlugRepository.get_by_slug">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_by_slug</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">slug</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Empty</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">execution_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">uniquify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepository.get_by_slug" title="Link to this definition">#</a></dt>
+<dd><p>Select record by slug value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The model instance or None if not found.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><em>ModelT</em></a> | <em>None</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncSlugRepository.get_available_slug">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_available_slug</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">value_to_slugify</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepository.get_available_slug" title="Link to this definition">#</a></dt>
+<dd><p>Get a unique slug for the supplied value.</p>
+<p>If the value is found to exist, a random 4 digit character is appended to the end.</p>
+<p>Override this method to change the default behavior</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value_to_slugify</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – A string that should be converted to a unique slug.</p></li>
+<li><p><strong>**kwargs</strong> (<em>Any</em>) – stuff</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a unique slug for the supplied value.  This is safe for URLs and other unique identifiers.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>str</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemyAsyncQueryRepository</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">wrap_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>SQLAlchemy Query Repository.</p>
+<p>This is a loosely typed helper to query for when you need to select data in ways that don’t align to the normal repository pattern.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.get_one">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_one</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">statement</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.get_one" title="Link to this definition">#</a></dt>
+<dd><p>Get instance identified by <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>statement</strong> (<em>Select</em>) – To facilitate customization of the underlying select query.</p></li>
+<li><p><strong>bind_group</strong> (<em>str</em><em> | </em><em>None</em>) – The bind group to use for the operation.</p></li>
+<li><p><strong>**kwargs</strong> (<em>Any</em>) – Instance attribute value filters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The retrieved instance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Row</em>[<em>Any</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.list_and_count">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">list_and_count</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">statement</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">count_with_window_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.list_and_count" title="Link to this definition">#</a></dt>
+<dd><p>Get records with total count.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.10.0: </span>Use <a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository" title="advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.get_many_and_count"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_many_and_count()</span></code></a> instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>tuple</em>[<em>List</em>[<em>Row</em>[<em>Any</em>]], <em>int</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.list">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">list</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">statement</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.list" title="Link to this definition">#</a></dt>
+<dd><p>Get a list of instances, optionally filtered.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.10.0: </span>Use <a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository" title="advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository.get_many"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_many()</span></code></a> instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>List</em>[<em>Row</em>[<em>Any</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="sync-repositories">
+<h2>Sync Repositories<a class="headerlink" href="#sync-repositories" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemySyncRepository</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">statement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_expunge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_refresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Empty</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">execution_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">wrap_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">uniquify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">count_with_window_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">cache_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">bind_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncRepository" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncRepositoryProtocol" title="advanced_alchemy.repository._sync.SQLAlchemySyncRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemySyncRepositoryProtocol</span></code></a>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>], <a class="reference internal" href="#advanced_alchemy.repository.FilterableRepository" title="advanced_alchemy.repository._util.FilterableRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterableRepository</span></code></a>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
+<p>Async SQLAlchemy repository implementation.</p>
+<p>Provides a complete implementation of async database operations using SQLAlchemy,
+including CRUD operations, filtering, and relationship loading.</p>
+<dl class="simple">
+<dt>Type Parameters:</dt><dd><p>ModelT: The SQLAlchemy model type this repository handles.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#advanced_alchemy.repository.FilterableRepository" title="advanced_alchemy.repository._util.FilterableRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterableRepository</span></code></a></p>
+</div>
+<dl class="field-list simple">
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncRepository.id_attribute">
+<span class="sig-name descname"><span class="pre">id_attribute</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'id'</span></span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncRepository.id_attribute" title="Link to this definition">#</a></dt>
+<dd><p>Name of the unique identifier for the model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncRepository.match_fields">
+<span class="sig-name descname"><span class="pre">match_fields</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncRepository.match_fields" title="Link to this definition">#</a></dt>
+<dd><p>List of dialects that prefer to use <code class="docutils literal notranslate"><span class="pre">field.id</span> <span class="pre">=</span> <span class="pre">ANY(:1)</span></code> instead of <code class="docutils literal notranslate"><span class="pre">field.id</span> <span class="pre">IN</span> <span class="pre">(...)</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncSlugRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemySyncSlugRepository</span></span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncSlugRepository" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncRepository" title="advanced_alchemy.repository._sync.SQLAlchemySyncRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemySyncRepository</span></code></a>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>], <a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncSlugRepositoryProtocol" title="advanced_alchemy.repository._sync.SQLAlchemySyncSlugRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemySyncSlugRepositoryProtocol</span></code></a>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
+<p>Extends the repository to include slug model features..</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncQueryRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemySyncQueryRepository</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">wrap_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncQueryRepository" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>SQLAlchemy Query Repository.</p>
+<p>This is a loosely typed helper to query for when you need to select data in ways that don’t align to the normal repository pattern.</p>
+</dd></dl>
+
+</section>
+<section id="protocols-base-mixins">
+<h2>Protocols &amp; Base Mixins<a class="headerlink" href="#protocols-base-mixins" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncRepositoryProtocol">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemyAsyncRepositoryProtocol</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">statement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_expunge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_refresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">execution_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Empty</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">wrap_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepositoryProtocol" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.repository.FilterableRepositoryProtocol" title="advanced_alchemy.repository._util.FilterableRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterableRepositoryProtocol</span></code></a>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
+<p>Base Protocol</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemyAsyncSlugRepositoryProtocol">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemyAsyncSlugRepositoryProtocol</span></span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepositoryProtocol" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemyAsyncRepositoryProtocol" title="advanced_alchemy.repository._async.SQLAlchemyAsyncRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepositoryProtocol</span></code></a>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
+<p>Protocol for SQLAlchemy repositories that support slug-based operations.</p>
+<p>Extends the base repository protocol to add slug-related functionality.</p>
+<dl class="simple">
+<dt>Type Parameters:</dt><dd><p>ModelT: The SQLAlchemy model type this repository handles.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncRepositoryProtocol">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemySyncRepositoryProtocol</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">statement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_expunge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_refresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">auto_commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">execution_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">error_messages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Empty</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">wrap_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncRepositoryProtocol" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.repository.FilterableRepositoryProtocol" title="advanced_alchemy.repository._util.FilterableRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterableRepositoryProtocol</span></code></a>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
+<p>Base Protocol</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.SQLAlchemySyncSlugRepositoryProtocol">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemySyncSlugRepositoryProtocol</span></span><a class="headerlink" href="#advanced_alchemy.repository.SQLAlchemySyncSlugRepositoryProtocol" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.repository.SQLAlchemySyncRepositoryProtocol" title="advanced_alchemy.repository._sync.SQLAlchemySyncRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemySyncRepositoryProtocol</span></code></a>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
+<p>Protocol for SQLAlchemy repositories that support slug-based operations.</p>
+<p>Extends the base repository protocol to add slug-related functionality.</p>
+<dl class="simple">
+<dt>Type Parameters:</dt><dd><p>ModelT: The SQLAlchemy model type this repository handles.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.FilterableRepository">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">FilterableRepository</span></span><a class="headerlink" href="#advanced_alchemy.repository.FilterableRepository" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.repository.FilterableRepositoryProtocol" title="advanced_alchemy.repository._util.FilterableRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterableRepositoryProtocol</span></code></a>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
+<p>Default implementation of a filterable repository.</p>
+<p>Provides core filtering, ordering and pagination functionality for
+SQLAlchemy models.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.FilterableRepository.model_type">
+<span class="sig-name descname"><span class="pre">model_type</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><span class="pre">ModelT</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#advanced_alchemy.repository.FilterableRepository.model_type" title="Link to this definition">#</a></dt>
+<dd><p>The SQLAlchemy model class this repository manages.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.FilterableRepositoryProtocol">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">FilterableRepositoryProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.FilterableRepositoryProtocol" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code>[<a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
+<p>Protocol defining the interface for filterable repositories.</p>
+<p>This protocol defines the required attributes and methods that any
+filterable repository implementation must provide.</p>
+</dd></dl>
+
+</section>
+<section id="helpers-type-definitions">
+<h2>Helpers &amp; Type Definitions<a class="headerlink" href="#helpers-type-definitions" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.get_instrumented_attr">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">get_instrumented_attr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.get_instrumented_attr" title="Link to this definition">#</a></dt>
+<dd><p>Get an instrumented attribute from a model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>type</em><em>[</em><a class="reference internal" href="base.html#advanced_alchemy.base.ModelProtocol" title="advanced_alchemy.base.ModelProtocol"><em>ModelProtocol</em></a><em>]</em>) – SQLAlchemy model class.</p></li>
+<li><p><strong>key</strong> (<em>str</em><em> | </em><em>InstrumentedAttribute</em><em>[</em><em>Any</em><em>]</em>) – Either a string attribute name or an <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.InstrumentedAttribute</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The instrumented attribute from the model.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.InstrumentedAttribute</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.model_from_dict">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">model_from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.model_from_dict" title="Link to this definition">#</a></dt>
+<dd><p>Create an ORM model instance from a dictionary of attributes.</p>
+<p>This function recursively converts nested dictionaries into their
+corresponding SQLAlchemy model instances for relationship attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>type</em><em>[</em><a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><em>ModelT</em></a><em>]</em>) – The SQLAlchemy model class to instantiate.</p></li>
+<li><p><strong>**kwargs</strong> (<em>Any</em>) – Keyword arguments containing model attribute values.
+For relationship attributes, values can be:
+- None: Sets the relationship to None
+- dict: Recursively converted to the related model instance
+- list[dict]: Each dict converted to related model instances
+- Model instance: Passed through unchanged</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new instance of the model populated with the provided values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.ModelT"><em>ModelT</em></a></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<p>Basic usage with nested relationships:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="2">    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;John Doe&quot;</span><span class="p">,</span>
+</span><span data-line="3">    <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;bio&quot;</span><span class="p">:</span> <span class="s2">&quot;Developer&quot;</span><span class="p">},</span>
+</span><span data-line="4">    <span class="s2">&quot;addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="5">        <span class="p">{</span><span class="s2">&quot;street&quot;</span><span class="p">:</span> <span class="s2">&quot;123 Main St&quot;</span><span class="p">},</span>
+</span><span data-line="6">        <span class="p">{</span><span class="s2">&quot;street&quot;</span><span class="p">:</span> <span class="s2">&quot;456 Oak Ave&quot;</span><span class="p">},</span>
+</span><span data-line="7">    <span class="p">],</span>
+</span><span data-line="8"><span class="p">}</span>
+</span><span data-line="9"><span class="n">user</span> <span class="o">=</span> <span class="n">model_from_dict</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="10"><span class="c1"># user.profile is a Profile instance</span>
+</span><span data-line="11"><span class="c1"># user.addresses is a list of Address instances</span>
+</span></pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.DEFAULT_ERROR_MESSAGE_TEMPLATES">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_ERROR_MESSAGE_TEMPLATES</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.ErrorMessages" title="advanced_alchemy.repository.ErrorMessages"><span class="pre">ErrorMessages</span></a></span><a class="headerlink" href="#advanced_alchemy.repository.DEFAULT_ERROR_MESSAGE_TEMPLATES" title="Link to this definition">#</a></dt>
+<dd><p>Default error message templates mapped by exception category.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.LoadSpec">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">LoadSpec</span></span><a class="headerlink" href="#advanced_alchemy.repository.LoadSpec" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.ModelT">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">ModelT</span></span><a class="headerlink" href="#advanced_alchemy.repository.ModelT" title="Link to this definition">#</a></dt>
+<dd><p>Type variable for SQLAlchemy models.</p>
+<p><a class="reference internal" href="base.html#advanced_alchemy.base.ModelProtocol" title="advanced_alchemy.base.ModelProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelProtocol</span></code></a></p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.ModelOrRowMappingT">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">ModelOrRowMappingT</span></span><a class="headerlink" href="#advanced_alchemy.repository.ModelOrRowMappingT" title="Link to this definition">#</a></dt>
+<dd><p>Type variable for models or row mappings.</p>
+<p><a class="reference internal" href="base.html#advanced_alchemy.base.ModelProtocol" title="advanced_alchemy.base.ModelProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelProtocol</span></code></a> | <code class="xref py py-class docutils literal notranslate"><span class="pre">RowMapping</span></code></p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="advanced_alchemy.repository.OrderingPair">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.</span></span><span class="sig-name descname"><span class="pre">OrderingPair</span></span><a class="headerlink" href="#advanced_alchemy.repository.OrderingPair" title="Link to this definition">#</a></dt>
+<dd><p>Type alias for ordering pairs.</p>
+<p>A tuple of (column, ascending) where:
+- column: Union[str, <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.InstrumentedAttribute</span></code>]
+- ascending: bool
+- or a <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.sql.elements.UnaryExpression</span></code> which is the standard way to express an ordering in SQLAlchemy</p>
+<p>This type is used to specify ordering criteria for repository queries.</p>
+</dd></dl>
+
+</section>
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="config/types.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Types</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="repository_memory.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Memory Repositories</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Litestar Organization</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/litestar-org/advanced-alchemy" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a>
+  <a href="https://discord.gg/dSDXd4mKhp" aria-label="Discord">
+    <iconify-icon icon="simple-icons:discord"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../_static/documentation_options.js?v=6f8f3740"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=a56c686a"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=b8b12719"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/shibuya.js?v=50760d75"></script></body>
+</html>
