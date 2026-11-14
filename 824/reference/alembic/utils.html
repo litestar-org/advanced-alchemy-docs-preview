@@ -246,6 +246,7 @@ data-aria-dark="Switch to auto color mode">
 </li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../cli.html">CLI Commands</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../fixtures.html">Fixtures</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../utils.html">Utilities</a></li>
 </ul>
 <p class="caption" role="heading" aria-level="3"><span class="caption-text">Contributing</span></p>
@@ -371,6 +372,52 @@ data-aria-dark="Switch to auto color mode">
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="../exceptions.html#advanced_alchemy.exceptions.MissingDependencyError" title="advanced_alchemy.exceptions.MissingDependencyError"><strong>MissingDependencyError</strong></a> – If the <cite>rich</cite> package is not installed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="advanced_alchemy.alembic.utils.dump_tables">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.alembic.utils.</span></span><span class="sig-name descname"><span class="pre">dump_tables</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">dump_dir</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">models</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'json'</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">max_bytes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">max_records</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="reference internal" href="../../_modules/advanced_alchemy/alembic/utils.html#dump_tables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.alembic.utils.dump_tables" title="Link to this definition">#</a></dt>
+<dd><p>Stream every row of each model into fixture files under <code class="docutils literal notranslate"><span class="pre">dump_dir</span></code>.</p>
+<p>Rows are queried in primary-key order with <code class="docutils literal notranslate"><span class="pre">lazyload(&quot;*&quot;)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">yield_per=batch_size</span></code> so joined collection eager loaders remain
+compatible with <code class="docutils literal notranslate"><span class="pre">yield_per</span></code> and do not trigger extra queries while a
+server-side cursor is open. Async dialects without server-side cursor
+support are read through buffered
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">AsyncSession.scalars</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dump_dir</strong> (<em>Path</em>) – Directory where fixture files are written.</p></li>
+<li><p><strong>session</strong> (<em>Union</em><em>[</em><em>AbstractContextManager</em><em>[</em><em>Session</em><em>]</em><em>, </em><em>AbstractAsyncContextManager</em><em>[</em><em>AsyncSession</em><em>]</em><em>]</em>) – Sync or async SQLAlchemy session context manager.</p></li>
+<li><p><strong>models</strong> (<a class="reference internal" href="../repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list" title="advanced_alchemy.repository.SQLAlchemyAsyncRepository.list"><em>list</em></a><em>[</em><em>type</em><em>[</em><em>DeclarativeBase</em><em>]</em><em>]</em>) – Sequence of declarative model classes to dump.</p></li>
+<li><p><strong>file_format</strong> (<a class="reference internal" href="../fixtures.html#advanced_alchemy.utils.fixtures.FixtureFormat" title="advanced_alchemy.utils.fixtures.FixtureFormat"><em>FixtureFormat</em></a>) – Output format (<code class="docutils literal notranslate"><span class="pre">&quot;json&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;jsonl&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;csv&quot;</span></code>).</p></li>
+<li><p><strong>compression</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../fixtures.html#advanced_alchemy.utils.fixtures.FixtureCompression" title="advanced_alchemy.utils.fixtures.FixtureCompression"><em>FixtureCompression</em></a><em>]</em>) – Optional compression (<code class="docutils literal notranslate"><span class="pre">&quot;gzip&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;zip&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p></li>
+<li><p><strong>max_bytes</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Optional maximum on-disk byte size per shard.</p></li>
+<li><p><strong>max_records</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Optional maximum record count per shard.</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em>) – Number of rows fetched and buffered per streaming batch.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> is less than 1, or the writer rejects an argument.</p></li>
+<li><p><a class="reference internal" href="../exceptions.html#advanced_alchemy.exceptions.MissingDependencyError" title="advanced_alchemy.exceptions.MissingDependencyError"><strong>MissingDependencyError</strong></a> – If the <code class="docutils literal notranslate"><span class="pre">rich</span></code> package is not installed.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

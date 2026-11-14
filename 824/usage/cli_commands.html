@@ -246,6 +246,7 @@ data-aria-dark="Switch to auto color mode">
 </li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../reference/cli.html">CLI Commands</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../reference/exceptions.html">Exceptions</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/fixtures.html">Fixtures</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../reference/utils.html">Utilities</a></li>
 </ul>
 <p class="caption" role="heading" aria-level="3"><span class="caption-text">Contributing</span></p>
@@ -269,6 +270,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#checking-configs-and-schema-drift-in-ci">Checking Configs and Schema Drift in CI</a></li>
 <li><a class="reference internal" href="#handling-parallel-git-branches">Handling Parallel Git Branches</a></li>
 <li><a class="reference internal" href="#adopting-an-existing-database-or-exporting-data">Adopting an Existing Database or Exporting Data</a></li>
+<li><a class="reference internal" href="#exporting-large-tables-as-sharded-fixtures">Exporting Large Tables as Sharded Fixtures</a></li>
 </ul>
 </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
   data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
@@ -448,7 +450,7 @@ Mark Existing Schema Current</label><div class="sd-tab-content docutils">
 </div>
 <input id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" for="sd-tab-item-5">
-Export JSON Seed Files</label><div class="sd-tab-content docutils">
+Export Seed Files</label><div class="sd-tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>dump-data<span class="w"> </span>--table<span class="w"> </span><span class="s2">&quot;*&quot;</span><span class="w"> </span>--dir<span class="w"> </span>./fixtures
 </span></pre></div>
 </div>
@@ -465,6 +467,42 @@ Reset Local Dev Tables</label><div class="sd-tab-content docutils">
 <p class="admonition-title">Warning</p>
 <p><code class="docutils literal notranslate"><span class="pre">drop-all</span></code> permanently deletes every mapped table in the target database. Only run it against disposable local or test databases.</p>
 </div>
+</section>
+<section id="exporting-large-tables-as-sharded-fixtures">
+<h2>Exporting Large Tables as Sharded Fixtures<a class="headerlink" href="#exporting-large-tables-as-sharded-fixtures" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">dump-data</span></code> writes one <code class="docutils literal notranslate"><span class="pre">&lt;table&gt;.json</span></code> file per table by default. Four options change the output:</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 32.0%" />
+<col style="width: 68.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Effect</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">[json|jsonl|csv]</span></code></p></td>
+<td><p>File format. Defaults to <code class="docutils literal notranslate"><span class="pre">json</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--compression</span> <span class="pre">[none|gzip|zip]</span></code></p></td>
+<td><p>Compression. Defaults to <code class="docutils literal notranslate"><span class="pre">none</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--max-file-size</span> <span class="pre">SIZE</span></code></p></td>
+<td><p>Starts a new shard before a file would grow past this size on disk. Accepts bytes or a number with a <code class="docutils literal notranslate"><span class="pre">K</span></code>, <code class="docutils literal notranslate"><span class="pre">M</span></code>, or <code class="docutils literal notranslate"><span class="pre">G</span></code> suffix in 1024 units, optionally followed by <code class="docutils literal notranslate"><span class="pre">B</span></code> or <code class="docutils literal notranslate"><span class="pre">iB</span></code> (for example <code class="docutils literal notranslate"><span class="pre">50M</span></code>, <code class="docutils literal notranslate"><span class="pre">50MiB</span></code>, or <code class="docutils literal notranslate"><span class="pre">1g</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--max-records</span> <span class="pre">INTEGER</span></code></p></td>
+<td><p>Starts a new shard after this many rows. Must be at least 1.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Rows are streamed from the database in batches, so a large table never has to fit in memory. This command writes every table as gzip-compressed JSON Lines shards of at most 50 MiB each, named <code class="docutils literal notranslate"><span class="pre">&lt;table&gt;.001.jsonl.gz</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;table&gt;.002.jsonl.gz</span></code>, and so on:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">alchemy<span class="w"> </span>dump-data<span class="w"> </span>--table<span class="w"> </span><span class="s2">&quot;*&quot;</span><span class="w"> </span>--dir<span class="w"> </span>./fixtures<span class="w"> </span>--format<span class="w"> </span>jsonl<span class="w"> </span>--compression<span class="w"> </span>gzip<span class="w"> </span>--max-file-size<span class="w"> </span>50M
+</span></pre></div>
+</div>
+<p>Running the command again replaces every existing file for each exported table, including leftover shards from an earlier run. Load the files back with the helpers in <a class="reference internal" href="database_seeding.html"><span class="doc">Database Seeding</span></a>.</p>
 <p>See <a class="reference internal" href="../reference/cli.html"><span class="doc">Command-Line Interface</span></a> for every command flag.</p>
 </section>
 </section>

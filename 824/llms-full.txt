@@ -798,6 +798,23 @@ async def create_and_fetch_post(db_session: AsyncSession) -> Post:
     return await repo.get(saved.id)
 ```
 
+When missing records are expected, use `get_or_none` to return `None` instead of raising
+`NotFoundError`:
+
+```python
+from typing import Optional
+
+async def find_post_or_none(db_session: AsyncSession, post_id: int) -> Optional[Post]:
+    repo = PostRepository(session=db_session)
+    return await repo.get_or_none(post_id)
+```
+
+```python
+async def find_post_or_none(db_session: AsyncSession, post_id: int) -> Post | None:
+    repo = PostRepository(session=db_session)
+    return await repo.get_or_none(post_id)
+```
+
 ## Saving, Updating, and Deleting in Bulk
 
 When importing a batch of drafts or publishing ten posts at once, looping one query at a time is slow. Use the `*_many` methods to handle whole batches in a single step:
@@ -1201,16 +1218,18 @@ class BlogPostService(SQLAlchemyAsyncRepositoryService[BlogPost]):
 
 ## Creating, Updating, and Returning Schemas
 
-Pass dictionaries, Pydantic models, `msgspec` structs, dataclasses, `attrs` classes, or `SQLModel` objects straight into `create` and `update`, then call `to_schema` to format the response:
+Pass dictionaries, Pydantic models, `msgspec` structs, dataclasses, `attrs` classes, or `SQLModel` objects straight into `create` and `update`, then call `to_schema` to format the response (or `get_or_none` when missing IDs should return `None`):
 
 ```python
 async def create_post(service: BlogPostService, payload: BlogPostCreate) -> BlogPostResponse:
     post = await service.create(data=payload, auto_commit=True)
     return service.to_schema(post, schema_type=BlogPostResponse)
-
 async def update_post(service: BlogPostService, post_id: int, payload: BlogPostUpdate) -> BlogPostResponse:
     post = await service.update(data=payload, item_id=post_id, auto_commit=True)
     return service.to_schema(post, schema_type=BlogPostResponse)
+async def find_post(service: BlogPostService, post_id: int) -> Optional[BlogPostResponse]:
+    post = await service.get_or_none(item_id=post_id)
+    return service.to_schema(post, schema_type=BlogPostResponse) if post is not None else None
 ```
 
 ## Adding Custom Business Rules
@@ -1221,7 +1240,11 @@ Need to auto-generate a unique URL slug whenever a tag is created or renamed? Ov
 from advanced_alchemy.repository import SQLAlchemyAsyncSlugRepository
 from advanced_alchemy.service import ModelDictT, is_dict_with_field, is_dict_without_field, schema_dump
 
-class BlogTagService(SQLAlchemyAsyncRepositoryService[BlogTag, SQLAlchemyAsyncSlugRepository[BlogTag]]):
+class BlogTagService(SQLAlchemyAsyncRepositoryService[BlogTag]):
+    class Repo(SQLAlchemyAsyncSlugRepository[BlogTag]):
+        model_type = BlogTag
+
+    repository_type = Repo
     async def to_model(self, data: ModelDictT[BlogTag], operation: Optional[str] = None) -> BlogTag:
         dumped = schema_dump(data)
         if is_dict_without_field(dumped, "slug") and is_dict_with_field(dumped, "name"):
@@ -1799,46 +1822,55 @@ alchemy drop-all --no-prompt
 
 > **Warning**: `drop-all` permanently deletes every mapped table in the target database. Only run it against disposable local or test databases.
 
+## Exporting Large Tables as Sharded Fixtures
+
+`dump-data` writes one `<table>.json` file per table by default. Four options change the output:
+
+| Option | Effect |
+| --- | --- |
+| `--format [json\|jsonl\|csv]` | File format. Defaults to `json`. |
+| `--compression [none\|gzip\|zip]` | Compression. Defaults to `none`. |
+| `--max-file-size SIZE` | Starts a new shard before a file would grow past this size on disk. Accepts bytes or a number with a `K`, `M`, or `G` suffix in 1024 units, optionally followed by `B` or `iB` (for example `50M`, `50MiB`, or `1g`). |
+| `--max-records INTEGER` | Starts a new shard after this many rows. Must be at least 1. |
+
+Rows are streamed from the database in batches, so a large table never has to fit in memory. This command writes every table as gzip-compressed JSON Lines shards of at most 50 MiB each, named `<table>.001.jsonl.gz`, `<table>.002.jsonl.gz`, and so on:
+
+```bash
+alchemy dump-data --table "*" --dir ./fixtures --format jsonl --compression gzip --max-file-size 50M
+```
+
+Running the command again replaces every existing file for each exported table, including leftover shards from an earlier run. Load the files back with the helpers in [Database Seeding](https://docs.advanced-alchemy.litestar.dev/latest/usage/database_seeding.html).
+
 See [Command-Line Interface](https://docs.advanced-alchemy.litestar.dev/latest/reference/cli.html) for every command flag.
 
 Source: https://docs.advanced-alchemy.litestar.dev/latest/usage/database_seeding.html
 
 # Database Seeding
 
-When setting up a new environment or staging server, you often want starter rows—such as default roles, categories, or sample products—loaded from version-controlled `.json` or `.csv` files.
+When setting up a new environment or staging server, you often want starter rows—such as default roles, categories, or sample products—loaded from version-controlled fixture files.
 
-Advanced Alchemy’s `open_fixture` and `open_fixture_async` helpers locate and parse fixture files (including compressed `.gz` and `.zip` files) in one call.
+Advanced Alchemy’s fixture helpers find, parse, stream, and write these files for you: `open_fixture_sync` and `open_fixture_async` load a whole fixture, `iter_fixture_sync` and `iter_fixture_async` stream it in batches, and `write_fixture_sync` and `write_fixture_async` write one.
 
-## Writing a Fixture File
+## Fixture Formats
 
-Store your seed files in a `fixtures/` folder. JSON keeps numbers and booleans typed automatically, while CSV files load every column as strings:
+Store your seed files in a `fixtures/` folder. Each format can be stored plain, gzip-compressed (`.gz`), or zipped (`.zip`):
 
-```json
-[
-    {
-        "name": "Laptop",
-        "description": "16GB RAM and 1TB SSD",
-        "price": 999.99,
-        "in_stock": true
-    },
-    {
-        "name": "Smartphone",
-        "description": "5G OLED display",
-        "price": 699.99,
-        "in_stock": true
-    }
-]
-```
+| Format | File Names | Loads As |
+| --- | --- | --- |
+| JSON | `products.json`, `products.json.gz`, `products.json.zip` | The decoded value, with typed numbers and booleans |
+| JSON Lines | `products.jsonl`, `products.jsonl.gz`, `products.jsonl.zip` | A list with one value per non-blank line |
+| CSV | `products.csv`, `products.csv.gz`, `products.csv.zip` | A list of dicts whose values are strings |
+
+When several formats exist for the same name, JSON is used first, then JSON Lines, then CSV. Upper-case names are found for compressed files (`PRODUCTS.json.gz`), plain CSV (`PRODUCTS.csv`), and shards.
 
 ```text
-name,price,in_stock
-Widget,9.99,true
-Gadget,19.99,true
+{"name": "Laptop", "description": "16GB RAM and 1TB SSD", "price": 999.99, "in_stock": true}
+{"name": "Smartphone", "description": "5G OLED display", "price": 699.99, "in_stock": true}
 ```
 
 ## Loading Fixtures Into Your Database
 
-Pick `open_fixture_async` for async apps or `open_fixture` for sync scripts:
+Pick `open_fixture_async` for async apps or `open_fixture_sync` for sync scripts:
 
 ```python
 from pathlib import Path
@@ -1913,7 +1945,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from advanced_alchemy.base import UUIDBase
 from advanced_alchemy.config import SQLAlchemySyncConfig, SyncSessionConfig
 from advanced_alchemy.repository import SQLAlchemySyncRepository
-from advanced_alchemy.utils.fixtures import open_fixture
+from advanced_alchemy.utils.fixtures import open_fixture_sync
 
 sync_config = SQLAlchemySyncConfig(
     connection_string="sqlite:///db.sqlite3",
@@ -1934,7 +1966,7 @@ class SyncProductRepository(SQLAlchemySyncRepository[SyncProduct]):
 def seed_sync_products(fixtures_path: Path = Path("fixtures")) -> None:
     with sync_config.get_session() as db_session:
         repo = SyncProductRepository(session=db_session)
-        rows = open_fixture(fixtures_path, "products")
+        rows = open_fixture_sync(fixtures_path, "products")
         repo.add_many([SyncProduct(**row) for row in rows], auto_commit=True)
 ```
 
@@ -1945,7 +1977,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from advanced_alchemy.base import UUIDBase
 from advanced_alchemy.config import SQLAlchemySyncConfig, SyncSessionConfig
 from advanced_alchemy.repository import SQLAlchemySyncRepository
-from advanced_alchemy.utils.fixtures import open_fixture
+from advanced_alchemy.utils.fixtures import open_fixture_sync
 
 sync_config = SQLAlchemySyncConfig(
     connection_string="sqlite:///db.sqlite3",
@@ -1966,43 +1998,70 @@ class SyncProductRepository(SQLAlchemySyncRepository[SyncProduct]):
 def seed_sync_products(fixtures_path: Path = Path("fixtures")) -> None:
     with sync_config.get_session() as db_session:
         repo = SyncProductRepository(session=db_session)
-        rows = open_fixture(fixtures_path, "products")
+        rows = open_fixture_sync(fixtures_path, "products")
         repo.add_many([SyncProduct(**row) for row in rows], auto_commit=True)
 ```
 
+> **Note**: `open_fixture` still works as an alias of `open_fixture_sync`, but it emits a `DeprecationWarning` and is removed in version 2.0.
+
+CSV values always load as strings, so convert them before building models:
+
 ```python
-from pathlib import Path
 from typing import Any
-from advanced_alchemy.utils.fixtures import open_fixture_async
 
 def parse_csv_product(row: dict[str, str]) -> dict[str, Any]:
-    return {
-        "name": row["name"],
-        "price": float(row["price"]),
-        "in_stock": row["in_stock"].lower() == "true",
-    }
-
-async def seed_from_csv(repo: AsyncProductRepository, fixtures_path: Path) -> None:
-    raw_rows = await open_fixture_async(fixtures_path, "products")
-    products = [AsyncProduct(**parse_csv_product(item)) for item in raw_rows]
-    await repo.add_many(products, auto_commit=True)
+    return {"name": row["name"], "price": float(row["price"]), "in_stock": row["in_stock"].lower() == "true"}
 ```
+
+## Streaming Large Fixtures in Batches
+
+`iter_fixture_async` and `iter_fixture_sync` yield lists of at most `batch_size` records, so a large JSON Lines or CSV fixture is never held in memory all at once:
+
+```python
+from advanced_alchemy.utils.fixtures import iter_fixture_async
+
+async def seed_products_in_batches(fixtures_path: Path = Path("fixtures")) -> None:
+    async with async_config.get_session() as db_session:
+        repo = AsyncProductRepository(session=db_session)
+        async for batch in iter_fixture_async(fixtures_path, "products", batch_size=500):
+            await repo.add_many([AsyncProduct(**row) for row in batch], auto_commit=True)
+```
+
+A JSON array is decoded one file at a time, so prefer JSON Lines or sharded files for very large fixtures.
+
+## Sharded Fixtures
+
+A large fixture can be split into numbered shards, such as `products.001.jsonl.gz`, `products.002.jsonl.gz`, and so on. Every shard is a complete file on its own, and shards may use different compression. The loaders read shards in numeric order and return their records as one list, and the iterators yield those records in batches that may span shard boundaries. A `ValueError` is raised when the numbers do not run `1, 2, 3, ...` without gaps, when two shards share a number, when an unsharded file and shards exist side by side, or when a JSON shard is not an array.
+
+## Writing Fixtures With Automatic Rollover
+
+`write_fixture_sync` and `write_fixture_async` write records one at a time in the chosen `file_format` and `compression`. Set `max_bytes` (the size of each file on disk) or `max_records` to roll over to a new shard automatically:
+
+```python
+import tempfile
+from advanced_alchemy.utils.fixtures import iter_fixture_sync, write_fixture_sync
+
+with tempfile.TemporaryDirectory() as tmp_dir:
+    users = [{"id": index, "name": f"user-{index}"} for index in range(1, 6)]
+    paths = write_fixture_sync(Path(tmp_dir), "users", users, file_format="jsonl", compression="gzip", max_records=2)
+    assert [path.name for path in paths] == ["users.001.jsonl.gz", "users.002.jsonl.gz", "users.003.jsonl.gz"]
+    assert open_fixture_sync(Path(tmp_dir), "users") == users
+    assert [len(batch) for batch in iter_fixture_sync(Path(tmp_dir), "users", batch_size=4)] == [4, 1]
+```
+
+Files are written to temporary names first. Only after every record is written does the writer move the new files into place and remove any stale files for that fixture name across formats and shard layouts. If writing fails, the existing fixture is left untouched. A single record larger than `max_bytes` is written to its own shard with a `UserWarning`. `write_fixture_async` also accepts an async iterable of records.
 
 ## Safe Re-Runs Across Deployments
 
 Use `upsert_many` instead of `add_many` when a seed script runs on every deployment so existing rows are updated cleanly without duplicate errors:
 
 ```python
-from pathlib import Path
-from typing import Any
-from advanced_alchemy.utils.fixtures import open_fixture_async
-
 async def seed_roles(role_service: Any, fixtures_path: Path) -> None:
     rows = await open_fixture_async(fixtures_path, "role")
     await role_service.upsert_many(match_fields=["name"], data=rows, auto_commit=True)
 ```
 
-> **Tip**: Seed parent tables (like `Author`) before child tables (like `Post`), and consider [Polyfactory](https://github.com/litestar-org/polyfactory) when generating random test data in `pytest`.
+> **Tip**: Seed parent tables (like `Author`) before child tables (like `Post`), export existing tables with [dump-data](https://docs.advanced-alchemy.litestar.dev/latest/usage/cli_commands.html), and consider [Polyfactory](https://github.com/litestar-org/polyfactory) when generating random test data in `pytest`.
 
 Source: https://docs.advanced-alchemy.litestar.dev/latest/usage/frameworks/index.html
 
@@ -2051,7 +2110,7 @@ Advanced Alchemy is built by the Litestar team and plugs into Litestar with a si
 | **SQLAlchemy DTOs** | Auto-generates request/response DTOs from your SQLAlchemy models and `@property` fields. | [Guide](https://docs.advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_dtos.html) · [API](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/dto.html) |
 | **Sessions & Stores** | Connects multiple databases and stores server-side user sessions or cache keys in SQL tables. | [Guide](https://docs.advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_sessions.html) · [API](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/store.html) |
 | **File Storage** | Streams `UploadFile` payloads to local disk or S3/GCS and cleans up orphaned files on delete. | [Guide](https://docs.advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_storage.html) · [API](https://docs.advanced-alchemy.litestar.dev/latest/reference/types.html) |
-| **Database CLI** | Adds `litestar database make-migrations`, `upgrade`, and `dump-data` commands automatically. | [API](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/cli.html) |
+| **Database CLI** | Adds `litestar database make-migrations`, `upgrade`, and `dump-data` commands automatically. `dump-data` exports tables as JSON, JSON Lines, or CSV fixtures, with optional compression and size-based sharding. | [Guide](https://docs.advanced-alchemy.litestar.dev/latest/usage/cli_commands.html) · [API](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/cli.html) |
 
 ## Installation
 
@@ -3976,7 +4035,9 @@ Standalone `alchemy` CLI commands and programmatic [Alembic migration commands](
 
 `RepositoryError`, `IntegrityError`, `DuplicateKeyError`, `ForeignKeyError`, `NotFoundError`, and error wrappers.
 
-Dataclass sentinels, dependency caches, fixture loaders, sync-to-async portals, and text helpers.
+Streaming JSON, JSON Lines, and CSV fixture loaders, batch iterators, and sharded writers.
+
+Dataclass sentinels, dependency caches, sync-to-async portals, and text helpers.
 
 Source: https://docs.advanced-alchemy.litestar.dev/latest/reference/base.html
 
@@ -6134,7 +6195,7 @@ Defaults to `id`, but can reference any surrogate or candidate key for the table
 Note: Only applies to single-column lookups.
 - **error_messages** ([*ErrorMessages*](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** (*Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set default relationships to be loaded
+- **load** ([*LoadSpec*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set default relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **bind_group** (*str**|**None*) – Optional routing group for multi-master configurations.
@@ -6166,7 +6227,7 @@ Note: Only applies to single-column lookups. For composite primary keys,
 this parameter is ignored and the primary key columns are used automatically.
 - **error_messages** ([*ErrorMessages*](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** (*Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set relationships to be loaded
+- **load** ([*LoadSpec*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **with_for_update** (*TypeAliasForwardRef**(**'sqlalchemy.sql.selectable.ForUpdateArg'**)**|**None**|**bool**|**Dict**[**str**,**Any**]*) – Optional FOR UPDATE clause / parameters to apply to the SELECT statement.
@@ -6205,7 +6266,7 @@ Get the count of records returned by a query.
 - **statement** (*Select**|**None*) – To facilitate customization of the underlying select query.
 - **error_messages** ([*ErrorMessages*](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** (*Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set relationships to be loaded
+- **load** ([*LoadSpec*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **bind_group** (*str**|**None*) – Optional routing group to use for the operation.
@@ -6235,7 +6296,7 @@ FOR UPDATE flags for the SELECT
 Defaults to `id`, but can reference any surrogate or candidate key for the table.
 - **error_messages** ([*ErrorMessages*](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** (*Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set relationships to be loaded
+- **load** ([*LoadSpec*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **bind_group** (*str**|**None*) – Optional routing group for multi-master configurations.
@@ -6726,7 +6787,7 @@ Count of records returned by query.
 - **statement** (*Select**|**None*) – To facilitate customization of the underlying select query.
 - **error_messages** ([*ErrorMessages*](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** (*Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set relationships to be loaded
+- **load** ([*LoadSpec*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **bind_group** (*str**|**None*) – The bind group to use for the operation.
@@ -6753,7 +6814,7 @@ Defaults to `id`, but can reference any surrogate or candidate key for the table
 Only applicable for single primary key models.
 - **error_messages** ([*ErrorMessages*](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** (*Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set relationships to be loaded
+- **load** ([*LoadSpec*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **bind_group** (*str**|**None*) – The bind group to use for the operation.
@@ -6844,7 +6905,7 @@ FOR UPDATE flags for the SELECT
 Defaults to `id`, but can reference any surrogate or candidate key for the table.
 - **error_messages** ([*ErrorMessages*](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** (*Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set default relationships to be loaded
+- **load** ([*LoadSpec*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set default relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **bind_group** (*str**|**None*) – Optional routing group to use for the operation.
@@ -6890,7 +6951,7 @@ FOR UPDATE flags for the SELECT
 empty, all fields are matched.
 - **error_messages** ([*ErrorMessages*](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** (*Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set default relationships to be loaded
+- **load** ([*LoadSpec*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set default relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **bind_group** (*str**|**None*) – Optional routing group to use for the operation.
@@ -6917,7 +6978,7 @@ Defaults to `id`, but can reference any surrogate or candidate key for the table
 Only applicable for single primary key models.
 - **error_messages** ([*ErrorMessages*](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** (*Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**Load**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set default relationships to be loaded
+- **load** ([*LoadSpec*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set default relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **bind_group** (*str**|**None*) – Optional routing group to use for the operation.
@@ -9754,7 +9815,7 @@ Retrieve a database migration plugin from the Litestar application’s plugins.
 ### `advanced_alchemy.extensions.litestar.providers.create_service_dependencies`
 
 ```python
-advanced_alchemy.extensions.litestar.providers.create_service_dependencies(service_class, /, key, statement=None, config=None, error_messages=Empty, load=None, execution_options=None, filters=None, uniquify=None, count_with_window_function=None, dep_defaults=DEPENDENCY_DEFAULTS)[source]
+advanced_alchemy.extensions.litestar.providers.create_service_dependencies(service_class, /, key, statement=None, config=None, error_messages=Empty, load=None, execution_options=None, filters=None, uniquify=None, count_with_window_function=None, dep_defaults=None, scoped_filters=False)[source]
 ```
 
 Create a dependency provider for the combined filter function.
@@ -9769,7 +9830,8 @@ Create a dependency provider for the combined filter function.
 - **filters** (*Optional**[*[*FilterConfig*](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.FilterConfig)*]*) – The filter configuration to use for the service.
 - **uniquify** (*bool**|**None*) – Whether to uniquify the service.
 - **count_with_window_function** (*bool**|**None*) – Whether to count with a window function.
-- **dep_defaults** ([*DependencyDefaults*](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html#advanced_alchemy.extensions.fastapi.providers.DependencyDefaults)) – The dependency defaults to use for the service.
+- **dep_defaults** (*Optional**[*[*DependencyDefaults*](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html#advanced_alchemy.extensions.fastapi.providers.DependencyDefaults)*]*) – The dependency defaults to use for the service.
+- **scoped_filters** (*bool*) – Whether to scope the filter dependency keys to the service key.
 - **Returns**: A dictionary of dependency providers for the service.
 - **Return type**: *dict*[*str*, *Provide*]
 
@@ -10023,6 +10085,11 @@ classmethod generate_field_definitions(model_type)[source]
 ```
 
 Generate DTO field definitions from a SQLAlchemy model.
+
+Duplicates of hybrid property descriptors across bound method names are deduplicated,
+and unreflectable descriptors excluded or omitted by `SQLAlchemyDTOConfig` on the
+root model are skipped prior to transfer-type resolution while preserving path-scoped
+nested filtering.
 
 - **Parameters**: **model_type** (*type**[**DeclarativeBase**]*) – The SQLAlchemy model type to generate field definitions from.
 - **Yields**: A generator yielding DTO field definitions.
@@ -10700,7 +10767,7 @@ ALCHEMY_CONFIG
 
 #### dump-data
 
-Dump specified tables from the database to JSON files.
+Dump specified tables from the database to fixture files.
 
 ```shell
 litestar database dump-data [OPTIONS]
@@ -10744,7 +10811,45 @@ Specify which SQLAlchemy config to use by bind key
 --dir <dump_dir>
 ```
 
-Directory to save the JSON files. Defaults to WORKDIR/fixtures
+Directory to save the fixture files. Defaults to WORKDIR/fixtures
+
+###### `<file_format>--format`
+
+```text
+--format <file_format>
+```
+
+Fixture file format.
+
+- **Default**: `'json'`
+- **Options**: json | jsonl | csv
+
+###### `<compression>--compression`
+
+```text
+--compression <compression>
+```
+
+Compression applied to each fixture file.
+
+- **Default**: `'none'`
+- **Options**: none | gzip | zip
+
+###### `<max_file_size>--max-file-size`
+
+```text
+--max-file-size <max_file_size>
+```
+
+Start a new numbered shard before a file would exceed this on-disk size, in bytes or with a K, M, or G suffix (1024-based), for example 50M.
+
+###### `<max_records>--max-records`
+
+```text
+--max-records <max_records>
+```
+
+Start a new numbered shard after this many records.
 
 ##### `ALCHEMY_CONFIG`
 
@@ -13515,6 +13620,32 @@ Drop all tables in the database.
 - **metadata** (*MetaData*) – The metadata object containing the tables to drop.
 - **Raises**: [**MissingDependencyError**](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.MissingDependencyError) – If the `rich` package is not installed.
 
+### `advanced_alchemy.alembic.utils.dump_tables`
+
+```python
+async advanced_alchemy.alembic.utils.dump_tables(dump_dir, session, models, *, file_format='json', compression=None, max_bytes=None, max_records=None, batch_size=1000)[source]
+```
+
+Stream every row of each model into fixture files under `dump_dir`.
+
+Rows are queried in primary-key order with `lazyload("*")` and
+`yield_per=batch_size` so joined collection eager loaders remain
+compatible with `yield_per` and do not trigger extra queries while a
+server-side cursor is open. Async dialects without server-side cursor
+support are read through buffered
+`AsyncSession.scalars`.
+
+- **Parameters**: - **dump_dir** (*Path*) – Directory where fixture files are written.
+- **session** (*Union**[**AbstractContextManager**[**Session**]**,**AbstractAsyncContextManager**[**AsyncSession**]**]*) – Sync or async SQLAlchemy session context manager.
+- **models** ([*list*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list)*[**type**[**DeclarativeBase**]**]*) – Sequence of declarative model classes to dump.
+- **file_format** ([*FixtureFormat*](https://docs.advanced-alchemy.litestar.dev/latest/reference/fixtures.html#advanced_alchemy.utils.fixtures.FixtureFormat)) – Output format (`"json"`, `"jsonl"`, or `"csv"`).
+- **compression** (*Optional**[*[*FixtureCompression*](https://docs.advanced-alchemy.litestar.dev/latest/reference/fixtures.html#advanced_alchemy.utils.fixtures.FixtureCompression)*]*) – Optional compression (`"gzip"`, `"zip"`, or `None`).
+- **max_bytes** (*Optional**[**int**]*) – Optional maximum on-disk byte size per shard.
+- **max_records** (*Optional**[**int**]*) – Optional maximum record count per shard.
+- **batch_size** (*int*) – Number of rows fetched and buffered per streaming batch.
+- **Raises**: - **ValueError** – If `batch_size` is less than 1, or the writer rejects an argument.
+- [**MissingDependencyError**](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.MissingDependencyError) – If the `rich` package is not installed.
+
 Source: https://docs.advanced-alchemy.litestar.dev/latest/reference/cli.html
 
 # Command-Line Interface
@@ -13769,7 +13900,7 @@ ALCHEMY_CONFIG
 
 #### dump-data
 
-Dump specified tables from the database to JSON files.
+Dump specified tables from the database to fixture files.
 
 ```shell
 alchemy dump-data [OPTIONS]
@@ -13813,7 +13944,45 @@ Specify which SQLAlchemy config to use by bind key
 --dir <dump_dir>
 ```
 
-Directory to save the JSON files. Defaults to WORKDIR/fixtures
+Directory to save the fixture files. Defaults to WORKDIR/fixtures
+
+###### `<file_format>--format`
+
+```text
+--format <file_format>
+```
+
+Fixture file format.
+
+- **Default**: `'json'`
+- **Options**: json | jsonl | csv
+
+###### `<compression>--compression`
+
+```text
+--compression <compression>
+```
+
+Compression applied to each fixture file.
+
+- **Default**: `'none'`
+- **Options**: none | gzip | zip
+
+###### `<max_file_size>--max-file-size`
+
+```text
+--max-file-size <max_file_size>
+```
+
+Start a new numbered shard before a file would exceed this on-disk size, in bytes or with a K, M, or G suffix (1024-based), for example 50M.
+
+###### `<max_records>--max-records`
+
+```text
+--max-records <max_records>
+```
+
+Start a new numbered shard after this many records.
 
 ##### `ALCHEMY_CONFIG`
 
@@ -14997,6 +15166,220 @@ from an original `SQLAlchemyError`.
 - [**MultipleResultsFoundError**](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.MultipleResultsFoundError) – Raised when multiple rows matched the specified data.
 - **Return type**: *Generator*[*None*, *None*, *None*]
 
+Source: https://docs.advanced-alchemy.litestar.dev/latest/reference/fixtures.html
+
+# Fixtures
+
+Streaming fixture loaders, batch iterators, sharded writers, and format aliases.
+
+## Fixture Formats & Readers
+
+### `advanced_alchemy.utils.fixtures.FixtureFormat`
+
+```python
+advanced_alchemy.utils.fixtures.FixtureFormat
+```
+
+Supported fixture file serialization format (`"json"`, `"jsonl"`, or `"csv"`).
+
+alias of `Literal`  [‘json’, ‘jsonl’, ‘csv’]
+
+### `advanced_alchemy.utils.fixtures.FixtureCompression`
+
+```python
+advanced_alchemy.utils.fixtures.FixtureCompression
+```
+
+Supported fixture archive compression format (`"gzip"`, `"zip"`, or `None`).
+
+alias of `Literal`  [‘gzip’, ‘zip’]
+
+### `advanced_alchemy.utils.fixtures.open_fixture_sync`
+
+```python
+advanced_alchemy.utils.fixtures.open_fixture_sync(fixtures_path, fixture_name)[source]
+```
+
+Load a JSON, JSONL, or CSV fixture synchronously.
+
+Supports plain files, gzip-compressed files (`.gz`), and zip archives (`.zip`).
+Formats are resolved in priority order: `json` > `jsonl` > `csv`. Both
+lowercase and uppercase fixture names are checked according to format and
+compression rules. Text is decoded using `utf-8-sig`.
+
+Unsharded `json` fixtures return the decoded top-level JSON value unchanged.
+Unsharded `jsonl` and `csv` fixtures return a list of decoded records or
+dictionaries.
+
+- **Parameters**: - **fixtures_path** (*Union**[**Path**,**AsyncPath**]*) – Directory path containing fixture files. Can be a
+`pathlib.Path` or `anyio.Path` instance.
+- **fixture_name** (*str*) – Fixture base name without file extension.
+- **Raises**: - **FileNotFoundError** – If no matching fixture file exists.
+- **OSError** – If an I/O or decompression error occurs while reading the file.
+- **ValueError** – If a zip archive contains no matching member, a JSONL line
+ contains invalid JSON, or a JSON fixture read as records is not an array.
+- **Returns**: Decoded JSON data or a list of records.
+- **Return type**: *Any*
+
+### `advanced_alchemy.utils.fixtures.open_fixture_async`
+
+```python
+async advanced_alchemy.utils.fixtures.open_fixture_async(fixtures_path, fixture_name)[source]
+```
+
+Load a JSON, JSONL, or CSV fixture asynchronously.
+
+Offloads synchronous fixture resolution, decompression, and parsing to a
+worker thread via [`async_()`](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.sync_tools.async_).
+
+- **Parameters**: - **fixtures_path** (*Union**[**Path**,**AsyncPath**]*) – Directory path containing fixture files. Can be a
+`pathlib.Path` or `anyio.Path` instance.
+- **fixture_name** (*str*) – Fixture base name without file extension.
+- **Raises**: - **FileNotFoundError** – If no matching fixture file exists.
+- **OSError** – If an I/O or decompression error occurs while reading the file.
+- **ValueError** – If a zip archive contains no matching member, a JSONL line
+ contains invalid JSON, or a JSON fixture read as records is not an array.
+- **Returns**: Decoded JSON data or a list of records.
+- **Return type**: *Any*
+
+## Streaming, Writing & Legacy Alias
+
+### `advanced_alchemy.utils.fixtures.iter_fixture_sync`
+
+```python
+advanced_alchemy.utils.fixtures.iter_fixture_sync(fixtures_path, fixture_name, *, batch_size=1000)[source]
+```
+
+Stream decoded fixture records in non-empty batches synchronously.
+
+Validates `batch_size` and resolves the fixture file or numbered shards
+eagerly at call time, then yields non-empty batches of at most
+`batch_size` records across shard boundaries. Closing the returned
+iterator early releases any open file handle immediately.
+
+- **Parameters**: - **fixtures_path** (*Union**[**Path**,**AsyncPath**]*) – Directory path containing fixture files. Can be a
+`pathlib.Path` or `anyio.Path` instance.
+- **fixture_name** (*str*) – Fixture base name without file extension.
+- **batch_size** (*int*) – Maximum number of records per yielded batch. Must be at least 1.
+- **Raises**: - **FileNotFoundError** – If no matching fixture file exists.
+- **OSError** – If an I/O or decompression error occurs while reading a file.
+- **ValueError** – If `batch_size` is less than 1, both an unsharded file and
+ numbered shards exist, shard validation fails, a zip archive contains
+ no matching member, a JSONL line contains invalid JSON, or a JSON
+ fixture is not an array.
+- **Returns**: Iterator yielding non-empty lists of records.
+- **Return type**: *Iterator*[[*list*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list)[*Any*]]
+
+### `advanced_alchemy.utils.fixtures.iter_fixture_async`
+
+```python
+async advanced_alchemy.utils.fixtures.iter_fixture_async(fixtures_path, fixture_name, *, batch_size=1000)[source]
+```
+
+Stream decoded fixture records in non-empty batches asynchronously.
+
+Offloads fixture resolution, batch reads, and generator teardown to worker
+threads via [`async_()`](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.sync_tools.async_). Validation
+and resolution run on the first iteration step. Callers exiting early must
+call `aclose()` or consume the iterator completely so underlying file
+handles are closed promptly.
+
+- **Parameters**: - **fixtures_path** (*Union**[**Path**,**AsyncPath**]*) – Directory path containing fixture files. Can be a
+`pathlib.Path` or `anyio.Path` instance.
+- **fixture_name** (*str*) – Fixture base name without file extension.
+- **batch_size** (*int*) – Maximum number of records per yielded batch. Must be at least 1.
+- **Raises**: - **FileNotFoundError** – If no matching fixture file exists.
+- **OSError** – If an I/O or decompression error occurs while reading a file.
+- **ValueError** – If `batch_size` is less than 1, both an unsharded file and
+ numbered shards exist, shard validation fails, a zip archive contains
+ no matching member, a JSONL line contains invalid JSON, or a JSON
+ fixture is not an array.
+- **Yields**: `list[Any]` – Non-empty batch of decoded records.
+- **Return type**: *AsyncIterator*[[*list*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list)[*Any*]]
+
+### `advanced_alchemy.utils.fixtures.write_fixture_sync`
+
+```python
+advanced_alchemy.utils.fixtures.write_fixture_sync(fixtures_path, fixture_name, records, *, file_format='json', compression=None, max_bytes=None, max_records=None)[source]
+```
+
+Write fixture records synchronously in JSON, JSONL, or CSV format.
+
+Streams encoded records into temporary `.tmp` files, atomically renames
+temporary files into place upon completion, and removes any stale fixture
+files matching `fixture_name` across all formats, compressions, and shard
+layouts.
+
+- **Parameters**: - **fixtures_path** (*Union**[**Path**,**AsyncPath**]*) – Target directory path for fixture files. Created if it
+does not exist. Can be a `pathlib.Path` or `anyio.Path`.
+- **fixture_name** (*str*) – Fixture base name without file extension.
+- **records** (*Iterable**[**Any**]*) – Iterable of records to write.
+- **file_format** (*'json'**|**'jsonl'**|**'csv'*) – Output format (`"json"`, `"jsonl"`, or `"csv"`).
+- **compression** (*Optional**[*[*FixtureCompression*](https://docs.advanced-alchemy.litestar.dev/latest/reference/fixtures.html#advanced_alchemy.utils.fixtures.FixtureCompression)*]*) – Optional compression (`"gzip"`, `"zip"`, or `None`).
+- **max_bytes** (*Optional**[**int**]*) – Optional maximum on-disk byte size per shard. Must be at least 1.
+- **max_records** (*Optional**[**int**]*) – Optional maximum record count per shard. Must be at least 1.
+- **Raises**: - **ValueError** – If `file_format`, `compression`, `max_bytes`, or
+ `max_records` is invalid, or if CSV records introduce keys absent
+ from the header.
+- **TypeError** – If `file_format` is `"csv"` and a record is not a mapping.
+- **OSError** – If writing, deleting stale files, or renaming files fails.
+- **Returns**: Final written fixture paths in shard order.
+- **Return type**: [*list*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list)[Path]
+
+### `advanced_alchemy.utils.fixtures.write_fixture_async`
+
+```python
+async advanced_alchemy.utils.fixtures.write_fixture_async(fixtures_path, fixture_name, records, *, file_format='json', compression=None, max_bytes=None, max_records=None, batch_size=1000)[source]
+```
+
+Write fixture records asynchronously in JSON, JSONL, or CSV format.
+
+Streams records from a synchronous or asynchronous iterable in batches of
+`batch_size` into temporary `.tmp` files, offloads writer construction,
+batch writes, commit, and abort to worker threads via
+[`async_()`](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.sync_tools.async_), atomically renames
+temporary files into place on completion, and removes stale fixture files
+matching `fixture_name`.
+
+- **Parameters**: - **fixtures_path** (*Union**[**Path**,**AsyncPath**]*) – Target directory path for fixture files. Created if it
+does not exist. Can be a `pathlib.Path` or `anyio.Path`.
+- **fixture_name** (*str*) – Fixture base name without file extension.
+- **records** (*Union**[**Iterable**[**Any**]**,**AsyncIterable**[**Any**]**]*) – Synchronous or asynchronous iterable of records to write.
+- **file_format** (*'json'**|**'jsonl'**|**'csv'*) – Output format (`"json"`, `"jsonl"`, or `"csv"`).
+- **compression** (*Optional**[*[*FixtureCompression*](https://docs.advanced-alchemy.litestar.dev/latest/reference/fixtures.html#advanced_alchemy.utils.fixtures.FixtureCompression)*]*) – Optional compression (`"gzip"`, `"zip"`, or `None`).
+- **max_bytes** (*Optional**[**int**]*) – Optional maximum on-disk byte size per shard. Must be at least 1.
+- **max_records** (*Optional**[**int**]*) – Optional maximum record count per shard. Must be at least 1.
+- **batch_size** (*int*) – Maximum number of records buffered before offloading a batch
+write to a worker thread. Must be at least 1.
+- **Raises**: - **ValueError** – If `batch_size`, `file_format`, `compression`,
+ `max_bytes`, or `max_records` is invalid, or if CSV records
+ introduce keys absent from the header.
+- **TypeError** – If `file_format` is `"csv"` and a record is not a mapping.
+- **OSError** – If writing, deleting stale files, or renaming files fails.
+- **Returns**: Final written fixture paths in shard order.
+- **Return type**: [*list*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list)[Path]
+
+### `advanced_alchemy.utils.fixtures.open_fixture`
+
+```python
+advanced_alchemy.utils.fixtures.open_fixture(fixtures_path, fixture_name)[source]
+```
+
+Load a JSON, JSONL, or CSV fixture synchronously.
+
+Deprecated since 1.13.0 and scheduled for removal in 2.0. Use
+[`open_fixture_sync()`](https://docs.advanced-alchemy.litestar.dev/latest/reference/fixtures.html#advanced_alchemy.utils.fixtures.open_fixture_sync) instead.
+
+- **Parameters**: - **fixtures_path** (*Union**[**Path**,**AsyncPath**]*) – Directory path containing fixture files. Can be a
+`pathlib.Path` or `anyio.Path` instance.
+- **fixture_name** (*str*) – Fixture base name without file extension.
+- **Raises**: - **FileNotFoundError** – If no matching fixture file exists.
+- **OSError** – If an I/O or decompression error occurs while reading the file.
+- **ValueError** – If a zip archive contains no matching member, a JSONL line
+ contains invalid JSON, or a JSON fixture read as records is not an array.
+- **Returns**: Decoded JSON data or a list of records.
+- **Return type**: *Any*
+
 Source: https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html
 
 # Utilities
@@ -15213,7 +15596,7 @@ Retrieve dependency providers by a precomputed key.
 ### `advanced_alchemy.utils.dependencies.resolve_filter_aliases`
 
 ```python
-advanced_alchemy.utils.dependencies.resolve_filter_aliases(config)[source]
+advanced_alchemy.utils.dependencies.resolve_filter_aliases(config, *, prefix=None)[source]
 ```
 
 Resolve public query names once, validating only opt-in custom naming.
@@ -15455,92 +15838,7 @@ specified by `dotted_path`.
 - **Returns**: The path to the module.
 - **Return type**: Path
 
-### `advanced_alchemy.utils.fixtures.open_fixture`
-
-```python
-advanced_alchemy.utils.fixtures.open_fixture(fixtures_path, fixture_name)[source]
-```
-
-Loads JSON or CSV file with the specified fixture name.
-
-Supports plain files, gzipped files (.json.gz, .csv.gz), and zipped files (.json.zip, .csv.zip).
-The function automatically detects the file format based on file extension and handles
-decompression transparently. JSON files take priority over CSV files. Supports both
-lowercase and uppercase variations for better compatibility with database exports.
-
-For CSV files, returns a list of dictionaries using csv.DictReader where each row
-becomes a dictionary with column headers as keys. Note that CSV values are always
-strings, unlike JSON which preserves data types.
-
-- **Parameters**: - **fixtures_path** (*Union**[**Path**,**AsyncPath**]*) – The path to look for fixtures. Can be a `pathlib.Path` or
-`anyio.Path` instance.
-- **fixture_name** (*str*) – The fixture name to load (without file extension).
-- **Raises**: - **FileNotFoundError** – If no fixture file is found with any supported extension.
-- **OSError** – If there’s an error reading or decompressing the file.
-- **ValueError** – If the JSON content is invalid, or if a zip file doesn’t contain
- the expected JSON/CSV files.
-- **zipfile.BadZipFile** – If the zip file is corrupted.
-- **gzip.BadGzipFile** – If the gzip file is corrupted.
-- **csv.Error** – If the CSV content is malformed.
-- **Returns**: The parsed data from the fixture file (JSON data or list of dictionaries from CSV).
-- **Return type**: *Any*
-
-> **Examples**: # Load JSON fixture
-> >>> data = open_fixture(fixtures_path, “users”)
-> # loads users.json, users.json.gz, or users.json.zip
-> >>> print(data)
-> [{“id”: 1, “name”: “Alice”}, {“id”: 2, “name”: “Bob”}]
->
-> # Load CSV fixture
-> >>> data = open_fixture(fixtures_path, “states”)
-> # loads states.csv, states.csv.gz, or states.csv.zip
-> >>> print(data)
-> [{“abbreviation”: “AL”, “name”: “Alabama”}, {“abbreviation”: “AK”, “name”: “Alaska”}]
-
-### `advanced_alchemy.utils.fixtures.open_fixture_async`
-
-```python
-async advanced_alchemy.utils.fixtures.open_fixture_async(fixtures_path, fixture_name)[source]
-```
-
-Loads JSON or CSV file with the specified fixture name asynchronously.
-
-Supports plain files, gzipped files (.json.gz, .csv.gz), and zipped files (.json.zip, .csv.zip).
-The function automatically detects the file format based on file extension and handles
-decompression transparently. JSON files take priority over CSV files. Supports both
-lowercase and uppercase variations for better compatibility with database exports.
-For compressed files and CSV parsing, operations are performed in a thread pool to
-avoid blocking the event loop.
-
-For CSV files, returns a list of dictionaries using csv.DictReader where each row
-becomes a dictionary with column headers as keys. Note that CSV values are always
-strings, unlike JSON which preserves data types.
-
-- **Parameters**: - **fixtures_path** (*Union**[**Path**,**AsyncPath**]*) – The path to look for fixtures. Can be a `pathlib.Path` or
-`anyio.Path` instance.
-- **fixture_name** (*str*) – The fixture name to load (without file extension).
-- **Raises**: - [**MissingDependencyError**](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.MissingDependencyError) – If the `anyio` library is not installed.
-- **FileNotFoundError** – If no fixture file is found with any supported extension.
-- **OSError** – If there’s an error reading or decompressing the file.
-- **ValueError** – If the JSON content is invalid, or if a zip file doesn’t contain
- the expected JSON/CSV files.
-- **zipfile.BadZipFile** – If the zip file is corrupted.
-- **gzip.BadGzipFile** – If the gzip file is corrupted.
-- **csv.Error** – If the CSV content is malformed.
-- **Returns**: The parsed data from the fixture file (JSON data or list of dictionaries from CSV).
-- **Return type**: *Any*
-
-> **Examples**: # Load JSON fixture
-> >>> data = await open_fixture_async(fixtures_path, “users”)
-> # loads users.json, users.json.gz, or users.json.zip
-> >>> print(data)
-> [{“id”: 1, “name”: “Alice”}, {“id”: 2, “name”: “Bob”}]
->
-> # Load CSV fixture
-> >>> data = await open_fixture_async(fixtures_path, “states”)
-> # loads states.csv, states.csv.gz, or states.csv.zip
-> >>> print(data)
-> [{“abbreviation”: “AL”, “name”: “Alabama”}, {“abbreviation”: “AK”, “name”: “Alaska”}]
+See [Fixtures](https://docs.advanced-alchemy.litestar.dev/latest/reference/fixtures.html) for [`advanced_alchemy.utils.fixtures`](https://docs.advanced-alchemy.litestar.dev/latest/reference/fixtures.html#module-advanced_alchemy.utils.fixtures) (`open_fixture_sync`, `iter_fixture_sync`, `write_fixture_sync`, and async counterparts).
 
 ### `advanced_alchemy.utils.text.slugify`
 
@@ -15623,9 +15921,8 @@ Source: https://docs.advanced-alchemy.litestar.dev/latest/changelog.html
 `SQLAlchemySyncRepositoryService[Model]` subclasses no longer need an inline
 `repository_type`; the model and a default repository are inferred from the
 generic parameters, and `model_type=` / `repository_type=` can be passed
-when instantiating directly. `Service.repository` is now typed as the SQL or
-mock repository for the model instead of `Any`. To type custom repository
-methods, pass the repository as the second generic parameter, for example
+when instantiating directly. To type custom repository methods, pass the
+repository as the second generic parameter, for example
 `SQLAlchemyAsyncRepositoryService[Widget, WidgetRepository]`.
 
 References: [https://github.com/litestar-org/advanced-alchemy/pull/824](https://github.com/litestar-org/advanced-alchemy/pull/824)
@@ -15648,20 +15945,8 @@ References: [https://github.com/litestar-org/advanced-alchemy/pull/824](https://
 `is_(None)`. `LimitOffset` slices `offset:offset + limit`, `BeforeAfter`
 applies both bounds, and `get_many_and_count` returns the count before
 pagination. Unsupported SQL expressions now raise `RepositoryError` instead of
-silently returning no rows, so tests that relied on the previous results may
+returning unfiltered rows, so tests that relied on the previous results may
 need to be updated.
-
-References: [https://github.com/litestar-org/advanced-alchemy/pull/824](https://github.com/litestar-org/advanced-alchemy/pull/824)
-
-### Other changes
-
-- **deprecate ignoring explicit None for columns with defaults on update**: `Repository.update` and `Service.update` continue to ignore an explicit
-`None` assigned to a column that defines a `default`, `server_default`,
-`onupdate`, or `server_onupdate`, and now emit a `DeprecationWarning`
-naming the model and field. In v2.0 the `None` will be written, clearing
-nullable columns and raising `IntegrityError` on `NOT NULL` columns. Omit
-the field from the update payload to keep the stored value. The in-memory mock
-repositories follow the same behavior.
 
 References: [https://github.com/litestar-org/advanced-alchemy/pull/824](https://github.com/litestar-org/advanced-alchemy/pull/824)
 

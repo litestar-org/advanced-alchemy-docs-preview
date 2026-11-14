@@ -2,7 +2,7 @@
 <html lang="en" data-accent-color="amber" data-content_root="../">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Utilities - Advanced Alchemy</title><link rel="shortcut icon" href="../_static/favicon.svg"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="1.x Changelog" href="../changelog.html" /><link rel="prev" title="Exceptions" href="exceptions.html" /><script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Utilities - Advanced Alchemy</title><link rel="shortcut icon" href="../_static/favicon.svg"/><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="1.x Changelog" href="../changelog.html" /><link rel="prev" title="Fixtures" href="fixtures.html" /><script>
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=43bd62f4" />
@@ -246,6 +246,7 @@ data-aria-dark="Switch to auto color mode">
 </li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="cli.html">CLI Commands</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="fixtures.html">Fixtures</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Utilities</a></li>
 </ul>
 <p class="caption" role="heading" aria-level="3"><span class="caption-text">Contributing</span></p>
@@ -665,7 +666,7 @@ for generated filter values.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="advanced_alchemy.utils.dependencies.resolve_filter_aliases">
-<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.utils.dependencies.</span></span><span class="sig-name descname"><span class="pre">resolve_filter_aliases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/utils/dependencies.html#resolve_filter_aliases"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.utils.dependencies.resolve_filter_aliases" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.utils.dependencies.</span></span><span class="sig-name descname"><span class="pre">resolve_filter_aliases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/utils/dependencies.html#resolve_filter_aliases"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.utils.dependencies.resolve_filter_aliases" title="Link to this definition">#</a></dt>
 <dd><p>Resolve public query names once, validating only opt-in custom naming.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -953,121 +954,7 @@ specified by <cite>dotted_path</cite>.</p>
 </dl>
 </dd></dl>
 
-<dl class="py function" id="module-advanced_alchemy.utils.fixtures">
-<dt class="sig sig-object py" id="advanced_alchemy.utils.fixtures.open_fixture">
-<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.utils.fixtures.</span></span><span class="sig-name descname"><span class="pre">open_fixture</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixtures_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixture_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/utils/fixtures.html#open_fixture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.utils.fixtures.open_fixture" title="Link to this definition">#</a></dt>
-<dd><p>Loads JSON or CSV file with the specified fixture name.</p>
-<p>Supports plain files, gzipped files (.json.gz, .csv.gz), and zipped files (.json.zip, .csv.zip).
-The function automatically detects the file format based on file extension and handles
-decompression transparently. JSON files take priority over CSV files. Supports both
-lowercase and uppercase variations for better compatibility with database exports.</p>
-<p>For CSV files, returns a list of dictionaries using csv.DictReader where each row
-becomes a dictionary with column headers as keys. Note that CSV values are always
-strings, unlike JSON which preserves data types.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fixtures_path</strong> (<em>Union</em><em>[</em><em>Path</em><em>, </em><em>AsyncPath</em><em>]</em>) – The path to look for fixtures. Can be a <code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.Path</span></code> or
-<code class="xref py py-class docutils literal notranslate"><span class="pre">anyio.Path</span></code> instance.</p></li>
-<li><p><strong>fixture_name</strong> (<em>str</em>) – The fixture name to load (without file extension).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>FileNotFoundError</strong> – If no fixture file is found with any supported extension.</p></li>
-<li><p><strong>OSError</strong> – If there’s an error reading or decompressing the file.</p></li>
-<li><p><strong>ValueError</strong> – If the JSON content is invalid, or if a zip file doesn’t contain
-    the expected JSON/CSV files.</p></li>
-<li><p><strong>zipfile.BadZipFile</strong> – If the zip file is corrupted.</p></li>
-<li><p><strong>gzip.BadGzipFile</strong> – If the gzip file is corrupted.</p></li>
-<li><p><strong>csv.Error</strong> – If the CSV content is malformed.</p></li>
-</ul>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The parsed data from the fixture file (JSON data or list of dictionaries from CSV).</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Any</em></p>
-</dd>
-</dl>
-<div class="admonition-examples admonition">
-<p class="admonition-title">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">fixtures_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./fixtures&quot;</span><span class="p">)</span>
-</span></pre></div>
-</div>
-<p># Load JSON fixture
-&gt;&gt;&gt; data = open_fixture(fixtures_path, “users”)
-# loads users.json, users.json.gz, or users.json.zip
-&gt;&gt;&gt; print(data)
-[{“id”: 1, “name”: “Alice”}, {“id”: 2, “name”: “Bob”}]</p>
-<p># Load CSV fixture
-&gt;&gt;&gt; data = open_fixture(fixtures_path, “states”)
-# loads states.csv, states.csv.gz, or states.csv.zip
-&gt;&gt;&gt; print(data)
-[{“abbreviation”: “AL”, “name”: “Alabama”}, {“abbreviation”: “AK”, “name”: “Alaska”}]</p>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="advanced_alchemy.utils.fixtures.open_fixture_async">
-<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.utils.fixtures.</span></span><span class="sig-name descname"><span class="pre">open_fixture_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixtures_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixture_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/utils/fixtures.html#open_fixture_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.utils.fixtures.open_fixture_async" title="Link to this definition">#</a></dt>
-<dd><p>Loads JSON or CSV file with the specified fixture name asynchronously.</p>
-<p>Supports plain files, gzipped files (.json.gz, .csv.gz), and zipped files (.json.zip, .csv.zip).
-The function automatically detects the file format based on file extension and handles
-decompression transparently. JSON files take priority over CSV files. Supports both
-lowercase and uppercase variations for better compatibility with database exports.
-For compressed files and CSV parsing, operations are performed in a thread pool to
-avoid blocking the event loop.</p>
-<p>For CSV files, returns a list of dictionaries using csv.DictReader where each row
-becomes a dictionary with column headers as keys. Note that CSV values are always
-strings, unlike JSON which preserves data types.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fixtures_path</strong> (<em>Union</em><em>[</em><em>Path</em><em>, </em><em>AsyncPath</em><em>]</em>) – The path to look for fixtures. Can be a <code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.Path</span></code> or
-<code class="xref py py-class docutils literal notranslate"><span class="pre">anyio.Path</span></code> instance.</p></li>
-<li><p><strong>fixture_name</strong> (<em>str</em>) – The fixture name to load (without file extension).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.MissingDependencyError" title="advanced_alchemy.exceptions.MissingDependencyError"><strong>MissingDependencyError</strong></a> – If the <cite>anyio</cite> library is not installed.</p></li>
-<li><p><strong>FileNotFoundError</strong> – If no fixture file is found with any supported extension.</p></li>
-<li><p><strong>OSError</strong> – If there’s an error reading or decompressing the file.</p></li>
-<li><p><strong>ValueError</strong> – If the JSON content is invalid, or if a zip file doesn’t contain
-    the expected JSON/CSV files.</p></li>
-<li><p><strong>zipfile.BadZipFile</strong> – If the zip file is corrupted.</p></li>
-<li><p><strong>gzip.BadGzipFile</strong> – If the gzip file is corrupted.</p></li>
-<li><p><strong>csv.Error</strong> – If the CSV content is malformed.</p></li>
-</ul>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The parsed data from the fixture file (JSON data or list of dictionaries from CSV).</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Any</em></p>
-</dd>
-</dl>
-<div class="admonition-examples admonition">
-<p class="admonition-title">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">anyio</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span> <span class="k">as</span> <span class="n">AsyncPath</span>
-</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">fixtures_path</span> <span class="o">=</span> <span class="n">AsyncPath</span><span class="p">(</span><span class="s2">&quot;./fixtures&quot;</span><span class="p">)</span>
-</span></pre></div>
-</div>
-<p># Load JSON fixture
-&gt;&gt;&gt; data = await open_fixture_async(fixtures_path, “users”)
-# loads users.json, users.json.gz, or users.json.zip
-&gt;&gt;&gt; print(data)
-[{“id”: 1, “name”: “Alice”}, {“id”: 2, “name”: “Bob”}]</p>
-<p># Load CSV fixture
-&gt;&gt;&gt; data = await open_fixture_async(fixtures_path, “states”)
-# loads states.csv, states.csv.gz, or states.csv.zip
-&gt;&gt;&gt; print(data)
-[{“abbreviation”: “AL”, “name”: “Alabama”}, {“abbreviation”: “AK”, “name”: “Alaska”}]</p>
-</div>
-</dd></dl>
-
+<p>See <a class="reference internal" href="fixtures.html"><span class="doc">Fixtures</span></a> for <a class="reference internal" href="fixtures.html#module-advanced_alchemy.utils.fixtures" title="advanced_alchemy.utils.fixtures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">advanced_alchemy.utils.fixtures</span></code></a> (<code class="docutils literal notranslate"><span class="pre">open_fixture_sync</span></code>, <code class="docutils literal notranslate"><span class="pre">iter_fixture_sync</span></code>, <code class="docutils literal notranslate"><span class="pre">write_fixture_sync</span></code>, and async counterparts).</p>
 <dl class="py function" id="module-advanced_alchemy.utils.text">
 <dt class="sig sig-object py" id="advanced_alchemy.utils.text.slugify">
 <span class="sig-prename descclassname"><span class="pre">advanced_alchemy.utils.text.</span></span><span class="sig-name descname"><span class="pre">slugify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_unicode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/advanced_alchemy/utils/text.html#slugify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.utils.text.slugify" title="Link to this definition">#</a></dt>
@@ -1193,10 +1080,10 @@ out if it’s a function or method</p></li>
   </svg>
   <span>Back to top</span>
 </button><div class="navigation flex print:hidden"><div class="navigation-prev">
-    <a href="exceptions.html">
+    <a href="fixtures.html">
       <i class="i-lucide chevron-left"></i>
       <div class="page-info">
-        <span>Previous</span><div class="title">Exceptions</div></div>
+        <span>Previous</span><div class="title">Fixtures</div></div>
     </a>
   </div><div class="navigation-next">
     <a href="../changelog.html">

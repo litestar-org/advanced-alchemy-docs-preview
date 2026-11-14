@@ -246,6 +246,7 @@ data-aria-dark="Switch to auto color mode">
 </li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../reference/cli.html">CLI Commands</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../reference/exceptions.html">Exceptions</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../reference/fixtures.html">Fixtures</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../reference/utils.html">Utilities</a></li>
 </ul>
 <p class="caption" role="heading" aria-level="3"><span class="caption-text">Contributing</span></p>
@@ -265,8 +266,11 @@ data-aria-dark="Switch to auto color mode">
       <i class="i-lucide close"></i>
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
-<li><a class="reference internal" href="#writing-a-fixture-file">Writing a Fixture File</a></li>
+<li><a class="reference internal" href="#fixture-formats">Fixture Formats</a></li>
 <li><a class="reference internal" href="#loading-fixtures-into-your-database">Loading Fixtures Into Your Database</a></li>
+<li><a class="reference internal" href="#streaming-large-fixtures-in-batches">Streaming Large Fixtures in Batches</a></li>
+<li><a class="reference internal" href="#sharded-fixtures">Sharded Fixtures</a></li>
+<li><a class="reference internal" href="#writing-fixtures-with-automatic-rollover">Writing Fixtures With Automatic Rollover</a></li>
 <li><a class="reference internal" href="#safe-re-runs-across-deployments">Safe Re-Runs Across Deployments</a></li>
 </ul>
 </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
@@ -358,59 +362,59 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="database-seeding">
 <h1>Database Seeding<a class="headerlink" href="#database-seeding" title="Link to this heading">#</a></h1>
-<p>When setting up a new environment or staging server, you often want starter rows—such as default roles, categories, or sample products—loaded from version-controlled <code class="docutils literal notranslate"><span class="pre">.json</span></code> or <code class="docutils literal notranslate"><span class="pre">.csv</span></code> files.</p>
-<p>Advanced Alchemy’s <code class="docutils literal notranslate"><span class="pre">open_fixture</span></code> and <code class="docutils literal notranslate"><span class="pre">open_fixture_async</span></code> helpers locate and parse fixture files (including compressed <code class="docutils literal notranslate"><span class="pre">.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">.zip</span></code> files) in one call.</p>
-<section id="writing-a-fixture-file">
-<h2>Writing a Fixture File<a class="headerlink" href="#writing-a-fixture-file" title="Link to this heading">#</a></h2>
-<p>Store your seed files in a <code class="docutils literal notranslate"><span class="pre">fixtures/</span></code> folder. JSON keeps numbers and booleans typed automatically, while CSV files load every column as strings:</p>
-<div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-0">
-JSON Fixture</label><div class="sd-tab-content docutils">
+<p>When setting up a new environment or staging server, you often want starter rows—such as default roles, categories, or sample products—loaded from version-controlled fixture files.</p>
+<p>Advanced Alchemy’s fixture helpers find, parse, stream, and write these files for you: <code class="docutils literal notranslate"><span class="pre">open_fixture_sync</span></code> and <code class="docutils literal notranslate"><span class="pre">open_fixture_async</span></code> load a whole fixture, <code class="docutils literal notranslate"><span class="pre">iter_fixture_sync</span></code> and <code class="docutils literal notranslate"><span class="pre">iter_fixture_async</span></code> stream it in batches, and <code class="docutils literal notranslate"><span class="pre">write_fixture_sync</span></code> and <code class="docutils literal notranslate"><span class="pre">write_fixture_async</span></code> write one.</p>
+<section id="fixture-formats">
+<h2>Fixture Formats<a class="headerlink" href="#fixture-formats" title="Link to this heading">#</a></h2>
+<p>Store your seed files in a <code class="docutils literal notranslate"><span class="pre">fixtures/</span></code> folder. Each format can be stored plain, gzip-compressed (<code class="docutils literal notranslate"><span class="pre">.gz</span></code>), or zipped (<code class="docutils literal notranslate"><span class="pre">.zip</span></code>):</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 52.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Format</p></th>
+<th class="head"><p>File Names</p></th>
+<th class="head"><p>Loads As</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>JSON</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">products.json</span></code>, <code class="docutils literal notranslate"><span class="pre">products.json.gz</span></code>, <code class="docutils literal notranslate"><span class="pre">products.json.zip</span></code></p></td>
+<td><p>The decoded value, with typed numbers and booleans</p></td>
+</tr>
+<tr class="row-odd"><td><p>JSON Lines</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">products.jsonl</span></code>, <code class="docutils literal notranslate"><span class="pre">products.jsonl.gz</span></code>, <code class="docutils literal notranslate"><span class="pre">products.jsonl.zip</span></code></p></td>
+<td><p>A list with one value per non-blank line</p></td>
+</tr>
+<tr class="row-even"><td><p>CSV</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">products.csv</span></code>, <code class="docutils literal notranslate"><span class="pre">products.csv.gz</span></code>, <code class="docutils literal notranslate"><span class="pre">products.csv.zip</span></code></p></td>
+<td><p>A list of dicts whose values are strings</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>When several formats exist for the same name, JSON is used first, then JSON Lines, then CSV. Upper-case names are found for compressed files (<code class="docutils literal notranslate"><span class="pre">PRODUCTS.json.gz</span></code>), plain CSV (<code class="docutils literal notranslate"><span class="pre">PRODUCTS.csv</span></code>), and shards.</p>
 <div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">fixtures/products.json</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="p">[</span>
-</span><span data-line="2"><span class="w">    </span><span class="p">{</span>
-</span><span data-line="3"><span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Laptop&quot;</span><span class="p">,</span>
-</span><span data-line="4"><span class="w">        </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;16GB RAM and 1TB SSD&quot;</span><span class="p">,</span>
-</span><span data-line="5"><span class="w">        </span><span class="nt">&quot;price&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">999.99</span><span class="p">,</span>
-</span><span data-line="6"><span class="w">        </span><span class="nt">&quot;in_stock&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
-</span><span data-line="7"><span class="w">    </span><span class="p">},</span>
-</span><span data-line="8"><span class="w">    </span><span class="p">{</span>
-</span><span data-line="9"><span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Smartphone&quot;</span><span class="p">,</span>
-</span><span data-line="10"><span class="w">        </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5G OLED display&quot;</span><span class="p">,</span>
-</span><span data-line="11"><span class="w">        </span><span class="nt">&quot;price&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">699.99</span><span class="p">,</span>
-</span><span data-line="12"><span class="w">        </span><span class="nt">&quot;in_stock&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
-</span><span data-line="13"><span class="w">    </span><span class="p">}</span>
-</span><span data-line="14"><span class="p">]</span>
+<div class="code-block-caption"><span class="caption-text">fixtures/products.jsonl</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span data-line="1">{&quot;name&quot;: &quot;Laptop&quot;, &quot;description&quot;: &quot;16GB RAM and 1TB SSD&quot;, &quot;price&quot;: 999.99, &quot;in_stock&quot;: true}
+</span><span data-line="2">{&quot;name&quot;: &quot;Smartphone&quot;, &quot;description&quot;: &quot;5G OLED display&quot;, &quot;price&quot;: 699.99, &quot;in_stock&quot;: true}
 </span></pre></div>
-</div>
-</div>
-</div>
-<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-1">
-CSV Fixture</label><div class="sd-tab-content docutils">
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">fixtures/products.csv</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span data-line="1">name,price,in_stock
-</span><span data-line="2">Widget,9.99,true
-</span><span data-line="3">Gadget,19.99,true
-</span></pre></div>
-</div>
-</div>
 </div>
 </div>
 </section>
 <section id="loading-fixtures-into-your-database">
 <h2>Loading Fixtures Into Your Database<a class="headerlink" href="#loading-fixtures-into-your-database" title="Link to this heading">#</a></h2>
-<p>Pick <code class="docutils literal notranslate"><span class="pre">open_fixture_async</span></code> for async apps or <code class="docutils literal notranslate"><span class="pre">open_fixture</span></code> for sync scripts:</p>
+<p>Pick <code class="docutils literal notranslate"><span class="pre">open_fixture_async</span></code> for async apps or <code class="docutils literal notranslate"><span class="pre">open_fixture_sync</span></code> for sync scripts:</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-2">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
 Async Seeding</label><div class="sd-tab-content docutils">
 <div class="sd-tab-set docutils">
-<input id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-5">
+<input id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-2">
 Python 3.9+</label><div class="sd-tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
@@ -448,8 +452,8 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span></pre></div>
 </div>
 </div>
-<input checked="checked" id="sd-tab-item-6" name="sd-tab-set-2" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.10" for="sd-tab-item-6">
+<input checked="checked" id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.10" for="sd-tab-item-3">
 Python 3.10+</label><div class="sd-tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">String</span>
@@ -488,12 +492,12 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </div>
 </div>
 </div>
-<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-3">
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
 Sync Seeding</label><div class="sd-tab-content docutils">
 <div class="sd-tab-set docutils">
-<input id="sd-tab-item-7" name="sd-tab-set-3" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-7">
+<input id="sd-tab-item-4" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-4">
 Python 3.9+</label><div class="sd-tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
@@ -502,7 +506,7 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUIDBase</span>
 </span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">,</span> <span class="n">SyncSessionConfig</span>
 </span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemySyncRepository</span>
-</span><span data-line="8"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.fixtures</span><span class="w"> </span><span class="kn">import</span> <span class="n">open_fixture</span>
+</span><span data-line="8"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.fixtures</span><span class="w"> </span><span class="kn">import</span> <span class="n">open_fixture_sync</span>
 </span><span data-line="9">
 </span><span data-line="10"><span class="n">sync_config</span> <span class="o">=</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">(</span>
 </span><span data-line="11">    <span class="n">connection_string</span><span class="o">=</span><span class="s2">&quot;sqlite:///db.sqlite3&quot;</span><span class="p">,</span>
@@ -526,13 +530,13 @@ Python 3.9+</label><div class="sd-tab-content docutils">
 </span><span data-line="29"><span class="k">def</span><span class="w"> </span><span class="nf">seed_sync_products</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;fixtures&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span data-line="30">    <span class="k">with</span> <span class="n">sync_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
 </span><span data-line="31">        <span class="n">repo</span> <span class="o">=</span> <span class="n">SyncProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
-</span><span data-line="32">        <span class="n">rows</span> <span class="o">=</span> <span class="n">open_fixture</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;products&quot;</span><span class="p">)</span>
+</span><span data-line="32">        <span class="n">rows</span> <span class="o">=</span> <span class="n">open_fixture_sync</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;products&quot;</span><span class="p">)</span>
 </span><span data-line="33">        <span class="n">repo</span><span class="o">.</span><span class="n">add_many</span><span class="p">([</span><span class="n">SyncProduct</span><span class="p">(</span><span class="o">**</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">],</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></pre></div>
 </div>
 </div>
-<input checked="checked" id="sd-tab-item-8" name="sd-tab-set-3" type="radio">
-<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.10" for="sd-tab-item-8">
+<input checked="checked" id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="3.10" for="sd-tab-item-5">
 Python 3.10+</label><div class="sd-tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">String</span>
@@ -540,7 +544,7 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUIDBase</span>
 </span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">,</span> <span class="n">SyncSessionConfig</span>
 </span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemySyncRepository</span>
-</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.fixtures</span><span class="w"> </span><span class="kn">import</span> <span class="n">open_fixture</span>
+</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.fixtures</span><span class="w"> </span><span class="kn">import</span> <span class="n">open_fixture_sync</span>
 </span><span data-line="8">
 </span><span data-line="9"><span class="n">sync_config</span> <span class="o">=</span> <span class="n">SQLAlchemySyncConfig</span><span class="p">(</span>
 </span><span data-line="10">    <span class="n">connection_string</span><span class="o">=</span><span class="s2">&quot;sqlite:///db.sqlite3&quot;</span><span class="p">,</span>
@@ -564,54 +568,73 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </span><span data-line="28"><span class="k">def</span><span class="w"> </span><span class="nf">seed_sync_products</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;fixtures&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span data-line="29">    <span class="k">with</span> <span class="n">sync_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
 </span><span data-line="30">        <span class="n">repo</span> <span class="o">=</span> <span class="n">SyncProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
-</span><span data-line="31">        <span class="n">rows</span> <span class="o">=</span> <span class="n">open_fixture</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;products&quot;</span><span class="p">)</span>
+</span><span data-line="31">        <span class="n">rows</span> <span class="o">=</span> <span class="n">open_fixture_sync</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;products&quot;</span><span class="p">)</span>
 </span><span data-line="32">        <span class="n">repo</span><span class="o">.</span><span class="n">add_many</span><span class="p">([</span><span class="n">SyncProduct</span><span class="p">(</span><span class="o">**</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">],</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></pre></div>
 </div>
 </div>
 </div>
 </div>
-<input id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-4">
-Converting CSV Strings</label><div class="sd-tab-content docutils">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
-</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.fixtures</span><span class="w"> </span><span class="kn">import</span> <span class="n">open_fixture_async</span>
-</span><span data-line="4">
-</span><span data-line="5">
-</span><span data-line="6"><span class="k">def</span><span class="w"> </span><span class="nf">parse_csv_product</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-</span><span data-line="7">    <span class="k">return</span> <span class="p">{</span>
-</span><span data-line="8">        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
-</span><span data-line="9">        <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]),</span>
-</span><span data-line="10">        <span class="s2">&quot;in_stock&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;in_stock&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
-</span><span data-line="11">    <span class="p">}</span>
-</span><span data-line="12">
-</span><span data-line="13">
-</span><span data-line="14"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">seed_from_csv</span><span class="p">(</span><span class="n">repo</span><span class="p">:</span> <span class="n">AsyncProductRepository</span><span class="p">,</span> <span class="n">fixtures_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="15">    <span class="n">raw_rows</span> <span class="o">=</span> <span class="k">await</span> <span class="n">open_fixture_async</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;products&quot;</span><span class="p">)</span>
-</span><span data-line="16">    <span class="n">products</span> <span class="o">=</span> <span class="p">[</span><span class="n">AsyncProduct</span><span class="p">(</span><span class="o">**</span><span class="n">parse_csv_product</span><span class="p">(</span><span class="n">item</span><span class="p">))</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">raw_rows</span><span class="p">]</span>
-</span><span data-line="17">    <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">add_many</span><span class="p">(</span><span class="n">products</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">open_fixture</span></code> still works as an alias of <code class="docutils literal notranslate"><span class="pre">open_fixture_sync</span></code>, but it emits a <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> and is removed in version 2.0.</p>
+</div>
+<p>CSV values always load as strings, so convert them before building models:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+</span><span data-line="2">
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">def</span><span class="w"> </span><span class="nf">parse_csv_product</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+</span><span data-line="5">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]),</span> <span class="s2">&quot;in_stock&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;in_stock&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">}</span>
 </span></pre></div>
 </div>
+</section>
+<section id="streaming-large-fixtures-in-batches">
+<h2>Streaming Large Fixtures in Batches<a class="headerlink" href="#streaming-large-fixtures-in-batches" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">iter_fixture_async</span></code> and <code class="docutils literal notranslate"><span class="pre">iter_fixture_sync</span></code> yield lists of at most <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> records, so a large JSON Lines or CSV fixture is never held in memory all at once:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.fixtures</span><span class="w"> </span><span class="kn">import</span> <span class="n">iter_fixture_async</span>
+</span><span data-line="2">
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">seed_products_in_batches</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;fixtures&quot;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="5">    <span class="k">async</span> <span class="k">with</span> <span class="n">async_config</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
+</span><span data-line="6">        <span class="n">repo</span> <span class="o">=</span> <span class="n">AsyncProductRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="7">        <span class="k">async</span> <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">iter_fixture_async</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;products&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">500</span><span class="p">):</span>
+</span><span data-line="8">            <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">add_many</span><span class="p">([</span><span class="n">AsyncProduct</span><span class="p">(</span><span class="o">**</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">],</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></pre></div>
 </div>
+<p>A JSON array is decoded one file at a time, so prefer JSON Lines or sharded files for very large fixtures.</p>
+</section>
+<section id="sharded-fixtures">
+<h2>Sharded Fixtures<a class="headerlink" href="#sharded-fixtures" title="Link to this heading">#</a></h2>
+<p>A large fixture can be split into numbered shards, such as <code class="docutils literal notranslate"><span class="pre">products.001.jsonl.gz</span></code>, <code class="docutils literal notranslate"><span class="pre">products.002.jsonl.gz</span></code>, and so on. Every shard is a complete file on its own, and shards may use different compression. The loaders read shards in numeric order and return their records as one list, and the iterators yield those records in batches that may span shard boundaries. A <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> is raised when the numbers do not run <code class="docutils literal notranslate"><span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">...</span></code> without gaps, when two shards share a number, when an unsharded file and shards exist side by side, or when a JSON shard is not an array.</p>
+</section>
+<section id="writing-fixtures-with-automatic-rollover">
+<h2>Writing Fixtures With Automatic Rollover<a class="headerlink" href="#writing-fixtures-with-automatic-rollover" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">write_fixture_sync</span></code> and <code class="docutils literal notranslate"><span class="pre">write_fixture_async</span></code> write records one at a time in the chosen <code class="docutils literal notranslate"><span class="pre">file_format</span></code> and <code class="docutils literal notranslate"><span class="pre">compression</span></code>. Set <code class="docutils literal notranslate"><span class="pre">max_bytes</span></code> (the size of each file on disk) or <code class="docutils literal notranslate"><span class="pre">max_records</span></code> to roll over to a new shard automatically:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.fixtures</span><span class="w"> </span><span class="kn">import</span> <span class="n">iter_fixture_sync</span><span class="p">,</span> <span class="n">write_fixture_sync</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmp_dir</span><span class="p">:</span>
+</span><span data-line="5">    <span class="n">users</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">index</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;user-</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)]</span>
+</span><span data-line="6">    <span class="n">paths</span> <span class="o">=</span> <span class="n">write_fixture_sync</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">),</span> <span class="s2">&quot;users&quot;</span><span class="p">,</span> <span class="n">users</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s2">&quot;jsonl&quot;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">,</span> <span class="n">max_records</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span><span data-line="7">    <span class="k">assert</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;users.001.jsonl.gz&quot;</span><span class="p">,</span> <span class="s2">&quot;users.002.jsonl.gz&quot;</span><span class="p">,</span> <span class="s2">&quot;users.003.jsonl.gz&quot;</span><span class="p">]</span>
+</span><span data-line="8">    <span class="k">assert</span> <span class="n">open_fixture_sync</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">),</span> <span class="s2">&quot;users&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">users</span>
+</span><span data-line="9">    <span class="k">assert</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span> <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">iter_fixture_sync</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">),</span> <span class="s2">&quot;users&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">)]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</span></pre></div>
 </div>
+<p>Files are written to temporary names first. Only after every record is written does the writer move the new files into place and remove any stale files for that fixture name across formats and shard layouts. If writing fails, the existing fixture is left untouched. A single record larger than <code class="docutils literal notranslate"><span class="pre">max_bytes</span></code> is written to its own shard with a <code class="docutils literal notranslate"><span class="pre">UserWarning</span></code>. <code class="docutils literal notranslate"><span class="pre">write_fixture_async</span></code> also accepts an async iterable of records.</p>
 </section>
 <section id="safe-re-runs-across-deployments">
 <h2>Safe Re-Runs Across Deployments<a class="headerlink" href="#safe-re-runs-across-deployments" title="Link to this heading">#</a></h2>
 <p>Use <code class="docutils literal notranslate"><span class="pre">upsert_many</span></code> instead of <code class="docutils literal notranslate"><span class="pre">add_many</span></code> when a seed script runs on every deployment so existing rows are updated cleanly without duplicate errors:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
-</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.fixtures</span><span class="w"> </span><span class="kn">import</span> <span class="n">open_fixture_async</span>
-</span><span data-line="4">
-</span><span data-line="5">
-</span><span data-line="6"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">seed_roles</span><span class="p">(</span><span class="n">role_service</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">fixtures_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="7">    <span class="n">rows</span> <span class="o">=</span> <span class="k">await</span> <span class="n">open_fixture_async</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;role&quot;</span><span class="p">)</span>
-</span><span data-line="8">    <span class="k">await</span> <span class="n">role_service</span><span class="o">.</span><span class="n">upsert_many</span><span class="p">(</span><span class="n">match_fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">data</span><span class="o">=</span><span class="n">rows</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">seed_roles</span><span class="p">(</span><span class="n">role_service</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">fixtures_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="2">    <span class="n">rows</span> <span class="o">=</span> <span class="k">await</span> <span class="n">open_fixture_async</span><span class="p">(</span><span class="n">fixtures_path</span><span class="p">,</span> <span class="s2">&quot;role&quot;</span><span class="p">)</span>
+</span><span data-line="3">    <span class="k">await</span> <span class="n">role_service</span><span class="o">.</span><span class="n">upsert_many</span><span class="p">(</span><span class="n">match_fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">data</span><span class="o">=</span><span class="n">rows</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></pre></div>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Seed parent tables (like <code class="docutils literal notranslate"><span class="pre">Author</span></code>) before child tables (like <code class="docutils literal notranslate"><span class="pre">Post</span></code>), and consider <a class="reference external" href="https://github.com/litestar-org/polyfactory">Polyfactory</a> when generating random test data in <code class="docutils literal notranslate"><span class="pre">pytest</span></code>.</p>
+<p>Seed parent tables (like <code class="docutils literal notranslate"><span class="pre">Author</span></code>) before child tables (like <code class="docutils literal notranslate"><span class="pre">Post</span></code>), export existing tables with <a class="reference internal" href="cli_commands.html"><span class="doc">dump-data</span></a>, and consider <a class="reference external" href="https://github.com/litestar-org/polyfactory">Polyfactory</a> when generating random test data in <code class="docutils literal notranslate"><span class="pre">pytest</span></code>.</p>
 </div>
 </section>
 </section>
