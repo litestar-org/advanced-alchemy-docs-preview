@@ -2037,7 +2037,7 @@ with tempfile.TemporaryDirectory() as tmp_dir:
     assert [len(batch) for batch in iter_fixture_sync(Path(tmp_dir), "users", batch_size=4)] == [4, 1]
 ```
 
-Files are written to temporary names first. Only after every record is written does the writer remove the old files for that fixture name, in any format or shard layout, and move the new files into place. If writing fails, the existing fixture is left untouched. A single record larger than `max_bytes` is written to its own shard with a `UserWarning`. `write_fixture_async` also accepts an async iterable of records.
+Files are written to temporary names first. Only after every record is written does the writer move the new files into place and remove any stale files for that fixture name across formats and shard layouts. If writing fails, the existing fixture is left untouched. A single record larger than `max_bytes` is written to its own shard with a `UserWarning`. `write_fixture_async` also accepts an async iterable of records.
 
 ## Safe Re-Runs Across Deployments
 
@@ -15329,10 +15329,10 @@ advanced_alchemy.utils.fixtures.write_fixture_sync(fixtures_path, fixture_name, 
 
 Write fixture records synchronously in JSON, JSONL, or CSV format.
 
-Streams encoded records into temporary `.tmp` files, removes any existing
-fixture files matching `fixture_name` across all formats, compressions,
-and shard layouts upon completion, and atomically renames temporary files
-into place.
+Streams encoded records into temporary `.tmp` files, atomically renames
+temporary files into place upon completion, and removes any stale fixture
+files matching `fixture_name` across all formats, compressions, and shard
+layouts.
 
 - **Parameters**: - **fixtures_path** (*Union**[**Path**,**AsyncPath**]*) – Target directory path for fixture files. Created if it
 does not exist. Can be a `pathlib.Path` or `anyio.Path`.
@@ -15361,9 +15361,9 @@ Write fixture records asynchronously in JSON, JSONL, or CSV format.
 Streams records from a synchronous or asynchronous iterable in batches of
 `batch_size` into temporary `.tmp` files, offloads writer construction,
 batch writes, commit, and abort to worker threads via
-[`async_()`](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.sync_tools.async_), removes stale fixture
-files matching `fixture_name` on completion, and atomically renames
-temporary files into place.
+[`async_()`](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.sync_tools.async_), atomically renames
+temporary files into place on completion, and removes stale fixture files
+matching `fixture_name`.
 
 - **Parameters**: - **fixtures_path** (*Union**[**Path**,**AsyncPath**]*) – Target directory path for fixture files. Created if it
 does not exist. Can be a `pathlib.Path` or `anyio.Path`.
