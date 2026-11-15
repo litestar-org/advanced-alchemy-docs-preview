@@ -270,6 +270,7 @@ data-aria-dark="Switch to auto color mode">
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
 <li><a class="reference internal" href="#defining-a-servicegroup">Defining a ServiceGroup</a></li>
 <li><a class="reference internal" href="#binding-an-existing-session">Binding an Existing Session</a></li>
+<li><a class="reference internal" href="#managed-member-lifetimes">Managed Member Lifetimes</a></li>
 <li><a class="reference internal" href="#litestar-integration">Litestar Integration</a></li>
 <li><a class="reference internal" href="#fastapi-integration">FastAPI Integration</a></li>
 </ul>
@@ -483,6 +484,11 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="40"><span class="n">sync_config</span><span class="o">.</span><span class="n">get_engine</span><span class="p">()</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span>
 </span></pre></div>
 </div>
+</section>
+<section id="managed-member-lifetimes">
+<h2>Managed Member Lifetimes<a class="headerlink" href="#managed-member-lifetimes" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Group.new(...)</span></code> enters custom member <code class="docutils literal notranslate"><span class="pre">.new()</span></code> contexts and nested groups on the same session. Group options are forwarded when the factory accepts them, including explicit <code class="docutils literal notranslate"><span class="pre">False</span></code> values. Members close in reverse acquisition order; acquisition failures and cancellation reach previously entered contexts before propagating.</p>
+<p>Direct <code class="docutils literal notranslate"><span class="pre">Group(session,</span> <span class="pre">...)</span></code> construction calls member constructors only. Use <code class="docutils literal notranslate"><span class="pre">.new()</span></code> when members require managed setup or cleanup. A supplied session remains owned by the caller. Group acquisition shares a session but does not commit it automatically; commit explicitly or configure the session owner to manage transactions.</p>
 </section>
 <section id="litestar-integration">
 <h2>Litestar Integration<a class="headerlink" href="#litestar-integration" title="Link to this heading">#</a></h2>
