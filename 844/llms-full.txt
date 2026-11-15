@@ -1060,12 +1060,12 @@ async def filter_posts_by_tags(db_session: AsyncSession, excluded_tag_ids: list[
     )
 ```
 
-## Data-Grid Filtering and Sorting
+## Field Filtering and Sorting
 
 Declare `filter_fields` and `sort_fields` in `FilterConfig` so Litestar and FastAPI infer column operators, group dotted relationship parameters into one `RelationshipFilter`, and validate repeatable `orderBy` (`-col` descending):
 
 ```python
-grid_filters: FilterConfig = {
+field_filters: FilterConfig = {
     "filter_fields": {
         "title": {"contains", "eq"},
         "published": {"eq"},
@@ -6698,6 +6698,11 @@ Source: https://docs.advanced-alchemy.litestar.dev/latest/reference/repository_m
 
 # Memory Repositories
 
+Mock repositories evaluate basic column predicates against loaded model values.
+Boolean and null literals in comparisons retain SQL filtering semantics, including
+`is_(True)`, `is_not(False)`, and `is_(None)`. SQL function expressions require
+a database-backed repository.
+
 ## Async Memory Repositories
 
 ### `advanced_alchemy.repository.memory.SQLAlchemyAsyncMockRepository`
@@ -7852,6 +7857,10 @@ Filter records based on related model fields via correlated `EXISTS` subqueries.
 Supports one-to-many, many-to-one, many-to-many, self-referential, joined-table
 inheritance, and multi-hop relationship paths in a single database query while preserving
 loader criteria (such as soft-delete filtering) across aliased inner targets.
+
+Relationship filter fields accept SQL expressions such as
+`ComparisonFilter(func.lower(Tag.name), "eq", "python")`. Expressions are
+bound to the related model alias, including self-referential relationship paths.
 
 ### `advanced_alchemy.filters.MultiFilter`
 

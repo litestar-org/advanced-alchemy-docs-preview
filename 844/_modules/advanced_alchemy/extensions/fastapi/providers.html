@@ -385,20 +385,20 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="59">    <span class="n">DependencyCache</span><span class="p">,</span>
 </span><span data-line="60">    <span class="n">FieldNameType</span><span class="p">,</span>
 </span><span data-line="61">    <span class="n">FilterConfig</span><span class="p">,</span>
-</span><span data-line="62">    <span class="n">FilterFieldsSpec</span><span class="p">,</span>
-</span><span data-line="63">    <span class="n">GridFieldFilter</span><span class="p">,</span>
-</span><span data-line="64">    <span class="n">GridOperator</span><span class="p">,</span>
+</span><span data-line="62">    <span class="n">FilterFieldSpec</span><span class="p">,</span>
+</span><span data-line="63">    <span class="n">FilterFieldsSpec</span><span class="p">,</span>
+</span><span data-line="64">    <span class="n">FilterOperator</span><span class="p">,</span>
 </span><span data-line="65">    <span class="n">build_order_by_filters</span><span class="p">,</span>
-</span><span data-line="66">    <span class="n">filter_cache_key</span><span class="p">,</span>
-</span><span data-line="67">    <span class="n">group_grid_filter_fields</span><span class="p">,</span>
-</span><span data-line="68">    <span class="n">make_grid_provider_callable</span><span class="p">,</span>
-</span><span data-line="69">    <span class="n">normalize_choice_field_types</span><span class="p">,</span>
-</span><span data-line="70">    <span class="n">normalize_field_name_types</span><span class="p">,</span>
-</span><span data-line="71">    <span class="n">normalize_sort_field</span><span class="p">,</span>
-</span><span data-line="72">    <span class="n">normalize_sort_fields</span><span class="p">,</span>
-</span><span data-line="73">    <span class="n">query_type_for_grid_filter</span><span class="p">,</span>
+</span><span data-line="66">    <span class="n">create_field_filter_provider</span><span class="p">,</span>
+</span><span data-line="67">    <span class="n">filter_cache_key</span><span class="p">,</span>
+</span><span data-line="68">    <span class="n">filter_parameter_type</span><span class="p">,</span>
+</span><span data-line="69">    <span class="n">group_filter_fields</span><span class="p">,</span>
+</span><span data-line="70">    <span class="n">normalize_choice_field_types</span><span class="p">,</span>
+</span><span data-line="71">    <span class="n">normalize_field_name_types</span><span class="p">,</span>
+</span><span data-line="72">    <span class="n">normalize_sort_field</span><span class="p">,</span>
+</span><span data-line="73">    <span class="n">normalize_sort_fields</span><span class="p">,</span>
 </span><span data-line="74">    <span class="n">resolve_filter_aliases</span><span class="p">,</span>
-</span><span data-line="75">    <span class="n">resolve_grid_filter_fields</span><span class="p">,</span>
+</span><span data-line="75">    <span class="n">resolve_filter_fields</span><span class="p">,</span>
 </span><span data-line="76"><span class="p">)</span>
 </span><span data-line="77">
 </span><span data-line="78"><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;advanced_alchemy.extensions.fastapi&quot;</span><span class="p">)</span>
@@ -425,7 +425,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="99">    <span class="s2">&quot;FieldNameType&quot;</span><span class="p">,</span>
 </span><span data-line="100">    <span class="s2">&quot;FilterConfig&quot;</span><span class="p">,</span>
 </span><span data-line="101">    <span class="s2">&quot;FilterFieldsSpec&quot;</span><span class="p">,</span>
-</span><span data-line="102">    <span class="s2">&quot;GridOperator&quot;</span><span class="p">,</span>
+</span><span data-line="102">    <span class="s2">&quot;FilterOperator&quot;</span><span class="p">,</span>
 </span><span data-line="103">    <span class="s2">&quot;dep_cache&quot;</span><span class="p">,</span>
 </span><span data-line="104">    <span class="s2">&quot;provide_filters&quot;</span><span class="p">,</span>
 </span><span data-line="105">    <span class="s2">&quot;provide_service&quot;</span><span class="p">,</span>
@@ -1176,66 +1176,69 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="841">            <span class="n">annotations</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">ChoicesFilter</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">Depends</span><span class="p">(</span><span class="n">choices_provider</span><span class="p">)]</span>
 </span><span data-line="842">
 </span><span data-line="843">    <span class="k">if</span> <span class="n">filter_fields_cfg</span> <span class="o">:=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;filter_fields&quot;</span><span class="p">):</span>
-</span><span data-line="844">        <span class="n">grid_specs</span> <span class="o">=</span> <span class="n">resolve_grid_filter_fields</span><span class="p">(</span><span class="n">filter_fields_cfg</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-</span><span data-line="845">        <span class="n">grid_ignore_case</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;search_ignore_case&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="s2">&quot;search_ignore_case&quot;</span> <span class="ow">in</span> <span class="n">config</span> <span class="k">else</span> <span class="kc">True</span>
-</span><span data-line="846">        <span class="n">grid_escape_wildcards</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search_escape_wildcards&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+</span><span data-line="844">        <span class="n">field_specs</span> <span class="o">=</span> <span class="n">resolve_filter_fields</span><span class="p">(</span><span class="n">filter_fields_cfg</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+</span><span data-line="845">        <span class="n">field_ignore_case</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;search_ignore_case&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="s2">&quot;search_ignore_case&quot;</span> <span class="ow">in</span> <span class="n">config</span> <span class="k">else</span> <span class="kc">True</span>
+</span><span data-line="846">        <span class="n">field_escape_wildcards</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search_escape_wildcards&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
 </span><span data-line="847">
-</span><span data-line="848">        <span class="k">def</span><span class="w"> </span><span class="nf">_fastapi_grid_annotation</span><span class="p">(</span><span class="n">spec</span><span class="p">:</span> <span class="n">GridFieldFilter</span><span class="p">,</span> <span class="n">alias</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="848">        <span class="k">def</span><span class="w"> </span><span class="nf">_fastapi_field_annotation</span><span class="p">(</span><span class="n">spec</span><span class="p">:</span> <span class="n">FilterFieldSpec</span><span class="p">,</span> <span class="n">alias</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 </span><span data-line="849">            <span class="k">return</span> <span class="n">Annotated</span><span class="p">[</span>
-</span><span data-line="850">                <span class="n">query_type_for_grid_filter</span><span class="p">(</span><span class="n">spec</span><span class="p">),</span>
+</span><span data-line="850">                <span class="n">filter_parameter_type</span><span class="p">(</span><span class="n">spec</span><span class="p">),</span>
 </span><span data-line="851">                <span class="n">Query</span><span class="p">(</span>
 </span><span data-line="852">                    <span class="n">alias</span><span class="o">=</span><span class="n">alias</span><span class="p">,</span>
 </span><span data-line="853">                    <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Filter </span><span class="si">{</span><span class="n">spec</span><span class="o">.</span><span class="n">field_path</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">spec</span><span class="o">.</span><span class="n">operator</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">,</span>
 </span><span data-line="854">                <span class="p">),</span>
 </span><span data-line="855">            <span class="p">]</span>
 </span><span data-line="856">
-</span><span data-line="857">        <span class="k">for</span> <span class="n">rel_path</span><span class="p">,</span> <span class="n">local_field</span><span class="p">,</span> <span class="n">group_specs</span> <span class="ow">in</span> <span class="n">group_grid_filter_fields</span><span class="p">(</span><span class="n">grid_specs</span><span class="p">):</span>
-</span><span data-line="858">            <span class="n">group_slug</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;rel_</span><span class="si">{</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rel_path</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">rel_path</span> <span class="k">else</span> <span class="n">local_field</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
-</span><span data-line="859">            <span class="n">grid_provider</span> <span class="o">=</span> <span class="n">make_grid_provider_callable</span><span class="p">(</span>
-</span><span data-line="860">                <span class="n">group_specs</span><span class="p">,</span>
-</span><span data-line="861">                <span class="n">rel_path</span><span class="o">=</span><span class="n">rel_path</span><span class="p">,</span>
-</span><span data-line="862">                <span class="n">alias_for</span><span class="o">=</span><span class="n">alias_for</span><span class="p">,</span>
-</span><span data-line="863">                <span class="n">annotation_factory</span><span class="o">=</span><span class="n">_fastapi_grid_annotation</span><span class="p">,</span>
-</span><span data-line="864">                <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;provide_grid_filter_</span><span class="si">{</span><span class="n">group_slug</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-</span><span data-line="865">                <span class="n">ignore_case</span><span class="o">=</span><span class="n">grid_ignore_case</span><span class="p">,</span>
-</span><span data-line="866">                <span class="n">escape_wildcards</span><span class="o">=</span><span class="n">grid_escape_wildcards</span><span class="p">,</span>
-</span><span data-line="867">            <span class="p">)</span>
-</span><span data-line="868">            <span class="n">dep_return_type</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RelationshipFilter</span><span class="p">]</span> <span class="k">if</span> <span class="n">rel_path</span> <span class="k">else</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">StatementFilter</span><span class="p">]]</span>
-</span><span data-line="869">            <span class="n">param_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;grid_</span><span class="si">{</span><span class="n">group_slug</span><span class="si">}</span><span class="s2">_filter&quot;</span>
-</span><span data-line="870">            <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span data-line="871">                <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span>
-</span><span data-line="872">                    <span class="n">name</span><span class="o">=</span><span class="n">param_name</span><span class="p">,</span>
-</span><span data-line="873">                    <span class="n">kind</span><span class="o">=</span><span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">KEYWORD_ONLY</span><span class="p">,</span>
-</span><span data-line="874">                    <span class="n">annotation</span><span class="o">=</span><span class="n">Annotated</span><span class="p">[</span><span class="n">dep_return_type</span><span class="p">,</span> <span class="n">Depends</span><span class="p">(</span><span class="n">grid_provider</span><span class="p">)],</span>
-</span><span data-line="875">                <span class="p">)</span>
-</span><span data-line="876">            <span class="p">)</span>
-</span><span data-line="877">            <span class="n">annotations</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">dep_return_type</span><span class="p">,</span> <span class="n">Depends</span><span class="p">(</span><span class="n">grid_provider</span><span class="p">)]</span>
-</span><span data-line="878">
-</span><span data-line="879">    <span class="n">aggregate_filters</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_aggregate_filter_function</span><span class="p">)</span>
-</span><span data-line="880">
-</span><span data-line="881">    <span class="n">aggregate_filters</span><span class="o">.</span><span class="n">__signature__</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Signature</span><span class="p">(</span>  <span class="c1"># type: ignore[attr-defined]</span>
-</span><span data-line="882">        <span class="n">parameters</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
-</span><span data-line="883">        <span class="n">return_annotation</span><span class="o">=</span><span class="nb">list</span><span class="p">[</span><span class="n">FilterTypes</span><span class="p">],</span>
-</span><span data-line="884">    <span class="p">)</span>
-</span><span data-line="885">
-</span><span data-line="886">    <span class="n">aggregate_filters</span><span class="o">.</span><span class="vm">__annotations__</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">annotations</span><span class="p">,</span> <span class="s2">&quot;return&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilterTypes</span><span class="p">]}</span>
-</span><span data-line="887">    <span class="k">return</span> <span class="n">aggregate_filters</span>
+</span><span data-line="857">        <span class="k">for</span> <span class="n">rel_path</span><span class="p">,</span> <span class="n">local_field</span><span class="p">,</span> <span class="n">group_specs</span> <span class="ow">in</span> <span class="n">group_filter_fields</span><span class="p">(</span><span class="n">field_specs</span><span class="p">):</span>
+</span><span data-line="858">            <span class="c1"># Length-prefix each hop so underscores cannot merge distinct paths.</span>
+</span><span data-line="859">            <span class="n">group_slug</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="860">                <span class="s2">&quot;rel_&quot;</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">part</span><span class="p">)</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">part</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">rel_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">rel_path</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;col_</span><span class="si">{</span><span class="n">local_field</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span data-line="861">            <span class="p">)</span>
+</span><span data-line="862">            <span class="n">field_provider</span> <span class="o">=</span> <span class="n">create_field_filter_provider</span><span class="p">(</span>
+</span><span data-line="863">                <span class="n">group_specs</span><span class="p">,</span>
+</span><span data-line="864">                <span class="n">rel_path</span><span class="o">=</span><span class="n">rel_path</span><span class="p">,</span>
+</span><span data-line="865">                <span class="n">alias_for</span><span class="o">=</span><span class="n">alias_for</span><span class="p">,</span>
+</span><span data-line="866">                <span class="n">annotation_factory</span><span class="o">=</span><span class="n">_fastapi_field_annotation</span><span class="p">,</span>
+</span><span data-line="867">                <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;provide_field_filter_</span><span class="si">{</span><span class="n">group_slug</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span data-line="868">                <span class="n">ignore_case</span><span class="o">=</span><span class="n">field_ignore_case</span><span class="p">,</span>
+</span><span data-line="869">                <span class="n">escape_wildcards</span><span class="o">=</span><span class="n">field_escape_wildcards</span><span class="p">,</span>
+</span><span data-line="870">            <span class="p">)</span>
+</span><span data-line="871">            <span class="n">dep_return_type</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RelationshipFilter</span><span class="p">]</span> <span class="k">if</span> <span class="n">rel_path</span> <span class="k">else</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">StatementFilter</span><span class="p">]]</span>
+</span><span data-line="872">            <span class="n">param_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;field_</span><span class="si">{</span><span class="n">group_slug</span><span class="si">}</span><span class="s2">_filter&quot;</span>
+</span><span data-line="873">            <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+</span><span data-line="874">                <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span>
+</span><span data-line="875">                    <span class="n">name</span><span class="o">=</span><span class="n">param_name</span><span class="p">,</span>
+</span><span data-line="876">                    <span class="n">kind</span><span class="o">=</span><span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">KEYWORD_ONLY</span><span class="p">,</span>
+</span><span data-line="877">                    <span class="n">annotation</span><span class="o">=</span><span class="n">Annotated</span><span class="p">[</span><span class="n">dep_return_type</span><span class="p">,</span> <span class="n">Depends</span><span class="p">(</span><span class="n">field_provider</span><span class="p">)],</span>
+</span><span data-line="878">                <span class="p">)</span>
+</span><span data-line="879">            <span class="p">)</span>
+</span><span data-line="880">            <span class="n">annotations</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">dep_return_type</span><span class="p">,</span> <span class="n">Depends</span><span class="p">(</span><span class="n">field_provider</span><span class="p">)]</span>
+</span><span data-line="881">
+</span><span data-line="882">    <span class="n">aggregate_filters</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_aggregate_filter_function</span><span class="p">)</span>
+</span><span data-line="883">
+</span><span data-line="884">    <span class="n">aggregate_filters</span><span class="o">.</span><span class="n">__signature__</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Signature</span><span class="p">(</span>  <span class="c1"># type: ignore[attr-defined]</span>
+</span><span data-line="885">        <span class="n">parameters</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+</span><span data-line="886">        <span class="n">return_annotation</span><span class="o">=</span><span class="nb">list</span><span class="p">[</span><span class="n">FilterTypes</span><span class="p">],</span>
+</span><span data-line="887">    <span class="p">)</span>
 </span><span data-line="888">
-</span><span data-line="889">
-</span><span data-line="890"><span class="k">def</span><span class="w"> </span><span class="nf">_aggregate_filter_function</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilterTypes</span><span class="p">]:</span>
-</span><span data-line="891">    <span class="n">filters</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilterTypes</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="892">    <span class="k">for</span> <span class="n">filter_value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-</span><span data-line="893">        <span class="k">if</span> <span class="n">filter_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="894">            <span class="k">continue</span>
-</span><span data-line="895">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-</span><span data-line="896">            <span class="n">filters</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;list[FilterTypes]&quot;</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">))</span>
-</span><span data-line="897">        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_value</span><span class="p">,</span> <span class="n">SearchFilter</span><span class="p">)</span> <span class="ow">and</span> <span class="n">filter_value</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pyright: ignore # noqa: SIM114</span>
-</span><span data-line="898">            <span class="k">continue</span>  <span class="c1"># type: ignore</span>
-</span><span data-line="899">        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_value</span><span class="p">,</span> <span class="n">OrderBy</span><span class="p">)</span> <span class="ow">and</span> <span class="n">filter_value</span><span class="o">.</span><span class="n">field_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pyright: ignore</span>
-</span><span data-line="900">            <span class="k">continue</span>  <span class="c1"># type: ignore</span>
-</span><span data-line="901">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="902">            <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;FilterTypes&quot;</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">))</span>
-</span><span data-line="903">    <span class="k">return</span> <span class="n">filters</span>
+</span><span data-line="889">    <span class="n">aggregate_filters</span><span class="o">.</span><span class="vm">__annotations__</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">annotations</span><span class="p">,</span> <span class="s2">&quot;return&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilterTypes</span><span class="p">]}</span>
+</span><span data-line="890">    <span class="k">return</span> <span class="n">aggregate_filters</span>
+</span><span data-line="891">
+</span><span data-line="892">
+</span><span data-line="893"><span class="k">def</span><span class="w"> </span><span class="nf">_aggregate_filter_function</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilterTypes</span><span class="p">]:</span>
+</span><span data-line="894">    <span class="n">filters</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilterTypes</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="895">    <span class="k">for</span> <span class="n">filter_value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+</span><span data-line="896">        <span class="k">if</span> <span class="n">filter_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="897">            <span class="k">continue</span>
+</span><span data-line="898">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</span><span data-line="899">            <span class="n">filters</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;list[FilterTypes]&quot;</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">))</span>
+</span><span data-line="900">        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_value</span><span class="p">,</span> <span class="n">SearchFilter</span><span class="p">)</span> <span class="ow">and</span> <span class="n">filter_value</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pyright: ignore # noqa: SIM114</span>
+</span><span data-line="901">            <span class="k">continue</span>  <span class="c1"># type: ignore</span>
+</span><span data-line="902">        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filter_value</span><span class="p">,</span> <span class="n">OrderBy</span><span class="p">)</span> <span class="ow">and</span> <span class="n">filter_value</span><span class="o">.</span><span class="n">field_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pyright: ignore</span>
+</span><span data-line="903">            <span class="k">continue</span>  <span class="c1"># type: ignore</span>
+</span><span data-line="904">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="905">            <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;FilterTypes&quot;</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">))</span>
+</span><span data-line="906">    <span class="k">return</span> <span class="n">filters</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
