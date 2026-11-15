@@ -392,11 +392,11 @@ It provides middleware for handling transactions based on commit strategies.</p>
 </dl>
 
 <span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.extensions.fastapi.AdvancedAlchemy.provide_service" title="Link to this definition">#</a></dt>
-<dd><p>Provides a service instance for dependency injection.</p>
+<dd><p>Provides a service or ServiceGroup instance for dependency injection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>service_class</strong> (<em>type</em><em>[</em><em>AsyncServiceT_co</em><em> | </em><em>SyncServiceT_co</em><em>]</em>) – The service class to provide.</p></li>
+<li><p><strong>service_class</strong> (<em>type</em><em>[</em><em>AsyncServiceT_co</em><em> | </em><em>SyncServiceT_co</em><em> | </em><em>ServiceGroupT</em><em>]</em>) – The service or ServiceGroup class to provide.</p></li>
 <li><p><strong>key</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – Optional key for the service.</p></li>
 <li><p><strong>statement</strong> (<em>Optional</em><em>[</em><em>Select</em><em>[</em><em>tuple</em><em>[</em><a class="reference internal" href="../../repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.ModelT"><em>ModelT</em></a><em>]</em><em>]</em><em>]</em>) – Optional SQLAlchemy statement.</p></li>
 <li><p><strong>error_messages</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference internal" href="../../exceptions.html#advanced_alchemy.exceptions.ErrorMessages" title="advanced_alchemy.exceptions.ErrorMessages"><em>ErrorMessages</em></a><em>, </em><a class="reference internal" href="../../utils.html#advanced_alchemy.utils.dataclass.EmptyType" title="advanced_alchemy.utils.dataclass.EmptyType"><em>EmptyType</em></a><em>]</em><em>]</em>) – Optional error messages.</p></li>
@@ -407,10 +407,10 @@ It provides middleware for handling transactions based on commit strategies.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A callable that returns an async generator for async services or a generator for sync services.</p>
+<dd class="field-even"><p>A callable that returns an async generator or generator providing the target instance.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Callable</em>[…, <em>Union</em>[<em>AsyncGenerator</em>[AsyncServiceT_co, <em>None</em>], <em>Generator</em>[SyncServiceT_co, <em>None</em>, <em>None</em>]]]</p>
+<dd class="field-odd"><p><em>Callable</em>[…, <em>Union</em>[<em>AsyncGenerator</em>[<em>Union</em>[AsyncServiceT_co, ServiceGroupT], <em>None</em>], <em>Generator</em>[<em>Union</em>[SyncServiceT_co, ServiceGroupT], <em>None</em>, <em>None</em>]]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -498,17 +498,13 @@ It provides middleware for handling transactions based on commit strategies.</p>
 </dl>
 
 <span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/fastapi/providers.html#provide_service"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.fastapi.providers.provide_service" title="Link to this definition">#</a></dt>
-<dd><p>Create a dependency provider for a service.</p>
-<p>This function creates a generator-based dependency that manages
-the service lifecycle. The generator owns the session lifecycle
-and handles commit/rollback/close operations to ensure proper
-connection pool management (especially important for asyncpg).</p>
+<dd><p>Create a FastAPI dependency provider for a service or ServiceGroup.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A dependency provider for the service.</p>
+<dd class="field-odd"><p>A generator-based FastAPI dependency provider managing service and session lifecycle.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Callable</em>[[…], <em>AsyncGenerator</em>[<em>AsyncServiceT_co</em>, <em>None</em>] | <em>Generator</em>[<em>SyncServiceT_co</em>, <em>None</em>, <em>None</em>]]</p>
+<dd class="field-even"><p><em>Callable</em>[[…], <em>AsyncGenerator</em>[<em>AsyncServiceT_co</em>, <em>None</em>] | <em>Generator</em>[<em>SyncServiceT_co</em>, <em>None</em>, <em>None</em>] | <em>AsyncGenerator</em>[<em>ServiceGroupT</em>, <em>None</em>] | <em>Generator</em>[<em>ServiceGroupT</em>, <em>None</em>, <em>None</em>]]</p>
 </dd>
 </dl>
 </dd></dl>
