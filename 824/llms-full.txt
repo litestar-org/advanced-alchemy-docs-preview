@@ -15929,6 +15929,21 @@ References: [https://github.com/litestar-org/advanced-alchemy/pull/824](https://
 
 ### Bugfixes
 
+- **preserve custom service constructors and SQL expression parity**: Inherited service `new()` factories preserve custom constructors that
+accept the existing service options; model and repository overrides are
+forwarded only when supplied. Mock repositories match SQL for NULL
+comparisons, escaped LIKE expressions, and scalar arithmetic predicates.
+
+References: [https://github.com/litestar-org/advanced-alchemy/pull/824](https://github.com/litestar-org/advanced-alchemy/pull/824)
+- **preserve ORM delete behavior and query count configuration**: `delete_many` and `delete_where` use ORM deletion for models requiring
+delete cascades, stored-object cleanup, joined-table inheritance, or custom
+delete listeners. These paths can issue more statements than bulk deletion.
+Query repositories use a window count when `count_with_window_function`
+is true and separate queries when false, except on Spanner, which uses
+separate queries. Custom repository implementations should provide
+`set_primary_key_value` alongside the existing primary-key helpers.
+
+References: [https://github.com/litestar-org/advanced-alchemy/pull/824](https://github.com/litestar-org/advanced-alchemy/pull/824)
 - **partial update hydration and single-query service updates**: `Service.update` now builds the update model with
 `partial_model_from_dict` so omitted fields stay unset instead of being
 filled with constructor defaults, fixing `MappedAsDataclass` and SQLModel

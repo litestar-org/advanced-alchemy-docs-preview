@@ -631,6 +631,25 @@ repository as the second generic parameter, for example
 <section id="1.13.0-bugfix">
 <h3>Bugfixes<a class="headerlink" href="#1.13.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
+<dt>preserve custom service constructors and SQL expression parity<a class="headerlink reference internal" href="#1.13.0-preserve custom service constructors and sql expression parity" id="1.13.0-preserve custom service constructors and sql expression parity">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Inherited service <code class="docutils literal notranslate"><span class="pre">new()</span></code> factories preserve custom constructors that
+accept the existing service options; model and repository overrides are
+forwarded only when supplied. Mock repositories match SQL for NULL
+comparisons, escaped LIKE expressions, and scalar arithmetic predicates.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/824">https://github.com/litestar-org/advanced-alchemy/pull/824</a></span></p>
+</div>
+</dd>
+<dt>preserve ORM delete behavior and query count configuration<a class="headerlink reference internal" href="#1.13.0-preserve orm delete behavior and query count configuration" id="1.13.0-preserve orm delete behavior and query count configuration">#</a></dt><dd><div class="changelog-change docutils container">
+<p><code class="docutils literal notranslate"><span class="pre">delete_many</span></code> and <code class="docutils literal notranslate"><span class="pre">delete_where</span></code> use ORM deletion for models requiring
+delete cascades, stored-object cleanup, joined-table inheritance, or custom
+delete listeners. These paths can issue more statements than bulk deletion.
+Query repositories use a window count when <code class="docutils literal notranslate"><span class="pre">count_with_window_function</span></code>
+is true and separate queries when false, except on Spanner, which uses
+separate queries. Custom repository implementations should provide
+<code class="docutils literal notranslate"><span class="pre">set_primary_key_value</span></code> alongside the existing primary-key helpers.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/824">https://github.com/litestar-org/advanced-alchemy/pull/824</a></span></p>
+</div>
+</dd>
 <dt>partial update hydration and single-query service updates<a class="headerlink reference internal" href="#1.13.0-partial update hydration and single-query service updates" id="1.13.0-partial update hydration and single-query service updates">#</a></dt><dd><div class="changelog-change docutils container">
 <p><code class="docutils literal notranslate"><span class="pre">Service.update</span></code> now builds the update model with
 <code class="docutils literal notranslate"><span class="pre">partial_model_from_dict</span></code> so omitted fields stay unset instead of being
