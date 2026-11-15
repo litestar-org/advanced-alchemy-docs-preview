@@ -167,6 +167,7 @@ data-aria-dark="Switch to auto color mode">
 </ul>
 </li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../services.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../service_composition.html">Service Composition</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../routing.html">Read/Write Routing</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../caching.html">Caching</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../cli.html">CLI &amp; Migrations</a><ul>
@@ -219,6 +220,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l1 _expand"><a class="reference internal" href="../../reference/repository.html">Repositories</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../../reference/repository_memory.html">Memory Repositories</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../../reference/service.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../reference/service_composition.html">Service Composition</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../../reference/filters.html">Filters</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../../reference/operations.html">Bulk Operations</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../../reference/types.html">Custom Types</a></li>
@@ -272,6 +274,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#paginating-results">Paginating Results</a></li>
 <li><a class="reference internal" href="#naming-url-query-parameters">Naming URL Query Parameters</a></li>
 <li><a class="reference internal" href="#filtering-across-relationships">Filtering Across Relationships</a></li>
+<li><a class="reference internal" href="#field-filtering-and-sorting">Field Filtering and Sorting</a></li>
 </ul>
 </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
   data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
@@ -452,88 +455,66 @@ Python 3.10+</label><div class="sd-tab-content docutils">
 </section>
 <section id="plain-sqlalchemy-conditions">
 <h2>Plain SQLAlchemy Conditions<a class="headerlink" href="#plain-sqlalchemy-conditions" title="Link to this heading">#</a></h2>
-<p>For straightforward checks inside Python code, pass normal SQLAlchemy column comparisons straight to <code class="docutils literal notranslate"><span class="pre">get_many</span></code> or <code class="docutils literal notranslate"><span class="pre">get_many_and_count</span></code>:</p>
+<p>For straightforward checks inside Python code, pass SQLAlchemy column expressions directly to <code class="docutils literal notranslate"><span class="pre">get_many</span></code> or <code class="docutils literal notranslate"><span class="pre">get_many_and_count</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_recent_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilteringPost</span><span class="p">]:</span>
 </span><span data-line="2">    <span class="n">cutoff</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
 </span><span data-line="3">    <span class="n">repo</span> <span class="o">=</span> <span class="n">FilteringPostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
-</span><span data-line="4">    <span class="k">return</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span>
-</span><span data-line="5">        <span class="n">FilteringPost</span><span class="o">.</span><span class="n">published</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span>
-</span><span data-line="6">        <span class="n">FilteringPost</span><span class="o">.</span><span class="n">created_at</span> <span class="o">&gt;=</span> <span class="n">cutoff</span><span class="p">,</span>
-</span><span data-line="7">    <span class="p">)</span>
+</span><span data-line="4">    <span class="k">return</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span><span class="n">FilteringPost</span><span class="o">.</span><span class="n">published</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="n">FilteringPost</span><span class="o">.</span><span class="n">created_at</span> <span class="o">&gt;=</span> <span class="n">cutoff</span><span class="p">)</span>
 </span></pre></div>
 </div>
 </section>
 <section id="built-in-filter-helpers">
 <h2>Built-In Filter Helpers<a class="headerlink" href="#built-in-filter-helpers" title="Link to this heading">#</a></h2>
-<p>When building web endpoints with optional query parameters, Advanced Alchemy’s filter helpers turn user input into safe SQL conditions:</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" for="sd-tab-item-2">
 Text Search</label><div class="sd-tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">search_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilteringPost</span><span class="p">]:</span>
 </span><span data-line="2">    <span class="n">repo</span> <span class="o">=</span> <span class="n">FilteringPostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
-</span><span data-line="3">    <span class="k">return</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span>
-</span><span data-line="4">        <span class="n">SearchFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">ignore_case</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-</span><span data-line="5">    <span class="p">)</span>
-</span><span data-line="6">
-</span><span data-line="7"><span class="n">literal_discount</span> <span class="o">=</span> <span class="n">SearchFilter</span><span class="p">(</span>
-</span><span data-line="8">    <span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;title&quot;</span><span class="p">,</span>
-</span><span data-line="9">    <span class="n">value</span><span class="o">=</span><span class="s2">&quot;50</span><span class="si">% o</span><span class="s2">ff&quot;</span><span class="p">,</span>
-</span><span data-line="10">    <span class="n">escape_wildcards</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span data-line="11"><span class="p">)</span>
+</span><span data-line="3">    <span class="k">return</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span><span class="n">SearchFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">ignore_case</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="n">literal_discount</span> <span class="o">=</span> <span class="n">SearchFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;50</span><span class="si">% o</span><span class="s2">ff&quot;</span><span class="p">,</span> <span class="n">escape_wildcards</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></pre></div>
 </div>
 </div>
 <input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" for="sd-tab-item-3">
 ID Lists</label><div class="sd-tab-content docutils">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_selected_posts</span><span class="p">(</span>
-</span><span data-line="2">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
-</span><span data-line="3">    <span class="n">post_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-</span><span data-line="4"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilteringPost</span><span class="p">]:</span>
-</span><span data-line="5">    <span class="n">repo</span> <span class="o">=</span> <span class="n">FilteringPostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
-</span><span data-line="6">    <span class="k">return</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span>
-</span><span data-line="7">        <span class="n">CollectionFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">post_ids</span><span class="p">),</span>
-</span><span data-line="8">    <span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_selected_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">post_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilteringPost</span><span class="p">]:</span>
+</span><span data-line="2">    <span class="n">repo</span> <span class="o">=</span> <span class="n">FilteringPostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="3">    <span class="k">return</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span><span class="n">CollectionFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">post_ids</span><span class="p">))</span>
 </span></pre></div>
 </div>
 </div>
 <input id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" for="sd-tab-item-4">
 Empty vs. Filled</label><div class="sd-tab-content docutils">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">list_drafts_and_published</span><span class="p">(</span>
-</span><span data-line="2">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
-</span><span data-line="3"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">FilteringPost</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilteringPost</span><span class="p">]]:</span>
-</span><span data-line="4">    <span class="n">repo</span> <span class="o">=</span> <span class="n">FilteringPostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
-</span><span data-line="5">    <span class="n">drafts</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span><span class="n">NullFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;published_at&quot;</span><span class="p">))</span>
-</span><span data-line="6">    <span class="n">live</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span><span class="n">NotNullFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;published_at&quot;</span><span class="p">))</span>
-</span><span data-line="7">    <span class="k">return</span> <span class="n">drafts</span><span class="p">,</span> <span class="n">live</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">list_drafts_and_published</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">FilteringPost</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilteringPost</span><span class="p">]]:</span>
+</span><span data-line="2">    <span class="n">repo</span> <span class="o">=</span> <span class="n">FilteringPostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="3">    <span class="n">drafts</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span><span class="n">NullFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;published_at&quot;</span><span class="p">))</span>
+</span><span data-line="4">    <span class="n">live</span> <span class="o">=</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span><span class="n">NotNullFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">&quot;published_at&quot;</span><span class="p">))</span>
+</span><span data-line="5">    <span class="k">return</span> <span class="n">drafts</span><span class="p">,</span> <span class="n">live</span>
 </span></pre></div>
 </div>
 </div>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Set <code class="docutils literal notranslate"><span class="pre">escape_wildcards=True</span></code> on <code class="docutils literal notranslate"><span class="pre">SearchFilter</span></code> when searching text that may contain literal <code class="docutils literal notranslate"><span class="pre">%</span></code> or <code class="docutils literal notranslate"><span class="pre">_</span></code> characters (such as <code class="docutils literal notranslate"><span class="pre">&quot;50%</span> <span class="pre">off&quot;</span></code>) on databases that support SQL <code class="docutils literal notranslate"><span class="pre">ESCAPE</span></code>.</p>
+<p>Set <code class="docutils literal notranslate"><span class="pre">escape_wildcards=True</span></code> on <code class="docutils literal notranslate"><span class="pre">SearchFilter</span></code> when searching literal <code class="docutils literal notranslate"><span class="pre">%</span></code> or <code class="docutils literal notranslate"><span class="pre">_</span></code> characters on dialects that support SQL <code class="docutils literal notranslate"><span class="pre">ESCAPE</span></code>.</p>
 </div>
 </section>
 <section id="paginating-results">
 <h2>Paginating Results<a class="headerlink" href="#paginating-results" title="Link to this heading">#</a></h2>
-<p>Combine <code class="docutils literal notranslate"><span class="pre">LimitOffset</span></code> with <code class="docutils literal notranslate"><span class="pre">get_many_and_count</span></code> to get both the current page of rows and the total matching row count for your UI’s page switcher:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_posts_page</span><span class="p">(</span>
-</span><span data-line="2">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
-</span><span data-line="3">    <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-</span><span data-line="4">    <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
-</span><span data-line="5"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">FilteringPost</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span data-line="6">    <span class="n">repo</span> <span class="o">=</span> <span class="n">FilteringPostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
-</span><span data-line="7">    <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="n">page</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">page_size</span>
-</span><span data-line="8">    <span class="k">return</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many_and_count</span><span class="p">(</span><span class="n">LimitOffset</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">page_size</span><span class="p">))</span>
+<p>Combine <code class="docutils literal notranslate"><span class="pre">LimitOffset</span></code> with <code class="docutils literal notranslate"><span class="pre">get_many_and_count</span></code> for both page rows and total matching counts:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_posts_page</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">FilteringPost</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span data-line="2">    <span class="n">repo</span> <span class="o">=</span> <span class="n">FilteringPostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="3">    <span class="k">return</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many_and_count</span><span class="p">(</span><span class="n">LimitOffset</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="n">page</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">page_size</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">page_size</span><span class="p">))</span>
 </span></pre></div>
 </div>
 </section>
 <section id="naming-url-query-parameters">
 <h2>Naming URL Query Parameters<a class="headerlink" href="#naming-url-query-parameters" title="Link to this heading">#</a></h2>
-<p>In Litestar and FastAPI, filter dependencies use camelCase query parameters by default (<code class="docutils literal notranslate"><span class="pre">?pageSize=10&amp;searchString=python</span></code>). Set <code class="docutils literal notranslate"><span class="pre">alias_generator=&quot;snake_case&quot;</span></code> in <code class="docutils literal notranslate"><span class="pre">FilterConfig</span></code> when your API prefers <code class="docutils literal notranslate"><span class="pre">?page_size=10&amp;search_string=python</span></code>:</p>
+<p>Litestar and FastAPI filter dependencies use camelCase parameters by default (<code class="docutils literal notranslate"><span class="pre">?pageSize=10&amp;searchString=python</span></code>). Set <code class="docutils literal notranslate"><span class="pre">alias_generator=&quot;snake_case&quot;</span></code> when your API prefers <code class="docutils literal notranslate"><span class="pre">?page_size=10</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.utils.dependencies</span><span class="w"> </span><span class="kn">import</span> <span class="n">FilterConfig</span>
 </span><span data-line="2">
 </span><span data-line="3"><span class="n">snake_case_filters</span><span class="p">:</span> <span class="n">FilterConfig</span> <span class="o">=</span> <span class="p">{</span>
@@ -544,30 +525,38 @@ Empty vs. Filled</label><div class="sd-tab-content docutils">
 </span><span data-line="8"><span class="p">}</span>
 </span></pre></div>
 </div>
-<p>If you use <a class="reference internal" href="../routing.html"><span class="doc">read replicas</span></a>, any read or count call can also target a named replica pool with <code class="docutils literal notranslate"><span class="pre">bind_group=&quot;analytics&quot;</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">list_for_reporting</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilteringPost</span><span class="p">]:</span>
-</span><span data-line="2">    <span class="n">repo</span> <span class="o">=</span> <span class="n">FilteringPostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
-</span><span data-line="3">    <span class="k">return</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span><span class="n">bind_group</span><span class="o">=</span><span class="s2">&quot;analytics&quot;</span><span class="p">)</span>
-</span></pre></div>
-</div>
 </section>
 <section id="filtering-across-relationships">
 <h2>Filtering Across Relationships<a class="headerlink" href="#filtering-across-relationships" title="Link to this heading">#</a></h2>
-<p>Use <a class="reference internal" href="../../reference/filters.html#advanced_alchemy.filters.RelationshipFilter" title="advanced_alchemy.filters.RelationshipFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RelationshipFilter</span></code></a> to correlate conditions on related tables inside an <code class="docutils literal notranslate"><span class="pre">EXISTS</span></code> or <code class="docutils literal notranslate"><span class="pre">NOT</span> <span class="pre">EXISTS</span></code> subquery, or pass a relationship attribute directly to <a class="reference internal" href="../../reference/filters.html#advanced_alchemy.filters.CollectionFilter" title="advanced_alchemy.filters.CollectionFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">CollectionFilter</span></code></a> and <a class="reference internal" href="../../reference/filters.html#advanced_alchemy.filters.NotInCollectionFilter" title="advanced_alchemy.filters.NotInCollectionFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotInCollectionFilter</span></code></a>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">filter_posts_by_tags</span><span class="p">(</span>
-</span><span data-line="2">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
-</span><span data-line="3">    <span class="n">excluded_tag_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-</span><span data-line="4"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilteringPost</span><span class="p">]:</span>
-</span><span data-line="5">    <span class="n">repo</span> <span class="o">=</span> <span class="n">FilteringPostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
-</span><span data-line="6">    <span class="k">return</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span>
-</span><span data-line="7">        <span class="n">RelationshipFilter</span><span class="p">(</span>
-</span><span data-line="8">            <span class="n">relationship</span><span class="o">=</span><span class="n">FilteringPost</span><span class="o">.</span><span class="n">tags</span><span class="p">,</span>
-</span><span data-line="9">            <span class="n">filters</span><span class="o">=</span><span class="p">[</span><span class="n">ComparisonFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="n">FilteringTag</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="s2">&quot;eq&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;python&quot;</span><span class="p">)],</span>
-</span><span data-line="10">        <span class="p">),</span>
-</span><span data-line="11">        <span class="n">NotInCollectionFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="n">FilteringPost</span><span class="o">.</span><span class="n">tags</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">excluded_tag_ids</span><span class="p">),</span>
-</span><span data-line="12">    <span class="p">)</span>
+<p>Use <a class="reference internal" href="../../reference/filters.html#advanced_alchemy.filters.RelationshipFilter" title="advanced_alchemy.filters.RelationshipFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RelationshipFilter</span></code></a> to correlate related predicates inside <code class="docutils literal notranslate"><span class="pre">EXISTS</span></code> / <code class="docutils literal notranslate"><span class="pre">NOT</span> <span class="pre">EXISTS</span></code>, or pass a relationship attribute to <a class="reference internal" href="../../reference/filters.html#advanced_alchemy.filters.CollectionFilter" title="advanced_alchemy.filters.CollectionFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">CollectionFilter</span></code></a> and <a class="reference internal" href="../../reference/filters.html#advanced_alchemy.filters.NotInCollectionFilter" title="advanced_alchemy.filters.NotInCollectionFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotInCollectionFilter</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">filter_posts_by_tags</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">excluded_tag_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilteringPost</span><span class="p">]:</span>
+</span><span data-line="2">    <span class="n">repo</span> <span class="o">=</span> <span class="n">FilteringPostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="3">    <span class="k">return</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span>
+</span><span data-line="4">        <span class="n">RelationshipFilter</span><span class="p">(</span>
+</span><span data-line="5">            <span class="n">relationship</span><span class="o">=</span><span class="n">FilteringPost</span><span class="o">.</span><span class="n">tags</span><span class="p">,</span>
+</span><span data-line="6">            <span class="n">filters</span><span class="o">=</span><span class="p">[</span><span class="n">ComparisonFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="n">FilteringTag</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="s2">&quot;eq&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;python&quot;</span><span class="p">)],</span>
+</span><span data-line="7">        <span class="p">),</span>
+</span><span data-line="8">        <span class="n">NotInCollectionFilter</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="n">FilteringPost</span><span class="o">.</span><span class="n">tags</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">excluded_tag_ids</span><span class="p">),</span>
+</span><span data-line="9">    <span class="p">)</span>
 </span></pre></div>
 </div>
+</section>
+<section id="field-filtering-and-sorting">
+<h2>Field Filtering and Sorting<a class="headerlink" href="#field-filtering-and-sorting" title="Link to this heading">#</a></h2>
+<p>Declare <code class="docutils literal notranslate"><span class="pre">filter_fields</span></code> and <code class="docutils literal notranslate"><span class="pre">sort_fields</span></code> in <code class="docutils literal notranslate"><span class="pre">FilterConfig</span></code> so Litestar and FastAPI infer column operators, group dotted relationship parameters into one <code class="docutils literal notranslate"><span class="pre">RelationshipFilter</span></code>, and validate repeatable <code class="docutils literal notranslate"><span class="pre">orderBy</span></code> (<code class="docutils literal notranslate"><span class="pre">-col</span></code> descending):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">field_filters</span><span class="p">:</span> <span class="n">FilterConfig</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="2">    <span class="s2">&quot;filter_fields&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span data-line="3">        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="s2">&quot;eq&quot;</span><span class="p">},</span>
+</span><span data-line="4">        <span class="s2">&quot;published&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;eq&quot;</span><span class="p">},</span>
+</span><span data-line="5">        <span class="s2">&quot;published_at&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;ge&quot;</span><span class="p">,</span> <span class="s2">&quot;lt&quot;</span><span class="p">,</span> <span class="s2">&quot;is_null&quot;</span><span class="p">},</span>
+</span><span data-line="6">        <span class="s2">&quot;tags.slug&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;in&quot;</span><span class="p">},</span>
+</span><span data-line="7">    <span class="p">},</span>
+</span><span data-line="8">    <span class="s2">&quot;sort_fields&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;published_at&quot;</span><span class="p">},</span>
+</span><span data-line="9">    <span class="s2">&quot;pagination_type&quot;</span><span class="p">:</span> <span class="s2">&quot;limit_offset&quot;</span><span class="p">,</span>
+</span><span data-line="10"><span class="p">}</span>
+</span></pre></div>
+</div>
+<p>Frontend grids such as TanStack Table, AG Grid, and MUI Data Grid map column filters directly to <code class="docutils literal notranslate"><span class="pre">?titleContains=sql&amp;publishedAtIsNull=false&amp;tagsSlugIn=python&amp;orderBy=-published_at&amp;orderBy=title&amp;currentPage=2&amp;pageSize=25</span></code>.</p>
 </section>
 </section>
 

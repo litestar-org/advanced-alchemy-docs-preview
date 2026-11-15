@@ -23,6 +23,7 @@ Full documentation corpus: https://docs.advanced-alchemy.litestar.dev/latest/llm
 - [Filtering and Pagination](https://docs.advanced-alchemy.litestar.dev/latest/usage/repositories/filtering.html): Suppose a reader visits your blog and searches for "python", filters to published articles from the past week, and views 20 posts per page.
 - [Advanced Repository](https://docs.advanced-alchemy.litestar.dev/latest/usage/repositories/advanced.html): Most tables have a single id column and simple single-row updates. When you run into trickier real-world cases—join tables with two-part keys, concurrent checkout updates, or clearing old drafts in one query—repositor...
 - [Services](https://docs.advanced-alchemy.litestar.dev/latest/usage/services.html): A Repository speaks in database tables (BlogPost rows), while a Service speaks in your API’s input and output shapes (BlogPostCreate, BlogPostResponse) and gives you one clean home for business rules—such as creating...
+- [Service Composition](https://docs.advanced-alchemy.litestar.dev/latest/usage/service_composition.html): ServiceGroup coordinates multiple services on one shared SQLAlchemy session so multi-model workflows commit or roll back as a single unit of work.
 - [Read/Write Routing](https://docs.advanced-alchemy.litestar.dev/latest/usage/routing.html): As your app grows, most database traffic is reading data—loading feeds, search pages, and dashboards—while only a fraction is saving changes.
 - [Caching](https://docs.advanced-alchemy.litestar.dev/latest/usage/caching.html): Imagine 500 visitors opening the same popular author page at the exact same second. Without a cache, your database runs the exact same SELECT query 500 times.
 - [CLI & Migrations](https://docs.advanced-alchemy.litestar.dev/latest/usage/cli.html): Whenever you add a column or create a new table in Python, your SQL database needs a migration script to apply that change safely.
@@ -60,8 +61,9 @@ Full documentation corpus: https://docs.advanced-alchemy.litestar.dev/latest/llm
 - [Sync](https://docs.advanced-alchemy.litestar.dev/latest/reference/config/sync.html): Sync SQLAlchemy configuration module.
 - [Types](https://docs.advanced-alchemy.litestar.dev/latest/reference/config/types.html): Type aliases and constants used in the package config.
 - [Repositories](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html): Documentation for Repositories.
-- [Memory Repositories](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository_memory.html): Documentation for Memory Repositories.
+- [Memory Repositories](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository_memory.html): Mock repositories evaluate basic column predicates against loaded model values. Boolean and null literals in comparisons retain SQL filtering semantics, including is_(True), is_not(False), and is_(None). SQL function...
 - [Services](https://docs.advanced-alchemy.litestar.dev/latest/reference/service.html): Documentation for Services.
+- [Service Composition](https://docs.advanced-alchemy.litestar.dev/latest/reference/service_composition.html): Documentation for Service Composition.
 - [Filters](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html): Relationship filter fields accept SQL expressions such as ComparisonFilter(func.lower(Tag.name), "eq", "python"). Expressions are bound to the related model alias, including self-referential relationship paths.
 - [Bulk Operations](https://docs.advanced-alchemy.litestar.dev/latest/reference/operations.html): Documentation for Bulk Operations.
 - [Custom Types](https://docs.advanced-alchemy.litestar.dev/latest/reference/types.html): Documentation for Custom Types.
@@ -88,6 +90,6 @@ Full documentation corpus: https://docs.advanced-alchemy.litestar.dev/latest/llm
 
 ## Project & Changelog
 
-- [1.x Changelog](https://docs.advanced-alchemy.litestar.dev/latest/changelog.html): Adds RelationshipFilter for correlated EXISTS / NOT EXISTS filtering across one-to-many, many-to-one, many-to-many, self-referential, joined-table inheritance, and multi-hop relationships, alongside relationship attri...
+- [1.x Changelog](https://docs.advanced-alchemy.litestar.dev/latest/changelog.html): ServiceGroup collects annotated services on one session, with Litestar and FastAPI dependency providers. Managed groups enter nested groups and custom service factories, forward supported options, and unwind acquired...
 - [Contribution Guide](https://docs.advanced-alchemy.litestar.dev/latest/contribution-guide.html): 1. Run make install-uv to install uv if not already installed 1. Run make install to install all dependencies and pre-commit hooks
 - [Advanced Alchemy Releases](https://docs.advanced-alchemy.litestar.dev/latest/releases.html): This library follows the Semantic Versioning standard, using the <major>.<minor>.<patch> schema:

@@ -167,6 +167,7 @@ data-aria-dark="Switch to auto color mode">
 </ul>
 </li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="usage/services.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="usage/service_composition.html">Service Composition</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="usage/routing.html">Read/Write Routing</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="usage/caching.html">Caching</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="usage/cli.html">CLI &amp; Migrations</a><ul>
@@ -219,6 +220,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l1 _expand"><a class="reference internal" href="reference/repository.html">Repositories</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="reference/repository_memory.html">Memory Repositories</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="reference/service.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="reference/service_composition.html">Service Composition</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="reference/filters.html">Filters</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="reference/operations.html">Bulk Operations</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="reference/types.html">Custom Types</a></li>
@@ -266,6 +268,11 @@ data-aria-dark="Switch to auto color mode">
       <i class="i-lucide close"></i>
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#1.13.0">1.13.0</a><ul>
+<li><a class="reference internal" href="#1.13.0-feature">Features</a></li>
+<li><a class="reference internal" href="#1.13.0-bugfix">Bugfixes</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#1.12.0">1.12.0</a><ul>
 <li><a class="reference internal" href="#1.12.0-feature">Features</a></li>
 <li><a class="reference internal" href="#1.12.0-bugfix">Bugfixes</a></li>
@@ -605,6 +612,92 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="x-changelog">
 <h1>1.x Changelog<a class="headerlink" href="#x-changelog" title="Link to this heading">#</a></h1>
+<section id="1.13.0">
+<h2>1.13.0<a class="headerlink" href="#1.13.0" title="Link to this heading">#</a></h2>
+<section id="1.13.0-feature">
+<h3>Features<a class="headerlink" href="#1.13.0-feature" title="Link to this heading">#</a></h3>
+<dl>
+<dt>coordinate shared-session services with ServiceGroup<a class="headerlink reference internal" href="#1.13.0-coordinate shared-session services with servicegroup" id="1.13.0-coordinate shared-session services with servicegroup">#</a></dt><dd><div class="changelog-change docutils container">
+<p><code class="docutils literal notranslate"><span class="pre">ServiceGroup</span></code> collects annotated services on one session, with Litestar
+and FastAPI dependency providers. Managed groups enter nested groups and
+custom service factories, forward supported options, and unwind acquired
+contexts with the original exception when initialization fails. Direct
+construction binds service constructors to a caller-owned session.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/722">https://github.com/litestar-org/advanced-alchemy/pull/722</a></span></p>
+</div>
+</dd>
+<dt>configure field filtering and sorting<a class="headerlink reference internal" href="#1.13.0-configure field filtering and sorting" id="1.13.0-configure field filtering and sorting">#</a></dt><dd><div class="changelog-change docutils container">
+<p><code class="docutils literal notranslate"><span class="pre">filter_fields</span></code> and <code class="docutils literal notranslate"><span class="pre">sort_fields</span></code> configure model-aware query filters
+and repeatable <code class="docutils literal notranslate"><span class="pre">orderBy</span></code> parameters in Litestar and FastAPI. Filters can
+traverse relationships, and sorting supports dotted to-one paths. Mock
+repositories support relationship filtering and ordering with pagination
+totals matching SQL. The helper APIs use field-oriented names, including
+<code class="docutils literal notranslate"><span class="pre">FilterOperator</span></code>, <code class="docutils literal notranslate"><span class="pre">FilterFieldSpec</span></code>, and <code class="docutils literal notranslate"><span class="pre">resolve_filter_fields</span></code>.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/844">https://github.com/litestar-org/advanced-alchemy/pull/844</a></span></p>
+</div>
+</dd>
+<dt>infer service model and repository types from generic parameters<a class="headerlink reference internal" href="#1.13.0-infer service model and repository types from generic parameters" id="1.13.0-infer service model and repository types from generic parameters">#</a></dt><dd><div class="changelog-change docutils container">
+<p><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepositoryService[Model]</span></code> and
+<code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncRepositoryService[Model]</span></code> subclasses no longer need an inline
+<code class="docutils literal notranslate"><span class="pre">repository_type</span></code>; the model and a default repository are inferred from the
+generic parameters, and <code class="docutils literal notranslate"><span class="pre">model_type=</span></code> / <code class="docutils literal notranslate"><span class="pre">repository_type=</span></code> can be passed
+when instantiating directly. To type custom repository methods, pass the
+repository as the second generic parameter, for example
+<code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepositoryService[Widget,</span> <span class="pre">WidgetRepository]</span></code>.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/824">https://github.com/litestar-org/advanced-alchemy/pull/824</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
+<section id="1.13.0-bugfix">
+<h3>Bugfixes<a class="headerlink" href="#1.13.0-bugfix" title="Link to this heading">#</a></h3>
+<dl>
+<dt>preserve custom service constructors and SQL expression parity<a class="headerlink reference internal" href="#1.13.0-preserve custom service constructors and sql expression parity" id="1.13.0-preserve custom service constructors and sql expression parity">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Inherited service <code class="docutils literal notranslate"><span class="pre">new()</span></code> factories preserve custom constructors that
+accept the existing service options; model and repository overrides are
+forwarded only when supplied. Mock repositories match SQL for NULL
+comparisons, escaped LIKE expressions, and scalar arithmetic predicates.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/824">https://github.com/litestar-org/advanced-alchemy/pull/824</a></span></p>
+</div>
+</dd>
+<dt>preserve ORM delete behavior and query count configuration<a class="headerlink reference internal" href="#1.13.0-preserve orm delete behavior and query count configuration" id="1.13.0-preserve orm delete behavior and query count configuration">#</a></dt><dd><div class="changelog-change docutils container">
+<p><code class="docutils literal notranslate"><span class="pre">delete_many</span></code> and <code class="docutils literal notranslate"><span class="pre">delete_where</span></code> use ORM deletion for models requiring
+delete cascades, stored-object cleanup, joined-table inheritance, or custom
+delete listeners. These paths can issue more statements than bulk deletion.
+Query repositories use a window count when <code class="docutils literal notranslate"><span class="pre">count_with_window_function</span></code>
+is true and separate queries when false, except on Spanner, which uses
+separate queries. Custom repository implementations should provide
+<code class="docutils literal notranslate"><span class="pre">set_primary_key_value</span></code> alongside the existing primary-key helpers.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/824">https://github.com/litestar-org/advanced-alchemy/pull/824</a></span></p>
+</div>
+</dd>
+<dt>partial update hydration and single-query service updates<a class="headerlink reference internal" href="#1.13.0-partial update hydration and single-query service updates" id="1.13.0-partial update hydration and single-query service updates">#</a></dt><dd><div class="changelog-change docutils container">
+<p><code class="docutils literal notranslate"><span class="pre">Service.update</span></code> now builds the update model with
+<code class="docutils literal notranslate"><span class="pre">partial_model_from_dict</span></code> so omitted fields stay unset instead of being
+filled with constructor defaults, fixing <code class="docutils literal notranslate"><span class="pre">MappedAsDataclass</span></code> and SQLModel
+table models where defaults overwrote stored values or required fields raised
+<code class="docutils literal notranslate"><span class="pre">TypeError</span></code>. Models that define their own <code class="docutils literal notranslate"><span class="pre">__init__</span></code> keep calling it so
+constructor-derived attributes are still applied. <code class="docutils literal notranslate"><span class="pre">Service.update(item_id=...)</span></code>
+delegates directly to <code class="docutils literal notranslate"><span class="pre">Repository.update</span></code>, removing a duplicate <code class="docutils literal notranslate"><span class="pre">SELECT</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">item_id</span></code> takes precedence over an identifier present in the payload.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/824">https://github.com/litestar-org/advanced-alchemy/pull/824</a></span></p>
+</div>
+</dd>
+<dt>mock repository filter parity<a class="headerlink reference internal" href="#1.13.0-mock repository filter parity" id="1.13.0-mock repository filter parity">#</a></dt><dd><div class="changelog-change docutils container">
+<p><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncMockRepository</span></code> and <code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncMockRepository</span></code> support
+<code class="docutils literal notranslate"><span class="pre">NotInCollectionFilter</span></code>, <code class="docutils literal notranslate"><span class="pre">NotInSearchFilter</span></code>, <code class="docutils literal notranslate"><span class="pre">ComparisonFilter</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ExistsFilter</span></code>, <code class="docutils literal notranslate"><span class="pre">NotExistsFilter</span></code>, <code class="docutils literal notranslate"><span class="pre">MultiFilter</span></code>, <code class="docutils literal notranslate"><span class="pre">between()</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">is_(None)</span></code>. <code class="docutils literal notranslate"><span class="pre">LimitOffset</span></code> slices <code class="docutils literal notranslate"><span class="pre">offset:offset</span> <span class="pre">+</span> <span class="pre">limit</span></code>, <code class="docutils literal notranslate"><span class="pre">BeforeAfter</span></code>
+applies both bounds, and <code class="docutils literal notranslate"><span class="pre">get_many_and_count</span></code> returns the count before
+pagination. Unsupported SQL expressions now raise <code class="docutils literal notranslate"><span class="pre">RepositoryError</span></code> instead of
+returning unfiltered rows, so tests that relied on the previous results may
+need to be updated.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/824">https://github.com/litestar-org/advanced-alchemy/pull/824</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
+</section>
 <section id="1.12.0">
 <h2>1.12.0<a class="headerlink" href="#1.12.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2026-10-19<section id="1.12.0-feature">

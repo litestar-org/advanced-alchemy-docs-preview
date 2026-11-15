@@ -167,6 +167,7 @@ data-aria-dark="Switch to auto color mode">
 </ul>
 </li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../usage/services.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../usage/service_composition.html">Service Composition</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../usage/routing.html">Read/Write Routing</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../usage/caching.html">Caching</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../usage/cli.html">CLI &amp; Migrations</a><ul>
@@ -219,6 +220,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l1 _expand"><a class="reference internal" href="repository.html">Repositories</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Memory Repositories</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="service.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="service_composition.html">Service Composition</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="filters.html">Filters</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="operations.html">Bulk Operations</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="types.html">Custom Types</a></li>
@@ -358,6 +360,10 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="module-advanced_alchemy.repository.memory">
 <span id="memory-repositories"></span><h1>Memory Repositories<a class="headerlink" href="#module-advanced_alchemy.repository.memory" title="Link to this heading">#</a></h1>
+<p>Mock repositories evaluate basic column predicates against loaded model values.
+Boolean and null literals in comparisons retain SQL filtering semantics, including
+<code class="docutils literal notranslate"><span class="pre">is_(True)</span></code>, <code class="docutils literal notranslate"><span class="pre">is_not(False)</span></code>, and <code class="docutils literal notranslate"><span class="pre">is_(None)</span></code>. SQL function expressions require
+a database-backed repository.</p>
 <section id="async-memory-repositories">
 <h2>Async Memory Repositories<a class="headerlink" href="#async-memory-repositories" title="Link to this heading">#</a></h2>
 <dl class="py class">
@@ -368,6 +374,7 @@ data-aria-dark="Switch to auto color mode">
 <dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
 <dd><em class="sig-param"><span class="n"><span class="pre">statement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
 <dd><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">model_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
 <dd><em class="sig-param"><span class="n"><span class="pre">auto_expunge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
 <dd><em class="sig-param"><span class="n"><span class="pre">auto_refresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>,</dd>
 <dd><em class="sig-param"><span class="n"><span class="pre">auto_commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
@@ -381,7 +388,7 @@ data-aria-dark="Switch to auto color mode">
 </dl>
 
 <span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.memory.SQLAlchemyAsyncMockRepository" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepositoryProtocol" title="advanced_alchemy.repository._async.SQLAlchemyAsyncRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepositoryProtocol</span></code></a>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
+<dd><p>Bases: <a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelRepositoryMixin" title="advanced_alchemy.repository._util.ModelRepositoryMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelRepositoryMixin</span></code></a>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>], <a class="reference internal" href="repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepositoryProtocol" title="advanced_alchemy.repository._async.SQLAlchemyAsyncRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepositoryProtocol</span></code></a>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
 <p>In memory repository.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="advanced_alchemy.repository.memory.SQLAlchemyAsyncMockRepository.list_and_count">
@@ -443,7 +450,8 @@ data-aria-dark="Switch to auto color mode">
 <dl class="py class">
 <dt class="sig sig-object py" id="advanced_alchemy.repository.memory.SQLAlchemyAsyncMockSlugRepository">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.memory.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemyAsyncMockSlugRepository</span></span><a class="headerlink" href="#advanced_alchemy.repository.memory.SQLAlchemyAsyncMockSlugRepository" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.repository.memory.SQLAlchemyAsyncMockRepository" title="advanced_alchemy.repository.memory._async.SQLAlchemyAsyncMockRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyAsyncMockRepository</span></code></a>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>], <a class="reference internal" href="repository.html#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepositoryProtocol" title="advanced_alchemy.repository._async.SQLAlchemyAsyncSlugRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyAsyncSlugRepositoryProtocol</span></code></a>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.repository.memory.SQLAlchemyAsyncMockRepository" title="advanced_alchemy.repository.memory._async.SQLAlchemyAsyncMockRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyAsyncMockRepository</span></code></a>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyAsyncSlugRepositoryMixin</span></code>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>], <a class="reference internal" href="repository.html#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepositoryProtocol" title="advanced_alchemy.repository._async.SQLAlchemyAsyncSlugRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemyAsyncSlugRepositoryProtocol</span></code></a>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
+<p>In-memory repository supporting slug operations.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="advanced_alchemy.repository.memory.SQLAlchemyAsyncMockSlugRepository.get_by_slug">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_by_slug</span></span><span class="sig-paren">(</span>
@@ -459,23 +467,13 @@ data-aria-dark="Switch to auto color mode">
 </dl>
 
 <span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.memory.SQLAlchemyAsyncMockSlugRepository.get_by_slug" title="Link to this definition">#</a></dt>
-<dd><p>Get a model instance by its slug.</p>
+<dd><p>Select record by slug value.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>slug</strong> (<em>str</em>) – The slug value to search for.</p></li>
-<li><p><strong>error_messages</strong> (<a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.ErrorMessages" title="advanced_alchemy.exceptions.ErrorMessages"><em>ErrorMessages</em></a><em> | </em><em>type</em><em>[</em><a class="reference internal" href="utils.html#advanced_alchemy.utils.dataclass.Empty" title="advanced_alchemy.utils.dataclass.Empty"><em>Empty</em></a><em>] </em><em>| </em><em>None</em>) – Optional custom error message templates.</p></li>
-<li><p><strong>load</strong> (<a class="reference internal" href="repository.html#advanced_alchemy.repository.LoadSpec" title="advanced_alchemy.repository.LoadSpec"><em>LoadSpec</em></a><em> | </em><em>None</em>) – Specification for eager loading of relationships.</p></li>
-<li><p><strong>execution_options</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em>) – Options for statement execution.</p></li>
-<li><p><strong>bind_group</strong> (<em>str</em><em> | </em><em>None</em>) – Optional routing group to use for the operation.</p></li>
-<li><p><strong>**kwargs</strong> (<em>Any</em>) – Additional filtering criteria.</p></li>
-</ul>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The model instance or None if not found.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The found model instance or None if not found.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.ModelT"><em>ModelT</em></a> | <em>None</em></p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><em>ModelT</em></a> | <em>None</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -497,7 +495,7 @@ data-aria-dark="Switch to auto color mode">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>value_to_slugify</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – A string that should be converted to a unique slug.</p></li>
-<li><p><strong>**kwargs</strong> (<em>Any</em>) – stuff</p></li>
+<li><p><strong>**kwargs</strong> (<em>Any</em>) – Additional parameters.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -522,6 +520,7 @@ data-aria-dark="Switch to auto color mode">
 <dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
 <dd><em class="sig-param"><span class="n"><span class="pre">statement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
 <dd><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">model_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
 <dd><em class="sig-param"><span class="n"><span class="pre">auto_expunge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
 <dd><em class="sig-param"><span class="n"><span class="pre">auto_refresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>,</dd>
 <dd><em class="sig-param"><span class="n"><span class="pre">auto_commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
@@ -535,14 +534,15 @@ data-aria-dark="Switch to auto color mode">
 </dl>
 
 <span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.memory.SQLAlchemySyncMockRepository" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="repository.html#advanced_alchemy.repository.SQLAlchemySyncRepositoryProtocol" title="advanced_alchemy.repository._sync.SQLAlchemySyncRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemySyncRepositoryProtocol</span></code></a>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
+<dd><p>Bases: <a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelRepositoryMixin" title="advanced_alchemy.repository._util.ModelRepositoryMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelRepositoryMixin</span></code></a>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>], <a class="reference internal" href="repository.html#advanced_alchemy.repository.SQLAlchemySyncRepositoryProtocol" title="advanced_alchemy.repository._sync.SQLAlchemySyncRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemySyncRepositoryProtocol</span></code></a>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
 <p>In memory repository.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="advanced_alchemy.repository.memory.SQLAlchemySyncMockSlugRepository">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.repository.memory.</span></span><span class="sig-name descname"><span class="pre">SQLAlchemySyncMockSlugRepository</span></span><a class="headerlink" href="#advanced_alchemy.repository.memory.SQLAlchemySyncMockSlugRepository" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.repository.memory.SQLAlchemySyncMockRepository" title="advanced_alchemy.repository.memory._sync.SQLAlchemySyncMockRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemySyncMockRepository</span></code></a>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>], <a class="reference internal" href="repository.html#advanced_alchemy.repository.SQLAlchemySyncSlugRepositoryProtocol" title="advanced_alchemy.repository._sync.SQLAlchemySyncSlugRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemySyncSlugRepositoryProtocol</span></code></a>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
+<dd><p>Bases: <a class="reference internal" href="#advanced_alchemy.repository.memory.SQLAlchemySyncMockRepository" title="advanced_alchemy.repository.memory._sync.SQLAlchemySyncMockRepository"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemySyncMockRepository</span></code></a>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemySyncSlugRepositoryMixin</span></code>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>], <a class="reference internal" href="repository.html#advanced_alchemy.repository.SQLAlchemySyncSlugRepositoryProtocol" title="advanced_alchemy.repository._sync.SQLAlchemySyncSlugRepositoryProtocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">SQLAlchemySyncSlugRepositoryProtocol</span></code></a>[<a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code></a>]</p>
+<p>In-memory repository supporting slug operations.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="advanced_alchemy.repository.memory.SQLAlchemySyncMockSlugRepository.get_by_slug">
 <span class="sig-name descname"><span class="pre">get_by_slug</span></span><span class="sig-paren">(</span>
@@ -558,23 +558,13 @@ data-aria-dark="Switch to auto color mode">
 </dl>
 
 <span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.repository.memory.SQLAlchemySyncMockSlugRepository.get_by_slug" title="Link to this definition">#</a></dt>
-<dd><p>Get a model instance by its slug.</p>
+<dd><p>Select record by slug value.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>slug</strong> (<em>str</em>) – The slug value to search for.</p></li>
-<li><p><strong>error_messages</strong> (<a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.ErrorMessages" title="advanced_alchemy.exceptions.ErrorMessages"><em>ErrorMessages</em></a><em> | </em><em>type</em><em>[</em><a class="reference internal" href="utils.html#advanced_alchemy.utils.dataclass.Empty" title="advanced_alchemy.utils.dataclass.Empty"><em>Empty</em></a><em>] </em><em>| </em><em>None</em>) – Optional custom error message templates.</p></li>
-<li><p><strong>load</strong> (<a class="reference internal" href="repository.html#advanced_alchemy.repository.LoadSpec" title="advanced_alchemy.repository.LoadSpec"><em>LoadSpec</em></a><em> | </em><em>None</em>) – Specification for eager loading of relationships.</p></li>
-<li><p><strong>execution_options</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em>) – Options for statement execution.</p></li>
-<li><p><strong>bind_group</strong> (<em>str</em><em> | </em><em>None</em>) – Optional routing group to use for the operation.</p></li>
-<li><p><strong>**kwargs</strong> (<em>Any</em>) – Additional filtering criteria.</p></li>
-</ul>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The model instance or None if not found.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The found model instance or None if not found.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.ModelT"><em>ModelT</em></a> | <em>None</em></p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.repository.typing.ModelT"><em>ModelT</em></a> | <em>None</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -596,7 +586,7 @@ data-aria-dark="Switch to auto color mode">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>value_to_slugify</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – A string that should be converted to a unique slug.</p></li>
-<li><p><strong>**kwargs</strong> (<em>Any</em>) – stuff</p></li>
+<li><p><strong>**kwargs</strong> (<em>Any</em>) – Additional parameters.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

@@ -167,6 +167,7 @@ data-aria-dark="Switch to auto color mode">
 </ul>
 </li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../../../usage/services.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../../usage/service_composition.html">Service Composition</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../../../usage/routing.html">Read/Write Routing</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../../../usage/caching.html">Caching</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../../../usage/cli.html">CLI &amp; Migrations</a><ul>
@@ -219,6 +220,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l1 _expand"><a class="reference internal" href="../../repository.html">Repositories</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../../repository_memory.html">Memory Repositories</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../../service.html">Services</a></li>
+<li class="toctree-l1 _expand"><a class="reference internal" href="../../service_composition.html">Service Composition</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../../filters.html">Filters</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../../operations.html">Bulk Operations</a></li>
 <li class="toctree-l1 _expand"><a class="reference internal" href="../../types.html">Custom Types</a></li>
@@ -563,18 +565,18 @@ dependency injection providers, DTOs, server-side session backends, and CLI comm
 </dl>
 
 <span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/providers.html#create_service_dependencies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.providers.create_service_dependencies" title="Link to this definition">#</a></dt>
-<dd><p>Create a dependency provider for the combined filter function.</p>
+<dd><p>Create dependency providers for a service or ServiceGroup and optional filters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<em>str</em>) – The key to use for the dependency provider.</p></li>
-<li><p><strong>service_class</strong> (<em>type</em><em>[</em><em>AsyncServiceT_co</em><em> | </em><em>SyncServiceT_co</em><em>]</em>) – The service class to create a dependency provider for.</p></li>
-<li><p><strong>statement</strong> (<em>Optional</em><em>[</em><em>Select</em><em>[</em><em>tuple</em><em>[</em><a class="reference internal" href="../../repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.extensions.litestar.repository.ModelT"><em>ModelT</em></a><em>]</em><em>]</em><em>]</em>) – The statement to use for the service.</p></li>
+<li><p><strong>service_class</strong> (<em>type</em><em>[</em><em>AsyncServiceT_co</em><em> | </em><em>SyncServiceT_co</em><em> | </em><em>ServiceGroupT</em><em>]</em>) – The service or ServiceGroup class to create a dependency provider for.</p></li>
+<li><p><strong>statement</strong> (<em>Optional</em><em>[</em><em>Select</em><em>[</em><em>tuple</em><em>[</em><a class="reference internal" href="../../repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.extensions.litestar.repository.ModelT"><em>ModelT</em></a><em>]</em><em>]</em><em>]</em>) – The statement to use for a single service.</p></li>
 <li><p><strong>config</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference internal" href="plugins.html#advanced_alchemy.extensions.litestar.plugins.SQLAlchemyAsyncConfig" title="advanced_alchemy.extensions.litestar.plugins.SQLAlchemyAsyncConfig"><em>SQLAlchemyAsyncConfig</em></a><em>, </em><a class="reference internal" href="plugins.html#advanced_alchemy.extensions.litestar.plugins.SQLAlchemySyncConfig" title="advanced_alchemy.extensions.litestar.plugins.SQLAlchemySyncConfig"><em>SQLAlchemySyncConfig</em></a><em>]</em><em>]</em>) – The configuration to use for the service.</p></li>
 <li><p><strong>error_messages</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference internal" href="../../exceptions.html#advanced_alchemy.exceptions.ErrorMessages" title="advanced_alchemy.extensions.litestar.exceptions.ErrorMessages"><em>ErrorMessages</em></a><em>, </em><a class="reference internal" href="../../utils.html#advanced_alchemy.utils.dataclass.EmptyType" title="advanced_alchemy.extensions.litestar.repository.EmptyType"><em>EmptyType</em></a><em>]</em><em>]</em>) – The error messages to use for the service.</p></li>
-<li><p><strong>load</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../../repository.html#advanced_alchemy.repository.LoadSpec" title="advanced_alchemy.extensions.litestar.repository.LoadSpec"><em>LoadSpec</em></a><em>]</em>) – The load spec to use for the service.</p></li>
+<li><p><strong>load</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../../repository.html#advanced_alchemy.repository.LoadSpec" title="advanced_alchemy.extensions.litestar.repository.LoadSpec"><em>LoadSpec</em></a><em>]</em>) – The load spec to use for a single service.</p></li>
 <li><p><strong>execution_options</strong> (<em>Optional</em><em>[</em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – The execution options to use for the service.</p></li>
-<li><p><strong>filters</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="#advanced_alchemy.extensions.litestar.providers.FilterConfig" title="advanced_alchemy.extensions.litestar.providers.FilterConfig"><em>FilterConfig</em></a><em>]</em>) – The filter configuration to use for the service.</p></li>
+<li><p><strong>filters</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference internal" href="#advanced_alchemy.extensions.litestar.providers.FilterConfig" title="advanced_alchemy.extensions.litestar.providers.FilterConfig"><em>FilterConfig</em></a><em>, </em><em>Mapping</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#advanced_alchemy.extensions.litestar.providers.FilterConfig" title="advanced_alchemy.extensions.litestar.providers.FilterConfig"><em>FilterConfig</em></a><em>]</em><em>]</em><em>]</em>) – Filter configuration for a single service, or mapping of service attribute name to FilterConfig for a ServiceGroup.</p></li>
 <li><p><strong>uniquify</strong> (<em>bool</em><em> | </em><em>None</em>) – Whether to uniquify the service.</p></li>
 <li><p><strong>count_with_window_function</strong> (<em>bool</em><em> | </em><em>None</em>) – Whether to count with a window function.</p></li>
 <li><p><strong>dep_defaults</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../fastapi/index.html#advanced_alchemy.extensions.fastapi.providers.DependencyDefaults" title="advanced_alchemy.extensions.fastapi.providers.DependencyDefaults"><em>DependencyDefaults</em></a><em>]</em>) – The dependency defaults to use for the service.</p></li>
@@ -582,7 +584,7 @@ dependency injection providers, DTOs, server-side session backends, and CLI comm
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A dictionary of dependency providers for the service.</p>
+<dd class="field-even"><p>A dictionary of dependency providers for the service or ServiceGroup.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><em>dict</em>[<em>str</em>, <em>Provide</em>]</p>
@@ -607,15 +609,15 @@ dependency injection providers, DTOs, server-side session backends, and CLI comm
 </dl>
 
 <span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/advanced_alchemy/extensions/litestar/providers.html#create_service_provider"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.extensions.litestar.providers.create_service_provider" title="Link to this definition">#</a></dt>
-<dd><p>Create a dependency provider for a service with a configurable session key.</p>
+<dd><p>Create a dependency provider for a service or ServiceGroup with a configurable session key.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>service_class</strong> (<em>type</em><em>[</em><em>AsyncServiceT_co</em><em> | </em><em>SyncServiceT_co</em><em>]</em>) – The service class inheriting from SQLAlchemyAsyncRepositoryService or SQLAlchemySyncRepositoryService.</p></li>
-<li><p><strong>statement</strong> (<em>Optional</em><em>[</em><em>Select</em><em>[</em><em>tuple</em><em>[</em><a class="reference internal" href="../../repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.extensions.litestar.repository.ModelT"><em>ModelT</em></a><em>]</em><em>]</em><em>]</em>) – An optional SQLAlchemy Select statement to scope the service.</p></li>
+<li><p><strong>service_class</strong> (<em>type</em><em>[</em><em>AsyncServiceT_co</em><em> | </em><em>SyncServiceT_co</em><em> | </em><em>ServiceGroupT</em><em>]</em>) – The service or ServiceGroup class to instantiate per request.</p></li>
+<li><p><strong>statement</strong> (<em>Optional</em><em>[</em><em>Select</em><em>[</em><em>tuple</em><em>[</em><a class="reference internal" href="../../repository.html#advanced_alchemy.repository.ModelT" title="advanced_alchemy.extensions.litestar.repository.ModelT"><em>ModelT</em></a><em>]</em><em>]</em><em>]</em>) – An optional SQLAlchemy Select statement to scope a single service.</p></li>
 <li><p><strong>config</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference internal" href="plugins.html#advanced_alchemy.extensions.litestar.plugins.SQLAlchemyAsyncConfig" title="advanced_alchemy.extensions.litestar.plugins.SQLAlchemyAsyncConfig"><em>SQLAlchemyAsyncConfig</em></a><em>, </em><a class="reference internal" href="plugins.html#advanced_alchemy.extensions.litestar.plugins.SQLAlchemySyncConfig" title="advanced_alchemy.extensions.litestar.plugins.SQLAlchemySyncConfig"><em>SQLAlchemySyncConfig</em></a><em>]</em><em>]</em>) – An optional SQLAlchemy configuration object.</p></li>
 <li><p><strong>error_messages</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference internal" href="../../exceptions.html#advanced_alchemy.exceptions.ErrorMessages" title="advanced_alchemy.extensions.litestar.exceptions.ErrorMessages"><em>ErrorMessages</em></a><em>, </em><a class="reference internal" href="../../utils.html#advanced_alchemy.utils.dataclass.EmptyType" title="advanced_alchemy.extensions.litestar.repository.EmptyType"><em>EmptyType</em></a><em>]</em><em>]</em>) – Optional custom error messages for the service.</p></li>
-<li><p><strong>load</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../../repository.html#advanced_alchemy.repository.LoadSpec" title="advanced_alchemy.extensions.litestar.repository.LoadSpec"><em>LoadSpec</em></a><em>]</em>) – Optional LoadSpec for eager loading relationships.</p></li>
+<li><p><strong>load</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../../repository.html#advanced_alchemy.repository.LoadSpec" title="advanced_alchemy.extensions.litestar.repository.LoadSpec"><em>LoadSpec</em></a><em>]</em>) – Optional LoadSpec for eager loading relationships on a single service.</p></li>
 <li><p><strong>execution_options</strong> (<em>Optional</em><em>[</em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – Optional dictionary of execution options for SQLAlchemy.</p></li>
 <li><p><strong>uniquify</strong> (<em>bool</em><em> | </em><em>None</em>) – Optional flag to uniquify results.</p></li>
 <li><p><strong>count_with_window_function</strong> (<em>bool</em><em> | </em><em>None</em>) – Optional flag to use window function for counting.</p></li>
@@ -625,7 +627,7 @@ dependency injection providers, DTOs, server-side session backends, and CLI comm
 <dd class="field-even"><p>A dependency provider function suitable for Litestar’s DI system.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>Callable</em>[[…], <em>AsyncGenerator</em>[AsyncServiceT_co, <em>None</em>] | <em>Generator</em>[SyncServiceT_co,<em>None</em>, <em>None</em>]]</p>
+<dd class="field-odd"><p><em>Callable</em>[[…], <em>AsyncGenerator</em>[<em>Union</em>[AsyncServiceT_co, ServiceGroupT], <em>None</em>] | <em>Generator</em>[<em>Union</em>[SyncServiceT_co, ServiceGroupT], <em>None</em>, <em>None</em>]]</p>
 </dd>
 </dl>
 </dd></dl>

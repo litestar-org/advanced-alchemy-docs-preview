@@ -984,77 +984,54 @@ class FilteringPostRepository(SQLAlchemyAsyncRepository[FilteringPost]):
 
 ## Plain SQLAlchemy Conditions
 
-For straightforward checks inside Python code, pass normal SQLAlchemy column comparisons straight to `get_many` or `get_many_and_count`:
+For straightforward checks inside Python code, pass SQLAlchemy column expressions directly to `get_many` or `get_many_and_count`:
 
 ```python
 async def get_recent_posts(db_session: AsyncSession) -> list[FilteringPost]:
     cutoff = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(days=7)
     repo = FilteringPostRepository(session=db_session)
-    return await repo.get_many(
-        FilteringPost.published.is_(True),
-        FilteringPost.created_at >= cutoff,
-    )
+    return await repo.get_many(FilteringPost.published.is_(True), FilteringPost.created_at >= cutoff)
 ```
 
 ## Built-In Filter Helpers
 
-When building web endpoints with optional query parameters, Advanced Alchemy’s filter helpers turn user input into safe SQL conditions:
-
 ```python
 async def search_posts(db_session: AsyncSession, query: str) -> list[FilteringPost]:
     repo = FilteringPostRepository(session=db_session)
-    return await repo.get_many(
-        SearchFilter(field_name="title", value=query, ignore_case=True),
-    )
+    return await repo.get_many(SearchFilter(field_name="title", value=query, ignore_case=True))
 
-literal_discount = SearchFilter(
-    field_name="title",
-    value="50% off",
-    escape_wildcards=True,
-)
+literal_discount = SearchFilter(field_name="title", value="50% off", escape_wildcards=True)
 ```
 
 ```python
-async def get_selected_posts(
-    db_session: AsyncSession,
-    post_ids: list[int],
-) -> list[FilteringPost]:
+async def get_selected_posts(db_session: AsyncSession, post_ids: list[int]) -> list[FilteringPost]:
     repo = FilteringPostRepository(session=db_session)
-    return await repo.get_many(
-        CollectionFilter(field_name="id", values=post_ids),
-    )
+    return await repo.get_many(CollectionFilter(field_name="id", values=post_ids))
 ```
 
 ```python
-async def list_drafts_and_published(
-    db_session: AsyncSession,
-) -> tuple[list[FilteringPost], list[FilteringPost]]:
+async def list_drafts_and_published(db_session: AsyncSession) -> tuple[list[FilteringPost], list[FilteringPost]]:
     repo = FilteringPostRepository(session=db_session)
     drafts = await repo.get_many(NullFilter(field_name="published_at"))
     live = await repo.get_many(NotNullFilter(field_name="published_at"))
     return drafts, live
 ```
 
-> **Tip**: Set `escape_wildcards=True` on `SearchFilter` when searching text that may contain literal `%` or `_` characters (such as `"50% off"`) on databases that support SQL `ESCAPE`.
+> **Tip**: Set `escape_wildcards=True` on `SearchFilter` when searching literal `%` or `_` characters on dialects that support SQL `ESCAPE`.
 
 ## Paginating Results
 
-Combine `LimitOffset` with `get_many_and_count` to get both the current page of rows and the total matching row count for your UI’s page switcher:
+Combine `LimitOffset` with `get_many_and_count` for both page rows and total matching counts:
 
 ```python
-async def get_posts_page(
-    db_session: AsyncSession,
-    page: int = 1,
-    page_size: int = 20,
-) -> tuple[list[FilteringPost], int]:
+async def get_posts_page(db_session: AsyncSession, page: int = 1, page_size: int = 20) -> tuple[list[FilteringPost], int]:
     repo = FilteringPostRepository(session=db_session)
-    offset = (page - 1) * page_size
-    return await repo.get_many_and_count(LimitOffset(offset=offset, limit=page_size))
+    return await repo.get_many_and_count(LimitOffset(offset=(page - 1) * page_size, limit=page_size))
 ```
 
 ## Naming URL Query Parameters
 
-In Litestar and FastAPI, filter dependencies use camelCase query parameters by default (`?pageSize=10&searchString=python`). Set `alias_generator="snake_case"` in `FilterConfig` when your API prefers `?page_size=10&search_string=python`:
+Litestar and FastAPI filter dependencies use camelCase parameters by default (`?pageSize=10&searchString=python`). Set `alias_generator="snake_case"` when your API prefers `?page_size=10`:
 
 ```python
 from advanced_alchemy.utils.dependencies import FilterConfig
@@ -1067,23 +1044,12 @@ snake_case_filters: FilterConfig = {
 }
 ```
 
-If you use [read replicas](https://docs.advanced-alchemy.litestar.dev/latest/usage/routing.html), any read or count call can also target a named replica pool with `bind_group="analytics"`:
-
-```python
-async def list_for_reporting(db_session: AsyncSession) -> list[FilteringPost]:
-    repo = FilteringPostRepository(session=db_session)
-    return await repo.get_many(bind_group="analytics")
-```
-
 ## Filtering Across Relationships
 
-Use [`RelationshipFilter`](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.RelationshipFilter) to correlate conditions on related tables inside an `EXISTS` or `NOT EXISTS` subquery, or pass a relationship attribute directly to [`CollectionFilter`](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.CollectionFilter) and [`NotInCollectionFilter`](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.NotInCollectionFilter):
+Use [`RelationshipFilter`](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.RelationshipFilter) to correlate related predicates inside `EXISTS` / `NOT EXISTS`, or pass a relationship attribute to [`CollectionFilter`](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.CollectionFilter) and [`NotInCollectionFilter`](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.NotInCollectionFilter):
 
 ```python
-async def filter_posts_by_tags(
-    db_session: AsyncSession,
-    excluded_tag_ids: list[int],
-) -> list[FilteringPost]:
+async def filter_posts_by_tags(db_session: AsyncSession, excluded_tag_ids: list[int]) -> list[FilteringPost]:
     repo = FilteringPostRepository(session=db_session)
     return await repo.get_many(
         RelationshipFilter(
@@ -1093,6 +1059,25 @@ async def filter_posts_by_tags(
         NotInCollectionFilter(field_name=FilteringPost.tags, values=excluded_tag_ids),
     )
 ```
+
+## Field Filtering and Sorting
+
+Declare `filter_fields` and `sort_fields` in `FilterConfig` so Litestar and FastAPI infer column operators, group dotted relationship parameters into one `RelationshipFilter`, and validate repeatable `orderBy` (`-col` descending):
+
+```python
+field_filters: FilterConfig = {
+    "filter_fields": {
+        "title": {"contains", "eq"},
+        "published": {"eq"},
+        "published_at": {"ge", "lt", "is_null"},
+        "tags.slug": {"in"},
+    },
+    "sort_fields": {"title", "published_at"},
+    "pagination_type": "limit_offset",
+}
+```
+
+Frontend grids such as TanStack Table, AG Grid, and MUI Data Grid map column filters directly to `?titleContains=sql&publishedAtIsNull=false&tagsSlugIn=python&orderBy=-published_at&orderBy=title&currentPage=2&pageSize=25`.
 
 Source: https://docs.advanced-alchemy.litestar.dev/latest/usage/repositories/advanced.html
 
@@ -1257,13 +1242,10 @@ class BlogPostResponse(BaseModel):
 ```
 
 ```python
-from advanced_alchemy.repository import SQLAlchemyAsyncRepository
 from advanced_alchemy.service import SQLAlchemyAsyncRepositoryService
 
 class BlogPostService(SQLAlchemyAsyncRepositoryService[BlogPost]):
-    class Repo(SQLAlchemyAsyncRepository[BlogPost]):
-        model_type = BlogPost
-    repository_type = Repo
+    pass
 ```
 
 ## Creating, Updating, and Returning Schemas
@@ -1293,8 +1275,8 @@ from advanced_alchemy.service import ModelDictT, is_dict_with_field, is_dict_wit
 class BlogTagService(SQLAlchemyAsyncRepositoryService[BlogTag]):
     class Repo(SQLAlchemyAsyncSlugRepository[BlogTag]):
         model_type = BlogTag
-    repository_type = Repo
 
+    repository_type = Repo
     async def to_model(self, data: ModelDictT[BlogTag], operation: Optional[str] = None) -> BlogTag:
         dumped = schema_dump(data)
         if is_dict_without_field(dumped, "slug") and is_dict_with_field(dumped, "name"):
@@ -1370,16 +1352,188 @@ class ArticlePublic(SQLModel):
     title: str
 
 class ArticleService(SQLAlchemyAsyncRepositoryService[ArticleRow]):
-    class Repo(SQLAlchemyAsyncRepository[ArticleRow]):
-        model_type = ArticleRow
-    repository_type = Repo
+    pass
 ```
 
 ## Related Guides
 
+- [Service Composition](https://docs.advanced-alchemy.litestar.dev/latest/usage/service_composition.html) — Coordinate multiple services on one shared session with `ServiceGroup`.
 - [Litestar Integration](https://docs.advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar.html) — Inject services directly into Litestar controllers.
 - [FastAPI Integration](https://docs.advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi.html) — Inject services into FastAPI routes with `Depends`.
 - [Services](https://docs.advanced-alchemy.litestar.dev/latest/reference/service.html) — Full service API reference.
+
+Source: https://docs.advanced-alchemy.litestar.dev/latest/usage/service_composition.html
+
+# Service Composition
+
+`ServiceGroup` coordinates multiple services on one shared SQLAlchemy session so multi-model workflows commit or roll back as a single unit of work.
+
+## Defining a ServiceGroup
+
+Declare a subclass of [`ServiceGroup`](https://docs.advanced-alchemy.litestar.dev/latest/reference/service_composition.html#advanced_alchemy.service._group.ServiceGroup) with type annotations for each member service:
+
+```python
+import asyncio
+
+from sqlalchemy import ForeignKey, String
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+
+from advanced_alchemy.config import SQLAlchemyAsyncConfig
+from advanced_alchemy.repository import SQLAlchemyAsyncRepository
+from advanced_alchemy.service import ServiceGroup, SQLAlchemyAsyncRepositoryService
+
+class Base(DeclarativeBase):
+    pass
+
+class Role(Base):
+    __tablename__ = "comp_role"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(50))
+
+class User(Base):
+    __tablename__ = "comp_user"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(50))
+    role_id: Mapped[int] = mapped_column(ForeignKey("comp_role.id"))
+
+class RoleRepo(SQLAlchemyAsyncRepository[Role]):
+    model_type = Role
+
+class UserRepo(SQLAlchemyAsyncRepository[User]):
+    model_type = User
+
+class RoleService(SQLAlchemyAsyncRepositoryService[Role, RoleRepo]):
+    repository_type = RoleRepo
+
+class UserService(SQLAlchemyAsyncRepositoryService[User, UserRepo]):
+    repository_type = UserRepo
+
+class AuthServices(ServiceGroup):
+    session: AsyncSession
+    roles: RoleService
+    users: UserService
+
+    async def provision_member(self, role_name: str, user_name: str) -> User:
+        role = await self.roles.create({"name": role_name})
+        return await self.users.create({"name": user_name, "role_id": role.id})
+
+async def main() -> None:
+    config = SQLAlchemyAsyncConfig(connection_string="sqlite+aiosqlite:///:memory:")
+    async with config.get_engine().begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    async with AuthServices.new(config=config) as services:
+        await services.provision_member("admin", "ada")
+        await services.session.commit()
+        assert services.roles.repository.session is services.users.repository.session
+
+    await config.get_engine().dispose()
+
+asyncio.run(main())
+```
+
+Every group must declare either asynchronous or synchronous services consistently. Non-service class attributes should use `typing.ClassVar`. Annotating `session` refines editor typing without registering a service attribute.
+
+## Binding an Existing Session
+
+When calling code already owns a session, instantiate `AuthServices(session)` or use `AuthServices.new(session=session)`:
+
+```python
+from sqlalchemy import String
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+
+from advanced_alchemy.config import SQLAlchemySyncConfig
+from advanced_alchemy.repository import SQLAlchemySyncRepository
+from advanced_alchemy.service import ServiceGroup, SQLAlchemySyncRepositoryService
+
+class SyncBase(DeclarativeBase):
+    pass
+
+class Account(SyncBase):
+    __tablename__ = "comp_account"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(50))
+
+class AccountRepo(SQLAlchemySyncRepository[Account]):
+    model_type = Account
+
+class AccountService(SQLAlchemySyncRepositoryService[Account, AccountRepo]):
+    repository_type = AccountRepo
+
+class BillingServices(ServiceGroup):
+    accounts: AccountService
+
+sync_config = SQLAlchemySyncConfig(connection_string="sqlite:///:memory:")
+with sync_config.get_engine().begin() as conn:
+    SyncBase.metadata.create_all(conn)
+
+with sync_config.get_session() as session:
+    billing = BillingServices(session)
+    billing.accounts.create({"name": "acme"}, auto_commit=True)
+    assert billing.accounts.repository.session is billing.session
+
+sync_config.get_engine().dispose()
+```
+
+## Managed Member Lifetimes
+
+`Group.new(...)` enters custom member `.new()` contexts and nested groups on the same session. Group options are forwarded when the factory accepts them, including explicit `False` values. Members close in reverse acquisition order; acquisition failures and cancellation reach previously entered contexts before propagating.
+
+Direct `Group(session, ...)` construction calls member constructors only. Use `.new()` when members require managed setup or cleanup. A supplied session remains owned by the caller. Group acquisition shares a session but does not commit it automatically; commit explicitly or configure the session owner to manage transactions.
+
+## Litestar Integration
+
+Pass a `ServiceGroup` subclass to [`create_service_dependencies()`](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.create_service_dependencies) or [`create_service_provider()`](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.create_service_provider), with optional per-attribute `filters={attr_name: FilterConfig(...)}`:
+
+```python
+from typing import Annotated
+
+from litestar import Controller, get
+from litestar.params import Dependency
+from advanced_alchemy.extensions.litestar.providers import FilterConfig, create_service_dependencies
+from advanced_alchemy.filters import FilterTypes
+
+class AuthController(Controller):
+    path = "/auth"
+    dependencies = create_service_dependencies(
+        AuthServices,
+        key="auth",
+        filters={"roles": FilterConfig(search="name"), "users": FilterConfig(search="name")},
+    )
+
+    @get("/")
+    async def search(
+        self,
+        auth: AuthServices,
+        roles_filters: Annotated[list[FilterTypes], Dependency(skip_validation=True)],
+        users_filters: Annotated[list[FilterTypes], Dependency(skip_validation=True)],
+    ) -> dict[str, int]:
+        return {
+            "roles": await auth.roles.count(*roles_filters),
+            "users": await auth.users.count(*users_filters),
+        }
+```
+
+## FastAPI Integration
+
+Pass any `ServiceGroup` subclass directly to [`provide_service()`](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html#advanced_alchemy.extensions.fastapi.AdvancedAlchemy.provide_service):
+
+```python
+from typing import Annotated
+
+from fastapi import Depends, FastAPI
+from advanced_alchemy.extensions.fastapi import AdvancedAlchemy, SQLAlchemyAsyncConfig
+
+fastapi_app = FastAPI()
+async_cfg = SQLAlchemyAsyncConfig(connection_string="sqlite+aiosqlite:///:memory:", commit_mode="autocommit")
+alchemy = AdvancedAlchemy(config=async_cfg, app=fastapi_app)
+AuthDep = Annotated[AuthServices, Depends(alchemy.provide_service(AuthServices))]
+
+@fastapi_app.get("/users/count")
+async def user_count(auth: AuthDep) -> int:
+    return await auth.users.count()
+```
 
 Source: https://docs.advanced-alchemy.litestar.dev/latest/usage/routing.html
 
@@ -6197,10 +6351,10 @@ Source: https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.h
 ### `advanced_alchemy.repository.SQLAlchemyAsyncRepository`
 
 ```python
-class advanced_alchemy.repository.SQLAlchemyAsyncRepository(*, statement=None, session, auto_expunge=False, auto_refresh=True, auto_commit=False, order_by=None, error_messages=Empty, load=None, execution_options=None, wrap_exceptions=True, uniquify=None, count_with_window_function=None, cache_manager=None, bind_group=None, **kwargs)
+class advanced_alchemy.repository.SQLAlchemyAsyncRepository(*, statement=None, session, model_type=None, auto_expunge=False, auto_refresh=True, auto_commit=False, order_by=None, error_messages=Empty, load=None, execution_options=None, wrap_exceptions=True, uniquify=None, count_with_window_function=None, cache_manager=None, bind_group=None, **kwargs)
 ```
 
-Bases: [`SQLAlchemyAsyncRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], [`FilterableRepository`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.FilterableRepository)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
+Bases: [`FilterableRepository`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.FilterableRepository)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], [`SQLAlchemyAsyncRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
 
 Async SQLAlchemy repository implementation.
 
@@ -6385,7 +6539,7 @@ Get a list of instances, optionally filtered.
 class advanced_alchemy.repository.SQLAlchemyAsyncSlugRepository
 ```
 
-Bases: [`SQLAlchemyAsyncRepository`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], [`SQLAlchemyAsyncSlugRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
+Bases: [`SQLAlchemyAsyncRepository`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], `SQLAlchemyAsyncSlugRepositoryMixin`  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], [`SQLAlchemyAsyncSlugRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
 
 Extends the repository to include slug model features..
 
@@ -6413,7 +6567,7 @@ If the value is found to exist, a random 4 digit character is appended to the en
 Override this method to change the default behavior
 
 - **Parameters**: - **value_to_slugify** (`str`) – A string that should be converted to a unique slug.
-- ****kwargs** (*Any*) – stuff
+- ****kwargs** (*Any*) – Additional parameters.
 - **Returns**: a unique slug for the supplied value. This is safe for URLs and other unique identifiers.
 - **Return type**: *str*
 
@@ -6443,18 +6597,6 @@ Get instance identified by `kwargs`.
 - **Returns**: The retrieved instance.
 - **Return type**: *Row*[*Any*]
 
-##### `list_and_count`
-
-```python
-async list_and_count(statement, count_with_window_function=None, bind_group=None, **kwargs)
-```
-
-Get records with total count.
-
-> **Versionmodified**: Deprecated since version 1.10.0: Use [`get_many_and_count()`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncQueryRepository) instead.
-
-- **Return type**: *tuple*[*List*[*Row*[*Any*]], *int*]
-
 ##### `list`
 
 ```python
@@ -6472,10 +6614,10 @@ Get a list of instances, optionally filtered.
 ### `advanced_alchemy.repository.SQLAlchemySyncRepository`
 
 ```python
-class advanced_alchemy.repository.SQLAlchemySyncRepository(*, statement=None, session, auto_expunge=False, auto_refresh=True, auto_commit=False, order_by=None, error_messages=Empty, load=None, execution_options=None, wrap_exceptions=True, uniquify=None, count_with_window_function=None, cache_manager=None, bind_group=None, **kwargs)
+class advanced_alchemy.repository.SQLAlchemySyncRepository(*, statement=None, session, model_type=None, auto_expunge=False, auto_refresh=True, auto_commit=False, order_by=None, error_messages=Empty, load=None, execution_options=None, wrap_exceptions=True, uniquify=None, count_with_window_function=None, cache_manager=None, bind_group=None, **kwargs)
 ```
 
-Bases: [`SQLAlchemySyncRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemySyncRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], [`FilterableRepository`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.FilterableRepository)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
+Bases: [`FilterableRepository`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.FilterableRepository)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], [`SQLAlchemySyncRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemySyncRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
 
 Async SQLAlchemy repository implementation.
 
@@ -6486,29 +6628,13 @@ including CRUD operations, filtering, and relationship loading.
 
 > **See Also**: [`FilterableRepository`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.FilterableRepository)
 
-##### `id_attribute`
-
-```python
-id_attribute: str = 'id'
-```
-
-Name of the unique identifier for the model.
-
-##### `match_fields`
-
-```python
-match_fields: List[str] | str | None = None
-```
-
-List of dialects that prefer to use `field.id = ANY(:1)` instead of `field.id IN (...)`.
-
 ### `advanced_alchemy.repository.SQLAlchemySyncSlugRepository`
 
 ```python
 class advanced_alchemy.repository.SQLAlchemySyncSlugRepository
 ```
 
-Bases: [`SQLAlchemySyncRepository`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemySyncRepository)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], [`SQLAlchemySyncSlugRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemySyncSlugRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
+Bases: [`SQLAlchemySyncRepository`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemySyncRepository)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], `SQLAlchemySyncSlugRepositoryMixin`  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], [`SQLAlchemySyncSlugRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemySyncSlugRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
 
 Extends the repository to include slug model features..
 
@@ -6529,7 +6655,7 @@ This is a loosely typed helper to query for when you need to select data in ways
 ### `advanced_alchemy.repository.SQLAlchemyAsyncRepositoryProtocol`
 
 ```python
-class advanced_alchemy.repository.SQLAlchemyAsyncRepositoryProtocol(*, statement=None, session, auto_expunge=False, auto_refresh=True, auto_commit=False, load=None, execution_options=None, order_by=None, error_messages=Empty, wrap_exceptions=True, **kwargs)
+class advanced_alchemy.repository.SQLAlchemyAsyncRepositoryProtocol(*, statement=None, session, model_type=None, auto_expunge=False, auto_refresh=True, auto_commit=False, load=None, execution_options=None, order_by=None, error_messages=Empty, wrap_exceptions=True, **kwargs)
 ```
 
 Bases: [`FilterableRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.FilterableRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], `Protocol`  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
@@ -6553,7 +6679,7 @@ Extends the base repository protocol to add slug-related functionality.
 ### `advanced_alchemy.repository.SQLAlchemySyncRepositoryProtocol`
 
 ```python
-class advanced_alchemy.repository.SQLAlchemySyncRepositoryProtocol(*, statement=None, session, auto_expunge=False, auto_refresh=True, auto_commit=False, load=None, execution_options=None, order_by=None, error_messages=Empty, wrap_exceptions=True, **kwargs)
+class advanced_alchemy.repository.SQLAlchemySyncRepositoryProtocol(*, statement=None, session, model_type=None, auto_expunge=False, auto_refresh=True, auto_commit=False, load=None, execution_options=None, order_by=None, error_messages=Empty, wrap_exceptions=True, **kwargs)
 ```
 
 Bases: [`FilterableRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.FilterableRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], `Protocol`  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
@@ -6580,7 +6706,7 @@ Extends the base repository protocol to add slug-related functionality.
 class advanced_alchemy.repository.FilterableRepository
 ```
 
-Bases: [`FilterableRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.FilterableRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
+Bases: [`ModelRepositoryMixin`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelRepositoryMixin)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], `_UpsertPlanningMixin`  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], [`FilterableRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.FilterableRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
 
 Default implementation of a filterable repository.
 
@@ -6607,6 +6733,16 @@ Protocol defining the interface for filterable repositories.
 
 This protocol defines the required attributes and methods that any
 filterable repository implementation must provide.
+
+### `advanced_alchemy.repository.ModelRepositoryMixin`
+
+```python
+class advanced_alchemy.repository.ModelRepositoryMixin
+```
+
+Bases: [`FilterableRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.FilterableRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], `Generic`  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
+
+Shared model metadata, primary-key introspection, and attribute helpers for repositories.
 
 ## Helpers & Type Definitions
 
@@ -6643,22 +6779,6 @@ For relationship attributes, values can be:
 - Model instance: Passed through unchanged
 - **Returns**: A new instance of the model populated with the provided values.
 - **Return type**: [*ModelT*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)
-
-> **Example**: Basic usage with nested relationships:
->
-> ```default
-> data = {
->     "name": "John Doe",
->     "profile": {"bio": "Developer"},
->     "addresses": [
->         {"street": "123 Main St"},
->         {"street": "456 Oak Ave"},
->     ],
-> }
-> user = model_from_dict(User, **data)
-> # user.profile is a Profile instance
-> # user.addresses is a list of Address instances
-> ```
 
 ### `advanced_alchemy.repository.DEFAULT_ERROR_MESSAGE_TEMPLATES`
 
@@ -6713,15 +6833,20 @@ Source: https://docs.advanced-alchemy.litestar.dev/latest/reference/repository_m
 
 # Memory Repositories
 
+Mock repositories evaluate basic column predicates against loaded model values.
+Boolean and null literals in comparisons retain SQL filtering semantics, including
+`is_(True)`, `is_not(False)`, and `is_(None)`. SQL function expressions require
+a database-backed repository.
+
 ## Async Memory Repositories
 
 ### `advanced_alchemy.repository.memory.SQLAlchemyAsyncMockRepository`
 
 ```python
-class advanced_alchemy.repository.memory.SQLAlchemyAsyncMockRepository(*, statement=None, session, auto_expunge=False, auto_refresh=True, auto_commit=False, order_by=None, error_messages=Empty, wrap_exceptions=True, load=None, execution_options=None, uniquify=None, **kwargs)
+class advanced_alchemy.repository.memory.SQLAlchemyAsyncMockRepository(*, statement=None, session, model_type=None, auto_expunge=False, auto_refresh=True, auto_commit=False, order_by=None, error_messages=Empty, wrap_exceptions=True, load=None, execution_options=None, uniquify=None, **kwargs)
 ```
 
-Bases: [`SQLAlchemyAsyncRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
+Bases: [`ModelRepositoryMixin`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelRepositoryMixin)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], [`SQLAlchemyAsyncRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
 
 In memory repository.
 
@@ -6755,7 +6880,9 @@ List of records returned by query.
 class advanced_alchemy.repository.memory.SQLAlchemyAsyncMockSlugRepository
 ```
 
-Bases: [`SQLAlchemyAsyncMockRepository`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository_memory.html#advanced_alchemy.repository.memory.SQLAlchemyAsyncMockRepository)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], [`SQLAlchemyAsyncSlugRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
+Bases: [`SQLAlchemyAsyncMockRepository`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository_memory.html#advanced_alchemy.repository.memory.SQLAlchemyAsyncMockRepository)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], `SQLAlchemyAsyncSlugRepositoryMixin`  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], [`SQLAlchemyAsyncSlugRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncSlugRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
+
+In-memory repository supporting slug operations.
 
 ##### `get_by_slug`
 
@@ -6763,15 +6890,9 @@ Bases: [`SQLAlchemyAsyncMockRepository`](https://docs.advanced-alchemy.litestar.
 async get_by_slug(slug, error_messages=Empty, load=None, execution_options=None, uniquify=None, bind_group=None, **kwargs)
 ```
 
-Get a model instance by its slug.
+Select record by slug value.
 
-- **Parameters**: - **slug** (*str*) – The slug value to search for.
-- **error_messages** ([*ErrorMessages*](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – Optional custom error message templates.
-- **load** ([*LoadSpec*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Specification for eager loading of relationships.
-- **execution_options** (*dict**[**str**,**Any**]**|**None*) – Options for statement execution.
-- **bind_group** (*str**|**None*) – Optional routing group to use for the operation.
-- ****kwargs** (*Any*) – Additional filtering criteria.
-- **Returns**: The found model instance or None if not found.
+- **Returns**: The model instance or None if not found.
 - **Return type**: [*ModelT*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT) | *None*
 
 ##### `get_available_slug`
@@ -6787,7 +6908,7 @@ If the value is found to exist, a random 4 digit character is appended to the en
 Override this method to change the default behavior
 
 - **Parameters**: - **value_to_slugify** (`str`) – A string that should be converted to a unique slug.
-- ****kwargs** (*Any*) – stuff
+- ****kwargs** (*Any*) – Additional parameters.
 - **Returns**: a unique slug for the supplied value. This is safe for URLs and other unique identifiers.
 - **Return type**: *str*
 
@@ -6796,10 +6917,10 @@ Override this method to change the default behavior
 ### `advanced_alchemy.repository.memory.SQLAlchemySyncMockRepository`
 
 ```python
-class advanced_alchemy.repository.memory.SQLAlchemySyncMockRepository(*, statement=None, session, auto_expunge=False, auto_refresh=True, auto_commit=False, order_by=None, error_messages=Empty, wrap_exceptions=True, load=None, execution_options=None, uniquify=None, **kwargs)
+class advanced_alchemy.repository.memory.SQLAlchemySyncMockRepository(*, statement=None, session, model_type=None, auto_expunge=False, auto_refresh=True, auto_commit=False, order_by=None, error_messages=Empty, wrap_exceptions=True, load=None, execution_options=None, uniquify=None, **kwargs)
 ```
 
-Bases: [`SQLAlchemySyncRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemySyncRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
+Bases: [`ModelRepositoryMixin`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelRepositoryMixin)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], [`SQLAlchemySyncRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemySyncRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
 
 In memory repository.
 
@@ -6809,7 +6930,9 @@ In memory repository.
 class advanced_alchemy.repository.memory.SQLAlchemySyncMockSlugRepository
 ```
 
-Bases: [`SQLAlchemySyncMockRepository`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository_memory.html#advanced_alchemy.repository.memory.SQLAlchemySyncMockRepository)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], [`SQLAlchemySyncSlugRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemySyncSlugRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
+Bases: [`SQLAlchemySyncMockRepository`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository_memory.html#advanced_alchemy.repository.memory.SQLAlchemySyncMockRepository)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], `SQLAlchemySyncSlugRepositoryMixin`  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)], [`SQLAlchemySyncSlugRepositoryProtocol`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemySyncSlugRepositoryProtocol)  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)]
+
+In-memory repository supporting slug operations.
 
 ##### `get_by_slug`
 
@@ -6817,15 +6940,9 @@ Bases: [`SQLAlchemySyncMockRepository`](https://docs.advanced-alchemy.litestar.d
 get_by_slug(slug, error_messages=Empty, load=None, execution_options=None, uniquify=None, bind_group=None, **kwargs)
 ```
 
-Get a model instance by its slug.
+Select record by slug value.
 
-- **Parameters**: - **slug** (*str*) – The slug value to search for.
-- **error_messages** ([*ErrorMessages*](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – Optional custom error message templates.
-- **load** ([*LoadSpec*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Specification for eager loading of relationships.
-- **execution_options** (*dict**[**str**,**Any**]**|**None*) – Options for statement execution.
-- **bind_group** (*str**|**None*) – Optional routing group to use for the operation.
-- ****kwargs** (*Any*) – Additional filtering criteria.
-- **Returns**: The found model instance or None if not found.
+- **Returns**: The model instance or None if not found.
 - **Return type**: [*ModelT*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT) | *None*
 
 ##### `get_available_slug`
@@ -6841,7 +6958,7 @@ If the value is found to exist, a random 4 digit character is appended to the en
 Override this method to change the default behavior
 
 - **Parameters**: - **value_to_slugify** (`str`) – A string that should be converted to a unique slug.
-- ****kwargs** (*Any*) – stuff
+- ****kwargs** (*Any*) – Additional parameters.
 - **Returns**: a unique slug for the supplied value. This is safe for URLs and other unique identifiers.
 - **Return type**: *str*
 
@@ -6854,7 +6971,7 @@ Source: https://docs.advanced-alchemy.litestar.dev/latest/reference/service.html
 ### `advanced_alchemy.service.SQLAlchemyAsyncRepositoryReadService`
 
 ```python
-class advanced_alchemy.service.SQLAlchemyAsyncRepositoryReadService(session, *, statement=None, auto_expunge=False, auto_refresh=True, auto_commit=False, order_by=None, error_messages=Empty, wrap_exceptions=True, load=None, execution_options=None, uniquify=None, count_with_window_function=None, **repo_kwargs)
+class advanced_alchemy.service.SQLAlchemyAsyncRepositoryReadService(session, *, statement=None, model_type=None, repository_type=None, auto_expunge=False, auto_refresh=True, auto_commit=False, order_by=None, error_messages=Empty, wrap_exceptions=True, load=None, execution_options=None, uniquify=None, count_with_window_function=None, **repo_kwargs)
 ```
 
 Bases: [`ResultConverter`](https://docs.advanced-alchemy.litestar.dev/latest/reference/service.html#advanced_alchemy.service.ResultConverter), `Generic`  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT), `SQLAlchemyAsyncRepositoryT`]
@@ -7103,7 +7220,7 @@ Simple service to execute the basic Query repository..
 ### `advanced_alchemy.service.SQLAlchemySyncRepositoryReadService`
 
 ```python
-class advanced_alchemy.service.SQLAlchemySyncRepositoryReadService(session, *, statement=None, auto_expunge=False, auto_refresh=True, auto_commit=False, order_by=None, error_messages=Empty, wrap_exceptions=True, load=None, execution_options=None, uniquify=None, count_with_window_function=None, **repo_kwargs)
+class advanced_alchemy.service.SQLAlchemySyncRepositoryReadService(session, *, statement=None, model_type=None, repository_type=None, auto_expunge=False, auto_refresh=True, auto_commit=False, order_by=None, error_messages=Empty, wrap_exceptions=True, load=None, execution_options=None, uniquify=None, count_with_window_function=None, **repo_kwargs)
 ```
 
 Bases: [`ResultConverter`](https://docs.advanced-alchemy.litestar.dev/latest/reference/service.html#advanced_alchemy.service.ResultConverter), `Generic`  [[`ModelT`](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT), `SQLAlchemySyncRepositoryT`]
@@ -7342,6 +7459,72 @@ advanced_alchemy.service.ATTRS_INSTALLED: bool
 ```
 
 Boolean flag indicating whether `attrs` is installed.
+
+Source: https://docs.advanced-alchemy.litestar.dev/latest/reference/service_composition.html
+
+# Service Composition
+
+## ServiceGroup
+
+### `advanced_alchemy.service._group.ServiceGroup`
+
+```python
+class advanced_alchemy.service._group.ServiceGroup(session, *, error_messages=Empty, execution_options=None, uniquify=None, count_with_window_function=None, auto_expunge=None, auto_refresh=None, auto_commit=None, wrap_exceptions=None)[source]
+```
+
+Bases: `object`
+
+Base class for composing multiple repository services on one shared SQLAlchemy session.
+
+Declare each service as an annotated attribute on a `ServiceGroup` subclass:
+
+```python
+class AuthServices(ServiceGroup):
+    users: UserService
+    roles: RoleService
+```
+
+##### `new`
+
+```python
+classmethod new(*, session=None, config=None, connection=None, error_messages=Empty, execution_options=None, uniquify=None, count_with_window_function=None, auto_expunge=None, auto_refresh=None, auto_commit=None, wrap_exceptions=None)[source]
+```
+
+Acquire a session-managed or caller-bound context yielding an instance of this group.
+
+- **Return type**: [*_ServiceGroupContext*](https://docs.advanced-alchemy.litestar.dev/latest/reference/service_composition.html#advanced_alchemy.service._group._ServiceGroupContext)[*Self*]
+
+##### `service_fields`
+
+```python
+classmethod service_fields()[source]
+```
+
+Return a read-only mapping of declared service attribute names to service classes.
+
+- **Return type**: *Mapping*[*str*, *type*[*Any*]]
+
+##### `is_async_group`
+
+```python
+classmethod is_async_group()[source]
+```
+
+Return `True` for async groups, `False` for sync groups, or `None` when undetermined.
+
+- **Return type**: *bool* | *None*
+
+## Context Management
+
+### `advanced_alchemy.service._group._ServiceGroupContext`
+
+```python
+class advanced_alchemy.service._group._ServiceGroupContext(group_cls, *, session, config, connection, group_kwargs)[source]
+```
+
+Bases: `Generic`  [`ServiceGroupT`]
+
+Sync and async context manager resolving a shared session for a ServiceGroup subclass.
 
 Source: https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html
 
@@ -9940,21 +10123,21 @@ Retrieve a database migration plugin from the Litestar application’s plugins.
 advanced_alchemy.extensions.litestar.providers.create_service_dependencies(service_class, /, key, statement=None, config=None, error_messages=Empty, load=None, execution_options=None, filters=None, uniquify=None, count_with_window_function=None, dep_defaults=None, scoped_filters=False)[source]
 ```
 
-Create a dependency provider for the combined filter function.
+Create dependency providers for a service or ServiceGroup and optional filters.
 
 - **Parameters**: - **key** (*str*) – The key to use for the dependency provider.
-- **service_class** (*type**[**AsyncServiceT_co**|**SyncServiceT_co**]*) – The service class to create a dependency provider for.
-- **statement** (*Optional**[**Select**[**tuple**[*[*ModelT*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)*]**]**]*) – The statement to use for the service.
+- **service_class** (*type**[**AsyncServiceT_co**|**SyncServiceT_co**|**ServiceGroupT**]*) – The service or ServiceGroup class to create a dependency provider for.
+- **statement** (*Optional**[**Select**[**tuple**[*[*ModelT*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)*]**]**]*) – The statement to use for a single service.
 - **config** (*Optional**[**Union**[*[*SQLAlchemyAsyncConfig*](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/plugins.html#advanced_alchemy.extensions.litestar.plugins.SQLAlchemyAsyncConfig)*,*[*SQLAlchemySyncConfig*](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/plugins.html#advanced_alchemy.extensions.litestar.plugins.SQLAlchemySyncConfig)*]**]*) – The configuration to use for the service.
 - **error_messages** (*Optional**[**Union**[*[*ErrorMessages*](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*,*[*EmptyType*](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.EmptyType)*]**]*) – The error messages to use for the service.
-- **load** (*Optional**[*[*LoadSpec*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*]*) – The load spec to use for the service.
+- **load** (*Optional**[*[*LoadSpec*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*]*) – The load spec to use for a single service.
 - **execution_options** (*Optional**[**dict**[**str**,**Any**]**]*) – The execution options to use for the service.
-- **filters** (*Optional**[*[*FilterConfig*](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.FilterConfig)*]*) – The filter configuration to use for the service.
+- **filters** (*Optional**[**Union**[*[*FilterConfig*](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.FilterConfig)*,**Mapping**[**str**,*[*FilterConfig*](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.FilterConfig)*]**]**]*) – Filter configuration for a single service, or mapping of service attribute name to FilterConfig for a ServiceGroup.
 - **uniquify** (*bool**|**None*) – Whether to uniquify the service.
 - **count_with_window_function** (*bool**|**None*) – Whether to count with a window function.
 - **dep_defaults** (*Optional**[*[*DependencyDefaults*](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html#advanced_alchemy.extensions.fastapi.providers.DependencyDefaults)*]*) – The dependency defaults to use for the service.
 - **scoped_filters** (*bool*) – Whether to scope the filter dependency keys to the service key.
-- **Returns**: A dictionary of dependency providers for the service.
+- **Returns**: A dictionary of dependency providers for the service or ServiceGroup.
 - **Return type**: *dict*[*str*, *Provide*]
 
 ### `advanced_alchemy.extensions.litestar.providers.create_service_provider`
@@ -9963,18 +10146,18 @@ Create a dependency provider for the combined filter function.
 advanced_alchemy.extensions.litestar.providers.create_service_provider(service_class, /, statement=None, config=None, error_messages=Empty, load=None, execution_options=None, uniquify=None, count_with_window_function=None)[source]
 ```
 
-Create a dependency provider for a service with a configurable session key.
+Create a dependency provider for a service or ServiceGroup with a configurable session key.
 
-- **Parameters**: - **service_class** (*type**[**AsyncServiceT_co**|**SyncServiceT_co**]*) – The service class inheriting from SQLAlchemyAsyncRepositoryService or SQLAlchemySyncRepositoryService.
-- **statement** (*Optional**[**Select**[**tuple**[*[*ModelT*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)*]**]**]*) – An optional SQLAlchemy Select statement to scope the service.
+- **Parameters**: - **service_class** (*type**[**AsyncServiceT_co**|**SyncServiceT_co**|**ServiceGroupT**]*) – The service or ServiceGroup class to instantiate per request.
+- **statement** (*Optional**[**Select**[**tuple**[*[*ModelT*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)*]**]**]*) – An optional SQLAlchemy Select statement to scope a single service.
 - **config** (*Optional**[**Union**[*[*SQLAlchemyAsyncConfig*](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/plugins.html#advanced_alchemy.extensions.litestar.plugins.SQLAlchemyAsyncConfig)*,*[*SQLAlchemySyncConfig*](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/plugins.html#advanced_alchemy.extensions.litestar.plugins.SQLAlchemySyncConfig)*]**]*) – An optional SQLAlchemy configuration object.
 - **error_messages** (*Optional**[**Union**[*[*ErrorMessages*](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*,*[*EmptyType*](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.EmptyType)*]**]*) – Optional custom error messages for the service.
-- **load** (*Optional**[*[*LoadSpec*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*]*) – Optional LoadSpec for eager loading relationships.
+- **load** (*Optional**[*[*LoadSpec*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*]*) – Optional LoadSpec for eager loading relationships on a single service.
 - **execution_options** (*Optional**[**dict**[**str**,**Any**]**]*) – Optional dictionary of execution options for SQLAlchemy.
 - **uniquify** (*bool**|**None*) – Optional flag to uniquify results.
 - **count_with_window_function** (*bool**|**None*) – Optional flag to use window function for counting.
 - **Returns**: A dependency provider function suitable for Litestar’s DI system.
-- **Return type**: *Callable*[[…], *AsyncGenerator*[AsyncServiceT_co, *None*] | *Generator*[SyncServiceT_co,*None*, *None*]]
+- **Return type**: *Callable*[[…], *AsyncGenerator*[*Union*[AsyncServiceT_co, ServiceGroupT], *None*] | *Generator*[*Union*[SyncServiceT_co, ServiceGroupT], *None*, *None*]]
 
 ### `advanced_alchemy.extensions.litestar.providers.FilterConfig`
 
@@ -11831,9 +12014,9 @@ It provides middleware for handling transactions based on commit strategies.
 provide_service(service_class, /, key=None, statement=None, error_messages=Empty, load=None, execution_options=None, uniquify=None, count_with_window_function=None)
 ```
 
-Provides a service instance for dependency injection.
+Provides a service or ServiceGroup instance for dependency injection.
 
-- **Parameters**: - **service_class** (*type**[**AsyncServiceT_co**|**SyncServiceT_co**]*) – The service class to provide.
+- **Parameters**: - **service_class** (*type**[**AsyncServiceT_co**|**SyncServiceT_co**|**ServiceGroupT**]*) – The service or ServiceGroup class to provide.
 - **key** (*Optional**[**str**]*) – Optional key for the service.
 - **statement** (*Optional**[**Select**[**tuple**[*[*ModelT*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.ModelT)*]**]**]*) – Optional SQLAlchemy statement.
 - **error_messages** (*Optional**[**Union**[*[*ErrorMessages*](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*,*[*EmptyType*](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.EmptyType)*]**]*) – Optional error messages.
@@ -11841,8 +12024,8 @@ Provides a service instance for dependency injection.
 - **execution_options** (*Optional**[**dict**[**str**,**Any**]**]*) – Optional execution options.
 - **uniquify** (*bool**|**None*) – Optional flag to uniquify the service.
 - **count_with_window_function** (*bool**|**None*) – Optional flag to use window function for counting.
-- **Returns**: A callable that returns an async generator for async services or a generator for sync services.
-- **Return type**: *Callable*[…, *Union*[*AsyncGenerator*[AsyncServiceT_co, *None*], *Generator*[SyncServiceT_co, *None*, *None*]]]
+- **Returns**: A callable that returns an async generator or generator providing the target instance.
+- **Return type**: *Callable*[…, *Union*[*AsyncGenerator*[*Union*[AsyncServiceT_co, ServiceGroupT], *None*], *Generator*[*Union*[SyncServiceT_co, ServiceGroupT], *None*, *None*]]]
 
 ##### `provide_filters`
 
@@ -11896,20 +12079,15 @@ FastAPI re-exports the Starlette configuration classes:
 advanced_alchemy.extensions.fastapi.providers.provide_service(service_class, /, extension, key=None, statement=None, error_messages=Empty, load=None, execution_options=None, uniquify=None, count_with_window_function=None)[source]
 ```
 
-Create a dependency provider for a service.
+Create a FastAPI dependency provider for a service or ServiceGroup.
 
-This function creates a generator-based dependency that manages
-the service lifecycle. The generator owns the session lifecycle
-and handles commit/rollback/close operations to ensure proper
-connection pool management (especially important for asyncpg).
-
-- **Returns**: A dependency provider for the service.
-- **Return type**: *Callable*[[…], *AsyncGenerator*[*AsyncServiceT_co*, *None*] | *Generator*[*SyncServiceT_co*, *None*, *None*]]
+- **Returns**: A generator-based FastAPI dependency provider managing service and session lifecycle.
+- **Return type**: *Callable*[[…], *AsyncGenerator*[*AsyncServiceT_co*, *None*] | *Generator*[*SyncServiceT_co*, *None*, *None*] | *AsyncGenerator*[*ServiceGroupT*, *None*] | *Generator*[*ServiceGroupT*, *None*, *None*]]
 
 ### `advanced_alchemy.extensions.fastapi.providers.provide_filters`
 
 ```python
-advanced_alchemy.extensions.fastapi.providers.provide_filters(config, dep_defaults=DEPENDENCY_DEFAULTS)[source]
+advanced_alchemy.extensions.fastapi.providers.provide_filters(config, dep_defaults=DEPENDENCY_DEFAULTS, model=None)[source]
 ```
 
 Create FastAPI dependency providers for filters based on the provided configuration.
@@ -15718,7 +15896,7 @@ Retrieve dependency providers by a precomputed key.
 ### `advanced_alchemy.utils.dependencies.resolve_filter_aliases`
 
 ```python
-advanced_alchemy.utils.dependencies.resolve_filter_aliases(config, *, prefix=None)[source]
+advanced_alchemy.utils.dependencies.resolve_filter_aliases(config, *, prefix=None, model=None)[source]
 ```
 
 Resolve public query names once, validating only opt-in custom naming.
@@ -15770,7 +15948,7 @@ Convert a possibly nested value into a hashable representation.
 ### `advanced_alchemy.utils.dependencies.filter_cache_key`
 
 ```python
-advanced_alchemy.utils.dependencies.filter_cache_key(namespace, config, defaults, aliases)[source]
+advanced_alchemy.utils.dependencies.filter_cache_key(namespace, config, defaults, aliases, model=None)[source]
 ```
 
 Cache effective configuration and names, retaining complete values for equality.
@@ -16034,6 +16212,73 @@ Warn about a call to a (soon to be) deprecated function.
 Source: https://docs.advanced-alchemy.litestar.dev/latest/changelog.html
 
 # 1.x Changelog
+
+## 1.13.0
+
+### Features
+
+- **coordinate shared-session services with ServiceGroup**: `ServiceGroup` collects annotated services on one session, with Litestar
+and FastAPI dependency providers. Managed groups enter nested groups and
+custom service factories, forward supported options, and unwind acquired
+contexts with the original exception when initialization fails. Direct
+construction binds service constructors to a caller-owned session.
+
+References: [https://github.com/litestar-org/advanced-alchemy/pull/722](https://github.com/litestar-org/advanced-alchemy/pull/722)
+- **configure field filtering and sorting**: `filter_fields` and `sort_fields` configure model-aware query filters
+and repeatable `orderBy` parameters in Litestar and FastAPI. Filters can
+traverse relationships, and sorting supports dotted to-one paths. Mock
+repositories support relationship filtering and ordering with pagination
+totals matching SQL. The helper APIs use field-oriented names, including
+`FilterOperator`, `FilterFieldSpec`, and `resolve_filter_fields`.
+
+References: [https://github.com/litestar-org/advanced-alchemy/pull/844](https://github.com/litestar-org/advanced-alchemy/pull/844)
+- **infer service model and repository types from generic parameters**: `SQLAlchemyAsyncRepositoryService[Model]` and
+`SQLAlchemySyncRepositoryService[Model]` subclasses no longer need an inline
+`repository_type`; the model and a default repository are inferred from the
+generic parameters, and `model_type=` / `repository_type=` can be passed
+when instantiating directly. To type custom repository methods, pass the
+repository as the second generic parameter, for example
+`SQLAlchemyAsyncRepositoryService[Widget, WidgetRepository]`.
+
+References: [https://github.com/litestar-org/advanced-alchemy/pull/824](https://github.com/litestar-org/advanced-alchemy/pull/824)
+
+### Bugfixes
+
+- **preserve custom service constructors and SQL expression parity**: Inherited service `new()` factories preserve custom constructors that
+accept the existing service options; model and repository overrides are
+forwarded only when supplied. Mock repositories match SQL for NULL
+comparisons, escaped LIKE expressions, and scalar arithmetic predicates.
+
+References: [https://github.com/litestar-org/advanced-alchemy/pull/824](https://github.com/litestar-org/advanced-alchemy/pull/824)
+- **preserve ORM delete behavior and query count configuration**: `delete_many` and `delete_where` use ORM deletion for models requiring
+delete cascades, stored-object cleanup, joined-table inheritance, or custom
+delete listeners. These paths can issue more statements than bulk deletion.
+Query repositories use a window count when `count_with_window_function`
+is true and separate queries when false, except on Spanner, which uses
+separate queries. Custom repository implementations should provide
+`set_primary_key_value` alongside the existing primary-key helpers.
+
+References: [https://github.com/litestar-org/advanced-alchemy/pull/824](https://github.com/litestar-org/advanced-alchemy/pull/824)
+- **partial update hydration and single-query service updates**: `Service.update` now builds the update model with
+`partial_model_from_dict` so omitted fields stay unset instead of being
+filled with constructor defaults, fixing `MappedAsDataclass` and SQLModel
+table models where defaults overwrote stored values or required fields raised
+`TypeError`. Models that define their own `__init__` keep calling it so
+constructor-derived attributes are still applied. `Service.update(item_id=...)`
+delegates directly to `Repository.update`, removing a duplicate `SELECT`,
+and `item_id` takes precedence over an identifier present in the payload.
+
+References: [https://github.com/litestar-org/advanced-alchemy/pull/824](https://github.com/litestar-org/advanced-alchemy/pull/824)
+- **mock repository filter parity**: `SQLAlchemyAsyncMockRepository` and `SQLAlchemySyncMockRepository` support
+`NotInCollectionFilter`, `NotInSearchFilter`, `ComparisonFilter`,
+`ExistsFilter`, `NotExistsFilter`, `MultiFilter`, `between()`, and
+`is_(None)`. `LimitOffset` slices `offset:offset + limit`, `BeforeAfter`
+applies both bounds, and `get_many_and_count` returns the count before
+pagination. Unsupported SQL expressions now raise `RepositoryError` instead of
+returning unfiltered rows, so tests that relied on the previous results may
+need to be updated.
+
+References: [https://github.com/litestar-org/advanced-alchemy/pull/824](https://github.com/litestar-org/advanced-alchemy/pull/824)
 
 ## 1.12.0
 
