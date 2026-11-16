@@ -275,7 +275,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#composite-primary-keys">Composite Primary Keys</a></li>
 <li><a class="reference internal" href="#row-locking">Row Locking</a></li>
 <li><a class="reference internal" href="#deleting-rows-by-condition">Deleting Rows by Condition</a></li>
-<li><a class="reference internal" href="#catching-database-errors-cleanly">Catching Database Errors Cleanly</a></li>
+<li><a class="reference internal" href="#handling-database-exceptions">Handling Database Exceptions</a></li>
 </ul>
 </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
   data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
@@ -370,11 +370,10 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="advanced-repository">
 <h1>Advanced Repository<a class="headerlink" href="#advanced-repository" title="Link to this heading">#</a></h1>
-<p>Most tables have a single <code class="docutils literal notranslate"><span class="pre">id</span></code> column and simple single-row updates. When you run into trickier real-world cases—join tables with two-part keys, concurrent checkout updates, or clearing old drafts in one query—repositories handle them cleanly.</p>
+<p>Repositories support composite primary keys, row-level <code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">...</span> <span class="pre">FOR</span> <span class="pre">UPDATE</span></code> locking, conditional bulk deletes, and cross-dialect exception translation.</p>
 <section id="composite-primary-keys">
 <span id="id1"></span><h2>Composite Primary Keys<a class="headerlink" href="#composite-primary-keys" title="Link to this heading">#</a></h2>
-<p>Some tables identify a row by <strong>two columns together</strong> rather than a single <code class="docutils literal notranslate"><span class="pre">id</span></code>—for example, a <code class="docutils literal notranslate"><span class="pre">UserRole</span></code> table keyed by <code class="docutils literal notranslate"><span class="pre">(user_id,</span> <span class="pre">role_id)</span></code>.</p>
-<p>You can pass composite keys to <code class="docutils literal notranslate"><span class="pre">get</span></code> or <code class="docutils literal notranslate"><span class="pre">delete_many</span></code> as a dictionary (recommended because column names are explicit) or as an ordered tuple:</p>
+<p>Models keyed by multiple primary-key columns (such as <code class="docutils literal notranslate"><span class="pre">(user_id,</span> <span class="pre">role_id)</span></code> on <code class="docutils literal notranslate"><span class="pre">UserRole</span></code>) accept composite keys in <code class="docutils literal notranslate"><span class="pre">get</span></code> and <code class="docutils literal notranslate"><span class="pre">delete_many</span></code> either as a column-name dictionary (recommended) or as an ordered tuple:</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
 <label aria-controls="sd-tab-item-0-content" class="sd-tab-label" for="sd-tab-item-0">
@@ -453,7 +452,7 @@ Tuple Key &amp; Bulk Delete</label><div class="sd-tab-content docutils" id="sd-t
 </section>
 <section id="row-locking">
 <h2>Row Locking<a class="headerlink" href="#row-locking" title="Link to this heading">#</a></h2>
-<p>Imagine two requests trying to deduct credits from the same user account at the exact same instant. Passing <code class="docutils literal notranslate"><span class="pre">with_for_update=True</span></code> locks that row in the database until your transaction finishes so the second request waits its turn:</p>
+<p>Pass <code class="docutils literal notranslate"><span class="pre">with_for_update=True</span></code> (or a dictionary of <code class="docutils literal notranslate"><span class="pre">FOR</span> <span class="pre">UPDATE</span></code> options such as <code class="docutils literal notranslate"><span class="pre">nowait</span></code> and <code class="docutils literal notranslate"><span class="pre">of</span></code>) to acquire a row-level lock for the duration of the current transaction:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">lock_user_for_update</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AdvancedUser</span><span class="p">:</span>
 </span><span data-line="2">    <span class="n">repo</span> <span class="o">=</span> <span class="n">AdvancedUserRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="3">    <span class="k">return</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">get_one</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span> <span class="n">with_for_update</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -470,16 +469,41 @@ Tuple Key &amp; Bulk Delete</label><div class="sd-tab-content docutils" id="sd-t
 </section>
 <section id="deleting-rows-by-condition">
 <h2>Deleting Rows by Condition<a class="headerlink" href="#deleting-rows-by-condition" title="Link to this heading">#</a></h2>
-<p>Need to purge every unpublished draft in one query without loading each post into Python first? Call <code class="docutils literal notranslate"><span class="pre">delete_where</span></code>:</p>
+<p>Call <code class="docutils literal notranslate"><span class="pre">delete_where</span></code> to delete matching rows directly by SQL predicate without loading every row first:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">purge_unpublished_drafts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">AdvancedPost</span><span class="p">]:</span>
 </span><span data-line="2">    <span class="n">repo</span> <span class="o">=</span> <span class="n">AdvancedPostRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
 </span><span data-line="3">    <span class="k">return</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">delete_where</span><span class="p">(</span><span class="n">AdvancedPost</span><span class="o">.</span><span class="n">published</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">False</span><span class="p">))</span>
 </span></pre></div>
 </div>
 </section>
-<section id="catching-database-errors-cleanly">
-<h2>Catching Database Errors Cleanly<a class="headerlink" href="#catching-database-errors-cleanly" title="Link to this heading">#</a></h2>
-<p>Every database driver raises different low-level error codes when a unique constraint or foreign key fails. Repositories automatically translate native database errors across PostgreSQL, SQLite, MySQL, MariaDB, DuckDB, CockroachDB, Oracle, MSSQL, and Spanner into consistent Python exceptions:</p>
+<section id="handling-database-exceptions">
+<h2>Handling Database Exceptions<a class="headerlink" href="#handling-database-exceptions" title="Link to this heading">#</a></h2>
+<p>Database drivers raise backend-specific DBAPI error codes when unique or foreign-key constraints fail. Repositories translate native constraint errors across PostgreSQL, CockroachDB, SQLite, MySQL, MariaDB, DuckDB, Oracle, SQL Server, and Spanner into typed Python exceptions:</p>
+<div class="sd-tab-set docutils">
+<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label aria-controls="sd-tab-item-3-content" class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-3">
+Python 3.9+</label><div class="sd-tab-content docutils" id="sd-tab-item-3-content">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">DuplicateKeyError</span><span class="p">,</span> <span class="n">ForeignKeyError</span><span class="p">,</span> <span class="n">NotFoundError</span>
+</span><span data-line="3">
+</span><span data-line="4">
+</span><span data-line="5"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">safe_assign_role</span><span class="p">(</span>
+</span><span data-line="6">    <span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
+</span><span data-line="7">    <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span data-line="8">    <span class="n">role_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span data-line="9"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AdvancedUserRole</span><span class="p">]:</span>
+</span><span data-line="10">    <span class="n">repo</span> <span class="o">=</span> <span class="n">AdvancedUserRoleRepository</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">db_session</span><span class="p">)</span>
+</span><span data-line="11">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="12">        <span class="k">return</span> <span class="k">await</span> <span class="n">repo</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">AdvancedUserRole</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span> <span class="n">role_id</span><span class="o">=</span><span class="n">role_id</span><span class="p">),</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="13">    <span class="k">except</span> <span class="p">(</span><span class="n">DuplicateKeyError</span><span class="p">,</span> <span class="n">ForeignKeyError</span><span class="p">,</span> <span class="n">NotFoundError</span><span class="p">):</span>
+</span><span data-line="14">        <span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+</span><span data-line="15">        <span class="k">return</span> <span class="kc">None</span>
+</span></pre></div>
+</div>
+</div>
+<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
+<label aria-controls="sd-tab-item-4-content" class="sd-tab-label" data-sync-group="tab" data-sync-id="3.10" for="sd-tab-item-4">
+Python 3.10+</label><div class="sd-tab-content docutils" id="sd-tab-item-4-content">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">DuplicateKeyError</span><span class="p">,</span> <span class="n">ForeignKeyError</span><span class="p">,</span> <span class="n">NotFoundError</span>
 </span><span data-line="2">
 </span><span data-line="3">
@@ -495,6 +519,8 @@ Tuple Key &amp; Bulk Delete</label><div class="sd-tab-content docutils" id="sd-t
 </span><span data-line="13">        <span class="k">await</span> <span class="n">db_session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
 </span><span data-line="14">        <span class="k">return</span> <span class="kc">None</span>
 </span></pre></div>
+</div>
+</div>
 </div>
 </section>
 </section>

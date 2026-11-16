@@ -370,23 +370,23 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="litestar-database-and-server-sessions">
 <h1>Litestar Database and Server Sessions<a class="headerlink" href="#litestar-database-and-server-sessions" title="Link to this heading">#</a></h1>
-<p>This guide covers two kinds of “sessions” in Litestar:</p>
+<p>This guide covers two distinct session layers in Litestar:</p>
 <ol class="arabic simple">
-<li><p><strong>Database sessions</strong>: The SQLAlchemy connection used by your routes to read and save rows during a request.</p></li>
-<li><p><strong>Server-side user sessions</strong>: Keeping logged-in user state (like shopping carts or auth data) inside a database table instead of Redis.</p></li>
+<li><p><strong>Database sessions</strong>: Per-request SQLAlchemy <code class="docutils literal notranslate"><span class="pre">Session</span></code> or <code class="docutils literal notranslate"><span class="pre">AsyncSession</span></code> instances used by repositories and services.</p></li>
+<li><p><strong>Server-side HTTP sessions and key-value stores</strong>: Persisting Litestar server-side session payloads and store entries in a SQL table instead of Redis.</p></li>
 </ol>
 <section id="per-request-database-sessions">
 <h2>Per-Request Database Sessions<a class="headerlink" href="#per-request-database-sessions" title="Link to this heading">#</a></h2>
-<p>When <code class="docutils literal notranslate"><span class="pre">SQLAlchemyPlugin</span></code> is registered, Litestar injects a database session under the <code class="docutils literal notranslate"><span class="pre">db_session</span></code> parameter name. You can control when changes commit by setting <code class="docutils literal notranslate"><span class="pre">before_send_handler</span></code> on your config:</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">SQLAlchemyPlugin</span></code> is registered, Litestar injects a database session under the <code class="docutils literal notranslate"><span class="pre">db_session</span></code> parameter name. Control transaction commits by setting <code class="docutils literal notranslate"><span class="pre">before_send_handler</span></code> on your config:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">&quot;autocommit&quot;</span></code> saves changes automatically when a route returns a normal <code class="docutils literal notranslate"><span class="pre">2xx</span></code> response and rolls back on errors.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">&quot;autocommit_include_redirects&quot;</span></code> also commits when a route returns a <code class="docutils literal notranslate"><span class="pre">3xx</span></code> redirect (useful for HTML form submissions).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;autocommit&quot;</span></code> commits automatically when a route returns a <code class="docutils literal notranslate"><span class="pre">2xx</span></code> response and rolls back on errors.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;autocommit_include_redirects&quot;</span></code> also commits when a route returns a <code class="docutils literal notranslate"><span class="pre">3xx</span></code> redirect (such as after HTML form submissions).</p></li>
 </ul>
-<p>Need a session outside a web request, such as in a startup hook or background script? Open one directly with <code class="docutils literal notranslate"><span class="pre">async</span> <span class="pre">with</span> <span class="pre">config.get_session()</span> <span class="pre">as</span> <span class="pre">db_session:</span></code>.</p>
+<p>Outside an HTTP request (such as in a startup hook or background task), open a session directly with <code class="docutils literal notranslate"><span class="pre">async</span> <span class="pre">with</span> <span class="pre">config.get_session()</span> <span class="pre">as</span> <span class="pre">db_session:</span></code>.</p>
 </section>
 <section id="connecting-multiple-databases">
 <h2>Connecting Multiple Databases<a class="headerlink" href="#connecting-multiple-databases" title="Link to this heading">#</a></h2>
-<p>To talk to both a main database and an analytics database in one Litestar app, pass a list of configs with unique <code class="docutils literal notranslate"><span class="pre">session_dependency_key</span></code>, <code class="docutils literal notranslate"><span class="pre">engine_dependency_key</span></code>, and <code class="docutils literal notranslate"><span class="pre">bind_key</span></code> names:</p>
+<p>To configure multiple databases in one Litestar application, pass a list of configs with unique <code class="docutils literal notranslate"><span class="pre">session_dependency_key</span></code>, <code class="docutils literal notranslate"><span class="pre">engine_dependency_key</span></code>, and <code class="docutils literal notranslate"><span class="pre">bind_key</span></code> names:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.extensions.litestar</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">,</span> <span class="n">SQLAlchemyPlugin</span>
 </span><span data-line="2">
 </span><span data-line="3"><span class="n">primary_config</span> <span class="o">=</span> <span class="n">SQLAlchemyAsyncConfig</span><span class="p">(</span>
@@ -407,7 +407,7 @@ data-aria-dark="Switch to auto color mode">
 </section>
 <section id="storing-user-sessions-in-your-database">
 <h2>Storing User Sessions in Your Database<a class="headerlink" href="#storing-user-sessions-in-your-database" title="Link to this heading">#</a></h2>
-<p>Instead of running a separate Redis server just for user login cookies or rate-limit counters, you can store them in your SQL database using <code class="docutils literal notranslate"><span class="pre">SQLAlchemyStore</span></code> or <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncSessionBackend</span></code>:</p>
+<p>Persist server-side session payloads, rate-limit counters, or general key-value entries in SQL using <code class="docutils literal notranslate"><span class="pre">SQLAlchemyStore</span></code> or <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncSessionBackend</span></code>:</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
 <label aria-controls="sd-tab-item-0-content" class="sd-tab-label" for="sd-tab-item-0">
@@ -484,14 +484,14 @@ Dedicated Session Backend</label><div class="sd-tab-content docutils" id="sd-tab
 </div>
 </div>
 </div>
-<p>Both approaches use native database upserts and include a <code class="docutils literal notranslate"><span class="pre">delete_expired()</span></code> helper to clear old session rows on a schedule.</p>
+<p>Both backends use native database upserts and expose <code class="docutils literal notranslate"><span class="pre">delete_expired()</span></code> for removing expired rows from scheduled jobs or lifecycle hooks.</p>
 </section>
 <section id="related-guides">
 <h2>Related Guides<a class="headerlink" href="#related-guides" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="litestar.html"><span class="doc">Litestar Integration</span></a> — Core Litestar plugin, DTOs, and controllers.</p></li>
-<li><p><a class="reference internal" href="litestar_storage.html"><span class="doc">Litestar File and Object Storage</span></a> — Uploading files with <code class="docutils literal notranslate"><span class="pre">StoredObject</span></code>.</p></li>
-<li><p><a class="reference internal" href="../../reference/extensions/litestar/store.html"><span class="doc">SQLAlchemy Store</span></a> — Store and session backend API reference.</p></li>
+<li><p><a class="reference internal" href="litestar.html"><span class="doc">Litestar Integration</span></a>: Core Litestar plugin, DTOs, and controllers.</p></li>
+<li><p><a class="reference internal" href="litestar_storage.html"><span class="doc">Litestar File and Object Storage</span></a>: Uploading files with <code class="docutils literal notranslate"><span class="pre">StoredObject</span></code>.</p></li>
+<li><p><a class="reference internal" href="../../reference/extensions/litestar/store.html"><span class="doc">SQLAlchemy Store</span></a>: Store and session backend API reference.</p></li>
 </ul>
 </section>
 </section>

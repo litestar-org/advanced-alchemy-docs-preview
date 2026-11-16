@@ -372,10 +372,10 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="repository-basics">
 <h1>Repository Basics<a class="headerlink" href="#repository-basics" title="Link to this heading">#</a></h1>
-<p>Think of a <strong>Repository</strong> as a dedicated helper for one database table. The Repository Pattern separates SQLAlchemy queries and persistence logic from your HTTP routes and business rules behind a uniform collection-like interface (<code class="docutils literal notranslate"><span class="pre">add</span></code>, <code class="docutils literal notranslate"><span class="pre">get</span></code>, <code class="docutils literal notranslate"><span class="pre">get_many</span></code>, <code class="docutils literal notranslate"><span class="pre">update</span></code>, <code class="docutils literal notranslate"><span class="pre">delete</span></code>), keeping query logic reusable and straightforward to test—including against mock repositories. Instead of repeating raw <code class="docutils literal notranslate"><span class="pre">select()</span></code> and <code class="docutils literal notranslate"><span class="pre">session.add()</span></code> calls everywhere, you bind a repository to your <code class="docutils literal notranslate"><span class="pre">Post</span></code> model once and call its methods directly.</p>
+<p>A <strong>Repository</strong> encapsulates SQLAlchemy queries and persistence logic for one mapped model behind a uniform interface (<code class="docutils literal notranslate"><span class="pre">add</span></code>, <code class="docutils literal notranslate"><span class="pre">get</span></code>, <code class="docutils literal notranslate"><span class="pre">get_many</span></code>, <code class="docutils literal notranslate"><span class="pre">update</span></code>, <code class="docutils literal notranslate"><span class="pre">delete</span></code>), keeping query logic reusable and testable against SQL or in-memory mock repositories.</p>
 <section id="choosing-a-repository-class">
 <h2>Choosing a Repository Class<a class="headerlink" href="#choosing-a-repository-class" title="Link to this heading">#</a></h2>
-<p>Every async repository has an identical synchronous version—pick async when using <code class="docutils literal notranslate"><span class="pre">AsyncSession</span></code> and sync when using <code class="docutils literal notranslate"><span class="pre">Session</span></code>:</p>
+<p>Every async repository has a synchronous counterpart; use the async classes with <code class="docutils literal notranslate"><span class="pre">AsyncSession</span></code> and the sync classes with <code class="docutils literal notranslate"><span class="pre">Session</span></code>:</p>
 <div class="table-wrapper colwidths-given docutils container">
 <table class="docutils align-default">
 <colgroup>
@@ -384,18 +384,18 @@ data-aria-dark="Switch to auto color mode">
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Repository Type</p></th>
-<th class="head"><p>When to Use It</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepository</span></code> / <code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncRepository</span></code></p></td>
-<td><p>Everyday tables: create, read, update, delete, filter, paginate, and bulk upsert.</p></td>
+<td><p>Standard model CRUD, filtering, pagination, and bulk upserts.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncSlugRepository</span></code> / <code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncSlugRepository</span></code></p></td>
-<td><p>Tables with URL slugs (like <code class="docutils literal notranslate"><span class="pre">/posts/hello-world</span></code>): generates unique slugs and looks up rows by slug.</p></td>
+<td><p>Models with URL slugs (such as <code class="docutils literal notranslate"><span class="pre">/posts/hello-world</span></code>): generates unique slugs and queries rows by slug.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncQueryRepository</span></code> / <code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncQueryRepository</span></code></p></td>
-<td><p>Custom <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> queries, joins, and <code class="docutils literal notranslate"><span class="pre">GROUP</span> <span class="pre">BY</span></code> summaries that don’t map to a single model.</p></td>
+<td><p>Arbitrary <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> statements, joins, and <code class="docutils literal notranslate"><span class="pre">GROUP</span> <span class="pre">BY</span></code> aggregations not bound to a single model.</p></td>
 </tr>
 </tbody>
 </table>
@@ -403,7 +403,7 @@ data-aria-dark="Switch to auto color mode">
 </section>
 <section id="creating-and-reading-rows">
 <h2>Creating and Reading Rows<a class="headerlink" href="#creating-and-reading-rows" title="Link to this heading">#</a></h2>
-<p>Suppose our blog has <code class="docutils literal notranslate"><span class="pre">Post</span></code> and <code class="docutils literal notranslate"><span class="pre">Tag</span></code> tables. Subclass <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepository</span></code> and set <code class="docutils literal notranslate"><span class="pre">model_type</span> <span class="pre">=</span> <span class="pre">Post</span></code>:</p>
+<p>Subclass <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepository</span></code> and set <code class="docutils literal notranslate"><span class="pre">model_type</span></code> to your mapped model class:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span><span class="p">,</span> <span class="n">mapped_column</span>
 </span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BigIntAuditBase</span>
@@ -466,7 +466,7 @@ Python 3.10+</label><div class="sd-tab-content docutils" id="sd-tab-item-1-conte
 </section>
 <section id="saving-updating-and-deleting-in-bulk">
 <h2>Saving, Updating, and Deleting in Bulk<a class="headerlink" href="#saving-updating-and-deleting-in-bulk" title="Link to this heading">#</a></h2>
-<p>When importing a batch of drafts or publishing ten posts at once, looping one query at a time is slow. Use the <code class="docutils literal notranslate"><span class="pre">*_many</span></code> methods to handle whole batches in a single step:</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">add_many</span></code>, <code class="docutils literal notranslate"><span class="pre">update_many</span></code>, and <code class="docutils literal notranslate"><span class="pre">delete_many</span></code> to persist, modify, or remove batches of records without per-row round-trips:</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
 <label aria-controls="sd-tab-item-2-content" class="sd-tab-label" for="sd-tab-item-2">
@@ -519,8 +519,7 @@ Delete Many</label><div class="sd-tab-content docutils" id="sd-tab-item-4-conten
 </section>
 <section id="syncing-external-data-with-upserts">
 <h2>Syncing External Data with Upserts<a class="headerlink" href="#syncing-external-data-with-upserts" title="Link to this heading">#</a></h2>
-<p>Imagine syncing posts from an external CMS: some posts are brand new, and others are updates to rows already in your database.</p>
-<p><code class="docutils literal notranslate"><span class="pre">upsert_many</span></code> inserts new rows and updates matching ones in one call. Behind the scenes, it uses your database’s native upsert command (such as <code class="docutils literal notranslate"><span class="pre">ON</span> <span class="pre">CONFLICT</span> <span class="pre">DO</span> <span class="pre">UPDATE</span></code> on PostgreSQL/SQLite or <code class="docutils literal notranslate"><span class="pre">MERGE</span></code> on Oracle/SQL Server) whenever <code class="docutils literal notranslate"><span class="pre">match_fields</span></code> points to a unique column, and safely falls back to a standard lookup-and-save flow otherwise:</p>
+<p><code class="docutils literal notranslate"><span class="pre">upsert_many</span></code> inserts new rows and updates matching records in a single call. When <code class="docutils literal notranslate"><span class="pre">match_fields</span></code> targets a unique or primary-key constraint, it compiles a native dialect upsert (<code class="docutils literal notranslate"><span class="pre">ON</span> <span class="pre">CONFLICT</span> <span class="pre">DO</span> <span class="pre">UPDATE</span></code> on PostgreSQL, CockroachDB, SQLite, and DuckDB, <code class="docutils literal notranslate"><span class="pre">ON</span> <span class="pre">DUPLICATE</span> <span class="pre">KEY</span> <span class="pre">UPDATE</span></code> on MySQL and MariaDB, <code class="docutils literal notranslate"><span class="pre">MERGE</span></code> on Oracle and SQL Server, or <code class="docutils literal notranslate"><span class="pre">INSERT</span> <span class="pre">OR</span> <span class="pre">UPDATE</span></code> on Spanner) and falls back to an ORM select-then-save path otherwise:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
 </span><span data-line="3">
@@ -537,7 +536,7 @@ Delete Many</label><div class="sd-tab-content docutils" id="sd-tab-item-4-conten
 </section>
 <section id="url-slugs-and-summary-queries">
 <h2>URL Slugs and Summary Queries<a class="headerlink" href="#url-slugs-and-summary-queries" title="Link to this heading">#</a></h2>
-<p>Need to look up tags by URL slug (like <code class="docutils literal notranslate"><span class="pre">/tags/python</span></code>) or run a custom <code class="docutils literal notranslate"><span class="pre">GROUP</span> <span class="pre">BY</span></code> count? Use the slug or query repository:</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncSlugRepository</span></code> for slug-based lookups (such as <code class="docutils literal notranslate"><span class="pre">/tags/python</span></code>) and <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncQueryRepository</span></code> for arbitrary <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> and <code class="docutils literal notranslate"><span class="pre">GROUP</span> <span class="pre">BY</span></code> statements:</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
 <label aria-controls="sd-tab-item-5-content" class="sd-tab-label" for="sd-tab-item-5">
@@ -578,8 +577,8 @@ Custom Summary Query</label><div class="sd-tab-content docutils" id="sd-tab-item
 <section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="filtering.html"><span class="doc">Filtering and Pagination</span></a> — Search text, filter by lists or null values, and paginate results.</p></li>
-<li><p><a class="reference internal" href="../../reference/repository.html"><span class="doc">Repositories</span></a> — Complete repository API reference.</p></li>
+<li><p><a class="reference internal" href="filtering.html"><span class="doc">Filtering and Pagination</span></a>: Search text, filter by collections or nullability, and paginate results.</p></li>
+<li><p><a class="reference internal" href="../../reference/repository.html"><span class="doc">Repositories</span></a>: Complete repository API reference.</p></li>
 </ul>
 </section>
 </section>

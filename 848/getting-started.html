@@ -365,13 +365,12 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="getting-started">
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">#</a></h1>
-<p>When you build an app with SQLAlchemy from scratch, you end up writing the same plumbing over and over: ID and timestamp columns on every table, <code class="docutils literal notranslate"><span class="pre">select()</span></code> and pagination queries in every endpoint, and session cleanup code for every web request.</p>
-<p>Advanced Alchemy handles that repetitive plumbing while keeping plain SQLAlchemy 2.0 front and center:</p>
+<p>A carefully crafted, thoroughly tested, optimized companion library for SQLAlchemy 2.0+:</p>
 <ul class="simple">
-<li><p><strong>Models</strong> come with ready-made IDs, <code class="docutils literal notranslate"><span class="pre">created_at</span></code> / <code class="docutils literal notranslate"><span class="pre">updated_at</span></code> timestamps, and portable column types.</p></li>
-<li><p><strong>Repositories</strong> give every model <code class="docutils literal notranslate"><span class="pre">add</span></code>, <code class="docutils literal notranslate"><span class="pre">get</span></code>, <code class="docutils literal notranslate"><span class="pre">get_many_and_count</span></code>, <code class="docutils literal notranslate"><span class="pre">upsert</span></code>, and <code class="docutils literal notranslate"><span class="pre">delete</span></code> methods out of the box.</p></li>
-<li><p><strong>Services</strong> connect your repositories to Pydantic, Msgspec, or dataclass API schemas.</p></li>
-<li><p><strong>Framework plugins</strong> manage database engines and per-request sessions automatically.</p></li>
+<li><p><strong>Models</strong>: Declarative base classes with UUID, NanoID, or integer primary keys, <code class="docutils literal notranslate"><span class="pre">created_at</span></code> and <code class="docutils literal notranslate"><span class="pre">updated_at</span></code> audit timestamps, and portable custom column types.</p></li>
+<li><p><strong>Repositories</strong>: Synchronous and asynchronous <code class="docutils literal notranslate"><span class="pre">add</span></code>, <code class="docutils literal notranslate"><span class="pre">get</span></code>, <code class="docutils literal notranslate"><span class="pre">get_many_and_count</span></code>, <code class="docutils literal notranslate"><span class="pre">upsert</span></code>, filtering, and bulk operations for SQLAlchemy models.</p></li>
+<li><p><strong>Services</strong>: Typed service wrappers converting between ORM models and Pydantic, Msgspec, dataclass, <code class="docutils literal notranslate"><span class="pre">attrs</span></code>, or SQLModel schemas.</p></li>
+<li><p><strong>Framework plugins</strong>: Engine lifecycle management, per-request sessions, dependency injection providers, and migration CLIs.</p></li>
 </ul>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
@@ -409,7 +408,7 @@ poetry</label><div class="sd-tab-content docutils" id="sd-tab-item-3-content">
 </section>
 <section id="your-first-model-and-repository">
 <h2>Your First Model and Repository<a class="headerlink" href="#your-first-model-and-repository" title="Link to this heading">#</a></h2>
-<p>Imagine you are building a small blog. Define a <code class="docutils literal notranslate"><span class="pre">BlogPost</span></code> table using <code class="docutils literal notranslate"><span class="pre">UUIDAuditBase</span></code> (which automatically adds a UUID <code class="docutils literal notranslate"><span class="pre">id</span></code> plus <code class="docutils literal notranslate"><span class="pre">created_at</span></code> and <code class="docutils literal notranslate"><span class="pre">updated_at</span></code> columns) and attach a repository to save and query posts:</p>
+<p>Define a <code class="docutils literal notranslate"><span class="pre">BlogPost</span></code> model using <code class="docutils literal notranslate"><span class="pre">UUIDAuditBase</span></code> (which provides a UUID <code class="docutils literal notranslate"><span class="pre">id</span></code> column along with <code class="docutils literal notranslate"><span class="pre">created_at</span></code> and <code class="docutils literal notranslate"><span class="pre">updated_at</span></code> timestamps) and attach an async repository to persist and query rows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span>
 </span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUIDAuditBase</span>
@@ -444,9 +443,9 @@ poetry</label><div class="sd-tab-content docutils" id="sd-tab-item-3-content">
 <section id="where-to-go-next">
 <h2>Where to Go Next<a class="headerlink" href="#where-to-go-next" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="usage/index.html"><span class="doc">Usage Guide</span></a> — Walk through models, repositories, services, caching, and read-replica routing step by step.</p></li>
-<li><p><a class="reference internal" href="usage/frameworks/index.html"><span class="doc">Framework Integrations</span></a> — Plug Advanced Alchemy into Litestar, FastAPI, Starlette, Flask, or Sanic.</p></li>
-<li><p><a class="reference external" href="https://discord.gg/dSDXd4mKhp">Discord Community</a> — Ask questions and get help from the maintainers.</p></li>
+<li><p><a class="reference internal" href="usage/index.html"><span class="doc">Usage Guide</span></a>: Models, repositories, services, caching, replica routing, CLI commands, and fixture seeding.</p></li>
+<li><p><a class="reference internal" href="usage/frameworks/index.html"><span class="doc">Framework Integrations</span></a>: Integrate Advanced Alchemy with Litestar, FastAPI, Starlette, Flask, or Sanic.</p></li>
+<li><p><a class="reference external" href="https://discord.gg/dSDXd4mKhp">Discord Community</a>: Ask questions and discuss with maintainers.</p></li>
 </ul>
 </section>
 </section>

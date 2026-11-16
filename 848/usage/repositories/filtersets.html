@@ -424,7 +424,7 @@ or service read method:</p>
 </span><span data-line="9">    <span class="p">}</span>
 </span><span data-line="10">    <span class="n">sort_fields</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"title"</span><span class="p">,</span> <span class="s2">"published_at"</span><span class="p">}</span>
 </span><span data-line="11">    <span class="n">search_fields</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"title"</span><span class="p">,</span> <span class="s2">"tags.slug"</span><span class="p">}</span>
-</span><span data-line="12">    <span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"pagination_type"</span><span class="p">:</span> <span class="s2">"limit_offset"</span><span class="p">,</span> <span class="s2">"pagination_size"</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span>
+</span><span data-line="12">    <span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"pagination_type"</span><span class="p">:</span> <span class="s2">"limit_offset"</span><span class="p">,</span> <span class="s2">"pagination_size"</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">"pagination_max_size"</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
 </span><span data-line="13">
 </span><span data-line="14">
 </span><span data-line="15"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">find_filtered_posts</span><span class="p">(</span><span class="n">db_session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FilterSetPost</span><span class="p">]:</span>
@@ -435,7 +435,12 @@ or service read method:</p>
 </div>
 <p>The generic argument supplies the mapped model; <code class="docutils literal notranslate"><span class="pre">model_type</span></code> can also be set
 explicitly. FilterSet construction takes typed Python values. Framework providers
-validate and convert HTTP query values. Pydantic remains optional.</p>
+validate and convert HTTP query values. Pydantic remains optional. Set
+<code class="docutils literal notranslate"><span class="pre">pagination_max_size</span></code> (default <code class="docutils literal notranslate"><span class="pre">None</span></code>) in <code class="docutils literal notranslate"><span class="pre">config</span></code> or on the class to cap
+<code class="docutils literal notranslate"><span class="pre">pageSize</span></code>/<code class="docutils literal notranslate"><span class="pre">page_size</span></code>; oversized values raise <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> when instantiating
+a FilterSet and HTTP 400/422 through Litestar or FastAPI. When <code class="docutils literal notranslate"><span class="pre">pagination_size</span></code>
+is omitted, the default page size is clamped to <code class="docutils literal notranslate"><span class="pre">pagination_max_size</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">pagination_size</span> <span class="pre">&gt;</span> <span class="pre">pagination_max_size</span></code> raises <code class="docutils literal notranslate"><span class="pre">ImproperConfigurationError</span></code>.</p>
 <p>Field parameters use double underscores to separate relationship names, the field,
 and the operator: <code class="docutils literal notranslate"><span class="pre">?tags__slug__eq=sqlalchemy&amp;title__contains=python</span></code>. A deeper
 path such as <code class="docutils literal notranslate"><span class="pre">orders__items__price__ge=10</span></code> follows the corresponding configured

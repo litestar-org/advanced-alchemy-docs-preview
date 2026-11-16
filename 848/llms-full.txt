@@ -8,9 +8,9 @@ Source: https://advanced-alchemy.litestar.dev/latest/
 
 # Advanced Alchemy
 
-Write clean [SQLAlchemy](https://docs.sqlalchemy.org/en/20/) applications without repeating database boilerplate.
+A carefully crafted, thoroughly tested, optimized companion library for [SQLAlchemy](https://docs.sqlalchemy.org/en/20/).
 
-Advanced Alchemy gives your tables ready-made IDs and timestamps, provides ready-to-use [repositories](https://advanced-alchemy.litestar.dev/latest/usage/repositories/index.html) and [services](https://advanced-alchemy.litestar.dev/latest/usage/services.html) for querying and validation, and plugs directly into [Litestar, FastAPI, Starlette, Flask, and Sanic](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/index.html).
+Advanced Alchemy provides declarative bases with primary keys and audit timestamps, synchronous and asynchronous [repositories](https://advanced-alchemy.litestar.dev/latest/usage/repositories/index.html) and [services](https://advanced-alchemy.litestar.dev/latest/usage/services.html) for querying and schema conversion, and integrations for [Litestar, FastAPI, Starlette, Flask, and Sanic](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/index.html).
 
 Start tables with built-in UUID or integer keys, automatic timestamps, encrypted fields, password hashes, and file storage.
 
@@ -18,20 +18,18 @@ Fetch, filter, paginate, and bulk-upsert records in one call, then convert rows 
 
 Automatic per-request database sessions, dependency injection, file uploads, and migration CLIs for Python web frameworks.
 
-Add read-replica routing, automatic query caching, Alembic migrations, and fixture seeding as your application grows.
+Configure read-replica routing, Dogpile query caching, Alembic migrations, and fixture seeding.
 
 Source: https://advanced-alchemy.litestar.dev/latest/getting-started.html
 
 # Getting Started
 
-When you build an app with SQLAlchemy from scratch, you end up writing the same plumbing over and over: ID and timestamp columns on every table, `select()` and pagination queries in every endpoint, and session cleanup code for every web request.
+A carefully crafted, thoroughly tested, optimized companion library for SQLAlchemy 2.0+:
 
-Advanced Alchemy handles that repetitive plumbing while keeping plain SQLAlchemy 2.0 front and center:
-
-- **Models** come with ready-made IDs, `created_at` / `updated_at` timestamps, and portable column types.
-- **Repositories** give every model `add`, `get`, `get_many_and_count`, `upsert`, and `delete` methods out of the box.
-- **Services** connect your repositories to Pydantic, Msgspec, or dataclass API schemas.
-- **Framework plugins** manage database engines and per-request sessions automatically.
+- **Models**: Declarative base classes with UUID, NanoID, or integer primary keys, `created_at` and `updated_at` audit timestamps, and portable custom column types.
+- **Repositories**: Synchronous and asynchronous `add`, `get`, `get_many_and_count`, `upsert`, filtering, and bulk operations for SQLAlchemy models.
+- **Services**: Typed service wrappers converting between ORM models and Pydantic, Msgspec, dataclass, `attrs`, or SQLModel schemas.
+- **Framework plugins**: Engine lifecycle management, per-request sessions, dependency injection providers, and migration CLIs.
 
 ## Installation
 
@@ -55,7 +53,7 @@ poetry add "advanced-alchemy[aiosqlite]"
 
 ## Your First Model and Repository
 
-Imagine you are building a small blog. Define a `BlogPost` table using `UUIDAuditBase` (which automatically adds a UUID `id` plus `created_at` and `updated_at` columns) and attach a repository to save and query posts:
+Define a `BlogPost` model using `UUIDAuditBase` (which provides a UUID `id` column along with `created_at` and `updated_at` timestamps) and attach an async repository to persist and query rows:
 
 ```python
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -87,46 +85,42 @@ async def run_demo(db_session: AsyncSession) -> None:
 
 ## Where to Go Next
 
-- [Usage Guide](https://advanced-alchemy.litestar.dev/latest/usage/index.html) — Walk through models, repositories, services, caching, and read-replica routing step by step.
-- [Framework Integrations](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/index.html) — Plug Advanced Alchemy into Litestar, FastAPI, Starlette, Flask, or Sanic.
-- [Discord Community](https://discord.gg/dSDXd4mKhp) — Ask questions and get help from the maintainers.
+- [Usage Guide](https://advanced-alchemy.litestar.dev/latest/usage/index.html): Models, repositories, services, caching, replica routing, CLI commands, and fixture seeding.
+- [Framework Integrations](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/index.html): Integrate Advanced Alchemy with Litestar, FastAPI, Starlette, Flask, or Sanic.
+- [Discord Community](https://discord.gg/dSDXd4mKhp): Ask questions and discuss with maintainers.
 
 Source: https://advanced-alchemy.litestar.dev/latest/usage/index.html
 
 # Usage Guide
 
-Imagine you are building a blog with **Posts**, **Authors**, and **Tags**. A reader opens your home page, asks for page 2 of published posts, and creates a comment.
+Advanced Alchemy separates database access into three layers so route handlers remain concise and testable:
 
-Advanced Alchemy organizes that work into three clear steps so your route handlers stay tiny and easy to test:
-
-1. **Models** describe what your tables look like in the database (such as a post’s title, author, and timestamps).
-2. **Repositories** run SQL queries for one table—adding rows, filtering, sorting, and paginating without repeating query code.
-3. **Services** sit in front of repositories to validate incoming API schemas (Pydantic or Msgspec) and enforce your app’s business rules.
+1. **Models** define SQLAlchemy declarative tables with primary keys, audit timestamps, and custom column types.
+2. **Repositories** execute single-model CRUD, filtering, sorting, pagination, and bulk upsert queries.
+3. **Services** wrap repositories to convert between ORM models and typed API schemas (Pydantic, Msgspec, dataclass, `attrs`, or SQLModel) and apply domain logic.
 
 Define tables with automatic UUID or integer primary keys, audit timestamps, JSON, encrypted columns, and file storage.
 
 Add, fetch, filter, paginate, and bulk-upsert records using async or sync sessions.
 
-Keep business rules in one place and convert database rows straight into Pydantic or Msgspec responses.
+Convert database rows into Pydantic, Msgspec, dataclass, attrs, or SQLModel schemas and centralize domain logic.
 
 Connect your services to Litestar, FastAPI, Starlette, Flask, or Sanic with automatic session management.
 
-## Scaling and Day-Two Tools
+## Operational Features
 
-Once your core tables and routes are running, you can turn on operational features without rewriting your queries:
+Enable routing, caching, migrations, and fixture seeding without rewriting repository queries:
 
-- [Replica Routing](https://advanced-alchemy.litestar.dev/latest/usage/routing.html) — Send writes to your primary database and spread reads across read replicas.
-- [Caching](https://advanced-alchemy.litestar.dev/latest/usage/caching.html) — Cache frequent lookups in Redis or memory and clear stale entries automatically on commit.
-- [CLI & Migrations](https://advanced-alchemy.litestar.dev/latest/usage/cli.html) — Generate and apply Alembic schema migrations from the terminal.
-- [Database Seeding](https://advanced-alchemy.litestar.dev/latest/usage/database_seeding.html) — Load starter data from JSON or CSV files.
+- [Replica Routing](https://advanced-alchemy.litestar.dev/latest/usage/routing.html): Route writes to a primary database and distribute reads across replica pools.
+- [Caching](https://advanced-alchemy.litestar.dev/latest/usage/caching.html): Cache lookups in memory, Redis, or Memcached with automatic invalidation on commit.
+- [CLI & Migrations](https://advanced-alchemy.litestar.dev/latest/usage/cli.html): Generate and apply Alembic schema migrations from the terminal.
+- [Database Seeding](https://advanced-alchemy.litestar.dev/latest/usage/database_seeding.html): Stream and load seed data from JSON, JSONL, or CSV fixtures.
 
 Source: https://advanced-alchemy.litestar.dev/latest/usage/modeling/index.html
 
 # Data Modeling
 
-Every database table needs a few essentials: a primary key, clear column types, and usually `created_at` and `updated_at` timestamps so you know when rows changed.
-
-Advanced Alchemy gives you ready-to-use base classes and portable column types so you only write the columns unique to your app.
+Advanced Alchemy provides declarative base classes, column mixins, and dialect-portable column types for primary keys, audit timestamps, encrypted fields, password hashes, and object storage.
 
 Pick a base class for integer or UUID keys, add URL slugs, and wire relationships between tables.
 
@@ -140,22 +134,22 @@ Source: https://advanced-alchemy.litestar.dev/latest/usage/modeling/basics.html
 
 # Modeling Basics
 
-When you create a new table—like `BlogPost` or `Author`—you almost always want an `id` column and `created_at` / `updated_at` timestamps. Instead of copying those columns onto every model, inherit from one of Advanced Alchemy’s base classes.
+Declarative base classes configure primary keys, sentinel columns, and optional `created_at` and `updated_at` audit timestamps across your SQLAlchemy models.
 
 ## Choosing a Base Class
 
-Pick the base class that matches how you want row IDs generated. Every `*Base` class also has an `*AuditBase` twin that adds automatic `created_at` and `updated_at` UTC timestamps:
+Select a base class matching your primary key strategy. Each keyed `*Base` class has a corresponding `*AuditBase` variant that adds `created_at` and `updated_at` UTC columns (`DefaultBase` omits preconfigured primary key and audit columns):
 
-| Base Class | Best When You Want |
+| Base Class | Description |
 | --- | --- |
-| `UUIDv7Base` / `UUIDv7AuditBase` | Time-sorted UUID primary keys that index well and stay safe to expose in URLs. |
+| `UUIDv7Base` / `UUIDv7AuditBase` | Time-ordered UUIDv7 primary keys with sequential B-tree index locality. |
 | `UUIDBase` / `UUIDAuditBase` | Random UUIDv4 primary keys. |
-| `BigIntBase` / `BigIntAuditBase` | Auto-incrementing 64-bit integer IDs (`1, 2, 3...`) that also work in SQLite tests. |
+| `BigIntBase` / `BigIntAuditBase` | Auto-incrementing 64-bit integer primary keys (mapped to `INTEGER` on SQLite). |
 | `IdentityBase` / `IdentityAuditBase` | SQL standard `GENERATED BY DEFAULT AS IDENTITY` integer primary keys. |
 | `NanoIDBase` / `NanoIDAuditBase` | Short, URL-friendly string IDs. |
-| `DefaultBase` | A clean blank slate when you want to define your own primary key or composite key. |
+| `DefaultBase` | Unopinionated declarative base for custom or composite primary keys. |
 
-Here is a blog post table with an auto-incrementing integer ID and automatic `created_at` / `updated_at` columns:
+Define a model with a 64-bit integer primary key and automatic `created_at` and `updated_at` columns:
 
 ```python
 import datetime
@@ -186,11 +180,11 @@ class BasicBlogPost(BigIntAuditBase):
     published_at: Mapped[datetime.datetime | None] = mapped_column(default=None)
 ```
 
-> **Tip**: Base classes and mixins automatically keep your physical table columns tidy: `id` comes first, your custom columns sit in the middle, and audit timestamps sit at the end.
+> **Tip**: Base classes and mixins assign column sort orders so `id` precedes model-specific columns and audit timestamps appear last in generated DDL.
 
 ## Many-to-Many Relationships
 
-Suppose one blog post can have several topics, and one topic belongs to many posts. Join them with a link table attached to `orm_registry.metadata`, and mix in `SlugKey` to give each topic a URL-friendly `slug` column:
+Model many-to-many associations with a secondary `Table` bound to `orm_registry.metadata`, and mix in `SlugKey` to add an indexed `slug` column:
 
 ```python
 from sqlalchemy import Column, ForeignKey, Table
@@ -244,7 +238,7 @@ async def create_post_with_topics(db_session: AsyncSession, topic_slugs: list[st
 
 ## Preventing Duplicate Rows
 
-When users tag a post with `"Python"` and `"python"`, you usually want both to point to the same tag row instead of crashing with a duplicate-key error. Mix in `UniqueMixin` and tell it how to recognize an existing record:
+Mix in `UniqueMixin` and implement `unique_hash` and `unique_filter` to return existing session or database instances instead of inserting duplicate rows:
 
 ```python
 from typing import Optional
@@ -297,7 +291,7 @@ class UniqueTopic(BigIntAuditBase, SlugKey, UniqueMixin):
 
 ## Custom Keys and Dataclass Models
 
-Need to supply your own primary key (such as an external SKU code) or prefer Python dataclass syntax? Combine `DefaultBase` with `AuditColumns` or SQLAlchemy’s `MappedAsDataclass`:
+Combine `DefaultBase` with `AuditColumns` for custom or composite primary keys, or pair it with SQLAlchemy’s `MappedAsDataclass` for dataclass model semantics:
 
 ```python
 from sqlalchemy.orm import Mapped, mapped_column
@@ -342,13 +336,11 @@ Source: https://advanced-alchemy.litestar.dev/latest/usage/modeling/inheritance.
 
 # Inheritance Patterns
 
-Sometimes several models share most of their fields—for example, **Managers** and **Engineers** are both **Employees**, or **Articles** and **Videos** are both **Posts**.
+Advanced Alchemy’s declarative base classes and repositories support all three SQLAlchemy inheritance strategies:
 
-SQLAlchemy supports three ways to lay out shared models in the database, and Advanced Alchemy’s base classes and repositories work with all three:
-
-- **Single Table**: Everything lives in **one table** with a `type` column. Fastest to query when subclasses only add a few optional columns.
-- **Joined Table**: Shared fields live in a **parent table**, and extra fields live in **child tables** linked by a foreign key. Best when subclasses have many required columns.
-- **Concrete Table**: An abstract Python base class shares column definitions, while each subclass gets its own **separate table**.
+- **Single Table**: Subclasses share one table distinguished by a discriminator column (`polymorphic_on`). Suitable when subclasses add only a few nullable columns.
+- **Joined Table**: Shared columns reside in a parent table and subtype-specific columns reside in child tables joined by a foreign key.
+- **Concrete Table**: An abstract Python base class (`__abstract__ = True`) shares column definitions while each subclass maps to an independent table.
 
 ## Comparing the Layouts
 
@@ -442,7 +434,7 @@ class Bicycle(Vehicle):
 
 ## Querying Inherited Models
 
-Attach a repository to the parent model when you want all subtypes back together, or attach one to a child model when you only want rows of that specific subtype:
+Bind a repository to the parent model to query across all polymorphic subtypes, or bind a repository to a specific subclass to query only that subtype:
 
 ```python
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -464,7 +456,7 @@ Source: https://advanced-alchemy.litestar.dev/latest/usage/modeling/sqlmodel.htm
 
 # SQLModel Integration
 
-If your team already writes tables with [SQLModel](https://sqlmodel.tiangolo.com/), you can plug those models straight into Advanced Alchemy repositories without rewriting your model classes.
+[SQLModel](https://sqlmodel.tiangolo.com/) classes configured with `table=True` work directly with Advanced Alchemy repositories and services.
 
 ## Defining and Querying a SQLModel Table
 
@@ -533,27 +525,25 @@ async def create_and_list_heroes() -> list[Hero]:
         await engine.dispose()
 ```
 
-## Good to Know
+## Metadata Configuration
 
-SQLModel uses its own `SQLModel.metadata` registry instead of Advanced Alchemy’s `orm_registry`. Pass `metadata=SQLModel.metadata` in your framework config so migrations and table creation helpers target your SQLModel tables.
+SQLModel registers tables on `SQLModel.metadata` rather than Advanced Alchemy’s `orm_registry.metadata`. Pass `metadata=SQLModel.metadata` to `SQLAlchemyAsyncConfig` or `SQLAlchemySyncConfig` so Alembic migrations and `create_all` target your SQLModel tables.
 
 Source: https://advanced-alchemy.litestar.dev/latest/usage/modeling/types.html
 
 # Portable Column Types
 
-Different SQL databases use different column types for UUIDs, UTC timestamps, JSON, and AI vector embeddings—especially when you test against SQLite locally and deploy to PostgreSQL, MySQL, or Oracle in production.
-
-Advanced Alchemy’s column types automatically pick the best native database type on each engine while keeping your Python types consistent.
+Advanced Alchemy provides custom SQLAlchemy `TypeDecorator` implementations that compile to dialect-appropriate SQL types across SQLite, PostgreSQL, CockroachDB, MySQL, MariaDB, Oracle, DuckDB, SQL Server, and Spanner while preserving consistent Python types.
 
 ## Common Column Types at a Glance
 
-| Column Type | What It Does |
+| Column Type | Description |
 | --- | --- |
 | `DateTimeUTC` | Converts datetimes to UTC before saving, returns timezone-aware UTC datetimes on read, and supports configurable fractional-second precision (`DateTimeUTC(fsp=6)`). |
-| `GUID` | Stores Python `UUID` objects natively on PostgreSQL, CockroachDB, DuckDB, MSSQL, and Oracle, or compactly on SQLite/MySQL. |
-| `BigIntIdentity` | Uses 64-bit `BIGINT` in production and `INTEGER` on SQLite so auto-incrementing IDs work in local tests. |
-| `JsonB` | Uses fast binary JSON on PostgreSQL, CockroachDB, and Oracle, and standard `JSON` everywhere else. |
-| `Vector(dim=...)` | Stores float embeddings for similarity search (`pgvector`, Oracle 23ai+, CockroachDB, DuckDB, and SQLite fallback). |
+| `GUID` | Stores Python `UUID` objects using native `UUID` / `UNIQUEIDENTIFIER` types on PostgreSQL, CockroachDB, DuckDB, and SQL Server, `RAW(16)` or `CHAR(32)` on Oracle, and `BINARY(16)` or `CHAR(32)` on SQLite and MySQL. |
+| `BigIntIdentity` | Compiles to 64-bit `BIGINT` on server databases and `INTEGER` on SQLite so auto-incrementing primary keys work across dialects. |
+| `JsonB` | Compiles to binary JSON on PostgreSQL, CockroachDB (`JSONB`), and Oracle (`ORA_JSONB`), and standard `JSON` on other dialects. |
+| `Vector(dim=...)` | Stores float vector embeddings using native vector columns on PostgreSQL (`pgvector`), CockroachDB, and Oracle 23ai+, with `JSON` array storage on SQLite, DuckDB, and other dialects. |
 
 ## Examples by Type
 
@@ -642,16 +632,14 @@ class BackgroundJob(BigIntBase):
 
 ## Related Guides
 
-- [Security and File Storage Types](https://advanced-alchemy.litestar.dev/latest/usage/modeling/security_and_storage_types.html) — Field encryption, password hashing, authenticator codes, and uploaded files.
-- [Custom Types](https://advanced-alchemy.litestar.dev/latest/reference/types.html) — Full API reference for `advanced_alchemy.types`.
+- [Security and File Storage Types](https://advanced-alchemy.litestar.dev/latest/usage/modeling/security_and_storage_types.html): Field encryption, password hashing, authenticator codes, and file storage.
+- [Custom Types](https://advanced-alchemy.litestar.dev/latest/reference/types.html): Full API reference for `advanced_alchemy.types`.
 
 Source: https://advanced-alchemy.litestar.dev/latest/usage/modeling/security_and_storage_types.html
 
 # Security and File Storage Types
 
-Most apps eventually need to store sensitive values—API keys, user passwords, two-factor login codes—or attach uploaded files like avatars and PDF reports to a database row.
-
-Advanced Alchemy provides dedicated column types so sensitive values are never stored in plain text and uploaded files stay in sync with your database transactions.
+Advanced Alchemy includes column types for symmetric field encryption, password hashing, TOTP seeds, one-time verification codes, and transaction-synchronized object storage.
 
 ## Encrypted Text and Password Hashing
 
@@ -730,7 +718,7 @@ assert ok is True and otp.is_used is True
 
 ## File and Object Storage
 
-Instead of storing large binary blobs inside SQL tables, `StoredObject` saves lightweight file metadata in your table and writes the file bytes to local disk, S3, Google Cloud Storage, or Azure via `storages`:
+Instead of storing binary payloads inside SQL columns, `StoredObject` persists file metadata in the table and writes object bytes to local disk, S3, Google Cloud Storage, or Azure Blob Storage through `storages`:
 
 ```python
 from pathlib import Path
@@ -793,9 +781,7 @@ Source: https://advanced-alchemy.litestar.dev/latest/usage/repositories/index.ht
 
 # Repositories
 
-Without a repository, every web route ends up repeating the same SQLAlchemy query code: building a `select()`, adding `where()` clauses, counting total rows for pagination, and handling `NoResultFound` errors.
-
-A **Repository** wraps one table model and gives you ready-made, type-checked methods—`add`, `get`, `get_many`, `get_many_and_count`, `upsert_many`, and `delete`—so your routes read like plain English.
+A **Repository** binds to a single SQLAlchemy model and provides typed synchronous or asynchronous methods (`add`, `get`, `get_many`, `get_many_and_count`, `upsert_many`, `delete`) for CRUD, filtering, pagination, and dialect-translated error handling.
 
 Add, fetch, update, bulk-upsert, and delete records with async or sync repositories.
 
@@ -807,21 +793,21 @@ Source: https://advanced-alchemy.litestar.dev/latest/usage/repositories/basics.h
 
 # Repository Basics
 
-Think of a **Repository** as a dedicated helper for one database table. The Repository Pattern separates SQLAlchemy queries and persistence logic from your HTTP routes and business rules behind a uniform collection-like interface (`add`, `get`, `get_many`, `update`, `delete`), keeping query logic reusable and straightforward to test—including against mock repositories. Instead of repeating raw `select()` and `session.add()` calls everywhere, you bind a repository to your `Post` model once and call its methods directly.
+A **Repository** encapsulates SQLAlchemy queries and persistence logic for one mapped model behind a uniform interface (`add`, `get`, `get_many`, `update`, `delete`), keeping query logic reusable and testable against SQL or in-memory mock repositories.
 
 ## Choosing a Repository Class
 
-Every async repository has an identical synchronous version—pick async when using `AsyncSession` and sync when using `Session`:
+Every async repository has a synchronous counterpart; use the async classes with `AsyncSession` and the sync classes with `Session`:
 
-| Repository Type | When to Use It |
+| Repository Type | Description |
 | --- | --- |
-| `SQLAlchemyAsyncRepository` / `SQLAlchemySyncRepository` | Everyday tables: create, read, update, delete, filter, paginate, and bulk upsert. |
-| `SQLAlchemyAsyncSlugRepository` / `SQLAlchemySyncSlugRepository` | Tables with URL slugs (like `/posts/hello-world`): generates unique slugs and looks up rows by slug. |
-| `SQLAlchemyAsyncQueryRepository` / `SQLAlchemySyncQueryRepository` | Custom `SELECT` queries, joins, and `GROUP BY` summaries that don’t map to a single model. |
+| `SQLAlchemyAsyncRepository` / `SQLAlchemySyncRepository` | Standard model CRUD, filtering, pagination, and bulk upserts. |
+| `SQLAlchemyAsyncSlugRepository` / `SQLAlchemySyncSlugRepository` | Models with URL slugs (such as `/posts/hello-world`): generates unique slugs and queries rows by slug. |
+| `SQLAlchemyAsyncQueryRepository` / `SQLAlchemySyncQueryRepository` | Arbitrary `SELECT` statements, joins, and `GROUP BY` aggregations not bound to a single model. |
 
 ## Creating and Reading Rows
 
-Suppose our blog has `Post` and `Tag` tables. Subclass `SQLAlchemyAsyncRepository` and set `model_type = Post`:
+Subclass `SQLAlchemyAsyncRepository` and set `model_type` to your mapped model class:
 
 ```python
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -873,7 +859,7 @@ async def find_post_or_none(db_session: AsyncSession, post_id: int) -> Post | No
 
 ## Saving, Updating, and Deleting in Bulk
 
-When importing a batch of drafts or publishing ten posts at once, looping one query at a time is slow. Use the `*_many` methods to handle whole batches in a single step:
+Use `add_many`, `update_many`, and `delete_many` to persist, modify, or remove batches of records without per-row round-trips:
 
 ```python
 from collections.abc import Sequence
@@ -912,9 +898,7 @@ async def remove_posts(db_session: AsyncSession, post_ids: list[int]) -> Sequenc
 
 ## Syncing External Data with Upserts
 
-Imagine syncing posts from an external CMS: some posts are brand new, and others are updates to rows already in your database.
-
-`upsert_many` inserts new rows and updates matching ones in one call. Behind the scenes, it uses your database’s native upsert command (such as `ON CONFLICT DO UPDATE` on PostgreSQL/SQLite or `MERGE` on Oracle/SQL Server) whenever `match_fields` points to a unique column, and safely falls back to a standard lookup-and-save flow otherwise:
+`upsert_many` inserts new rows and updates matching records in a single call. When `match_fields` targets a unique or primary-key constraint, it compiles a native dialect upsert (`ON CONFLICT DO UPDATE` on PostgreSQL, CockroachDB, SQLite, and DuckDB, `ON DUPLICATE KEY UPDATE` on MySQL and MariaDB, `MERGE` on Oracle and SQL Server, or `INSERT OR UPDATE` on Spanner) and falls back to an ORM select-then-save path otherwise:
 
 ```python
 from collections.abc import Sequence
@@ -931,7 +915,7 @@ async def sync_imported_posts(db_session: AsyncSession, incoming: list[Post]) ->
 
 ## URL Slugs and Summary Queries
 
-Need to look up tags by URL slug (like `/tags/python`) or run a custom `GROUP BY` count? Use the slug or query repository:
+Use `SQLAlchemyAsyncSlugRepository` for slug-based lookups (such as `/tags/python`) and `SQLAlchemyAsyncQueryRepository` for arbitrary `SELECT` and `GROUP BY` statements:
 
 ```python
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -960,16 +944,14 @@ async def count_posts_by_status(db_session: AsyncSession) -> list[Row[Any]]:
 
 ## Next Steps
 
-- [Filtering and Pagination](https://advanced-alchemy.litestar.dev/latest/usage/repositories/filtering.html) — Search text, filter by lists or null values, and paginate results.
-- [Repositories](https://advanced-alchemy.litestar.dev/latest/reference/repository.html) — Complete repository API reference.
+- [Filtering and Pagination](https://advanced-alchemy.litestar.dev/latest/usage/repositories/filtering.html): Search text, filter by collections or nullability, and paginate results.
+- [Repositories](https://advanced-alchemy.litestar.dev/latest/reference/repository.html): Complete repository API reference.
 
 Source: https://advanced-alchemy.litestar.dev/latest/usage/repositories/filtering.html
 
 # Filtering and Pagination
 
-Suppose a reader visits your blog and searches for `"python"`, filters to published articles from the past week, and views 20 posts per page.
-
-Instead of manually conditionally appending `.where()` and `.limit()` clauses in every route, you can pass both plain SQLAlchemy expressions and ready-made filter objects directly into your repository calls.
+Repository query methods accept both SQLAlchemy column expressions and reusable [`StatementFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.StatementFilter) objects without manual conditional `.where()` and `.limit()` chaining.
 
 ## Example Setup
 
@@ -1040,7 +1022,7 @@ class FilteringPostRepository(SQLAlchemyAsyncRepository[FilteringPost]):
 
 ## Plain SQLAlchemy Conditions
 
-For straightforward checks inside Python code, pass SQLAlchemy column expressions directly to `get_many` or `get_many_and_count`:
+Pass SQLAlchemy column expressions directly to `get_many` or `get_many_and_count`:
 
 ```python
 async def get_recent_posts(db_session: AsyncSession) -> list[FilteringPost]:
@@ -1077,7 +1059,7 @@ async def list_drafts_and_published(db_session: AsyncSession) -> tuple[list[Filt
 
 ## Paginating Results
 
-Combine `LimitOffset` with `get_many_and_count` for both page rows and total matching counts. By default (`count_with_window_function=True`), `get_many_and_count` runs a single query using an analytical `COUNT(*) OVER()` window function. Pass `count_with_window_function=False` (per call, or as a class default on your repository or service) to run two focused queries—an indexed page `SELECT` and a separate `COUNT(*)`—which avoids extra sorting or scattered heap reads on large sorted tables or random/UUID primary keys (Cloud Spanner always uses the two-query path):
+Combine `LimitOffset` with `get_many_and_count` for both page rows and total matching counts. By default (`count_with_window_function=True`), `get_many_and_count` runs a single query using an analytical `COUNT(*) OVER()` window function. Pass `count_with_window_function=False` (per call, or as a class default on your repository or service) to run two focused queries (an indexed page `SELECT` and a separate `COUNT(*)`), avoiding extra sorting or scattered heap reads on large sorted tables or random/UUID primary keys (Cloud Spanner always uses the two-query path):
 
 ```python
 async def get_posts_page(db_session: AsyncSession, page: int = 1, page_size: int = 20) -> tuple[list[FilteringPost], int]:
@@ -1137,10 +1119,11 @@ field_filters: FilterConfig = {
     },
     "sort_fields": {"title", "published_at"},
     "pagination_type": "limit_offset",
+    "pagination_max_size": 100,
 }
 ```
 
-Frontend grids such as TanStack Table, AG Grid, and MUI Data Grid map column filters directly to `?titleContains=sql&publishedAtIsNull=false&tagsSlugIn=python&orderBy=-published_at&orderBy=title&currentPage=2&pageSize=25`.
+Frontend grids such as TanStack Table, AG Grid, and MUI Data Grid map column filters directly to `?titleContains=sql&publishedAtIsNull=false&tagsSlugIn=python&orderBy=-published_at&orderBy=title&currentPage=2&pageSize=25`. Set `pagination_max_size` (default `None`) to cap `pageSize`/`page_size` via OpenAPI `maximum` and framework validation (400 in Litestar, 422 in FastAPI); when `pagination_size` is omitted, the default page size is clamped to `pagination_max_size` (and setting `pagination_size` above `pagination_max_size` raises `ImproperConfigurationError`).
 
 See [Declarative Filters](https://advanced-alchemy.litestar.dev/latest/usage/repositories/filtersets.html) for reusable class-based filters and automatic relationship loading.
 
@@ -1197,7 +1180,7 @@ class PostFilters(FilterSet[FilterSetPost]):
     }
     sort_fields = {"title", "published_at"}
     search_fields = {"title", "tags.slug"}
-    config = {"pagination_type": "limit_offset", "pagination_size": 20}
+    config = {"pagination_type": "limit_offset", "pagination_size": 20, "pagination_max_size": 100}
 
 async def find_filtered_posts(db_session: AsyncSession) -> list[FilterSetPost]:
     repository = FilterSetPostRepository(session=db_session)
@@ -1207,7 +1190,12 @@ async def find_filtered_posts(db_session: AsyncSession) -> list[FilterSetPost]:
 
 The generic argument supplies the mapped model; `model_type` can also be set
 explicitly. FilterSet construction takes typed Python values. Framework providers
-validate and convert HTTP query values. Pydantic remains optional.
+validate and convert HTTP query values. Pydantic remains optional. Set
+`pagination_max_size` (default `None`) in `config` or on the class to cap
+`pageSize`/`page_size`; oversized values raise `ValueError` when instantiating
+a FilterSet and HTTP 400/422 through Litestar or FastAPI. When `pagination_size`
+is omitted, the default page size is clamped to `pagination_max_size`, and
+`pagination_size > pagination_max_size` raises `ImproperConfigurationError`.
 
 Field parameters use double underscores to separate relationship names, the field,
 and the operator: `?tags__slug__eq=sqlalchemy&title__contains=python`. A deeper
@@ -1300,13 +1288,11 @@ Source: https://advanced-alchemy.litestar.dev/latest/usage/repositories/advanced
 
 # Advanced Repository
 
-Most tables have a single `id` column and simple single-row updates. When you run into trickier real-world cases—join tables with two-part keys, concurrent checkout updates, or clearing old drafts in one query—repositories handle them cleanly.
+Repositories support composite primary keys, row-level `SELECT ... FOR UPDATE` locking, conditional bulk deletes, and cross-dialect exception translation.
 
 ## Composite Primary Keys
 
-Some tables identify a row by **two columns together** rather than a single `id`—for example, a `UserRole` table keyed by `(user_id, role_id)`.
-
-You can pass composite keys to `get` or `delete_many` as a dictionary (recommended because column names are explicit) or as an ordered tuple:
+Models keyed by multiple primary-key columns (such as `(user_id, role_id)` on `UserRole`) accept composite keys in `get` and `delete_many` either as a column-name dictionary (recommended) or as an ordered tuple:
 
 ```python
 from sqlalchemy import ForeignKey
@@ -1367,7 +1353,7 @@ async def get_and_remove_roles(
 
 ## Row Locking
 
-Imagine two requests trying to deduct credits from the same user account at the exact same instant. Passing `with_for_update=True` locks that row in the database until your transaction finishes so the second request waits its turn:
+Pass `with_for_update=True` (or a dictionary of `FOR UPDATE` options such as `nowait` and `of`) to acquire a row-level lock for the duration of the current transaction:
 
 ```python
 async def lock_user_for_update(db_session: AsyncSession, user_id: int) -> AdvancedUser:
@@ -1384,7 +1370,7 @@ async def lock_user_without_waiting(db_session: AsyncSession, user_id: int) -> A
 
 ## Deleting Rows by Condition
 
-Need to purge every unpublished draft in one query without loading each post into Python first? Call `delete_where`:
+Call `delete_where` to delete matching rows directly by SQL predicate without loading every row first:
 
 ```python
 async def purge_unpublished_drafts(db_session: AsyncSession) -> Sequence[AdvancedPost]:
@@ -1392,9 +1378,26 @@ async def purge_unpublished_drafts(db_session: AsyncSession) -> Sequence[Advance
     return await repo.delete_where(AdvancedPost.published.is_(False))
 ```
 
-## Catching Database Errors Cleanly
+## Handling Database Exceptions
 
-Every database driver raises different low-level error codes when a unique constraint or foreign key fails. Repositories automatically translate native database errors across PostgreSQL, SQLite, MySQL, MariaDB, DuckDB, CockroachDB, Oracle, MSSQL, and Spanner into consistent Python exceptions:
+Database drivers raise backend-specific DBAPI error codes when unique or foreign-key constraints fail. Repositories translate native constraint errors across PostgreSQL, CockroachDB, SQLite, MySQL, MariaDB, DuckDB, Oracle, SQL Server, and Spanner into typed Python exceptions:
+
+```python
+from typing import Optional
+from advanced_alchemy.exceptions import DuplicateKeyError, ForeignKeyError, NotFoundError
+
+async def safe_assign_role(
+    db_session: AsyncSession,
+    user_id: int,
+    role_id: int,
+) -> Optional[AdvancedUserRole]:
+    repo = AdvancedUserRoleRepository(session=db_session)
+    try:
+        return await repo.add(AdvancedUserRole(user_id=user_id, role_id=role_id), auto_commit=True)
+    except (DuplicateKeyError, ForeignKeyError, NotFoundError):
+        await db_session.rollback()
+        return None
+```
 
 ```python
 from advanced_alchemy.exceptions import DuplicateKeyError, ForeignKeyError, NotFoundError
@@ -1416,11 +1419,11 @@ Source: https://advanced-alchemy.litestar.dev/latest/usage/services.html
 
 # Services
 
-A [Repository](https://advanced-alchemy.litestar.dev/latest/usage/repositories/basics.html) speaks in database tables (`BlogPost` rows), while a **Service** speaks in your API’s input and output shapes (`BlogPostCreate`, `BlogPostResponse`). Use a repository directly for simple table persistence and queries; add a service on top when you want automatic schema conversion (`to_model` / `to_schema`), transaction commits, validation hooks, or multi-step business rules—such as creating missing tags or generating URL slugs before saving.
+A [Repository](https://advanced-alchemy.litestar.dev/latest/usage/repositories/basics.html) operates directly on SQLAlchemy model instances (`BlogPost`), whereas a **Service** operates on typed input and output schemas (`BlogPostCreate`, `BlogPostResponse`). Use a repository directly for table persistence and queries; add a service when you need schema conversion (`to_model` and `to_schema`), transaction commits, validation hooks, or multi-step domain logic such as generating URL slugs before saving.
 
 ## Setting Up a Service
 
-Let’s connect a `BlogPost` table, Pydantic request/response schemas, and a `BlogPostService`:
+Define a `BlogPost` model, Pydantic request and response schemas, and a `BlogPostService`:
 
 ```python
 from sqlalchemy.orm import Mapped, mapped_column
@@ -1467,7 +1470,7 @@ class BlogPostService(SQLAlchemyAsyncRepositoryService[BlogPost]):
 
 ## Creating, Updating, and Returning Schemas
 
-Pass dictionaries, Pydantic models, `msgspec` structs, dataclasses, `attrs` classes, or `SQLModel` objects straight into `create` and `update`, then call `to_schema` to format the response (or `get_or_none` when missing IDs should return `None`):
+Pass dictionaries, Pydantic models, `msgspec` structs, dataclasses, `attrs` classes, or `SQLModel` objects directly to `create` and `update`, then call `to_schema` to format the response (or `get_or_none` when missing IDs should return `None`):
 
 ```python
 async def create_post(service: BlogPostService, payload: BlogPostCreate) -> BlogPostResponse:
@@ -1483,7 +1486,7 @@ async def find_post(service: BlogPostService, post_id: int) -> Optional[BlogPost
 
 ## Adding Custom Business Rules
 
-Need to auto-generate a unique URL slug whenever a tag is created or renamed? Override `to_model` (or `to_model_on_create` / `to_model_on_update`):
+Override `to_model` (or `to_model_on_create` and `to_model_on_update`) to run custom logic before persistence, such as generating a unique URL slug when creating or renaming a tag:
 
 ```python
 from advanced_alchemy.repository import SQLAlchemyAsyncSlugRepository
@@ -1503,7 +1506,7 @@ class BlogTagService(SQLAlchemyAsyncRepositoryService[BlogTag]):
 
 ## Using Pydantic, Msgspec, Dataclasses, attrs, or SQLModel
 
-Services work with all five major Python schema libraries—normalizing partial updates (ignoring unset fields automatically) and converting rows into response schemas:
+Services integrate with all five supported Python schema libraries, omitting unset fields during partial updates and converting ORM rows into response objects:
 
 ```python
 class BlogPostPatch(BaseModel):
@@ -1574,10 +1577,10 @@ class ArticleService(SQLAlchemyAsyncRepositoryService[ArticleRow]):
 
 ## Related Guides
 
-- [Service Composition](https://advanced-alchemy.litestar.dev/latest/usage/service_composition.html) — Coordinate multiple services on one shared session with `ServiceGroup`.
-- [Litestar Integration](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar.html) — Inject services directly into Litestar controllers.
-- [FastAPI Integration](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi.html) — Inject services into FastAPI routes with `Depends`.
-- [Services](https://advanced-alchemy.litestar.dev/latest/reference/service.html) — Full service API reference.
+- [Service Composition](https://advanced-alchemy.litestar.dev/latest/usage/service_composition.html): Coordinate multiple services on one shared session with `ServiceGroup`.
+- [Litestar Integration](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar.html): Inject services into Litestar controllers and route handlers.
+- [FastAPI Integration](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi.html): Inject services into FastAPI routes with `Depends`.
+- [Services](https://advanced-alchemy.litestar.dev/latest/reference/service.html): Full service API reference.
 
 Source: https://advanced-alchemy.litestar.dev/latest/usage/service_composition.html
 
@@ -1755,15 +1758,11 @@ Source: https://advanced-alchemy.litestar.dev/latest/usage/routing.html
 
 # Read/Write Routing
 
-As your app grows, most database traffic is reading data—loading feeds, search pages, and dashboards—while only a fraction is saving changes.
+Read/write routing directs mutating statements to a **Primary Database** and distributes `SELECT` queries across one or more **Read Replica** pools without changing repository or service calls:
 
-Read/write routing lets you add **Read Replicas** alongside your main **Primary Database** without rewriting your repository calls:
+## Primary Pinning After Writes
 
-## How Your Own Changes Stay Fresh
-
-Replicas take a few milliseconds to copy new data from Primary. What happens if a user creates a new blog post and your code immediately loads that post on the next line?
-
-Advanced Alchemy solves replica lag automatically: as soon as a session writes data, subsequent reads in that transaction stay pinned to Primary until `commit()` or `rollback()` finishes:
+Asynchronous replication introduces replication lag between the primary database and read replicas. When `sticky_after_write=True` (the default), once a session flushes a write, subsequent reads within that transaction remain pinned to the primary database until `commit()` or `rollback()` completes:
 
 ## Setting Up Primary and Replica Pools
 
@@ -1835,7 +1834,7 @@ local_routing = RoutingConfig(
 
 ## Choosing a Pool Manually
 
-Most routes never need manual overrides. When a critical checkout check must read from Primary—or a slow report should run on an `"analytics"` replica—wrap the call in a context manager or pass `bind_group`:
+Use `primary_context()`, `replica_context()`, or `use_bind_group()` to target a specific engine pool for an individual operation (such as forcing a primary read or routing reporting queries to an `"analytics"` pool):
 
 ```python
 from typing import Any
@@ -1948,9 +1947,7 @@ Source: https://advanced-alchemy.litestar.dev/latest/usage/caching.html
 
 # Caching
 
-Imagine 500 visitors opening the same popular author page at the exact same second. Without a cache, your database runs the exact same `SELECT` query 500 times.
-
-Advanced Alchemy integrates with [dogpile.cache](https://dogpilecache.sqlalchemy.org/) so repeated lookups come straight from memory or Redis—and whenever you save changes to a row, stale cache entries are cleared automatically when the transaction commits.
+Advanced Alchemy integrates with [dogpile.cache](https://dogpilecache.sqlalchemy.org/) to cache repository lookups in memory, Redis, or Memcached and automatically invalidate affected cache entries after transactions commit.
 
 ## Installation
 
@@ -1972,7 +1969,7 @@ poetry add "advanced-alchemy[dogpile]"
 
 ## Quick Start
 
-Pass `CacheConfig` to your database configuration and enable `auto_expunge=True` on cached repositories. Every `repo.get()` and `repo.get_many()` call uses the cache automatically—or pass `use_cache=False` to skip the cache for a specific query:
+Pass `CacheConfig` to your database configuration and enable `auto_expunge=True` on cached repositories. Repository `get()` and `get_many()` calls read through the configured cache by default; pass `use_cache=False` to bypass the cache for an individual query:
 
 ```python
 from sqlalchemy.orm import Mapped
@@ -2049,11 +2046,11 @@ from advanced_alchemy.cache import CacheConfig
 disabled_cache = CacheConfig(enabled=False)
 ```
 
-## What Happens Behind the Scenes
+## Invalidation and Consistency Behavior
 
-- **Safe rollbacks**: Cache entries are only cleared *after* `commit()` succeeds. If a transaction rolls back, your cache stays untouched.
-- **No cache stampedes**: If 50 requests miss the same uncached key at once, one query runs and shares the result with the waiting requests.
-- **Columns only**: Cached rows store column values, not related tables. Call `session.merge(row)` first if you need to lazy-load relationships later.
+- **Post-commit invalidation**: Cache entries are invalidated only after `commit()` succeeds; rolled-back transactions leave existing cache entries intact.
+- **Single-flight dogpile locking**: Concurrent cache misses on the same key serialize behind the Dogpile lock so one query populates the cache for waiting callers.
+- **Detached column state**: Cached instances serialize mapped column values without loaded relationships. Call `session.merge(row)` before accessing lazy relationships.
 
 ```python
 from typing import Any
@@ -2085,9 +2082,7 @@ Source: https://advanced-alchemy.litestar.dev/latest/usage/cli.html
 
 # CLI & Migrations
 
-Whenever you add a column or create a new table in Python, your SQL database needs a migration script to apply that change safely.
-
-Advanced Alchemy includes a terminal tool called `alchemy` (plus `litestar database` and `flask database` when using web frameworks) that wraps Alembic so you can create migrations, upgrade databases, and export seed data with one command.
+Advanced Alchemy provides the `alchemy` CLI (along with `litestar database` and `flask database` in framework integrations) for generating and applying Alembic migrations, checking schema drift, and exporting or loading fixture data.
 
 ## Installation
 
@@ -2109,7 +2104,7 @@ poetry add "advanced-alchemy[cli]"
 
 ## Pointing the CLI at Your Database Config
 
-Tell `alchemy` where your database config lives once in `pyproject.toml` (recommended), with an environment variable, or with `--config` on the command line:
+Configure the target database configuration path in `pyproject.toml` (recommended), via `ALCHEMY_CONFIG`, or with `--config`:
 
 ```toml
 [tool.advanced-alchemy]
@@ -2137,7 +2132,7 @@ alchemy_config = SQLAlchemySyncConfig(
 
 ## Common Flags
 
-| Flag | What It Does |
+| Flag | Description |
 | --- | --- |
 | `-c`, `--config` | Import path (`myapp.db:alchemy_config`) to your config or app plugin. |
 | `--validate-config` | Prints discovered configs and checks them before running a command. |
@@ -2146,7 +2141,7 @@ alchemy_config = SQLAlchemySyncConfig(
 
 ## Adding Commands to Your Own Click App
 
-Already have a custom project CLI built with Click? Attach Advanced Alchemy’s migration commands directly to your group:
+Attach Advanced Alchemy’s migration commands to an existing Click command group with `add_migration_commands`:
 
 ```python
 import click
@@ -2165,8 +2160,8 @@ assert "upgrade" in alchemy_group.commands
 
 ## Next Steps
 
-- [CLI Command Workflows](https://advanced-alchemy.litestar.dev/latest/usage/cli_commands.html) — Step-by-step commands for creating migrations, checking drift, and exporting fixtures.
-- [Command-Line Interface](https://advanced-alchemy.litestar.dev/latest/reference/cli.html) — Full list of `alchemy` commands and flags.
+- [CLI Command Workflows](https://advanced-alchemy.litestar.dev/latest/usage/cli_commands.html): Commands for generating migrations, checking schema drift, and exporting fixtures.
+- [Command-Line Interface](https://advanced-alchemy.litestar.dev/latest/reference/cli.html): Full `alchemy` CLI command and option reference.
 
 Source: https://advanced-alchemy.litestar.dev/latest/usage/cli_commands.html
 
@@ -2269,9 +2264,7 @@ Source: https://advanced-alchemy.litestar.dev/latest/usage/database_seeding.html
 
 # Database Seeding
 
-When setting up a new environment or staging server, you often want starter rows—such as default roles, categories, or sample products—loaded from version-controlled fixture files.
-
-Advanced Alchemy’s fixture helpers find, parse, stream, and write these files for you: `open_fixture_sync` and `open_fixture_async` load a whole fixture, `iter_fixture_sync` and `iter_fixture_async` stream it in batches, and `write_fixture_sync` and `write_fixture_async` write one.
+Advanced Alchemy provides synchronous and asynchronous utilities for loading, streaming, and writing JSON, JSON Lines, and CSV seed fixtures: `open_fixture_sync` and `open_fixture_async` load complete fixtures, `iter_fixture_sync` and `iter_fixture_async` stream records in batches, and `write_fixture_sync` and `write_fixture_async` write plain, compressed, or sharded fixture files.
 
 ## Fixture Formats
 
@@ -2489,9 +2482,7 @@ Source: https://advanced-alchemy.litestar.dev/latest/usage/frameworks/index.html
 
 # Framework Integrations
 
-Instead of manually opening, committing, and closing SQLAlchemy sessions inside every web route, Advanced Alchemy plugs directly into your web framework.
-
-Each integration starts and stops database engines cleanly with your app, gives every incoming request its own session, and re-exports core models, repositories, services, and filters from one place.
+Advanced Alchemy provides first-party web framework integrations that manage engine startup and disposal, configure per-request session lifecycles, and re-export core models, repositories, services, and filters.
 
 ## At a Glance
 
@@ -2499,9 +2490,9 @@ Each integration starts and stops database engines cleanly with your app, gives 
 | --- | --- | --- | --- |
 | [Litestar](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar.html) | `SQLAlchemyPlugin` | Automatic DI, [DTOs & filters](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_dtos.html), [session stores](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_sessions.html), and [file uploads](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_storage.html) | `litestar database` |
 | [FastAPI](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi.html) | `AdvancedAlchemy` | Lifespan sessions, [Depends services & filters](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi_dependencies.html), and [file uploads](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi_storage.html) | `alchemy` |
-| [Starlette](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/starlette.html) | `AdvancedAlchemy` | ASGI session middleware, sync & async sessions, and multi-database support | `alchemy` |
-| [Flask](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/flask.html) | `AdvancedAlchemy` | Request-context sessions, sync/async bridge, and `jsonify()` service helper | `flask database` |
-| [Sanic](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/sanic.html) | `AdvancedAlchemy` | `sanic-ext` dependency injection, `request.ctx` sessions, and multi-binds | `alchemy` |
+| [Starlette](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/starlette.html) | `AdvancedAlchemy` | ASGI session middleware, lazy `request.state` sessions, and multi-database support | `alchemy` |
+| [Flask](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/flask.html) | `AdvancedAlchemy` | App-context sessions, sync/async bridge, and `jsonify()` service helper | `flask database` |
+| [Sanic](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/sanic.html) | `AdvancedAlchemy` | `sanic-ext` dependency injection, per-request `request.ctx` sessions, and multi-binds | `alchemy` |
 
 ## Choose Your Framework
 
@@ -2509,11 +2500,11 @@ Full plugin integration with DTOs, controller dependency injection, server-side 
 
 ASGI lifespan management, typed `Depends` providers for services and OpenAPI query filters, multi-binds, and multipart file storage.
 
-Lightweight ASGI middleware that attaches sync or async sessions to `request.state` across single or multiple databases.
+ASGI middleware that creates lazy per-request sync or async sessions on `request.state` across single or multiple databases.
 
-WSGI and async route sessions, `FlaskServiceMixin` JSON responses, and built-in `flask database` migration commands.
+App-context WSGI and async route sessions, `FlaskServiceMixin` JSON responses, and built-in `flask database` migration commands.
 
-Automatic session injection with `sanic-ext`, lazy `request.ctx` sessions, and multi-database bind keys.
+Automatic session injection with `sanic-ext`, per-request `request.ctx` sessions, and multi-database bind keys.
 
 Full class, provider, DTO, store, and CLI signatures for all five framework packages.
 
@@ -2521,14 +2512,14 @@ Source: https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar.h
 
 # Litestar Integration
 
-Advanced Alchemy is built by the Litestar team and plugs into Litestar with a single `SQLAlchemyPlugin`. One plugin setup handles database connections, per-request sessions, JSON serialization, error responses, and `litestar database` CLI migrations.
+Advanced Alchemy is the official SQLAlchemy integration for Litestar. `SQLAlchemyPlugin` configures engine lifecycles, per-request sessions, DTO and msgspec serialization, repository exception handlers, and `litestar database` CLI commands.
 
 ## What’s Included for Litestar
 
-| Feature | What It Gives You | Guide & API |
+| Feature | Capabilities | Guide & API |
 | --- | --- | --- |
 | **Plugin & Configs** | Starts engines on app startup, opens a session per request, and maps database errors to HTTP responses. | [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/plugins.html) |
-| **Service & Filter DI** | Injects services and ready-made search/pagination filters straight into controller routes. | [Guide](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_dtos.html) · [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html) |
+| **Service & Filter DI** | Injects services and OpenAPI search, sort, and pagination filters into controller routes. | [Guide](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_dtos.html) · [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html) |
 | **SQLAlchemy DTOs** | Auto-generates request/response DTOs from your SQLAlchemy models and `@property` fields. | [Guide](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_dtos.html) · [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/dto.html) |
 | **Sessions & Stores** | Connects multiple databases and stores server-side user sessions or cache keys in SQL tables. | [Guide](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_sessions.html) · [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/store.html) |
 | **File Storage** | Streams `UploadFile` payloads to local disk or S3/GCS and cleans up orphaned files on delete. | [Guide](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_storage.html) · [API](https://advanced-alchemy.litestar.dev/latest/reference/types.html) |
@@ -2554,7 +2545,7 @@ poetry add "advanced-alchemy[litestar,aiosqlite]"
 
 ## Building an Author API Step by Step
 
-Click through each tab to see how a model, service, controller, and Litestar app fit together:
+Connect a model, repository, service, controller, and `SQLAlchemyPlugin`:
 
 ```python
 class AuthorModel(base.UUIDBase):
@@ -2610,7 +2601,7 @@ class AuthorController(Controller):
     async def create_author(
         self,
         authors_service: NamedDependency[AuthorService],
-        data: AuthorCreate,
+        data: JSONBody[AuthorCreate],
     ) -> AuthorSchema:
         """Create a new author record."""
         obj = await authors_service.create(data, auto_commit=True)
@@ -2650,7 +2641,7 @@ def create_app() -> Litestar:
 
 ## Auto-Generating DTOs from Models
 
-Don’t want to write separate `msgspec` or Pydantic schemas for simple CRUD endpoints? `SQLAlchemyDTO` inspects your model’s columns, relationships, and read-only `@property` fields automatically:
+`SQLAlchemyDTO` generates Litestar request and response DTOs directly from SQLAlchemy columns, relationships, and read-only `@property` or `@cached_property` descriptors:
 
 ```python
 from functools import cached_property
@@ -2685,7 +2676,7 @@ from uuid import UUID
 import msgspec
 from litestar import Controller, Litestar, get, post
 from litestar.di import NamedDependency
-from litestar.params import SkipValidation
+from litestar.params import JSONBody, SkipValidation
 from litestar.testing import TestClient
 from sqlalchemy.orm import Mapped
 
@@ -2763,7 +2754,7 @@ class AuthorController(Controller):
     async def create_author(
         self,
         authors_service: NamedDependency[AuthorService],
-        data: AuthorCreate,
+        data: JSONBody[AuthorCreate],
     ) -> AuthorSchema:
         """Create a new author record."""
         obj = await authors_service.create(data, auto_commit=True)
@@ -2823,21 +2814,19 @@ def main() -> None:
 
 ## More Litestar Guides
 
-- [Litestar Services, Filters and DTOs](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_dtos.html) — Injecting services, OpenAPI query filters, and auto-generated `SQLAlchemyDTO` schemas.
-- [Litestar Database and Server Sessions](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_sessions.html) — Request transactions, multi-database setups, and server-side session stores.
-- [Litestar File and Object Storage](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_storage.html) — File uploads and cloud/local object storage.
-- [Litestar SQLAlchemy Docs](https://docs.litestar.dev/latest/usage/databases/sqlalchemy/) — Upstream Litestar framework guide.
+- [Litestar Services, Filters and DTOs](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_dtos.html): Injecting services, OpenAPI query filters, and auto-generated `SQLAlchemyDTO` schemas.
+- [Litestar Database and Server Sessions](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_sessions.html): Request transactions, multi-database setups, and server-side session stores.
+- [Litestar File and Object Storage](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_storage.html): File uploads and cloud or local object storage.
+- [Litestar SQLAlchemy Docs](https://docs.litestar.dev/latest/usage/databases/sqlalchemy/): Upstream Litestar framework guide.
 
 Source: https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_dtos.html
 
 # Litestar Services, Filters and DTOs
 
-When building CRUD routes in Litestar, you rarely want to wire up `db_session` manually or hand-write query parameters for pagination, search, and sorting on every controller.
+Advanced Alchemy provides two Litestar helpers for controller dependency injection and schema generation:
 
-Advanced Alchemy provides two Litestar helpers that remove that boilerplate:
-
-1. **Service & Filter Dependencies** (`create_service_dependencies`) — injects your service and pre-built query filters directly into controller methods.
-2. **SQLAlchemy DTOs** (`SQLAlchemyDTO`) — generates Litestar request and response DTOs straight from your SQLAlchemy models.
+1. **Service & Filter Dependencies** (`create_service_dependencies`): Injects services and typed OpenAPI query filters into controller routes.
+2. **SQLAlchemy DTOs** (`SQLAlchemyDTO`): Generates Litestar request and response DTOs directly from SQLAlchemy models.
 
 ## Injecting Services and Query Filters
 
@@ -2958,31 +2947,31 @@ Use `max_nested_depth` to control how many relationship levels `SQLAlchemyDTO` s
 
 ## Related Guides
 
-- [Litestar Integration](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar.html) — Litestar plugin setup and complete runnable app.
-- [Litestar Database and Server Sessions](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_sessions.html) — Transactions, multi-binds, and server-side session stores.
-- [Data Transfer Objects](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/dto.html) — `SQLAlchemyDTO` and `SQLAlchemyDTOConfig` API reference.
+- [Litestar Integration](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar.html): Litestar plugin setup and complete runnable app.
+- [Litestar Database and Server Sessions](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_sessions.html): Transactions, multi-binds, and server-side session stores.
+- [Data Transfer Objects](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/dto.html): `SQLAlchemyDTO` and `SQLAlchemyDTOConfig` API reference.
 
 Source: https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_sessions.html
 
 # Litestar Database and Server Sessions
 
-This guide covers two kinds of “sessions” in Litestar:
+This guide covers two distinct session layers in Litestar:
 
-1. **Database sessions**: The SQLAlchemy connection used by your routes to read and save rows during a request.
-2. **Server-side user sessions**: Keeping logged-in user state (like shopping carts or auth data) inside a database table instead of Redis.
+1. **Database sessions**: Per-request SQLAlchemy `Session` or `AsyncSession` instances used by repositories and services.
+2. **Server-side HTTP sessions and key-value stores**: Persisting Litestar server-side session payloads and store entries in a SQL table instead of Redis.
 
 ## Per-Request Database Sessions
 
-When `SQLAlchemyPlugin` is registered, Litestar injects a database session under the `db_session` parameter name. You can control when changes commit by setting `before_send_handler` on your config:
+When `SQLAlchemyPlugin` is registered, Litestar injects a database session under the `db_session` parameter name. Control transaction commits by setting `before_send_handler` on your config:
 
-- `"autocommit"` saves changes automatically when a route returns a normal `2xx` response and rolls back on errors.
-- `"autocommit_include_redirects"` also commits when a route returns a `3xx` redirect (useful for HTML form submissions).
+- `"autocommit"` commits automatically when a route returns a `2xx` response and rolls back on errors.
+- `"autocommit_include_redirects"` also commits when a route returns a `3xx` redirect (such as after HTML form submissions).
 
-Need a session outside a web request, such as in a startup hook or background script? Open one directly with `async with config.get_session() as db_session:`.
+Outside an HTTP request (such as in a startup hook or background task), open a session directly with `async with config.get_session() as db_session:`.
 
 ## Connecting Multiple Databases
 
-To talk to both a main database and an analytics database in one Litestar app, pass a list of configs with unique `session_dependency_key`, `engine_dependency_key`, and `bind_key` names:
+To configure multiple databases in one Litestar application, pass a list of configs with unique `session_dependency_key`, `engine_dependency_key`, and `bind_key` names:
 
 ```python
 from advanced_alchemy.extensions.litestar import SQLAlchemyAsyncConfig, SQLAlchemyPlugin
@@ -3004,7 +2993,7 @@ plugin = SQLAlchemyPlugin(config=[primary_config, analytics_config])
 
 ## Storing User Sessions in Your Database
 
-Instead of running a separate Redis server just for user login cookies or rate-limit counters, you can store them in your SQL database using `SQLAlchemyStore` or `SQLAlchemyAsyncSessionBackend`:
+Persist server-side session payloads, rate-limit counters, or general key-value entries in SQL using `SQLAlchemyStore` or `SQLAlchemyAsyncSessionBackend`:
 
 ```python
 class AppStoreModel(StoreModelMixin):
@@ -3065,21 +3054,19 @@ assert issubclass(UserSessionModel, SessionModelMixin)
 assert SQLAlchemyAsyncSessionBackend is not None
 ```
 
-Both approaches use native database upserts and include a `delete_expired()` helper to clear old session rows on a schedule.
+Both backends use native database upserts and expose `delete_expired()` for removing expired rows from scheduled jobs or lifecycle hooks.
 
 ## Related Guides
 
-- [Litestar Integration](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar.html) — Core Litestar plugin, DTOs, and controllers.
-- [Litestar File and Object Storage](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_storage.html) — Uploading files with `StoredObject`.
-- [SQLAlchemy Store](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/store.html) — Store and session backend API reference.
+- [Litestar Integration](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar.html): Core Litestar plugin, DTOs, and controllers.
+- [Litestar File and Object Storage](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_storage.html): Uploading files with `StoredObject`.
+- [SQLAlchemy Store](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/store.html): Store and session backend API reference.
 
 Source: https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar_storage.html
 
 # Litestar File and Object Storage
 
-Uploading user avatars, invoices, or attachments usually creates headaches: if a database commit fails after uploading to S3, you get orphaned files; if a row is deleted, someone forgets to delete the file in storage.
-
-`StoredObject` and `FileObject` keep your files and database rows in lockstep—uploading files when your transaction commits and deleting old files automatically when rows are removed or replaced.
+`StoredObject` and `FileObject` coordinate object storage writes with SQLAlchemy session lifecycle events, writing pending files when transactions commit and deleting superseded or removed files automatically.
 
 ## Uploading Files in Three Steps
 
@@ -3108,7 +3095,7 @@ class AttachmentSchema(msgspec.Struct):
     dependencies=providers.create_service_dependencies(AttachmentService, "attachments_service"),
 )
 async def upload_attachment(
-    data: dict[str, str],
+    data: JSONBody[dict[str, str]],
     attachments_service: NamedDependency[AttachmentService],
 ) -> AttachmentSchema:
     """Persist an attachment record and its StoredObject file payload."""
@@ -3180,7 +3167,7 @@ import msgspec
 from litestar import Litestar, Request, get, post
 from litestar.di import NamedDependency
 from litestar.middleware.session.server_side import ServerSideSessionConfig
-from litestar.params import FromPath
+from litestar.params import FromPath, JSONBody
 from litestar.stores.registry import StoreRegistry
 from litestar.testing import TestClient
 from sqlalchemy.orm import Mapped, mapped_column
@@ -3261,7 +3248,7 @@ async def get_session_value(
     dependencies=providers.create_service_dependencies(AttachmentService, "attachments_service"),
 )
 async def upload_attachment(
-    data: dict[str, str],
+    data: JSONBody[dict[str, str]],
     attachments_service: NamedDependency[AttachmentService],
 ) -> AttachmentSchema:
     """Persist an attachment record and its StoredObject file payload."""
@@ -3344,7 +3331,7 @@ import msgspec
 from litestar import Litestar, Request, get, post
 from litestar.di import NamedDependency
 from litestar.middleware.session.server_side import ServerSideSessionConfig
-from litestar.params import FromPath
+from litestar.params import FromPath, JSONBody
 from litestar.stores.registry import StoreRegistry
 from litestar.testing import TestClient
 from sqlalchemy.orm import Mapped, mapped_column
@@ -3425,7 +3412,7 @@ async def get_session_value(
     dependencies=providers.create_service_dependencies(AttachmentService, "attachments_service"),
 )
 async def upload_attachment(
-    data: dict[str, str],
+    data: JSONBody[dict[str, str]],
     attachments_service: NamedDependency[AttachmentService],
 ) -> AttachmentSchema:
     """Persist an attachment record and its StoredObject file payload."""
@@ -3497,23 +3484,23 @@ def main() -> None:
 
 ## Related Guides
 
-- [Litestar Integration](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar.html) — Core Litestar setup and controllers.
-- [Security and File Storage Types](https://advanced-alchemy.litestar.dev/latest/usage/modeling/security_and_storage_types.html) — Storage backends (local disk, S3, GCS, Azure).
-- [Custom Types](https://advanced-alchemy.litestar.dev/latest/reference/types.html) — `StoredObject` and `FileObject` API reference.
+- [Litestar Integration](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar.html): Core Litestar setup and controllers.
+- [Security and File Storage Types](https://advanced-alchemy.litestar.dev/latest/usage/modeling/security_and_storage_types.html): Storage backends (local disk, S3, GCS, Azure).
+- [Custom Types](https://advanced-alchemy.litestar.dev/latest/reference/types.html): `StoredObject` and `FileObject` API reference.
 
 Source: https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi.html
 
 # FastAPI Integration
 
-Advanced Alchemy plugs into FastAPI through the `AdvancedAlchemy` extension, managing database startup/shutdown automatically and giving your routes clean `Depends(...)` helpers for sessions, services, and OpenAPI-documented search/pagination filters.
+Advanced Alchemy integrates with FastAPI through the `AdvancedAlchemy` extension, managing engine startup and disposal via ASGI lifespan hooks and providing `Depends(...)` callables for sessions, services, and OpenAPI query filters.
 
 ## What’s Included for FastAPI
 
-| Feature | What It Gives You | Guide & API |
+| Feature | Capabilities | Guide & API |
 | --- | --- | --- |
 | **Lifespan & Sessions** | Starts and disposes engines automatically and opens a fresh database session per request. | [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html) |
-| **Depends Helpers** | `provide_session`, `provide_service`, and `provide_filters` (with automatic Swagger UI query params). | [Guide](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi_dependencies.html) · [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html) |
-| **Uploads & Multi-Binds** | Multipart `UploadFile` storage columns and support for multiple databases in one app. | [Guide](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi_storage.html) · [API](https://advanced-alchemy.litestar.dev/latest/reference/types.html) |
+| **Depends Helpers** | `provide_session`, `provide_service`, and `provide_filters` (with automatic OpenAPI query parameters). | [Guide](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi_dependencies.html) · [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html) |
+| **Uploads & Multi-Binds** | Multipart `UploadFile` persistence via `StoredObject` and multi-database bind configurations. | [Guide](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi_storage.html) · [API](https://advanced-alchemy.litestar.dev/latest/reference/types.html) |
 | **Migrations CLI** | Works directly with the `alchemy` CLI to generate and run Alembic migrations. | [CLI Guide](https://advanced-alchemy.litestar.dev/latest/usage/cli.html) |
 
 ## Installation
@@ -3638,7 +3625,7 @@ def create_app(db_path: Path) -> FastAPI:
     return app
 ```
 
-> **Tip**: Using multiple databases? Pass the bind key to `alchemy.provide_session("reporting")` or `alchemy.provide_service(ReportService, key="reporting")`.
+> **Tip**: For multi-database configurations, pass the target bind key to `alchemy.provide_session("reporting")` or `alchemy.provide_service(ReportService, key="reporting")`.
 
 ## Complete Runnable App
 
@@ -3781,19 +3768,19 @@ def main() -> None:
 
 ## Related Guides
 
-- [FastAPI Services and Filter Depends](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi_dependencies.html) — Injecting services and automatic Swagger UI search/pagination filters with `Depends`.
-- [FastAPI File Storage and Multi-Binds](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi_storage.html) — File uploads with `UploadFile` and multi-database setups.
-- [FastAPI](https://advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html) — FastAPI extension API reference.
+- [FastAPI Services and Filter Depends](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi_dependencies.html): Injecting services and OpenAPI search, sort, and pagination filters with `Depends`.
+- [FastAPI File Storage and Multi-Binds](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi_storage.html): File uploads with `UploadFile` and multi-database setups.
+- [FastAPI](https://advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html): FastAPI extension API reference.
 
 Source: https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi_dependencies.html
 
 # FastAPI Services and Filter Depends
 
-FastAPI routes use `Depends(...)` to inject database sessions, services, and query parameters. Advanced Alchemy’s `AdvancedAlchemy` extension builds these `Depends` callables for you and adds pagination, search, sorting, and date-range parameters straight into FastAPI’s Swagger UI.
+The `AdvancedAlchemy` extension builds FastAPI `Depends(...)` providers for SQLAlchemy sessions, services, and OpenAPI-documented pagination, search, sort, and date-range query filters.
 
 ## Injecting Sessions and Services
 
-Use `alchemy.provide_session()` when a route needs a raw SQLAlchemy session, or `alchemy.provide_service(ServiceClass)` when you want a ready-to-use service:
+Use `alchemy.provide_session()` to inject a SQLAlchemy session directly, or `alchemy.provide_service(ServiceClass)` to inject a bound service instance:
 
 ```python
 from typing import Annotated
@@ -3890,9 +3877,9 @@ async def list_authors(
 
 ## Related Guides
 
-- [FastAPI Integration](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi.html) — FastAPI extension setup and complete runnable example.
-- [FastAPI File Storage and Multi-Binds](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi_storage.html) — Uploading files and connecting multiple databases.
-- [FastAPI](https://advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html) — FastAPI extension API reference.
+- [FastAPI Integration](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi.html): FastAPI extension setup and complete runnable example.
+- [FastAPI File Storage and Multi-Binds](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi_storage.html): Uploading files and connecting multiple databases.
+- [FastAPI](https://advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html): FastAPI extension API reference.
 
 Source: https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi_storage.html
 
@@ -3902,7 +3889,7 @@ This guide shows how to attach uploaded files to SQLAlchemy models in FastAPI an
 
 ## Storing Uploaded Files
 
-Register a local folder or cloud bucket (S3, GCS, Azure) in `storages` and add a `StoredObject` column to your model. In FastAPI routes that receive an `UploadFile`, pass `FileObject(backend=..., filename=file.filename, content=await file.read())` to `service.create(...)`—Advanced Alchemy saves the file when the transaction commits and deletes it if the row is deleted:
+Register a local folder or cloud bucket (S3, GCS, Azure) in `storages` and add a `StoredObject` column to your model. In FastAPI routes that receive an `UploadFile`, pass `FileObject(backend=..., filename=file.filename, content=await file.read())` to `service.create(...)`. Pending files are written when the transaction commits and deleted when the row is removed:
 
 ```python
 from pathlib import Path
@@ -3981,7 +3968,7 @@ storages.clear_backends()
 
 ## Connecting Multiple Databases
 
-Pass a list of configs with distinct `bind_key` names when your FastAPI app talks to more than one database (for example, an async main database and a sync reporting database):
+Pass a list of configs with distinct `bind_key` names when your FastAPI app connects to multiple databases (for example, an async primary database and a sync reporting database):
 
 ```python
 from fastapi import FastAPI
@@ -4008,20 +3995,20 @@ assert alchemy.get_sync_config("reporting").bind_key == "reporting"
 
 ## Related Guides
 
-- [FastAPI Integration](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi.html) — Core FastAPI setup, `Depends` services, and query filters.
-- [FastAPI](https://advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html) — FastAPI extension API reference.
+- [FastAPI Integration](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi.html): Core FastAPI setup, `Depends` services, and query filters.
+- [FastAPI](https://advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html): FastAPI extension API reference.
 
 Source: https://advanced-alchemy.litestar.dev/latest/usage/frameworks/starlette.html
 
 # Starlette Integration
 
-For lightweight ASGI services built on Starlette, `AdvancedAlchemy` manages engine startup/shutdown and attaches a request-scoped database session to `request.state` automatically.
+`AdvancedAlchemy` manages engine startup and shutdown for Starlette ASGI applications and provides lazy per-request SQLAlchemy sessions on `request.state`.
 
 ## What’s Included for Starlette
 
-| Feature | What It Gives You | Reference |
+| Feature | Capabilities | Reference |
 | --- | --- | --- |
-| **Session Middleware** | Opens and cleans up a SQLAlchemy session on `request.state` for every HTTP request. | [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/starlette/index.html) |
+| **Session Middleware** | Lazily creates a SQLAlchemy session on `request.state` on first access and closes it when the request finishes. | [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/starlette/index.html) |
 | **Commit Modes** | Supports manual commits, `"autocommit"` on `2xx`, and `"autocommit_include_redirect"`. | [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/starlette/index.html) |
 | **Multi-Database Binds** | Connects multiple sync or async databases in a single Starlette app via `bind_key`. | [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/starlette/index.html) |
 
@@ -4045,7 +4032,7 @@ poetry add "advanced-alchemy[starlette,aiosqlite]"
 
 ## Setup and Route Usage
 
-Attach `AdvancedAlchemy` to your `Starlette` app and grab the current request’s session with `alchemy.get_async_session(request)`:
+Attach `AdvancedAlchemy` to your `Starlette` app and retrieve the current request’s session with `alchemy.get_async_session(request)`:
 
 ```python
 from starlette.applications import Starlette
@@ -4149,16 +4136,16 @@ Source: https://advanced-alchemy.litestar.dev/latest/usage/frameworks/flask.html
 
 # Flask Integration
 
-Advanced Alchemy plugs into both classic synchronous Flask apps and `async def` Flask routes—giving every request a managed SQLAlchemy session, adding a `jsonify()` helper onto your services, and registering `flask database` migration commands automatically.
+Advanced Alchemy integrates with synchronous WSGI Flask applications and `async def` Flask routes, providing app-context SQLAlchemy sessions on `flask.g`, a `jsonify()` service response helper, and `flask database` CLI commands.
 
 ## What’s Included for Flask
 
-| Feature | What It Gives You | Reference |
+| Feature | Capabilities | Reference |
 | --- | --- | --- |
-| **App-Context Sessions** | Reuses one session per Flask request and closes or commits it cleanly on teardown. | [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/flask/index.html) |
+| **App-Context Sessions** | Binds one session per Flask app or request context and commits or closes it on teardown. | [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/flask/index.html) |
 | **FlaskServiceMixin** | Adds `service.jsonify(...)` to return paginated `msgspec` or Pydantic schemas directly from routes. | [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/flask/index.html) |
 | **Sync & Async Support** | Works with standard sync engines, async engines, and multiple databases via `bind_key`. | [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/flask/index.html) |
-| **Flask CLI** | Registers `flask database init`, `upgrade`, and `downgrade` commands automatically. | [CLI Guide](https://advanced-alchemy.litestar.dev/latest/usage/cli.html) |
+| **Flask CLI** | Registers `flask database init`, `make-migrations`, `upgrade`, and `downgrade` commands. | [CLI Guide](https://advanced-alchemy.litestar.dev/latest/usage/cli.html) |
 
 ## Installation
 
@@ -4236,7 +4223,7 @@ with multi_db_app.app_context():
 
 ## Using Services and JSON Responses
 
-Mix `FlaskServiceMixin` into your service class so route handlers can paginate, convert rows to schemas, and return a Flask JSON `Response` in one clean step:
+Mix `FlaskServiceMixin` into your service class to serialize paginated `msgspec` or Pydantic schemas directly into a Flask JSON `Response`:
 
 ```python
 import datetime
@@ -4327,7 +4314,7 @@ def list_authors() -> Response:
 
 ```bash
 flask database init
-flask database revision --autogenerate -m "add users table"
+flask database make-migrations -m "add users table"
 flask database upgrade
 ```
 
@@ -4337,14 +4324,14 @@ Source: https://advanced-alchemy.litestar.dev/latest/usage/frameworks/sanic.html
 
 # Sanic Integration
 
-Advanced Alchemy integrates with Sanic through `sanic-ext`, managing engines on `app.ctx`, creating lazy per-request sessions on `request.ctx`, and injecting `AsyncSession` straight into route handlers.
+Advanced Alchemy integrates with Sanic and `sanic-ext`, managing engine lifecycles on `app.ctx`, attaching per-request sessions on `request.ctx`, and injecting `AsyncSession` or `Session` into route handlers.
 
 ## What’s Included for Sanic
 
-| Feature | What It Gives You | Reference |
+| Feature | Capabilities | Reference |
 | --- | --- | --- |
 | **sanic-ext Injection** | Injects `AsyncSession` or `Session` directly into route parameters with `add_session_dependency`. | [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/sanic/index.html) |
-| **Request Context Sessions** | Lazily opens one session per request on `request.ctx` and cleans it up when the response finishes. | [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/sanic/index.html) |
+| **Request Context Sessions** | Attaches a SQLAlchemy session on `request.ctx` during `on_request` middleware and commits or closes it when the response completes. | [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/sanic/index.html) |
 | **Multiple Databases** | Supports multiple sync or async databases side by side using named `bind_key` configs. | [API](https://advanced-alchemy.litestar.dev/latest/reference/extensions/sanic/index.html) |
 
 ## Installation
@@ -5286,7 +5273,7 @@ Source: https://advanced-alchemy.litestar.dev/latest/reference/config/index.html
 
 # Configuration
 
-API Reference for the `Config` module
+Asynchronous and synchronous SQLAlchemy engine, session, and replica routing configuration classes.
 
 > **Note**: Private methods and attributes are not included in the API reference.
 
@@ -10288,7 +10275,7 @@ Source: https://advanced-alchemy.litestar.dev/latest/reference/extensions/index.
 
 # Extensions
 
-API Reference for the `advanced_alchemy.extensions` framework integration packages.
+First-party web framework integration packages for Litestar, FastAPI, Starlette, Flask, and Sanic.
 
 ## Framework API References
 
@@ -12294,7 +12281,7 @@ Source: https://advanced-alchemy.litestar.dev/latest/reference/extensions/fastap
 
 # FastAPI
 
-API Reference for the `FastAPI` extensions module.
+FastAPI ASGI lifespan extension, dependency injection providers, and CLI helpers.
 
 ## Extension & CLI
 
@@ -12476,7 +12463,7 @@ Source: https://advanced-alchemy.litestar.dev/latest/reference/extensions/starle
 
 # Starlette
 
-API Reference for the `Starlette` extensions module.
+Starlette ASGI extension, lazy `request.state` session middleware, and configuration classes.
 
 ## Extension & Middleware
 
@@ -13141,7 +13128,7 @@ Source: https://advanced-alchemy.litestar.dev/latest/reference/extensions/flask/
 
 # Flask
 
-API Reference for the `Flask` extensions module.
+Flask app-context SQLAlchemy extension, JSON response service mixin, and CLI integration.
 
 ## Extension & Service Mixin
 
@@ -13474,7 +13461,7 @@ Source: https://advanced-alchemy.litestar.dev/latest/reference/extensions/sanic/
 
 # Sanic
 
-API Reference for the `Sanic` extensions module.
+Sanic and `sanic-ext` SQLAlchemy extension, request-context session middleware, and configuration classes.
 
 ## Extension
 
@@ -14153,7 +14140,7 @@ Source: https://advanced-alchemy.litestar.dev/latest/reference/alembic/index.htm
 
 # Alembic
 
-API Reference for the `Alembic` module
+Programmatic Alembic migration commands, templates, and table export utilities.
 
 > **Note**: Private methods and attributes are not included in the API reference.
 
@@ -16520,6 +16507,17 @@ Source: https://advanced-alchemy.litestar.dev/latest/changelog.html
 
 ### Features
 
+- **add optional pagination_max_size cap to FilterConfig and FilterSet**: Adds an optional `pagination_max_size` key (defaulting to `None`) to
+`FilterConfig` and `FilterSet` to enforce an upper bound on
+`pageSize` / `page_size` via OpenAPI `maximum` and framework
+validation (400 in Litestar, 422 in FastAPI, and `ValueError` on
+direct `FilterSet` instantiation). Also validates `pagination_size`
+as a positive integer when building dependencies, clamps omitted
+defaults to `pagination_max_size`, and raises
+`ImproperConfigurationError` when `pagination_size` exceeds
+`pagination_max_size`.
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/849](https://github.com/litestar-org/advanced-alchemy/issues/849), [https://github.com/litestar-org/advanced-alchemy/pull/850](https://github.com/litestar-org/advanced-alchemy/pull/850)
 - **declare reusable FilterSets with inferred relationship loading**: `FilterSet[Model]` defines allowed query fields, custom filters, search,
 and sorting with double-underscore field parameters. Operators on one
 field match the same related row; different fields match independently.
@@ -18019,8 +18017,8 @@ Source: https://advanced-alchemy.litestar.dev/latest/contribution-guide.html
 2. Clone your fork locally with git
 3. [Set up the environment](https://advanced-alchemy.litestar.dev/latest/contribution-guide.html#setting-up-the-environment)
 4. Make your changes
-5. Run `make lint` to run linters and formatters. This step is optional and will be executed
-automatically by git before you make a commit, but you may want to run it manually in order to apply fixes automatically by git before you make a commit, but you may want to run it manually in order to apply fixes
+5. Run `make lint` to run linters and formatters. This step is optional and runs
+automatically via pre-commit before each commit, or manually to apply formatting fixes.
 6. Commit your changes to git
 7. Push the changes to your fork
 8. Open a [pull request](https://docs.github.com/en/pull-requests). Give the pull request a descriptive title
@@ -18031,25 +18029,31 @@ could be titled `fix(#100): Make needles easier to find by applying fire to hays
 > **Tip**: Pull requests and commits all need to follow the
 > [Conventional Commit format](https://www.conventionalcommits.org)
 
-> **Note**: To run the integration tests locally, you will need the [ODBC Driver for SQL Server](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver16), one option is using [unixODBC](https://www.unixodbc.org/).
+> **Note**: Running SQL Server integration tests locally requires the [ODBC Driver for SQL Server](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver16) (for example, via [unixODBC](https://www.unixodbc.org/)).
 
 ## Guidelines for writing code
 
 - All code should be fully [typed](https://peps.python.org/pep-0484/). This is enforced via
-[mypy](https://mypy.readthedocs.io/en/stable/).
+[mypy](https://mypy.readthedocs.io/en/stable/) and [Pyright](https://github.com/microsoft/pyright).
 - All code should be tested. This is enforced via [pytest](https://docs.pytest.org/en/stable/).
-- All code should be properly formatted. This is enforced via [Ruff](https://beta.ruff.rs/docs/).
+- All code should be properly formatted and linted. This is enforced via [Ruff](https://docs.astral.sh/ruff/).
 
 ### Writing and running tests
 
-> **Todo**: Write this section
+Unit tests live under `tests/unit/` and multi-database integration tests live under `tests/integration/`:
+
+```bash
+uv run pytest tests/unit -q   # Run pure-Python unit tests
+make test-fast                # Run unit tests + embedded PostgreSQL integration tests
+make test                     # Run the full multi-database test suite
+```
 
 ## Project documentation
 
-The documentation is located in the `/docs` directory and is [ReST](https://docutils.sourceforge.io/rst.html) and
-[Sphinx](https://www.sphinx-doc.org/en/master/). If you’re unfamiliar with any of those,
-[ReStructuredText primer](https://www.sphinx-doc.org/en/master/lib/usage/restructuredtext/basics.html) and
-[Sphinx quickstart](https://www.sphinx-doc.org/en/master/lib/usage/quickstart.html) are recommended reads.
+The documentation is located in the `/docs` directory and is built with [reStructuredText](https://docutils.sourceforge.io/rst.html) and
+[Sphinx](https://www.sphinx-doc.org/en/master/). See the
+[reStructuredText primer](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html) and
+[Sphinx quickstart](https://www.sphinx-doc.org/en/master/usage/quickstart.html) for syntax details.
 
 ### Running the docs locally
 
@@ -18204,7 +18208,7 @@ supported versions based on severity and feasibility.
 Each major release cycle consists of a few phases:
 
 1. **Planning**: Define roadmap, spec out major features. Work should begin on implementation.
-2. **Development**: Active development on planned features. Ends with an alpha release and branch of `A.B.x`
+2. **Development**: Active development on planned features. Ends with an alpha release and cutting an `A.B.x`
 branch from `main`.
 3. **Bugfixes**: Only bugfixes, no new features. Progressively release beta, release candidates.
 Feature freeze at RC. Become more selective with backports to avoid regressions.

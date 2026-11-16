@@ -272,7 +272,7 @@ data-aria-dark="Switch to auto color mode">
       <i class="i-lucide close"></i>
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
-<li><a class="reference internal" href="#scaling-and-day-two-tools">Scaling and Day-Two Tools</a></li>
+<li><a class="reference internal" href="#operational-features">Operational Features</a></li>
 </ul>
 </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
   data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
@@ -363,15 +363,14 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="usage-guide">
 <h1>Usage Guide<a class="headerlink" href="#usage-guide" title="Link to this heading">#</a></h1>
-<p>Imagine you are building a blog with <strong>Posts</strong>, <strong>Authors</strong>, and <strong>Tags</strong>. A reader opens your home page, asks for page 2 of published posts, and creates a comment.</p>
-<p>Advanced Alchemy organizes that work into three clear steps so your route handlers stay tiny and easy to test:</p>
+<p>Advanced Alchemy separates database access into three layers so route handlers remain concise and testable:</p>
 <div class="aa-diagram">
     <img src="../_static/diagrams/architecture-overview-light.svg" alt="How Advanced Alchemy Fits Into Your App" class="aa-diagram--light" />
     <img src="../_static/diagrams/architecture-overview-dark.svg" alt="How Advanced Alchemy Fits Into Your App" class="aa-diagram--dark" />
 </div><ol class="arabic simple">
-<li><p><strong>Models</strong> describe what your tables look like in the database (such as a post’s title, author, and timestamps).</p></li>
-<li><p><strong>Repositories</strong> run SQL queries for one table—adding rows, filtering, sorting, and paginating without repeating query code.</p></li>
-<li><p><strong>Services</strong> sit in front of repositories to validate incoming API schemas (Pydantic or Msgspec) and enforce your app’s business rules.</p></li>
+<li><p><strong>Models</strong> define SQLAlchemy declarative tables with primary keys, audit timestamps, and custom column types.</p></li>
+<li><p><strong>Repositories</strong> execute single-model CRUD, filtering, sorting, pagination, and bulk upsert queries.</p></li>
+<li><p><strong>Services</strong> wrap repositories to convert between ORM models and typed API schemas (Pydantic, Msgspec, dataclass, <code class="docutils literal notranslate"><span class="pre">attrs</span></code>, or SQLModel) and apply domain logic.</p></li>
 </ol>
 <div class="sd-container-fluid sd-sphinx-override sd-mb-4 sd-p-0 docutils">
 <div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-1 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
@@ -398,7 +397,7 @@ data-aria-dark="Switch to auto color mode">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
 <svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-package" viewBox="0 0 16 16" aria-hidden="true"><path d="m8.878.392 5.25 3.045c.54.314.872.89.872 1.514v6.098a1.75 1.75 0 0 1-.872 1.514l-5.25 3.045a1.75 1.75 0 0 1-1.756 0l-5.25-3.045A1.75 1.75 0 0 1 1 11.049V4.951c0-.624.332-1.201.872-1.514L7.122.392a1.75 1.75 0 0 1 1.756 0ZM7.875 1.69l-4.63 2.685L8 7.133l4.755-2.758-4.63-2.685a.248.248 0 0 0-.25 0ZM2.5 5.677v5.372c0 .09.047.171.125.216l4.625 2.683V8.432Zm6.25 8.271 4.625-2.683a.25.25 0 0 0 .125-.216V5.677L8.75 8.432Z"></path></svg> 3. Services</div>
-<p class="sd-card-text">Keep business rules in one place and convert database rows straight into Pydantic or Msgspec responses.</p>
+<p class="sd-card-text">Convert database rows into Pydantic, Msgspec, dataclass, attrs, or SQLModel schemas and centralize domain logic.</p>
 </div>
 <a class="sd-stretched-link sd-hide-link-text reference internal" href="services.html"><span class="doc">Services</span></a></div>
 </div>
@@ -413,14 +412,14 @@ data-aria-dark="Switch to auto color mode">
 </div>
 </div>
 </div>
-<section id="scaling-and-day-two-tools">
-<h2>Scaling and Day-Two Tools<a class="headerlink" href="#scaling-and-day-two-tools" title="Link to this heading">#</a></h2>
-<p>Once your core tables and routes are running, you can turn on operational features without rewriting your queries:</p>
+<section id="operational-features">
+<h2>Operational Features<a class="headerlink" href="#operational-features" title="Link to this heading">#</a></h2>
+<p>Enable routing, caching, migrations, and fixture seeding without rewriting repository queries:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="routing.html"><span class="doc">Replica Routing</span></a> — Send writes to your primary database and spread reads across read replicas.</p></li>
-<li><p><a class="reference internal" href="caching.html"><span class="doc">Caching</span></a> — Cache frequent lookups in Redis or memory and clear stale entries automatically on commit.</p></li>
-<li><p><a class="reference internal" href="cli.html"><span class="doc">CLI &amp; Migrations</span></a> — Generate and apply Alembic schema migrations from the terminal.</p></li>
-<li><p><a class="reference internal" href="database_seeding.html"><span class="doc">Database Seeding</span></a> — Load starter data from JSON or CSV files.</p></li>
+<li><p><a class="reference internal" href="routing.html"><span class="doc">Replica Routing</span></a>: Route writes to a primary database and distribute reads across replica pools.</p></li>
+<li><p><a class="reference internal" href="caching.html"><span class="doc">Caching</span></a>: Cache lookups in memory, Redis, or Memcached with automatic invalidation on commit.</p></li>
+<li><p><a class="reference internal" href="cli.html"><span class="doc">CLI &amp; Migrations</span></a>: Generate and apply Alembic schema migrations from the terminal.</p></li>
+<li><p><a class="reference internal" href="database_seeding.html"><span class="doc">Database Seeding</span></a>: Stream and load seed data from JSON, JSONL, or CSV fixtures.</p></li>
 </ul>
 </section>
 </section>

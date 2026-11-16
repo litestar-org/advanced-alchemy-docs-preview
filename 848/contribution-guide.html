@@ -394,8 +394,8 @@ data-aria-dark="Switch to auto color mode">
 <li><p>Clone your fork locally with git</p></li>
 <li><p><a class="reference external" href="#setting-up-the-environment">Set up the environment</a></p></li>
 <li><p>Make your changes</p></li>
-<li><p>Run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">lint</span></code> to run linters and formatters. This step is optional and will be executed
-automatically by git before you make a commit, but you may want to run it manually in order to apply fixes  automatically by git before you make a commit, but you may want to run it manually in order to apply fixes</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">lint</span></code> to run linters and formatters. This step is optional and runs
+automatically via pre-commit before each commit, or manually to apply formatting fixes.</p></li>
 <li><p>Commit your changes to git</p></li>
 <li><p>Push the changes to your fork</p></li>
 <li><p>Open a <a class="reference external" href="https://docs.github.com/en/pull-requests">pull request</a>. Give the pull request a descriptive title
@@ -410,7 +410,7 @@ could be titled <code class="docutils literal notranslate"><span class="pre">fix
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>To run the integration tests locally, you will need the <a class="reference external" href="https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver16">ODBC Driver for SQL Server</a>, one option is using <a class="reference external" href="https://www.unixodbc.org/">unixODBC</a>.</p>
+<p>Running SQL Server integration tests locally requires the <a class="reference external" href="https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver16">ODBC Driver for SQL Server</a> (for example, via <a class="reference external" href="https://www.unixodbc.org/">unixODBC</a>).</p>
 </div>
 </section>
 </section>
@@ -418,24 +418,26 @@ could be titled <code class="docutils literal notranslate"><span class="pre">fix
 <h2>Guidelines for writing code<a class="headerlink" href="#guidelines-for-writing-code" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>All code should be fully <a class="reference external" href="https://peps.python.org/pep-0484/">typed</a>. This is enforced via
-<a class="reference external" href="https://mypy.readthedocs.io/en/stable/">mypy</a>.</p></li>
+<a class="reference external" href="https://mypy.readthedocs.io/en/stable/">mypy</a> and <a class="reference external" href="https://github.com/microsoft/pyright">Pyright</a>.</p></li>
 <li><p>All code should be tested. This is enforced via <a class="reference external" href="https://docs.pytest.org/en/stable/">pytest</a>.</p></li>
-<li><p>All code should be properly formatted. This is enforced via <a class="reference external" href="https://beta.ruff.rs/docs/">Ruff</a>.</p></li>
+<li><p>All code should be properly formatted and linted. This is enforced via <a class="reference external" href="https://docs.astral.sh/ruff/">Ruff</a>.</p></li>
 </ul>
 <section id="writing-and-running-tests">
 <h3>Writing and running tests<a class="headerlink" href="#writing-and-running-tests" title="Link to this heading">#</a></h3>
-<div class="admonition-todo admonition" id="id1">
-<p class="admonition-title">Todo</p>
-<p>Write this section</p>
+<p>Unit tests live under <code class="docutils literal notranslate"><span class="pre">tests/unit/</span></code> and multi-database integration tests live under <code class="docutils literal notranslate"><span class="pre">tests/integration/</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/unit<span class="w"> </span>-q<span class="w">   </span><span class="c1"># Run pure-Python unit tests</span>
+</span><span data-line="2">make<span class="w"> </span>test-fast<span class="w">                </span><span class="c1"># Run unit tests + embedded PostgreSQL integration tests</span>
+</span><span data-line="3">make<span class="w"> </span><span class="nb">test</span><span class="w">                     </span><span class="c1"># Run the full multi-database test suite</span>
+</span></pre></div>
 </div>
 </section>
 </section>
 <section id="project-documentation">
 <h2>Project documentation<a class="headerlink" href="#project-documentation" title="Link to this heading">#</a></h2>
-<p>The documentation is located in the <code class="docutils literal notranslate"><span class="pre">/docs</span></code> directory and is <a class="reference external" href="https://docutils.sourceforge.io/rst.html">ReST</a> and
-<a class="reference external" href="https://www.sphinx-doc.org/en/master/">Sphinx</a>. If you’re unfamiliar with any of those,
-<a class="reference external" href="https://www.sphinx-doc.org/en/master/lib/usage/restructuredtext/basics.html">ReStructuredText primer</a> and
-<a class="reference external" href="https://www.sphinx-doc.org/en/master/lib/usage/quickstart.html">Sphinx quickstart</a> are recommended reads.</p>
+<p>The documentation is located in the <code class="docutils literal notranslate"><span class="pre">/docs</span></code> directory and is built with <a class="reference external" href="https://docutils.sourceforge.io/rst.html">reStructuredText</a> and
+<a class="reference external" href="https://www.sphinx-doc.org/en/master/">Sphinx</a>. See the
+<a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html">reStructuredText primer</a> and
+<a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/quickstart.html">Sphinx quickstart</a> for syntax details.</p>
 <section id="running-the-docs-locally">
 <h3>Running the docs locally<a class="headerlink" href="#running-the-docs-locally" title="Link to this heading">#</a></h3>
 <p>To run or build the docs locally, you need to first install the required dependencies:</p>

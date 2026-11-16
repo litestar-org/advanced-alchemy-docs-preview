@@ -367,7 +367,7 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="flask-integration">
 <h1>Flask Integration<a class="headerlink" href="#flask-integration" title="Link to this heading">#</a></h1>
-<p>Advanced Alchemy plugs into both classic synchronous Flask apps and <code class="docutils literal notranslate"><span class="pre">async</span> <span class="pre">def</span></code> Flask routes—giving every request a managed SQLAlchemy session, adding a <code class="docutils literal notranslate"><span class="pre">jsonify()</span></code> helper onto your services, and registering <code class="docutils literal notranslate"><span class="pre">flask</span> <span class="pre">database</span></code> migration commands automatically.</p>
+<p>Advanced Alchemy integrates with synchronous WSGI Flask applications and <code class="docutils literal notranslate"><span class="pre">async</span> <span class="pre">def</span></code> Flask routes, providing app-context SQLAlchemy sessions on <code class="docutils literal notranslate"><span class="pre">flask.g</span></code>, a <code class="docutils literal notranslate"><span class="pre">jsonify()</span></code> service response helper, and <code class="docutils literal notranslate"><span class="pre">flask</span> <span class="pre">database</span></code> CLI commands.</p>
 <section id="what-s-included-for-flask">
 <h2>What’s Included for Flask<a class="headerlink" href="#what-s-included-for-flask" title="Link to this heading">#</a></h2>
 <div class="table-wrapper colwidths-given docutils container">
@@ -379,13 +379,13 @@ data-aria-dark="Switch to auto color mode">
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Feature</p></th>
-<th class="head"><p>What It Gives You</p></th>
+<th class="head"><p>Capabilities</p></th>
 <th class="head"><p>Reference</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><strong>App-Context Sessions</strong></p></td>
-<td><p>Reuses one session per Flask request and closes or commits it cleanly on teardown.</p></td>
+<td><p>Binds one session per Flask app or request context and commits or closes it on teardown.</p></td>
 <td><p><a class="reference internal" href="../../reference/extensions/flask/index.html"><span class="doc">API</span></a></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>FlaskServiceMixin</strong></p></td>
@@ -397,7 +397,7 @@ data-aria-dark="Switch to auto color mode">
 <td><p><a class="reference internal" href="../../reference/extensions/flask/index.html"><span class="doc">API</span></a></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>Flask CLI</strong></p></td>
-<td><p>Registers <code class="docutils literal notranslate"><span class="pre">flask</span> <span class="pre">database</span> <span class="pre">init</span></code>, <code class="docutils literal notranslate"><span class="pre">upgrade</span></code>, and <code class="docutils literal notranslate"><span class="pre">downgrade</span></code> commands automatically.</p></td>
+<td><p>Registers <code class="docutils literal notranslate"><span class="pre">flask</span> <span class="pre">database</span> <span class="pre">init</span></code>, <code class="docutils literal notranslate"><span class="pre">make-migrations</span></code>, <code class="docutils literal notranslate"><span class="pre">upgrade</span></code>, and <code class="docutils literal notranslate"><span class="pre">downgrade</span></code> commands.</p></td>
 <td><p><a class="reference internal" href="../cli.html"><span class="doc">CLI Guide</span></a></p></td>
 </tr>
 </tbody>
@@ -511,7 +511,7 @@ Multiple Databases</label><div class="sd-tab-content docutils" id="sd-tab-item-6
 </section>
 <section id="using-services-and-json-responses">
 <h2>Using Services and JSON Responses<a class="headerlink" href="#using-services-and-json-responses" title="Link to this heading">#</a></h2>
-<p>Mix <code class="docutils literal notranslate"><span class="pre">FlaskServiceMixin</span></code> into your service class so route handlers can paginate, convert rows to schemas, and return a Flask JSON <code class="docutils literal notranslate"><span class="pre">Response</span></code> in one clean step:</p>
+<p>Mix <code class="docutils literal notranslate"><span class="pre">FlaskServiceMixin</span></code> into your service class to serialize paginated <code class="docutils literal notranslate"><span class="pre">msgspec</span></code> or Pydantic schemas directly into a Flask JSON <code class="docutils literal notranslate"><span class="pre">Response</span></code>:</p>
 <div class="sd-tab-set docutils">
 <input id="sd-tab-item-7" name="sd-tab-set-2" type="radio">
 <label aria-controls="sd-tab-item-7-content" class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-7">
@@ -619,7 +619,7 @@ Python 3.10+</label><div class="sd-tab-content docutils" id="sd-tab-item-8-conte
 <section id="running-migrations-with-flask-cli">
 <h2>Running Migrations with Flask CLI<a class="headerlink" href="#running-migrations-with-flask-cli" title="Link to this heading">#</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">flask<span class="w"> </span>database<span class="w"> </span>init
-</span><span data-line="2">flask<span class="w"> </span>database<span class="w"> </span>revision<span class="w"> </span>--autogenerate<span class="w"> </span>-m<span class="w"> </span><span class="s2">"add users table"</span>
+</span><span data-line="2">flask<span class="w"> </span>database<span class="w"> </span>make-migrations<span class="w"> </span>-m<span class="w"> </span><span class="s2">"add users table"</span>
 </span><span data-line="3">flask<span class="w"> </span>database<span class="w"> </span>upgrade
 </span></pre></div>
 </div>

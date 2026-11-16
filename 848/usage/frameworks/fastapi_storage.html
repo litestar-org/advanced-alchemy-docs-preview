@@ -372,7 +372,7 @@ data-aria-dark="Switch to auto color mode">
 <p>This guide shows how to attach uploaded files to SQLAlchemy models in FastAPI and how to connect a single FastAPI app to more than one database.</p>
 <section id="storing-uploaded-files">
 <h2>Storing Uploaded Files<a class="headerlink" href="#storing-uploaded-files" title="Link to this heading">#</a></h2>
-<p>Register a local folder or cloud bucket (S3, GCS, Azure) in <code class="docutils literal notranslate"><span class="pre">storages</span></code> and add a <code class="docutils literal notranslate"><span class="pre">StoredObject</span></code> column to your model. In FastAPI routes that receive an <code class="docutils literal notranslate"><span class="pre">UploadFile</span></code>, pass <code class="docutils literal notranslate"><span class="pre">FileObject(backend=...,</span> <span class="pre">filename=file.filename,</span> <span class="pre">content=await</span> <span class="pre">file.read())</span></code> to <code class="docutils literal notranslate"><span class="pre">service.create(...)</span></code>—Advanced Alchemy saves the file when the transaction commits and deletes it if the row is deleted:</p>
+<p>Register a local folder or cloud bucket (S3, GCS, Azure) in <code class="docutils literal notranslate"><span class="pre">storages</span></code> and add a <code class="docutils literal notranslate"><span class="pre">StoredObject</span></code> column to your model. In FastAPI routes that receive an <code class="docutils literal notranslate"><span class="pre">UploadFile</span></code>, pass <code class="docutils literal notranslate"><span class="pre">FileObject(backend=...,</span> <span class="pre">filename=file.filename,</span> <span class="pre">content=await</span> <span class="pre">file.read())</span></code> to <code class="docutils literal notranslate"><span class="pre">service.create(...)</span></code>. Pending files are written when the transaction commits and deleted when the row is removed:</p>
 <div class="sd-tab-set docutils">
 <input id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
 <label aria-controls="sd-tab-item-0-content" class="sd-tab-label" data-sync-group="tab" data-sync-id="3.9" for="sd-tab-item-0">
@@ -469,7 +469,7 @@ Python 3.10+</label><div class="sd-tab-content docutils" id="sd-tab-item-1-conte
 </section>
 <section id="connecting-multiple-databases">
 <h2>Connecting Multiple Databases<a class="headerlink" href="#connecting-multiple-databases" title="Link to this heading">#</a></h2>
-<p>Pass a list of configs with distinct <code class="docutils literal notranslate"><span class="pre">bind_key</span></code> names when your FastAPI app talks to more than one database (for example, an async main database and a sync reporting database):</p>
+<p>Pass a list of configs with distinct <code class="docutils literal notranslate"><span class="pre">bind_key</span></code> names when your FastAPI app connects to multiple databases (for example, an async primary database and a sync reporting database):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.extensions.fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
 </span><span data-line="3">    <span class="n">AdvancedAlchemy</span><span class="p">,</span>
@@ -496,8 +496,8 @@ Python 3.10+</label><div class="sd-tab-content docutils" id="sd-tab-item-1-conte
 <section id="related-guides">
 <h2>Related Guides<a class="headerlink" href="#related-guides" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="fastapi.html"><span class="doc">FastAPI Integration</span></a> — Core FastAPI setup, <code class="docutils literal notranslate"><span class="pre">Depends</span></code> services, and query filters.</p></li>
-<li><p><a class="reference internal" href="../../reference/extensions/fastapi/index.html"><span class="doc">FastAPI</span></a> — FastAPI extension API reference.</p></li>
+<li><p><a class="reference internal" href="fastapi.html"><span class="doc">FastAPI Integration</span></a>: Core FastAPI setup, <code class="docutils literal notranslate"><span class="pre">Depends</span></code> services, and query filters.</p></li>
+<li><p><a class="reference internal" href="../../reference/extensions/fastapi/index.html"><span class="doc">FastAPI</span></a>: FastAPI extension API reference.</p></li>
 </ul>
 </section>
 </section>

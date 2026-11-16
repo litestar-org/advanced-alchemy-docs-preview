@@ -272,7 +272,7 @@ data-aria-dark="Switch to auto color mode">
       <i class="i-lucide close"></i>
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
-<li><a class="reference internal" href="#how-your-own-changes-stay-fresh">How Your Own Changes Stay Fresh</a></li>
+<li><a class="reference internal" href="#primary-pinning-after-writes">Primary Pinning After Writes</a></li>
 <li><a class="reference internal" href="#setting-up-primary-and-replica-pools">Setting Up Primary and Replica Pools</a></li>
 <li><a class="reference internal" href="#choosing-a-pool-manually">Choosing a Pool Manually</a></li>
 <li><a class="reference internal" href="#complete-runnable-example">Complete Runnable Example</a></li>
@@ -366,15 +366,13 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="read-write-routing">
 <h1>Read/Write Routing<a class="headerlink" href="#read-write-routing" title="Link to this heading">#</a></h1>
-<p>As your app grows, most database traffic is reading data—loading feeds, search pages, and dashboards—while only a fraction is saving changes.</p>
-<p>Read/write routing lets you add <strong>Read Replicas</strong> alongside your main <strong>Primary Database</strong> without rewriting your repository calls:</p>
+<p>Read/write routing directs mutating statements to a <strong>Primary Database</strong> and distributes <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> queries across one or more <strong>Read Replica</strong> pools without changing repository or service calls:</p>
 <div class="aa-diagram">
     <img src="../_static/diagrams/routing-topology-light.svg" alt="How Read and Write Routing Works" class="aa-diagram--light" />
     <img src="../_static/diagrams/routing-topology-dark.svg" alt="How Read and Write Routing Works" class="aa-diagram--dark" />
-</div><section id="how-your-own-changes-stay-fresh">
-<h2>How Your Own Changes Stay Fresh<a class="headerlink" href="#how-your-own-changes-stay-fresh" title="Link to this heading">#</a></h2>
-<p>Replicas take a few milliseconds to copy new data from Primary. What happens if a user creates a new blog post and your code immediately loads that post on the next line?</p>
-<p>Advanced Alchemy solves replica lag automatically: as soon as a session writes data, subsequent reads in that transaction stay pinned to Primary until <code class="docutils literal notranslate"><span class="pre">commit()</span></code> or <code class="docutils literal notranslate"><span class="pre">rollback()</span></code> finishes:</p>
+</div><section id="primary-pinning-after-writes">
+<h2>Primary Pinning After Writes<a class="headerlink" href="#primary-pinning-after-writes" title="Link to this heading">#</a></h2>
+<p>Asynchronous replication introduces replication lag between the primary database and read replicas. When <code class="docutils literal notranslate"><span class="pre">sticky_after_write=True</span></code> (the default), once a session flushes a write, subsequent reads within that transaction remain pinned to the primary database until <code class="docutils literal notranslate"><span class="pre">commit()</span></code> or <code class="docutils literal notranslate"><span class="pre">rollback()</span></code> completes:</p>
 <div class="aa-diagram">
     <img src="../_static/diagrams/routing-sticky-light.gif" alt="Reading Your Own Changes Without Stale Data" class="aa-diagram--light" />
     <img src="../_static/diagrams/routing-sticky-dark.gif" alt="Reading Your Own Changes Without Stale Data" class="aa-diagram--dark" />
@@ -463,7 +461,7 @@ Turn Off in Local Dev</label><div class="sd-tab-content docutils" id="sd-tab-ite
 </section>
 <section id="choosing-a-pool-manually">
 <h2>Choosing a Pool Manually<a class="headerlink" href="#choosing-a-pool-manually" title="Link to this heading">#</a></h2>
-<p>Most routes never need manual overrides. When a critical checkout check must read from Primary—or a slow report should run on an <code class="docutils literal notranslate"><span class="pre">&quot;analytics&quot;</span></code> replica—wrap the call in a context manager or pass <code class="docutils literal notranslate"><span class="pre">bind_group</span></code>:</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">primary_context()</span></code>, <code class="docutils literal notranslate"><span class="pre">replica_context()</span></code>, or <code class="docutils literal notranslate"><span class="pre">use_bind_group()</span></code> to target a specific engine pool for an individual operation (such as forcing a primary read or routing reporting queries to an <code class="docutils literal notranslate"><span class="pre">&quot;analytics&quot;</span></code> pool):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">primary_context</span><span class="p">,</span> <span class="n">replica_context</span><span class="p">,</span> <span class="n">use_bind_group</span>
 </span><span data-line="3">

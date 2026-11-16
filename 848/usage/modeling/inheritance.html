@@ -368,12 +368,11 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="inheritance-patterns">
 <h1>Inheritance Patterns<a class="headerlink" href="#inheritance-patterns" title="Link to this heading">#</a></h1>
-<p>Sometimes several models share most of their fields—for example, <strong>Managers</strong> and <strong>Engineers</strong> are both <strong>Employees</strong>, or <strong>Articles</strong> and <strong>Videos</strong> are both <strong>Posts</strong>.</p>
-<p>SQLAlchemy supports three ways to lay out shared models in the database, and Advanced Alchemy’s base classes and repositories work with all three:</p>
+<p>Advanced Alchemy’s declarative base classes and repositories support all three SQLAlchemy inheritance strategies:</p>
 <ul class="simple">
-<li><p><strong>Single Table</strong>: Everything lives in <strong>one table</strong> with a <code class="docutils literal notranslate"><span class="pre">type</span></code> column. Fastest to query when subclasses only add a few optional columns.</p></li>
-<li><p><strong>Joined Table</strong>: Shared fields live in a <strong>parent table</strong>, and extra fields live in <strong>child tables</strong> linked by a foreign key. Best when subclasses have many required columns.</p></li>
-<li><p><strong>Concrete Table</strong>: An abstract Python base class shares column definitions, while each subclass gets its own <strong>separate table</strong>.</p></li>
+<li><p><strong>Single Table</strong>: Subclasses share one table distinguished by a discriminator column (<code class="docutils literal notranslate"><span class="pre">polymorphic_on</span></code>). Suitable when subclasses add only a few nullable columns.</p></li>
+<li><p><strong>Joined Table</strong>: Shared columns reside in a parent table and subtype-specific columns reside in child tables joined by a foreign key.</p></li>
+<li><p><strong>Concrete Table</strong>: An abstract Python base class (<code class="docutils literal notranslate"><span class="pre">__abstract__</span> <span class="pre">=</span> <span class="pre">True</span></code>) shares column definitions while each subclass maps to an independent table.</p></li>
 </ul>
 <section id="comparing-the-layouts">
 <h2>Comparing the Layouts<a class="headerlink" href="#comparing-the-layouts" title="Link to this heading">#</a></h2>
@@ -499,7 +498,7 @@ Concrete Table</label><div class="sd-tab-content docutils" id="sd-tab-item-2-con
 </section>
 <section id="querying-inherited-models">
 <h2>Querying Inherited Models<a class="headerlink" href="#querying-inherited-models" title="Link to this heading">#</a></h2>
-<p>Attach a repository to the parent model when you want all subtypes back together, or attach one to a child model when you only want rows of that specific subtype:</p>
+<p>Bind a repository to the parent model to query across all polymorphic subtypes, or bind a repository to a specific subclass to query only that subtype:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncSession</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncRepository</span>
 </span><span data-line="3">

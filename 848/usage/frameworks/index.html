@@ -364,8 +364,7 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="framework-integrations">
 <h1>Framework Integrations<a class="headerlink" href="#framework-integrations" title="Link to this heading">#</a></h1>
-<p>Instead of manually opening, committing, and closing SQLAlchemy sessions inside every web route, Advanced Alchemy plugs directly into your web framework.</p>
-<p>Each integration starts and stops database engines cleanly with your app, gives every incoming request its own session, and re-exports core models, repositories, services, and filters from one place.</p>
+<p>Advanced Alchemy provides first-party web framework integrations that manage engine startup and disposal, configure per-request session lifecycles, and re-export core models, repositories, services, and filters.</p>
 <section id="at-a-glance">
 <h2>At a Glance<a class="headerlink" href="#at-a-glance" title="Link to this heading">#</a></h2>
 <div class="table-wrapper colwidths-given docutils container">
@@ -396,17 +395,17 @@ data-aria-dark="Switch to auto color mode">
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="starlette.html"><span class="doc">Starlette</span></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">AdvancedAlchemy</span></code></p></td>
-<td><p>ASGI session middleware, sync &amp; async sessions, and multi-database support</p></td>
+<td><p>ASGI session middleware, lazy <code class="docutils literal notranslate"><span class="pre">request.state</span></code> sessions, and multi-database support</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">alchemy</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="flask.html"><span class="doc">Flask</span></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">AdvancedAlchemy</span></code></p></td>
-<td><p>Request-context sessions, sync/async bridge, and <code class="docutils literal notranslate"><span class="pre">jsonify()</span></code> service helper</p></td>
+<td><p>App-context sessions, sync/async bridge, and <code class="docutils literal notranslate"><span class="pre">jsonify()</span></code> service helper</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">flask</span> <span class="pre">database</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="sanic.html"><span class="doc">Sanic</span></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">AdvancedAlchemy</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">sanic-ext</span></code> dependency injection, <code class="docutils literal notranslate"><span class="pre">request.ctx</span></code> sessions, and multi-binds</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sanic-ext</span></code> dependency injection, per-request <code class="docutils literal notranslate"><span class="pre">request.ctx</span></code> sessions, and multi-binds</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">alchemy</span></code></p></td>
 </tr>
 </tbody>
@@ -440,7 +439,7 @@ data-aria-dark="Switch to auto color mode">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
 <svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-globe" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM5.78 8.75a9.64 9.64 0 0 0 1.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0 0 10.22 8.75Zm4.44-1.5a9.64 9.64 0 0 0-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 0 0-.857 1.215A9.64 9.64 0 0 0 5.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 0 0 4.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 0 0-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 0 0 4.666-5.5Zm2.733-1.5a6.507 6.507 0 0 0-4.666-5.5c.123.181.24.365.353.552.714 1.192 1.436 2.874 1.58 4.948Z"></path></svg> Starlette</div>
-<p class="sd-card-text">Lightweight ASGI middleware that attaches sync or async sessions to <code class="docutils literal notranslate"><span class="pre">request.state</span></code> across single or multiple databases.</p>
+<p class="sd-card-text">ASGI middleware that creates lazy per-request sync or async sessions on <code class="docutils literal notranslate"><span class="pre">request.state</span></code> across single or multiple databases.</p>
 </div>
 <a class="sd-stretched-link sd-hide-link-text reference internal" href="starlette.html"><span class="doc">Starlette Integration</span></a></div>
 </div>
@@ -449,7 +448,7 @@ data-aria-dark="Switch to auto color mode">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
 <svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-server" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v4c0 .372-.116.717-.314 1 .198.283.314.628.314 1v4a1.75 1.75 0 0 1-1.75 1.75H1.75A1.75 1.75 0 0 1 0 12.75v-4c0-.358.109-.707.314-1a1.739 1.739 0 0 1-.314-1v-4C0 1.784.784 1 1.75 1ZM1.5 2.75v4c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25v-4a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Zm.25 5.75a.25.25 0 0 0-.25.25v4c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25v-4a.25.25 0 0 0-.25-.25ZM7 4.75A.75.75 0 0 1 7.75 4h4.5a.75.75 0 0 1 0 1.5h-4.5A.75.75 0 0 1 7 4.75ZM7.75 10h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM3 4.75A.75.75 0 0 1 3.75 4h.5a.75.75 0 0 1 0 1.5h-.5A.75.75 0 0 1 3 4.75ZM3.75 10h.5a.75.75 0 0 1 0 1.5h-.5a.75.75 0 0 1 0-1.5Z"></path></svg> Flask</div>
-<p class="sd-card-text">WSGI and async route sessions, <code class="docutils literal notranslate"><span class="pre">FlaskServiceMixin</span></code> JSON responses, and built-in <code class="docutils literal notranslate"><span class="pre">flask</span> <span class="pre">database</span></code> migration commands.</p>
+<p class="sd-card-text">App-context WSGI and async route sessions, <code class="docutils literal notranslate"><span class="pre">FlaskServiceMixin</span></code> JSON responses, and built-in <code class="docutils literal notranslate"><span class="pre">flask</span> <span class="pre">database</span></code> migration commands.</p>
 </div>
 <a class="sd-stretched-link sd-hide-link-text reference internal" href="flask.html"><span class="doc">Flask Integration</span></a></div>
 </div>
@@ -458,7 +457,7 @@ data-aria-dark="Switch to auto color mode">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
 <svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-flame" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.533.753V.752c.217 2.385 1.463 3.626 2.653 4.81C13.37 6.74 14.498 7.863 14.498 10c0 3.5-3 6-6.5 6S1.5 13.512 1.5 10c0-1.298.536-2.56 1.425-3.286.376-.308.862 0 1.035.454C4.46 8.487 5.581 8.419 6 8c.282-.282.341-.811-.003-1.5C4.34 3.187 7.035.75 8.77.146c.39-.137.726.194.763.607ZM7.998 14.5c2.832 0 5-1.98 5-4.5 0-1.463-.68-2.19-1.879-3.383l-.036-.037c-1.013-1.008-2.3-2.29-2.834-4.434-.322.256-.63.579-.864.953-.432.696-.621 1.58-.046 2.73.473.947.67 2.284-.278 3.232-.61.61-1.545.84-2.403.633a2.79 2.79 0 0 1-1.436-.874A3.198 3.198 0 0 0 3 10c0 2.53 2.164 4.5 4.998 4.5Z"></path></svg> Sanic</div>
-<p class="sd-card-text">Automatic session injection with <code class="docutils literal notranslate"><span class="pre">sanic-ext</span></code>, lazy <code class="docutils literal notranslate"><span class="pre">request.ctx</span></code> sessions, and multi-database bind keys.</p>
+<p class="sd-card-text">Automatic session injection with <code class="docutils literal notranslate"><span class="pre">sanic-ext</span></code>, per-request <code class="docutils literal notranslate"><span class="pre">request.ctx</span></code> sessions, and multi-database bind keys.</p>
 </div>
 <a class="sd-stretched-link sd-hide-link-text reference internal" href="sanic.html"><span class="doc">Sanic Integration</span></a></div>
 </div>

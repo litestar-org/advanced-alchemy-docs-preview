@@ -367,10 +367,10 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="services">
 <h1>Services<a class="headerlink" href="#services" title="Link to this heading">#</a></h1>
-<p>A <a class="reference internal" href="repositories/basics.html"><span class="doc">Repository</span></a> speaks in database tables (<code class="docutils literal notranslate"><span class="pre">BlogPost</span></code> rows), while a <strong>Service</strong> speaks in your API’s input and output shapes (<code class="docutils literal notranslate"><span class="pre">BlogPostCreate</span></code>, <code class="docutils literal notranslate"><span class="pre">BlogPostResponse</span></code>). Use a repository directly for simple table persistence and queries; add a service on top when you want automatic schema conversion (<code class="docutils literal notranslate"><span class="pre">to_model</span></code> / <code class="docutils literal notranslate"><span class="pre">to_schema</span></code>), transaction commits, validation hooks, or multi-step business rules—such as creating missing tags or generating URL slugs before saving.</p>
+<p>A <a class="reference internal" href="repositories/basics.html"><span class="doc">Repository</span></a> operates directly on SQLAlchemy model instances (<code class="docutils literal notranslate"><span class="pre">BlogPost</span></code>), whereas a <strong>Service</strong> operates on typed input and output schemas (<code class="docutils literal notranslate"><span class="pre">BlogPostCreate</span></code>, <code class="docutils literal notranslate"><span class="pre">BlogPostResponse</span></code>). Use a repository directly for table persistence and queries; add a service when you need schema conversion (<code class="docutils literal notranslate"><span class="pre">to_model</span></code> and <code class="docutils literal notranslate"><span class="pre">to_schema</span></code>), transaction commits, validation hooks, or multi-step domain logic such as generating URL slugs before saving.</p>
 <section id="setting-up-a-service">
 <h2>Setting Up a Service<a class="headerlink" href="#setting-up-a-service" title="Link to this heading">#</a></h2>
-<p>Let’s connect a <code class="docutils literal notranslate"><span class="pre">BlogPost</span></code> table, Pydantic request/response schemas, and a <code class="docutils literal notranslate"><span class="pre">BlogPostService</span></code>:</p>
+<p>Define a <code class="docutils literal notranslate"><span class="pre">BlogPost</span></code> model, Pydantic request and response schemas, and a <code class="docutils literal notranslate"><span class="pre">BlogPostService</span></code>:</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
 <label aria-controls="sd-tab-item-0-content" class="sd-tab-label" for="sd-tab-item-0">
@@ -428,7 +428,7 @@ data-aria-dark="Switch to auto color mode">
 </section>
 <section id="creating-updating-and-returning-schemas">
 <h2>Creating, Updating, and Returning Schemas<a class="headerlink" href="#creating-updating-and-returning-schemas" title="Link to this heading">#</a></h2>
-<p>Pass dictionaries, Pydantic models, <code class="docutils literal notranslate"><span class="pre">msgspec</span></code> structs, dataclasses, <code class="docutils literal notranslate"><span class="pre">attrs</span></code> classes, or <code class="docutils literal notranslate"><span class="pre">SQLModel</span></code> objects straight into <code class="docutils literal notranslate"><span class="pre">create</span></code> and <code class="docutils literal notranslate"><span class="pre">update</span></code>, then call <code class="docutils literal notranslate"><span class="pre">to_schema</span></code> to format the response (or <code class="docutils literal notranslate"><span class="pre">get_or_none</span></code> when missing IDs should return <code class="docutils literal notranslate"><span class="pre">None</span></code>):</p>
+<p>Pass dictionaries, Pydantic models, <code class="docutils literal notranslate"><span class="pre">msgspec</span></code> structs, dataclasses, <code class="docutils literal notranslate"><span class="pre">attrs</span></code> classes, or <code class="docutils literal notranslate"><span class="pre">SQLModel</span></code> objects directly to <code class="docutils literal notranslate"><span class="pre">create</span></code> and <code class="docutils literal notranslate"><span class="pre">update</span></code>, then call <code class="docutils literal notranslate"><span class="pre">to_schema</span></code> to format the response (or <code class="docutils literal notranslate"><span class="pre">get_or_none</span></code> when missing IDs should return <code class="docutils literal notranslate"><span class="pre">None</span></code>):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_post</span><span class="p">(</span><span class="n">service</span><span class="p">:</span> <span class="n">BlogPostService</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">BlogPostCreate</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlogPostResponse</span><span class="p">:</span>
 </span><span data-line="2">    <span class="n">post</span> <span class="o">=</span> <span class="k">await</span> <span class="n">service</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span data-line="3">    <span class="k">return</span> <span class="n">service</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="n">schema_type</span><span class="o">=</span><span class="n">BlogPostResponse</span><span class="p">)</span>
@@ -443,7 +443,7 @@ data-aria-dark="Switch to auto color mode">
 </section>
 <section id="adding-custom-business-rules">
 <h2>Adding Custom Business Rules<a class="headerlink" href="#adding-custom-business-rules" title="Link to this heading">#</a></h2>
-<p>Need to auto-generate a unique URL slug whenever a tag is created or renamed? Override <code class="docutils literal notranslate"><span class="pre">to_model</span></code> (or <code class="docutils literal notranslate"><span class="pre">to_model_on_create</span></code> / <code class="docutils literal notranslate"><span class="pre">to_model_on_update</span></code>):</p>
+<p>Override <code class="docutils literal notranslate"><span class="pre">to_model</span></code> (or <code class="docutils literal notranslate"><span class="pre">to_model_on_create</span></code> and <code class="docutils literal notranslate"><span class="pre">to_model_on_update</span></code>) to run custom logic before persistence, such as generating a unique URL slug when creating or renaming a tag:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.repository</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncSlugRepository</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelDictT</span><span class="p">,</span> <span class="n">is_dict_with_field</span><span class="p">,</span> <span class="n">is_dict_without_field</span><span class="p">,</span> <span class="n">schema_dump</span>
 </span><span data-line="3">
@@ -462,7 +462,7 @@ data-aria-dark="Switch to auto color mode">
 </section>
 <section id="using-pydantic-msgspec-dataclasses-attrs-or-sqlmodel">
 <span id="using-msgspec-or-attrs-schemas"></span><h2>Using Pydantic, Msgspec, Dataclasses, attrs, or SQLModel<a class="headerlink" href="#using-pydantic-msgspec-dataclasses-attrs-or-sqlmodel" title="Link to this heading">#</a></h2>
-<p>Services work with all five major Python schema libraries—normalizing partial updates (ignoring unset fields automatically) and converting rows into response schemas:</p>
+<p>Services integrate with all five supported Python schema libraries, omitting unset fields during partial updates and converting ORM rows into response objects:</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
 <label aria-controls="sd-tab-item-3-content" class="sd-tab-label" for="sd-tab-item-3">
@@ -551,10 +551,10 @@ SQLModel</label><div class="sd-tab-content docutils" id="sd-tab-item-7-content">
 <section id="related-guides">
 <h2>Related Guides<a class="headerlink" href="#related-guides" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="service_composition.html"><span class="doc">Service Composition</span></a> — Coordinate multiple services on one shared session with <code class="docutils literal notranslate"><span class="pre">ServiceGroup</span></code>.</p></li>
-<li><p><a class="reference internal" href="frameworks/litestar.html"><span class="doc">Litestar Integration</span></a> — Inject services directly into Litestar controllers.</p></li>
-<li><p><a class="reference internal" href="frameworks/fastapi.html"><span class="doc">FastAPI Integration</span></a> — Inject services into FastAPI routes with <code class="docutils literal notranslate"><span class="pre">Depends</span></code>.</p></li>
-<li><p><a class="reference internal" href="../reference/service.html"><span class="doc">Services</span></a> — Full service API reference.</p></li>
+<li><p><a class="reference internal" href="service_composition.html"><span class="doc">Service Composition</span></a>: Coordinate multiple services on one shared session with <code class="docutils literal notranslate"><span class="pre">ServiceGroup</span></code>.</p></li>
+<li><p><a class="reference internal" href="frameworks/litestar.html"><span class="doc">Litestar Integration</span></a>: Inject services into Litestar controllers and route handlers.</p></li>
+<li><p><a class="reference internal" href="frameworks/fastapi.html"><span class="doc">FastAPI Integration</span></a>: Inject services into FastAPI routes with <code class="docutils literal notranslate"><span class="pre">Depends</span></code>.</p></li>
+<li><p><a class="reference internal" href="../reference/service.html"><span class="doc">Services</span></a>: Full service API reference.</p></li>
 </ul>
 </section>
 </section>

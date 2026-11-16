@@ -273,7 +273,7 @@ data-aria-dark="Switch to auto color mode">
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
 <li><a class="reference internal" href="#defining-and-querying-a-sqlmodel-table">Defining and Querying a SQLModel Table</a></li>
-<li><a class="reference internal" href="#good-to-know">Good to Know</a></li>
+<li><a class="reference internal" href="#metadata-configuration">Metadata Configuration</a></li>
 </ul>
 </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
   data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
@@ -368,7 +368,7 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="sqlmodel-integration">
 <h1>SQLModel Integration<a class="headerlink" href="#sqlmodel-integration" title="Link to this heading">#</a></h1>
-<p>If your team already writes tables with <a class="reference external" href="https://sqlmodel.tiangolo.com/">SQLModel</a>, you can plug those models straight into Advanced Alchemy repositories without rewriting your model classes.</p>
+<p><a class="reference external" href="https://sqlmodel.tiangolo.com/">SQLModel</a> classes configured with <code class="docutils literal notranslate"><span class="pre">table=True</span></code> work directly with Advanced Alchemy repositories and services.</p>
 <section id="defining-and-querying-a-sqlmodel-table">
 <h2>Defining and Querying a SQLModel Table<a class="headerlink" href="#defining-and-querying-a-sqlmodel-table" title="Link to this heading">#</a></h2>
 <p>Mark your SQLModel class with <code class="docutils literal notranslate"><span class="pre">table=True</span></code> and point a repository at it just like any SQLAlchemy model:</p>
@@ -450,9 +450,9 @@ Python 3.10+</label><div class="sd-tab-content docutils" id="sd-tab-item-1-conte
 </div>
 </div>
 </section>
-<section id="good-to-know">
-<h2>Good to Know<a class="headerlink" href="#good-to-know" title="Link to this heading">#</a></h2>
-<p>SQLModel uses its own <code class="docutils literal notranslate"><span class="pre">SQLModel.metadata</span></code> registry instead of Advanced Alchemy’s <code class="docutils literal notranslate"><span class="pre">orm_registry</span></code>. Pass <code class="docutils literal notranslate"><span class="pre">metadata=SQLModel.metadata</span></code> in your framework config so migrations and table creation helpers target your SQLModel tables.</p>
+<section id="metadata-configuration">
+<h2>Metadata Configuration<a class="headerlink" href="#metadata-configuration" title="Link to this heading">#</a></h2>
+<p>SQLModel registers tables on <code class="docutils literal notranslate"><span class="pre">SQLModel.metadata</span></code> rather than Advanced Alchemy’s <code class="docutils literal notranslate"><span class="pre">orm_registry.metadata</span></code>. Pass <code class="docutils literal notranslate"><span class="pre">metadata=SQLModel.metadata</span></code> to <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncConfig</span></code> or <code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncConfig</span></code> so Alembic migrations and <code class="docutils literal notranslate"><span class="pre">create_all</span></code> target your SQLModel tables.</p>
 </section>
 </section>
 

@@ -622,6 +622,19 @@ data-aria-dark="Switch to auto color mode">
 <section id="1.13.0-feature">
 <h3>Features<a class="headerlink" href="#1.13.0-feature" title="Link to this heading">#</a></h3>
 <dl>
+<dt>add optional pagination_max_size cap to FilterConfig and FilterSet<a class="headerlink reference internal" href="#1.13.0-add optional pagination_max_size cap to filterconfig and filterset" id="1.13.0-add optional pagination_max_size cap to filterconfig and filterset">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds an optional <code class="docutils literal notranslate"><span class="pre">pagination_max_size</span></code> key (defaulting to <code class="docutils literal notranslate"><span class="pre">None</span></code>) to
+<code class="docutils literal notranslate"><span class="pre">FilterConfig</span></code> and <code class="docutils literal notranslate"><span class="pre">FilterSet</span></code> to enforce an upper bound on
+<code class="docutils literal notranslate"><span class="pre">pageSize</span></code> / <code class="docutils literal notranslate"><span class="pre">page_size</span></code> via OpenAPI <code class="docutils literal notranslate"><span class="pre">maximum</span></code> and framework
+validation (400 in Litestar, 422 in FastAPI, and <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> on
+direct <code class="docutils literal notranslate"><span class="pre">FilterSet</span></code> instantiation). Also validates <code class="docutils literal notranslate"><span class="pre">pagination_size</span></code>
+as a positive integer when building dependencies, clamps omitted
+defaults to <code class="docutils literal notranslate"><span class="pre">pagination_max_size</span></code>, and raises
+<code class="docutils literal notranslate"><span class="pre">ImproperConfigurationError</span></code> when <code class="docutils literal notranslate"><span class="pre">pagination_size</span></code> exceeds
+<code class="docutils literal notranslate"><span class="pre">pagination_max_size</span></code>.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/849">https://github.com/litestar-org/advanced-alchemy/issues/849</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/850">https://github.com/litestar-org/advanced-alchemy/pull/850</a></span></p>
+</div>
+</dd>
 <dt>declare reusable FilterSets with inferred relationship loading<a class="headerlink reference internal" href="#1.13.0-declare reusable filtersets with inferred relationship loading" id="1.13.0-declare reusable filtersets with inferred relationship loading">#</a></dt><dd><div class="changelog-change docutils container">
 <p><code class="docutils literal notranslate"><span class="pre">FilterSet[Model]</span></code> defines allowed query fields, custom filters, search,
 and sorting with double-underscore field parameters. Operators on one

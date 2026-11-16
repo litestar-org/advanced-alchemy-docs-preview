@@ -275,7 +275,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#quick-start">Quick Start</a></li>
 <li><a class="reference internal" href="#choosing-a-cache-backend">Choosing a Cache Backend</a></li>
-<li><a class="reference internal" href="#what-happens-behind-the-scenes">What Happens Behind the Scenes</a></li>
+<li><a class="reference internal" href="#invalidation-and-consistency-behavior">Invalidation and Consistency Behavior</a></li>
 </ul>
 </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
   data-type="github" data-user="litestar-org" data-repo="advanced-alchemy">
@@ -366,8 +366,7 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="caching">
 <h1>Caching<a class="headerlink" href="#caching" title="Link to this heading">#</a></h1>
-<p>Imagine 500 visitors opening the same popular author page at the exact same second. Without a cache, your database runs the exact same <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> query 500 times.</p>
-<p>Advanced Alchemy integrates with <a class="reference external" href="https://dogpilecache.sqlalchemy.org/">dogpile.cache</a> so repeated lookups come straight from memory or Redis—and whenever you save changes to a row, stale cache entries are cleared automatically when the transaction commits.</p>
+<p>Advanced Alchemy integrates with <a class="reference external" href="https://dogpilecache.sqlalchemy.org/">dogpile.cache</a> to cache repository lookups in memory, Redis, or Memcached and automatically invalidate affected cache entries after transactions commit.</p>
 <div class="aa-diagram docutils container">
 <img alt="Query caching lookup, hit, miss, and automatic commit invalidation flow" class="aa-diagram-light" src="../_images/caching-flow-light.svg" />
 <img alt="Query caching lookup, hit, miss, and automatic commit invalidation flow" class="aa-diagram-dark" src="../_images/caching-flow-dark.svg" />
@@ -407,7 +406,7 @@ poetry</label><div class="sd-tab-content docutils" id="sd-tab-item-3-content">
 </section>
 <section id="quick-start">
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h2>
-<p>Pass <code class="docutils literal notranslate"><span class="pre">CacheConfig</span></code> to your database configuration and enable <code class="docutils literal notranslate"><span class="pre">auto_expunge=True</span></code> on cached repositories. Every <code class="docutils literal notranslate"><span class="pre">repo.get()</span></code> and <code class="docutils literal notranslate"><span class="pre">repo.get_many()</span></code> call uses the cache automatically—or pass <code class="docutils literal notranslate"><span class="pre">use_cache=False</span></code> to skip the cache for a specific query:</p>
+<p>Pass <code class="docutils literal notranslate"><span class="pre">CacheConfig</span></code> to your database configuration and enable <code class="docutils literal notranslate"><span class="pre">auto_expunge=True</span></code> on cached repositories. Repository <code class="docutils literal notranslate"><span class="pre">get()</span></code> and <code class="docutils literal notranslate"><span class="pre">get_many()</span></code> calls read through the configured cache by default; pass <code class="docutils literal notranslate"><span class="pre">use_cache=False</span></code> to bypass the cache for an individual query:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapped</span>
 </span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BigIntAuditBase</span>
 </span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">CacheConfig</span>
@@ -501,12 +500,12 @@ Disabled</label><div class="sd-tab-content docutils" id="sd-tab-item-7-content">
 </div>
 </div>
 </section>
-<section id="what-happens-behind-the-scenes">
-<h2>What Happens Behind the Scenes<a class="headerlink" href="#what-happens-behind-the-scenes" title="Link to this heading">#</a></h2>
+<section id="invalidation-and-consistency-behavior">
+<h2>Invalidation and Consistency Behavior<a class="headerlink" href="#invalidation-and-consistency-behavior" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><strong>Safe rollbacks</strong>: Cache entries are only cleared <em>after</em> <code class="docutils literal notranslate"><span class="pre">commit()</span></code> succeeds. If a transaction rolls back, your cache stays untouched.</p></li>
-<li><p><strong>No cache stampedes</strong>: If 50 requests miss the same uncached key at once, one query runs and shares the result with the waiting requests.</p></li>
-<li><p><strong>Columns only</strong>: Cached rows store column values, not related tables. Call <code class="docutils literal notranslate"><span class="pre">session.merge(row)</span></code> first if you need to lazy-load relationships later.</p></li>
+<li><p><strong>Post-commit invalidation</strong>: Cache entries are invalidated only after <code class="docutils literal notranslate"><span class="pre">commit()</span></code> succeeds; rolled-back transactions leave existing cache entries intact.</p></li>
+<li><p><strong>Single-flight dogpile locking</strong>: Concurrent cache misses on the same key serialize behind the Dogpile lock so one query populates the cache for waiting callers.</p></li>
+<li><p><strong>Detached column state</strong>: Cached instances serialize mapped column values without loaded relationships. Call <code class="docutils literal notranslate"><span class="pre">session.merge(row)</span></code> before accessing lazy relationships.</p></li>
 </ul>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">

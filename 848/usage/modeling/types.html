@@ -370,8 +370,7 @@ data-aria-dark="Switch to auto color mode">
 </div><article class="yue" role="main">
           <section id="portable-column-types">
 <h1>Portable Column Types<a class="headerlink" href="#portable-column-types" title="Link to this heading">#</a></h1>
-<p>Different SQL databases use different column types for UUIDs, UTC timestamps, JSON, and AI vector embeddings—especially when you test against SQLite locally and deploy to PostgreSQL, MySQL, or Oracle in production.</p>
-<p>Advanced Alchemy’s column types automatically pick the best native database type on each engine while keeping your Python types consistent.</p>
+<p>Advanced Alchemy provides custom SQLAlchemy <code class="docutils literal notranslate"><span class="pre">TypeDecorator</span></code> implementations that compile to dialect-appropriate SQL types across SQLite, PostgreSQL, CockroachDB, MySQL, MariaDB, Oracle, DuckDB, SQL Server, and Spanner while preserving consistent Python types.</p>
 <section id="common-column-types-at-a-glance">
 <h2>Common Column Types at a Glance<a class="headerlink" href="#common-column-types-at-a-glance" title="Link to this heading">#</a></h2>
 <div class="table-wrapper colwidths-given docutils container">
@@ -382,7 +381,7 @@ data-aria-dark="Switch to auto color mode">
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Column Type</p></th>
-<th class="head"><p>What It Does</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
 <tbody>
@@ -390,16 +389,16 @@ data-aria-dark="Switch to auto color mode">
 <td><p>Converts datetimes to UTC before saving, returns timezone-aware UTC datetimes on read, and supports configurable fractional-second precision (<code class="docutils literal notranslate"><span class="pre">DateTimeUTC(fsp=6)</span></code>).</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GUID</span></code></p></td>
-<td><p>Stores Python <code class="docutils literal notranslate"><span class="pre">UUID</span></code> objects natively on PostgreSQL, CockroachDB, DuckDB, MSSQL, and Oracle, or compactly on SQLite/MySQL.</p></td>
+<td><p>Stores Python <code class="docutils literal notranslate"><span class="pre">UUID</span></code> objects using native <code class="docutils literal notranslate"><span class="pre">UUID</span></code> / <code class="docutils literal notranslate"><span class="pre">UNIQUEIDENTIFIER</span></code> types on PostgreSQL, CockroachDB, DuckDB, and SQL Server, <code class="docutils literal notranslate"><span class="pre">RAW(16)</span></code> or <code class="docutils literal notranslate"><span class="pre">CHAR(32)</span></code> on Oracle, and <code class="docutils literal notranslate"><span class="pre">BINARY(16)</span></code> or <code class="docutils literal notranslate"><span class="pre">CHAR(32)</span></code> on SQLite and MySQL.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">BigIntIdentity</span></code></p></td>
-<td><p>Uses 64-bit <code class="docutils literal notranslate"><span class="pre">BIGINT</span></code> in production and <code class="docutils literal notranslate"><span class="pre">INTEGER</span></code> on SQLite so auto-incrementing IDs work in local tests.</p></td>
+<td><p>Compiles to 64-bit <code class="docutils literal notranslate"><span class="pre">BIGINT</span></code> on server databases and <code class="docutils literal notranslate"><span class="pre">INTEGER</span></code> on SQLite so auto-incrementing primary keys work across dialects.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">JsonB</span></code></p></td>
-<td><p>Uses fast binary JSON on PostgreSQL, CockroachDB, and Oracle, and standard <code class="docutils literal notranslate"><span class="pre">JSON</span></code> everywhere else.</p></td>
+<td><p>Compiles to binary JSON on PostgreSQL, CockroachDB (<code class="docutils literal notranslate"><span class="pre">JSONB</span></code>), and Oracle (<code class="docutils literal notranslate"><span class="pre">ORA_JSONB</span></code>), and standard <code class="docutils literal notranslate"><span class="pre">JSON</span></code> on other dialects.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Vector(dim=...)</span></code></p></td>
-<td><p>Stores float embeddings for similarity search (<code class="docutils literal notranslate"><span class="pre">pgvector</span></code>, Oracle 23ai+, CockroachDB, DuckDB, and SQLite fallback).</p></td>
+<td><p>Stores float vector embeddings using native vector columns on PostgreSQL (<code class="docutils literal notranslate"><span class="pre">pgvector</span></code>), CockroachDB, and Oracle 23ai+, with <code class="docutils literal notranslate"><span class="pre">JSON</span></code> array storage on SQLite, DuckDB, and other dialects.</p></td>
 </tr>
 </tbody>
 </table>
@@ -523,8 +522,8 @@ Python 3.11+</label><div class="sd-tab-content docutils" id="sd-tab-item-4-conte
 <section id="related-guides">
 <h2>Related Guides<a class="headerlink" href="#related-guides" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="security_and_storage_types.html"><span class="doc">Security and File Storage Types</span></a> — Field encryption, password hashing, authenticator codes, and uploaded files.</p></li>
-<li><p><a class="reference internal" href="../../reference/types.html"><span class="doc">Custom Types</span></a> — Full API reference for <code class="docutils literal notranslate"><span class="pre">advanced_alchemy.types</span></code>.</p></li>
+<li><p><a class="reference internal" href="security_and_storage_types.html"><span class="doc">Security and File Storage Types</span></a>: Field encryption, password hashing, authenticator codes, and file storage.</p></li>
+<li><p><a class="reference internal" href="../../reference/types.html"><span class="doc">Custom Types</span></a>: Full API reference for <code class="docutils literal notranslate"><span class="pre">advanced_alchemy.types</span></code>.</p></li>
 </ul>
 </section>
 </section>
