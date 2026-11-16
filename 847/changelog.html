@@ -275,6 +275,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#1.13.0">1.13.0</a><ul>
 <li><a class="reference internal" href="#1.13.0-feature">Features</a></li>
 <li><a class="reference internal" href="#1.13.0-bugfix">Bugfixes</a></li>
+<li><a class="reference internal" href="#1.13.0-misc">Other changes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#1.12.0">1.12.0</a><ul>
@@ -628,7 +629,97 @@ field match the same related row; different fields match independently.
 Repository and service reads infer relationship loading while preserving
 explicit loading options, pagination totals, and mock repository behavior.
 With contributions from <a class="reference external" href="https://github.com/MortezaKarimi77">Morteza Karimi</a>.</p>
-<p>References: </p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/639">https://github.com/litestar-org/advanced-alchemy/pull/639</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/845">https://github.com/litestar-org/advanced-alchemy/pull/845</a></span></p>
+</div>
+</dd>
+<dt>add RelationshipFilter and relationship collection filtering<a class="headerlink reference internal" href="#1.13.0-add relationshipfilter and relationship collection filtering" id="1.13.0-add relationshipfilter and relationship collection filtering">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds <a class="reference internal" href="reference/filters.html#advanced_alchemy.filters.RelationshipFilter" title="advanced_alchemy.filters.RelationshipFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RelationshipFilter</span></code></a> for correlated
+<code class="docutils literal notranslate"><span class="pre">EXISTS</span></code> / <code class="docutils literal notranslate"><span class="pre">NOT</span> <span class="pre">EXISTS</span></code> filtering across one-to-many, many-to-one,
+many-to-many, self-referential, joined-table inheritance, and multi-hop
+relationships, alongside relationship attribute support in
+<a class="reference internal" href="reference/filters.html#advanced_alchemy.filters.CollectionFilter" title="advanced_alchemy.filters.CollectionFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">CollectionFilter</span></code></a> and
+<a class="reference internal" href="reference/filters.html#advanced_alchemy.filters.NotInCollectionFilter" title="advanced_alchemy.filters.NotInCollectionFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotInCollectionFilter</span></code></a>, <code class="docutils literal notranslate"><span class="pre">&quot;relationship&quot;</span></code>
+nodes (with <code class="docutils literal notranslate"><span class="pre">allowed_relationships</span></code>, <code class="docutils literal notranslate"><span class="pre">max_relationship_depth</span></code>,
+<code class="docutils literal notranslate"><span class="pre">allowed_fields</span></code>, <code class="docutils literal notranslate"><span class="pre">max_depth</span></code>, and <code class="docutils literal notranslate"><span class="pre">strict</span></code> validation guards)
+in <a class="reference internal" href="reference/filters.html#advanced_alchemy.filters.MultiFilter" title="advanced_alchemy.filters.MultiFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiFilter</span></code></a>,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">InstrumentedAttribute</span></code> field support in
+<a class="reference internal" href="reference/filters.html#advanced_alchemy.filters.SearchFilter" title="advanced_alchemy.filters.SearchFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchFilter</span></code></a> and
+<a class="reference internal" href="reference/filters.html#advanced_alchemy.filters.NotInSearchFilter" title="advanced_alchemy.filters.NotInSearchFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotInSearchFilter</span></code></a>, and a suffix pattern
+fix for <code class="docutils literal notranslate"><span class="pre">operators_map[&quot;iendswith&quot;]</span></code>.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/364">https://github.com/litestar-org/advanced-alchemy/issues/364</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/505">https://github.com/litestar-org/advanced-alchemy/issues/505</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/639">https://github.com/litestar-org/advanced-alchemy/pull/639</a></span></p>
+</div>
+</dd>
+<dt>add get_or_none across repositories and services<a class="headerlink reference internal" href="#1.13.0-add get_or_none across repositories and services" id="1.13.0-add get_or_none across repositories and services">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds <code class="docutils literal notranslate"><span class="pre">get_or_none</span></code> to <code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepository</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncRepository</span></code>, their protocols and mock counterparts, and
+<code class="docutils literal notranslate"><span class="pre">SQLAlchemyAsyncRepositoryReadService</span></code> /
+<code class="docutils literal notranslate"><span class="pre">SQLAlchemySyncRepositoryReadService</span></code> to return <code class="docutils literal notranslate"><span class="pre">None</span></code> instead of
+raising <code class="docutils literal notranslate"><span class="pre">NotFoundError</span></code> when no record matches, and fixes
+<code class="docutils literal notranslate"><span class="pre">InMemoryStore.get_or_none</span></code> miss handling.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/117">https://github.com/litestar-org/advanced-alchemy/issues/117</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/843">https://github.com/litestar-org/advanced-alchemy/pull/843</a></span></p>
+</div>
+</dd>
+<dt>support JSONL fixtures, streaming compression, and sharded rollover<a class="headerlink reference internal" href="#1.13.0-support jsonl fixtures, streaming compression, and sharded rollover" id="1.13.0-support jsonl fixtures, streaming compression, and sharded rollover">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Extends <code class="docutils literal notranslate"><span class="pre">advanced_alchemy.utils.fixtures</span></code> and <code class="docutils literal notranslate"><span class="pre">database</span> <span class="pre">dump-data</span></code> with
+JSON Lines support, chunked gzip/zip streaming, numbered fixture shards
+(<code class="docutils literal notranslate"><span class="pre">iter_fixture_sync</span></code> / <code class="docutils literal notranslate"><span class="pre">iter_fixture_async</span></code>, <code class="docutils literal notranslate"><span class="pre">write_fixture_sync</span></code> /
+<code class="docutils literal notranslate"><span class="pre">write_fixture_async</span></code>), and streaming <code class="docutils literal notranslate"><span class="pre">dump_tables</span></code> queries. Renames
+<code class="docutils literal notranslate"><span class="pre">open_fixture</span></code> to <code class="docutils literal notranslate"><span class="pre">open_fixture_sync</span></code> with a deprecated alias kept
+until 2.0.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/842">https://github.com/litestar-org/advanced-alchemy/pull/842</a></span></p>
+</div>
+</dd>
+<dt>add typed Litestar submodule re-exports and exception handler safety<a class="headerlink reference internal" href="#1.13.0-add typed litestar submodule re-exports and exception handler safety" id="1.13.0-add typed litestar submodule re-exports and exception handler safety">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds lazy typed <code class="docutils literal notranslate"><span class="pre">base</span></code>, <code class="docutils literal notranslate"><span class="pre">exceptions</span></code>, <code class="docutils literal notranslate"><span class="pre">filters</span></code>, <code class="docutils literal notranslate"><span class="pre">mixins</span></code>,
+<code class="docutils literal notranslate"><span class="pre">operations</span></code>, <code class="docutils literal notranslate"><span class="pre">repository</span></code>, <code class="docutils literal notranslate"><span class="pre">service</span></code>, <code class="docutils literal notranslate"><span class="pre">types</span></code>, and <code class="docutils literal notranslate"><span class="pre">utils</span></code>
+submodules under <code class="docutils literal notranslate"><span class="pre">advanced_alchemy.extensions.litestar</span></code>, skips
+excluded DTO descriptors earlier, precomputes search field names in
+Litestar and FastAPI filter providers, and preserves user-configured
+<code class="docutils literal notranslate"><span class="pre">exception_handlers</span></code>.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/504">https://github.com/litestar-org/advanced-alchemy/issues/504</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/822">https://github.com/litestar-org/advanced-alchemy/pull/822</a></span></p>
+</div>
+</dd>
+<dt>classify integrity errors by native SQLSTATE and driver error codes<a class="headerlink reference internal" href="#1.13.0-classify integrity errors by native sqlstate and driver error codes" id="1.13.0-classify integrity errors by native sqlstate and driver error codes">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Updates <code class="docutils literal notranslate"><span class="pre">wrap_sqlalchemy_exception</span></code> to classify integrity violations by
+driver SQLSTATE, native error codes, or error types before falling back to
+regex matching across PostgreSQL, CockroachDB, SQLite, MySQL, MariaDB,
+Oracle, DuckDB, and MSSQL.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/803">https://github.com/litestar-org/advanced-alchemy/issues/803</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/828">https://github.com/litestar-org/advanced-alchemy/issues/828</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/829">https://github.com/litestar-org/advanced-alchemy/issues/829</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/831">https://github.com/litestar-org/advanced-alchemy/issues/831</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/807">https://github.com/litestar-org/advanced-alchemy/pull/807</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/813">https://github.com/litestar-org/advanced-alchemy/pull/813</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/839">https://github.com/litestar-org/advanced-alchemy/pull/839</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/834">https://github.com/litestar-org/advanced-alchemy/pull/834</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/840">https://github.com/litestar-org/advanced-alchemy/pull/840</a></span></p>
+</div>
+</dd>
+<dt>add opt-in fractional-second precision to DateTimeUTC<a class="headerlink reference internal" href="#1.13.0-add opt-in fractional-second precision to datetimeutc" id="1.13.0-add opt-in fractional-second precision to datetimeutc">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds opt-in <code class="docutils literal notranslate"><span class="pre">fsp</span></code> (with <code class="docutils literal notranslate"><span class="pre">precision</span></code> alias) to <code class="docutils literal notranslate"><span class="pre">DateTimeUTC</span></code> to
+compile <code class="docutils literal notranslate"><span class="pre">DATETIME(fsp)</span></code> on MySQL/MariaDB and <code class="docutils literal notranslate"><span class="pre">TIMESTAMP</span> <span class="pre">WITH</span> <span class="pre">TIME</span> <span class="pre">ZONE</span></code>
+on Oracle while emitting a deprecation warning when omitted on those
+dialects in 1.x.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/777">https://github.com/litestar-org/advanced-alchemy/issues/777</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/819">https://github.com/litestar-org/advanced-alchemy/pull/819</a></span></p>
+</div>
+</dd>
+<dt>auto-enable PostgreSQL enum migration detection in Alembic templates<a class="headerlink reference internal" href="#1.13.0-auto-enable postgresql enum migration detection in alembic templates" id="1.13.0-auto-enable postgresql enum migration detection in alembic templates">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Conditionally imports <code class="docutils literal notranslate"><span class="pre">alembic_postgresql_enum</span></code> in generated Alembic
+sync and asyncio <code class="docutils literal notranslate"><span class="pre">env.py</span></code> templates when installed and adds the
+<code class="docutils literal notranslate"><span class="pre">postgresql</span></code> optional extra.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/492">https://github.com/litestar-org/advanced-alchemy/issues/492</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/774">https://github.com/litestar-org/advanced-alchemy/pull/774</a></span></p>
+</div>
+</dd>
+<dt>add CLI pyproject.toml config discovery and validation commands<a class="headerlink reference internal" href="#1.13.0-add cli pyproject.toml config discovery and validation commands" id="1.13.0-add cli pyproject.toml config discovery and validation commands">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Resolves <code class="docutils literal notranslate"><span class="pre">alchemy</span></code> configurations from <code class="docutils literal notranslate"><span class="pre">--config</span></code>/<code class="docutils literal notranslate"><span class="pre">-c</span></code> (before or
+after subcommands), <code class="docutils literal notranslate"><span class="pre">ALCHEMY_CONFIG</span></code>, and <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>, supporting
+colon/dotted targets and sync/async factory callables, alongside
+<code class="docutils literal notranslate"><span class="pre">--validate-config</span></code> and <code class="docutils literal notranslate"><span class="pre">show-config</span></code>.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/604">https://github.com/litestar-org/advanced-alchemy/issues/604</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/825">https://github.com/litestar-org/advanced-alchemy/pull/825</a></span></p>
+</div>
+</dd>
+<dt>add BcryptHasher password hashing backend<a class="headerlink reference internal" href="#1.13.0-add bcrypthasher password hashing backend" id="1.13.0-add bcrypthasher password hashing backend">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds an optional <code class="docutils literal notranslate"><span class="pre">BcryptHasher</span></code> backend for <code class="docutils literal notranslate"><span class="pre">PasswordHash</span></code> backed by
+<code class="docutils literal notranslate"><span class="pre">bcrypt</span></code>.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/789">https://github.com/litestar-org/advanced-alchemy/pull/789</a></span></p>
+</div>
+</dd>
+<dt>add Python 3.15 support<a class="headerlink reference internal" href="#1.13.0-add python 3.15 support" id="1.13.0-add python 3.15 support">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds Python 3.15 classifier metadata, dependency lock updates, and CI
+matrix coverage.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/818">https://github.com/litestar-org/advanced-alchemy/pull/818</a></span></p>
 </div>
 </dd>
 <dt>coordinate shared-session services with ServiceGroup<a class="headerlink reference internal" href="#1.13.0-coordinate shared-session services with servicegroup" id="1.13.0-coordinate shared-session services with servicegroup">#</a></dt><dd><div class="changelog-change docutils container">
@@ -666,6 +757,66 @@ repository as the second generic parameter, for example
 <section id="1.13.0-bugfix">
 <h3>Bugfixes<a class="headerlink" href="#1.13.0-bugfix" title="Link to this heading">#</a></h3>
 <dl>
+<dt>harden SQLAlchemyDTO reflection and clause-element defaults<a class="headerlink reference internal" href="#1.13.0-harden sqlalchemydto reflection and clause-element defaults" id="1.13.0-harden sqlalchemydto reflection and clause-element defaults">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Updates <code class="docutils literal notranslate"><span class="pre">SQLAlchemyDTO</span></code> reflection to skip excluded or un-included
+foreign relationships and unreflectable descriptors while preserving
+self-referential nested filtering, and handles SQL clause-element defaults
+such as <code class="docutils literal notranslate"><span class="pre">func.now()</span></code> and <code class="docutils literal notranslate"><span class="pre">null()</span></code> in <code class="docutils literal notranslate"><span class="pre">_detect_defaults</span></code>.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/236">https://github.com/litestar-org/advanced-alchemy/issues/236</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/238">https://github.com/litestar-org/advanced-alchemy/issues/238</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/846">https://github.com/litestar-org/advanced-alchemy/pull/846</a></span></p>
+</div>
+</dd>
+<dt>classify Cloud Spanner and CockroachDB integrity errors and decouple exception wrapping<a class="headerlink reference internal" href="#1.13.0-classify cloud spanner and cockroachdb integrity errors and decouple exception wrapping" id="1.13.0-classify cloud spanner and cockroachdb integrity errors and decouple exception wrapping">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Classifies Cloud Spanner <code class="docutils literal notranslate"><span class="pre">orig.__cause__</span></code> exceptions and constraint
+messages alongside <code class="docutils literal notranslate"><span class="pre">&quot;cockroachdb&quot;</span></code> dialect regex aliases, decouples
+<code class="docutils literal notranslate"><span class="pre">wrap_sqlalchemy_exception</span></code> classification from <code class="docutils literal notranslate"><span class="pre">error_messages</span></code>, and
+passes bound dialect names from <code class="docutils literal notranslate"><span class="pre">UniqueMixin._prevent_autoflush</span></code> and
+repository <code class="docutils literal notranslate"><span class="pre">check_health</span></code>.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/830">https://github.com/litestar-org/advanced-alchemy/issues/830</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/846">https://github.com/litestar-org/advanced-alchemy/pull/846</a></span></p>
+</div>
+</dd>
+<dt>align ORA_JSONB and loader option checks with SQLAlchemy 2.1<a class="headerlink reference internal" href="#1.13.0-align ora_jsonb and loader option checks with sqlalchemy 2.1" id="1.13.0-align ora_jsonb and loader option checks with sqlalchemy 2.1">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Calls <code class="docutils literal notranslate"><span class="pre">super().__init__(*args,</span> <span class="pre">**kwargs)</span></code> in <code class="docutils literal notranslate"><span class="pre">ORA_JSONB.__init__</span></code>,
+guards <code class="docutils literal notranslate"><span class="pre">dialect.oracledb_ver</span></code> access, replaces removed
+<code class="docutils literal notranslate"><span class="pre">util.portable_instancemethod</span></code>, and uses public
+<code class="docutils literal notranslate"><span class="pre">sqlalchemy.orm.interfaces.LoaderOption</span></code> in repository utilities.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/811">https://github.com/litestar-org/advanced-alchemy/issues/811</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/812">https://github.com/litestar-org/advanced-alchemy/pull/812</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/846">https://github.com/litestar-org/advanced-alchemy/pull/846</a></span></p>
+</div>
+</dd>
+<dt>prevent filter dependency collisions in merged Litestar service bundles<a class="headerlink reference internal" href="#1.13.0-prevent filter dependency collisions in merged litestar service bundles" id="1.13.0-prevent filter dependency collisions in merged litestar service bundles">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Adds <code class="docutils literal notranslate"><span class="pre">prefix</span></code> support to <code class="docutils literal notranslate"><span class="pre">DependencyDefaults</span></code> and <code class="docutils literal notranslate"><span class="pre">scoped_filters</span></code>
+/ <code class="docutils literal notranslate"><span class="pre">dep_defaults</span></code> parameters to <code class="docutils literal notranslate"><span class="pre">create_service_dependencies</span></code> so
+merged routes keep distinct filter dependency keys.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/733">https://github.com/litestar-org/advanced-alchemy/issues/733</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/833">https://github.com/litestar-org/advanced-alchemy/pull/833</a></span></p>
+</div>
+</dd>
+<dt>register routing session listeners and fix Sanic and Starlette state keys<a class="headerlink reference internal" href="#1.13.0-register routing session listeners and fix sanic and starlette state keys" id="1.13.0-register routing session listeners and fix sanic and starlette state keys">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Registers timestamp, file-object, and cache listeners on
+<code class="docutils literal notranslate"><span class="pre">RoutingSyncSessionMaker</span></code> and <code class="docutils literal notranslate"><span class="pre">RoutingAsyncSessionMaker</span></code>, fixes state
+key counter collisions in Sanic and Starlette extensions, and binds sync
+session dependencies in Sanic.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/827">https://github.com/litestar-org/advanced-alchemy/pull/827</a></span></p>
+</div>
+</dd>
+<dt>respect GUID binary=False on Oracle and export PGCryptoBackend and Vector in Alembic<a class="headerlink reference internal" href="#1.13.0-respect guid binary=false on oracle and export pgcryptobackend and vector in alembic" id="1.13.0-respect guid binary=false on oracle and export pgcryptobackend and vector in alembic">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Compiles <code class="docutils literal notranslate"><span class="pre">GUID(binary=False)</span></code> to <code class="docutils literal notranslate"><span class="pre">CHAR(32)</span></code> on Oracle, exports
+<code class="docutils literal notranslate"><span class="pre">PGCryptoBackend</span></code> from <code class="docutils literal notranslate"><span class="pre">advanced_alchemy.types</span></code>, registers <code class="docutils literal notranslate"><span class="pre">Vector</span></code>
+in Alembic migration templates, and simplifies <code class="docutils literal notranslate"><span class="pre">SentinelMixin._sentinel</span></code>.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/826">https://github.com/litestar-org/advanced-alchemy/pull/826</a></span></p>
+</div>
+</dd>
+<dt>remove deprecated declarative_mixin decorator<a class="headerlink reference internal" href="#1.13.0-remove deprecated declarative_mixin decorator" id="1.13.0-remove deprecated declarative_mixin decorator">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Removes <code class="docutils literal notranslate"><span class="pre">&#64;declarative_mixin</span></code> from built-in mixins, Litestar
+session/store models, and tests for SQLAlchemy 2.1 compatibility.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/804">https://github.com/litestar-org/advanced-alchemy/issues/804</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/805">https://github.com/litestar-org/advanced-alchemy/pull/805</a></span></p>
+</div>
+</dd>
+<dt>use distinct parameter names for date-filter dependencies<a class="headerlink reference internal" href="#1.13.0-use distinct parameter names for date-filter dependencies" id="1.13.0-use distinct parameter names for date-filter dependencies">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Uses distinct <code class="docutils literal notranslate"><span class="pre">created_at_before</span></code>/<code class="docutils literal notranslate"><span class="pre">created_at_after</span></code> and
+<code class="docutils literal notranslate"><span class="pre">updated_at_before</span></code>/<code class="docutils literal notranslate"><span class="pre">updated_at_after</span></code> parameter names in Litestar
+and FastAPI filter providers while keeping public query aliases intact.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/791">https://github.com/litestar-org/advanced-alchemy/issues/791</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/814">https://github.com/litestar-org/advanced-alchemy/pull/814</a></span></p>
+</div>
+</dd>
 <dt>preserve custom service constructors and SQL expression parity<a class="headerlink reference internal" href="#1.13.0-preserve custom service constructors and sql expression parity" id="1.13.0-preserve custom service constructors and sql expression parity">#</a></dt><dd><div class="changelog-change docutils container">
 <p>Inherited service <code class="docutils literal notranslate"><span class="pre">new()</span></code> factories preserve custom constructors that
 accept the existing service options; model and repository overrides are
@@ -711,28 +862,28 @@ need to be updated.</p>
 </dd>
 </dl>
 </section>
+<section id="1.13.0-misc">
+<h3>Other changes<a class="headerlink" href="#1.13.0-misc" title="Link to this heading">#</a></h3>
+<dl>
+<dt>update documentation pipeline, canonical URLs, and usage guides<a class="headerlink reference internal" href="#1.13.0-update documentation pipeline, canonical urls, and usage guides" id="1.13.0-update documentation pipeline, canonical urls, and usage guides">#</a></dt><dd><div class="changelog-change docutils container">
+<p>Reorganizes usage guides with doctree-generated <code class="docutils literal notranslate"><span class="pre">llms.txt</span></code> and
+<code class="docutils literal notranslate"><span class="pre">llms-full.txt</span></code> exports, updates canonical URLs to
+<code class="docutils literal notranslate"><span class="pre">https://advanced-alchemy.litestar.dev/latest/</span></code>, documents
+<code class="docutils literal notranslate"><span class="pre">count_with_window_function</span></code> behavior and the planned 2.0 default
+change, adds nested <code class="docutils literal notranslate"><span class="pre">SQLAlchemyDTO</span></code>, many-to-many linking, and Python
+<code class="docutils literal notranslate"><span class="pre">Enum</span></code> <code class="docutils literal notranslate"><span class="pre">values_callable</span></code> examples, and clarifies correlated
+<code class="docutils literal notranslate"><span class="pre">EXISTS</span></code> filtering.</p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/200">https://github.com/litestar-org/advanced-alchemy/issues/200</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/359">https://github.com/litestar-org/advanced-alchemy/issues/359</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/436">https://github.com/litestar-org/advanced-alchemy/issues/436</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/734">https://github.com/litestar-org/advanced-alchemy/issues/734</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/778">https://github.com/litestar-org/advanced-alchemy/issues/778</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/782">https://github.com/litestar-org/advanced-alchemy/pull/782</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/838">https://github.com/litestar-org/advanced-alchemy/pull/838</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/841">https://github.com/litestar-org/advanced-alchemy/pull/841</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/847">https://github.com/litestar-org/advanced-alchemy/pull/847</a></span></p>
+</div>
+</dd>
+</dl>
+</section>
 </section>
 <section id="1.12.0">
 <h2>1.12.0<a class="headerlink" href="#1.12.0" title="Link to this heading">#</a></h2>
 <strong>Released: </strong>2026-10-19<section id="1.12.0-feature">
 <h3>Features<a class="headerlink" href="#1.12.0-feature" title="Link to this heading">#</a></h3>
 <dl>
-<dt>add RelationshipFilter and relationship collection filtering<a class="headerlink reference internal" href="#1.12.0-add relationshipfilter and relationship collection filtering" id="1.12.0-add relationshipfilter and relationship collection filtering">#</a></dt><dd><div class="changelog-change docutils container">
-<p>Adds <a class="reference internal" href="reference/filters.html#advanced_alchemy.filters.RelationshipFilter" title="advanced_alchemy.filters.RelationshipFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RelationshipFilter</span></code></a> for correlated
-<code class="docutils literal notranslate"><span class="pre">EXISTS</span></code> / <code class="docutils literal notranslate"><span class="pre">NOT</span> <span class="pre">EXISTS</span></code> filtering across one-to-many, many-to-one,
-many-to-many, self-referential, joined-table inheritance, and multi-hop
-relationships, alongside relationship attribute support in
-<a class="reference internal" href="reference/filters.html#advanced_alchemy.filters.CollectionFilter" title="advanced_alchemy.filters.CollectionFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">CollectionFilter</span></code></a> and
-<a class="reference internal" href="reference/filters.html#advanced_alchemy.filters.NotInCollectionFilter" title="advanced_alchemy.filters.NotInCollectionFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotInCollectionFilter</span></code></a>, <code class="docutils literal notranslate"><span class="pre">&quot;relationship&quot;</span></code>
-nodes (with <code class="docutils literal notranslate"><span class="pre">allowed_relationships</span></code> and <code class="docutils literal notranslate"><span class="pre">max_relationship_depth</span></code> guards)
-in <a class="reference internal" href="reference/filters.html#advanced_alchemy.filters.MultiFilter" title="advanced_alchemy.filters.MultiFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiFilter</span></code></a>,
-<code class="xref py py-class docutils literal notranslate"><span class="pre">InstrumentedAttribute</span></code> field support in
-<a class="reference internal" href="reference/filters.html#advanced_alchemy.filters.SearchFilter" title="advanced_alchemy.filters.SearchFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchFilter</span></code></a> and
-<a class="reference internal" href="reference/filters.html#advanced_alchemy.filters.NotInSearchFilter" title="advanced_alchemy.filters.NotInSearchFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotInSearchFilter</span></code></a>, and a suffix pattern
-fix for <code class="docutils literal notranslate"><span class="pre">operators_map[&quot;iendswith&quot;]</span></code>.</p>
-<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/364,">https://github.com/litestar-org/advanced-alchemy/issues/364,</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/505">https://github.com/litestar-org/advanced-alchemy/issues/505</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/639">https://github.com/litestar-org/advanced-alchemy/pull/639</a></span></p>
-</div>
-</dd>
 <dt>per-dialect optimal upsert_many (MERGE / ON CONFLICT / INSERT OR UPDATE)<a class="headerlink reference internal" href="#1.12.0-per-dialect optimal upsert_many (merge / on conflict / insert or update)" id="1.12.0-per-dialect optimal upsert_many (merge / on conflict / insert or update)">#</a></dt><dd><div class="changelog-change docutils container">
 <p><code class="docutils literal notranslate"><span class="pre">Repository.upsert_many</span></code> and <code class="docutils literal notranslate"><span class="pre">Service.upsert_many</span></code> now dispatch to the
 most efficient native upsert primitive supported by the active dialect when

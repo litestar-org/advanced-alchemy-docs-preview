@@ -16,10 +16,10 @@ Declare ``dependencies = create_service_dependencies(...)`` on a Litestar ``Cont
 
 .. code-block:: python
 
-    from typing import Annotated
     from uuid import UUID
     from litestar import Controller, get
-    from litestar.params import Dependency
+    from litestar.di import NamedDependency
+    from litestar.params import SkipValidation
     from sqlalchemy.orm import Mapped
     from advanced_alchemy.extensions.litestar import base, filters, providers, repository, service
 
@@ -56,7 +56,7 @@ Declare ``dependencies = create_service_dependencies(...)`` on a Litestar ``Cont
         async def list_products(
             self,
             products_service: ProductService,
-            filters: Annotated[list[filters.FilterTypes], Dependency(skip_validation=True)],
+            filters: NamedDependency[SkipValidation[list[filters.FilterTypes]]],
         ) -> list[ProductModel]:
             results, _ = await products_service.get_many_and_count(*filters)
             return list(results)

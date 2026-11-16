@@ -29,7 +29,7 @@ When you build an app with SQLAlchemy from scratch, you end up writing the same 
 Advanced Alchemy handles that repetitive plumbing while keeping plain SQLAlchemy 2.0 front and center:
 
 - **Models** come with ready-made IDs, `created_at` / `updated_at` timestamps, and portable column types.
-- **Repositories** give every model `add`, `get`, `list_and_count`, `upsert`, and `delete` methods out of the box.
+- **Repositories** give every model `add`, `get`, `get_many_and_count`, `upsert`, and `delete` methods out of the box.
 - **Services** connect your repositories to Pydantic, Msgspec, or dataclass API schemas.
 - **Framework plugins** manage database engines and per-request sessions automatically.
 
@@ -80,7 +80,7 @@ async def run_demo(db_session: AsyncSession) -> None:
     await repo.add(BlogPost(title="Hello Advanced Alchemy", published=True))
     await db_session.commit()
 
-    posts, total = await repo.list_and_count(published=True)
+    posts, total = await repo.get_many_and_count(published=True)
     assert total == 1
     assert posts[0].title == "Hello Advanced Alchemy"
 ```
@@ -795,7 +795,7 @@ Source: https://advanced-alchemy.litestar.dev/latest/usage/repositories/index.ht
 
 Without a repository, every web route ends up repeating the same SQLAlchemy query code: building a `select()`, adding `where()` clauses, counting total rows for pagination, and handling `NoResultFound` errors.
 
-A **Repository** wraps one table model and gives you ready-made, type-checked methods—`add`, `get`, `get_many`, `list_and_count`, `upsert_many`, and `delete`—so your routes read like plain English.
+A **Repository** wraps one table model and gives you ready-made, type-checked methods—`add`, `get`, `get_many`, `get_many_and_count`, `upsert_many`, and `delete`—so your routes read like plain English.
 
 Add, fetch, update, bulk-upsert, and delete records with async or sync repositories.
 
@@ -1120,6 +1120,8 @@ async def filter_posts_by_tags(db_session: AsyncSession, excluded_tag_ids: list[
         NotInCollectionFilter(field_name=FilteringPost.tags, values=excluded_tag_ids),
     )
 ```
+
+For structured JSON/dict query payloads, [`MultiFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.MultiFilter) accepts `allowed_relationships`, `allowed_fields`, `max_depth`, and `strict=True` to restrict permitted fields and nesting depth.
 
 ## Field Filtering and Sorting
 
@@ -1702,10 +1704,9 @@ Direct `Group(session, ...)` construction calls member constructors only. Use `.
 Pass a `ServiceGroup` subclass to [`create_service_dependencies()`](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.create_service_dependencies) or [`create_service_provider()`](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.create_service_provider), with optional per-attribute `filters={attr_name: FilterConfig(...)}`:
 
 ```python
-from typing import Annotated
-
 from litestar import Controller, get
-from litestar.params import Dependency
+from litestar.di import NamedDependency
+from litestar.params import SkipValidation
 from advanced_alchemy.extensions.litestar.providers import FilterConfig, create_service_dependencies
 from advanced_alchemy.filters import FilterTypes
 
@@ -1721,8 +1722,8 @@ class AuthController(Controller):
     async def search(
         self,
         auth: AuthServices,
-        roles_filters: Annotated[list[FilterTypes], Dependency(skip_validation=True)],
-        users_filters: Annotated[list[FilterTypes], Dependency(skip_validation=True)],
+        roles_filters: NamedDependency[SkipValidation[list[FilterTypes]]],
+        users_filters: NamedDependency[SkipValidation[list[FilterTypes]]],
     ) -> dict[str, int]:
         return {
             "roles": await auth.roles.count(*roles_filters),
@@ -2843,10 +2844,10 @@ Advanced Alchemy provides two Litestar helpers that remove that boilerplate:
 Declare `dependencies = create_service_dependencies(...)` on a Litestar `Controller` to inject both your service and a `filters: list[FilterTypes]` parameter with automatic OpenAPI query parameters:
 
 ```python
-from typing import Annotated
 from uuid import UUID
 from litestar import Controller, get
-from litestar.params import Dependency
+from litestar.di import NamedDependency
+from litestar.params import SkipValidation
 from sqlalchemy.orm import Mapped
 from advanced_alchemy.extensions.litestar import base, filters, providers, repository, service
 
@@ -2879,7 +2880,7 @@ class ProductController(Controller):
     async def list_products(
         self,
         products_service: ProductService,
-        filters: Annotated[list[filters.FilterTypes], Dependency(skip_validation=True)],
+        filters: NamedDependency[SkipValidation[list[filters.FilterTypes]]],
     ) -> list[ProductModel]:
         results, _ = await products_service.get_many_and_count(*filters)
         return list(results)
@@ -6701,7 +6702,7 @@ Defaults to `id`, but can reference any surrogate or candidate key for the table
 Note: Only applies to single-column lookups.
 - **error_messages** ([*ErrorMessages*](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** ([*LoadSpec*](https://advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set default relationships to be loaded
+- **load** (*Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set default relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **bind_group** (*str**|**None*) – Optional routing group for multi-master configurations.
@@ -6733,7 +6734,7 @@ Note: Only applies to single-column lookups. For composite primary keys,
 this parameter is ignored and the primary key columns are used automatically.
 - **error_messages** ([*ErrorMessages*](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** ([*LoadSpec*](https://advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set relationships to be loaded
+- **load** (*Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **with_for_update** (*TypeAliasForwardRef**(**'sqlalchemy.sql.selectable.ForUpdateArg'**)**|**None**|**bool**|**Dict**[**str**,**Any**]*) – Optional FOR UPDATE clause / parameters to apply to the SELECT statement.
@@ -6772,7 +6773,7 @@ Get the count of records returned by a query.
 - **statement** (*Select**|**None*) – To facilitate customization of the underlying select query.
 - **error_messages** ([*ErrorMessages*](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** ([*LoadSpec*](https://advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set relationships to be loaded
+- **load** (*Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **bind_group** (*str**|**None*) – Optional routing group to use for the operation.
@@ -6802,7 +6803,7 @@ FOR UPDATE flags for the SELECT
 Defaults to `id`, but can reference any surrogate or candidate key for the table.
 - **error_messages** ([*ErrorMessages*](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** ([*LoadSpec*](https://advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set relationships to be loaded
+- **load** (*Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **bind_group** (*str**|**None*) – Optional routing group for multi-master configurations.
@@ -7298,7 +7299,7 @@ Count of records returned by query.
 - **statement** (*Select**|**None*) – To facilitate customization of the underlying select query.
 - **error_messages** ([*ErrorMessages*](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** ([*LoadSpec*](https://advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set relationships to be loaded
+- **load** (*Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **bind_group** (*str**|**None*) – The bind group to use for the operation.
@@ -7325,7 +7326,7 @@ Defaults to `id`, but can reference any surrogate or candidate key for the table
 Only applicable for single primary key models.
 - **error_messages** ([*ErrorMessages*](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** ([*LoadSpec*](https://advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set relationships to be loaded
+- **load** (*Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **bind_group** (*str**|**None*) – The bind group to use for the operation.
@@ -7416,7 +7417,7 @@ FOR UPDATE flags for the SELECT
 Defaults to `id`, but can reference any surrogate or candidate key for the table.
 - **error_messages** ([*ErrorMessages*](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** ([*LoadSpec*](https://advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set default relationships to be loaded
+- **load** (*Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set default relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **bind_group** (*str**|**None*) – Optional routing group to use for the operation.
@@ -7462,7 +7463,7 @@ FOR UPDATE flags for the SELECT
 empty, all fields are matched.
 - **error_messages** ([*ErrorMessages*](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** ([*LoadSpec*](https://advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set default relationships to be loaded
+- **load** (*Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set default relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **bind_group** (*str**|**None*) – Optional routing group to use for the operation.
@@ -7489,7 +7490,7 @@ Defaults to `id`, but can reference any surrogate or candidate key for the table
 Only applicable for single primary key models.
 - **error_messages** ([*ErrorMessages*](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*|**type**[*[*Empty*](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.Empty)*]**|**None*) – An optional dictionary of templates to use
 for friendlier error messages to clients
-- **load** ([*LoadSpec*](https://advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*|**None*) – Set default relationships to be loaded
+- **load** (*Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**Sequence**[**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**]**]**|**LoaderOption**|**'*'**|**InstrumentedAttribute**[**Any**]**|**RelationshipProperty**[**Any**]**|**MapperProperty**[**Any**]**|**ExecutableOption**|**Sequence**[**ExecutableOption**]**|**None*) – Set default relationships to be loaded
 - **execution_options** (*dict**[**str**,**Any**]**|**None*) – Set default execution options
 - **uniquify** (*bool**|**None*) – Optionally apply the `unique()` method to results before returning.
 - **bind_group** (*str**|**None*) – Optional routing group to use for the operation.
@@ -12337,7 +12338,7 @@ static provide_filters(config, /, dep_defaults=None)
 
 Provides filters for dependency injection.
 
-- **Parameters**: - **config** ([*FilterConfig*](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.FilterConfig)) – The filters to provide.
+- **Parameters**: - **config** ([*FilterConfig*](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dependencies.FilterConfig)) – The filters to provide.
 - **dep_defaults** (*Optional**[*[*DependencyDefaults*](https://advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html#advanced_alchemy.extensions.fastapi.providers.DependencyDefaults)*]*) – Optional key for the filters.
 - **Returns**: A callable that returns an async generator for async filters or a generator for sync filters.
 - **Return type**: *Callable*[…, [*list*](https://advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list)[[*FilterTypes*](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.FilterTypes)]]
@@ -16526,7 +16527,77 @@ Repository and service reads infer relationship loading while preserving
 explicit loading options, pagination totals, and mock repository behavior.
 With contributions from [Morteza Karimi](https://github.com/MortezaKarimi77).
 
-References:
+References: [https://github.com/litestar-org/advanced-alchemy/pull/639](https://github.com/litestar-org/advanced-alchemy/pull/639), [https://github.com/litestar-org/advanced-alchemy/pull/845](https://github.com/litestar-org/advanced-alchemy/pull/845)
+- **add RelationshipFilter and relationship collection filtering**: Adds [`RelationshipFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.RelationshipFilter) for correlated
+`EXISTS` / `NOT EXISTS` filtering across one-to-many, many-to-one,
+many-to-many, self-referential, joined-table inheritance, and multi-hop
+relationships, alongside relationship attribute support in
+[`CollectionFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.CollectionFilter) and
+[`NotInCollectionFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.NotInCollectionFilter), `"relationship"`
+nodes (with `allowed_relationships`, `max_relationship_depth`,
+`allowed_fields`, `max_depth`, and `strict` validation guards)
+in [`MultiFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.MultiFilter),
+`InstrumentedAttribute` field support in
+[`SearchFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.SearchFilter) and
+[`NotInSearchFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.NotInSearchFilter), and a suffix pattern
+fix for `operators_map["iendswith"]`.
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/364](https://github.com/litestar-org/advanced-alchemy/issues/364), [https://github.com/litestar-org/advanced-alchemy/issues/505](https://github.com/litestar-org/advanced-alchemy/issues/505), [https://github.com/litestar-org/advanced-alchemy/pull/639](https://github.com/litestar-org/advanced-alchemy/pull/639)
+- **add get_or_none across repositories and services**: Adds `get_or_none` to `SQLAlchemyAsyncRepository`,
+`SQLAlchemySyncRepository`, their protocols and mock counterparts, and
+`SQLAlchemyAsyncRepositoryReadService` /
+`SQLAlchemySyncRepositoryReadService` to return `None` instead of
+raising `NotFoundError` when no record matches, and fixes
+`InMemoryStore.get_or_none` miss handling.
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/117](https://github.com/litestar-org/advanced-alchemy/issues/117), [https://github.com/litestar-org/advanced-alchemy/pull/843](https://github.com/litestar-org/advanced-alchemy/pull/843)
+- **support JSONL fixtures, streaming compression, and sharded rollover**: Extends `advanced_alchemy.utils.fixtures` and `database dump-data` with
+JSON Lines support, chunked gzip/zip streaming, numbered fixture shards
+(`iter_fixture_sync` / `iter_fixture_async`, `write_fixture_sync` /
+`write_fixture_async`), and streaming `dump_tables` queries. Renames
+`open_fixture` to `open_fixture_sync` with a deprecated alias kept
+until 2.0.
+
+References: [https://github.com/litestar-org/advanced-alchemy/pull/842](https://github.com/litestar-org/advanced-alchemy/pull/842)
+- **add typed Litestar submodule re-exports and exception handler safety**: Adds lazy typed `base`, `exceptions`, `filters`, `mixins`,
+`operations`, `repository`, `service`, `types`, and `utils`
+submodules under `advanced_alchemy.extensions.litestar`, skips
+excluded DTO descriptors earlier, precomputes search field names in
+Litestar and FastAPI filter providers, and preserves user-configured
+`exception_handlers`.
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/504](https://github.com/litestar-org/advanced-alchemy/issues/504), [https://github.com/litestar-org/advanced-alchemy/pull/822](https://github.com/litestar-org/advanced-alchemy/pull/822)
+- **classify integrity errors by native SQLSTATE and driver error codes**: Updates `wrap_sqlalchemy_exception` to classify integrity violations by
+driver SQLSTATE, native error codes, or error types before falling back to
+regex matching across PostgreSQL, CockroachDB, SQLite, MySQL, MariaDB,
+Oracle, DuckDB, and MSSQL.
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/803](https://github.com/litestar-org/advanced-alchemy/issues/803), [https://github.com/litestar-org/advanced-alchemy/issues/828](https://github.com/litestar-org/advanced-alchemy/issues/828), [https://github.com/litestar-org/advanced-alchemy/issues/829](https://github.com/litestar-org/advanced-alchemy/issues/829), [https://github.com/litestar-org/advanced-alchemy/issues/831](https://github.com/litestar-org/advanced-alchemy/issues/831), [https://github.com/litestar-org/advanced-alchemy/pull/807](https://github.com/litestar-org/advanced-alchemy/pull/807), [https://github.com/litestar-org/advanced-alchemy/pull/813](https://github.com/litestar-org/advanced-alchemy/pull/813), [https://github.com/litestar-org/advanced-alchemy/pull/839](https://github.com/litestar-org/advanced-alchemy/pull/839), [https://github.com/litestar-org/advanced-alchemy/pull/834](https://github.com/litestar-org/advanced-alchemy/pull/834), [https://github.com/litestar-org/advanced-alchemy/pull/840](https://github.com/litestar-org/advanced-alchemy/pull/840)
+- **add opt-in fractional-second precision to DateTimeUTC**: Adds opt-in `fsp` (with `precision` alias) to `DateTimeUTC` to
+compile `DATETIME(fsp)` on MySQL/MariaDB and `TIMESTAMP WITH TIME ZONE`
+on Oracle while emitting a deprecation warning when omitted on those
+dialects in 1.x.
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/777](https://github.com/litestar-org/advanced-alchemy/issues/777), [https://github.com/litestar-org/advanced-alchemy/pull/819](https://github.com/litestar-org/advanced-alchemy/pull/819)
+- **auto-enable PostgreSQL enum migration detection in Alembic templates**: Conditionally imports `alembic_postgresql_enum` in generated Alembic
+sync and asyncio `env.py` templates when installed and adds the
+`postgresql` optional extra.
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/492](https://github.com/litestar-org/advanced-alchemy/issues/492), [https://github.com/litestar-org/advanced-alchemy/pull/774](https://github.com/litestar-org/advanced-alchemy/pull/774)
+- **add CLI pyproject.toml config discovery and validation commands**: Resolves `alchemy` configurations from `--config`/`-c` (before or
+after subcommands), `ALCHEMY_CONFIG`, and `pyproject.toml`, supporting
+colon/dotted targets and sync/async factory callables, alongside
+`--validate-config` and `show-config`.
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/604](https://github.com/litestar-org/advanced-alchemy/issues/604), [https://github.com/litestar-org/advanced-alchemy/pull/825](https://github.com/litestar-org/advanced-alchemy/pull/825)
+- **add BcryptHasher password hashing backend**: Adds an optional `BcryptHasher` backend for `PasswordHash` backed by
+`bcrypt`.
+
+References: [https://github.com/litestar-org/advanced-alchemy/pull/789](https://github.com/litestar-org/advanced-alchemy/pull/789)
+- **add Python 3.15 support**: Adds Python 3.15 classifier metadata, dependency lock updates, and CI
+matrix coverage.
+
+References: [https://github.com/litestar-org/advanced-alchemy/pull/818](https://github.com/litestar-org/advanced-alchemy/pull/818)
 - **coordinate shared-session services with ServiceGroup**: `ServiceGroup` collects annotated services on one session, with Litestar
 and FastAPI dependency providers. Managed groups enter nested groups and
 custom service factories, forward supported options, and unwind acquired
@@ -16554,6 +16625,50 @@ References: [https://github.com/litestar-org/advanced-alchemy/pull/824](https://
 
 ### Bugfixes
 
+- **harden SQLAlchemyDTO reflection and clause-element defaults**: Updates `SQLAlchemyDTO` reflection to skip excluded or un-included
+foreign relationships and unreflectable descriptors while preserving
+self-referential nested filtering, and handles SQL clause-element defaults
+such as `func.now()` and `null()` in `_detect_defaults`.
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/236](https://github.com/litestar-org/advanced-alchemy/issues/236), [https://github.com/litestar-org/advanced-alchemy/issues/238](https://github.com/litestar-org/advanced-alchemy/issues/238), [https://github.com/litestar-org/advanced-alchemy/pull/846](https://github.com/litestar-org/advanced-alchemy/pull/846)
+- **classify Cloud Spanner and CockroachDB integrity errors and decouple exception wrapping**: Classifies Cloud Spanner `orig.__cause__` exceptions and constraint
+messages alongside `"cockroachdb"` dialect regex aliases, decouples
+`wrap_sqlalchemy_exception` classification from `error_messages`, and
+passes bound dialect names from `UniqueMixin._prevent_autoflush` and
+repository `check_health`.
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/830](https://github.com/litestar-org/advanced-alchemy/issues/830), [https://github.com/litestar-org/advanced-alchemy/pull/846](https://github.com/litestar-org/advanced-alchemy/pull/846)
+- **align ORA_JSONB and loader option checks with SQLAlchemy 2.1**: Calls `super().__init__(*args, **kwargs)` in `ORA_JSONB.__init__`,
+guards `dialect.oracledb_ver` access, replaces removed
+`util.portable_instancemethod`, and uses public
+`sqlalchemy.orm.interfaces.LoaderOption` in repository utilities.
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/811](https://github.com/litestar-org/advanced-alchemy/issues/811), [https://github.com/litestar-org/advanced-alchemy/pull/812](https://github.com/litestar-org/advanced-alchemy/pull/812), [https://github.com/litestar-org/advanced-alchemy/pull/846](https://github.com/litestar-org/advanced-alchemy/pull/846)
+- **prevent filter dependency collisions in merged Litestar service bundles**: Adds `prefix` support to `DependencyDefaults` and `scoped_filters`
+/ `dep_defaults` parameters to `create_service_dependencies` so
+merged routes keep distinct filter dependency keys.
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/733](https://github.com/litestar-org/advanced-alchemy/issues/733), [https://github.com/litestar-org/advanced-alchemy/pull/833](https://github.com/litestar-org/advanced-alchemy/pull/833)
+- **register routing session listeners and fix Sanic and Starlette state keys**: Registers timestamp, file-object, and cache listeners on
+`RoutingSyncSessionMaker` and `RoutingAsyncSessionMaker`, fixes state
+key counter collisions in Sanic and Starlette extensions, and binds sync
+session dependencies in Sanic.
+
+References: [https://github.com/litestar-org/advanced-alchemy/pull/827](https://github.com/litestar-org/advanced-alchemy/pull/827)
+- **respect GUID binary=False on Oracle and export PGCryptoBackend and Vector in Alembic**: Compiles `GUID(binary=False)` to `CHAR(32)` on Oracle, exports
+`PGCryptoBackend` from `advanced_alchemy.types`, registers `Vector`
+in Alembic migration templates, and simplifies `SentinelMixin._sentinel`.
+
+References: [https://github.com/litestar-org/advanced-alchemy/pull/826](https://github.com/litestar-org/advanced-alchemy/pull/826)
+- **remove deprecated declarative_mixin decorator**: Removes `@declarative_mixin` from built-in mixins, Litestar
+session/store models, and tests for SQLAlchemy 2.1 compatibility.
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/804](https://github.com/litestar-org/advanced-alchemy/issues/804), [https://github.com/litestar-org/advanced-alchemy/pull/805](https://github.com/litestar-org/advanced-alchemy/pull/805)
+- **use distinct parameter names for date-filter dependencies**: Uses distinct `created_at_before`/`created_at_after` and
+`updated_at_before`/`updated_at_after` parameter names in Litestar
+and FastAPI filter providers while keeping public query aliases intact.
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/791](https://github.com/litestar-org/advanced-alchemy/issues/791), [https://github.com/litestar-org/advanced-alchemy/pull/814](https://github.com/litestar-org/advanced-alchemy/pull/814)
 - **preserve custom service constructors and SQL expression parity**: Inherited service `new()` factories preserve custom constructors that
 accept the existing service options; model and repository overrides are
 forwarded only when supplied. Mock repositories match SQL for NULL
@@ -16590,24 +16705,22 @@ need to be updated.
 
 References: [https://github.com/litestar-org/advanced-alchemy/pull/824](https://github.com/litestar-org/advanced-alchemy/pull/824)
 
+### Other changes
+
+- **update documentation pipeline, canonical URLs, and usage guides**: Reorganizes usage guides with doctree-generated `llms.txt` and
+`llms-full.txt` exports, updates canonical URLs to
+`https://advanced-alchemy.litestar.dev/latest/`, documents
+`count_with_window_function` behavior and the planned 2.0 default
+change, adds nested `SQLAlchemyDTO`, many-to-many linking, and Python
+`Enum` `values_callable` examples, and clarifies correlated
+`EXISTS` filtering.
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/200](https://github.com/litestar-org/advanced-alchemy/issues/200), [https://github.com/litestar-org/advanced-alchemy/issues/359](https://github.com/litestar-org/advanced-alchemy/issues/359), [https://github.com/litestar-org/advanced-alchemy/issues/436](https://github.com/litestar-org/advanced-alchemy/issues/436), [https://github.com/litestar-org/advanced-alchemy/issues/734](https://github.com/litestar-org/advanced-alchemy/issues/734), [https://github.com/litestar-org/advanced-alchemy/issues/778](https://github.com/litestar-org/advanced-alchemy/issues/778), [https://github.com/litestar-org/advanced-alchemy/pull/782](https://github.com/litestar-org/advanced-alchemy/pull/782), [https://github.com/litestar-org/advanced-alchemy/pull/838](https://github.com/litestar-org/advanced-alchemy/pull/838), [https://github.com/litestar-org/advanced-alchemy/pull/841](https://github.com/litestar-org/advanced-alchemy/pull/841), [https://github.com/litestar-org/advanced-alchemy/pull/847](https://github.com/litestar-org/advanced-alchemy/pull/847)
+
 ## 1.12.0
 
 ### Features
 
-- **add RelationshipFilter and relationship collection filtering**: Adds [`RelationshipFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.RelationshipFilter) for correlated
-`EXISTS` / `NOT EXISTS` filtering across one-to-many, many-to-one,
-many-to-many, self-referential, joined-table inheritance, and multi-hop
-relationships, alongside relationship attribute support in
-[`CollectionFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.CollectionFilter) and
-[`NotInCollectionFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.NotInCollectionFilter), `"relationship"`
-nodes (with `allowed_relationships` and `max_relationship_depth` guards)
-in [`MultiFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.MultiFilter),
-`InstrumentedAttribute` field support in
-[`SearchFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.SearchFilter) and
-[`NotInSearchFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.NotInSearchFilter), and a suffix pattern
-fix for `operators_map["iendswith"]`.
-
-References: [https://github.com/litestar-org/advanced-alchemy/issues/364,](https://github.com/litestar-org/advanced-alchemy/issues/364,), [https://github.com/litestar-org/advanced-alchemy/issues/505](https://github.com/litestar-org/advanced-alchemy/issues/505), [https://github.com/litestar-org/advanced-alchemy/pull/639](https://github.com/litestar-org/advanced-alchemy/pull/639)
 - **per-dialect optimal upsert_many (MERGE / ON CONFLICT / INSERT OR UPDATE)**: `Repository.upsert_many` and `Service.upsert_many` now dispatch to the
 most efficient native upsert primitive supported by the active dialect when
 `match_fields` maps to a primary key, unique constraint, or unique index:

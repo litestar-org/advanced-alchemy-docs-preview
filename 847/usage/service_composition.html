@@ -497,33 +497,32 @@ data-aria-dark="Switch to auto color mode">
 <section id="litestar-integration">
 <h2>Litestar Integration<a class="headerlink" href="#litestar-integration" title="Link to this heading">#</a></h2>
 <p>Pass a <code class="docutils literal notranslate"><span class="pre">ServiceGroup</span></code> subclass to <a class="reference internal" href="../reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.create_service_dependencies" title="advanced_alchemy.extensions.litestar.providers.create_service_dependencies"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_service_dependencies()</span></code></a> or <a class="reference internal" href="../reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.create_service_provider" title="advanced_alchemy.extensions.litestar.providers.create_service_provider"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_service_provider()</span></code></a>, with optional per-attribute <code class="docutils literal notranslate"><span class="pre">filters={attr_name:</span> <span class="pre">FilterConfig(...)}</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span>
-</span><span data-line="2">
-</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Controller</span><span class="p">,</span> <span class="n">get</span>
-</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar.params</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dependency</span>
-</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.extensions.litestar.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">FilterConfig</span><span class="p">,</span> <span class="n">create_service_dependencies</span>
-</span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">FilterTypes</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Controller</span><span class="p">,</span> <span class="n">get</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar.di</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedDependency</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">litestar.params</span><span class="w"> </span><span class="kn">import</span> <span class="n">SkipValidation</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.extensions.litestar.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">FilterConfig</span><span class="p">,</span> <span class="n">create_service_dependencies</span>
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">FilterTypes</span>
+</span><span data-line="6">
 </span><span data-line="7">
-</span><span data-line="8">
-</span><span data-line="9"><span class="k">class</span><span class="w"> </span><span class="nc">AuthController</span><span class="p">(</span><span class="n">Controller</span><span class="p">):</span>
-</span><span data-line="10">    <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;/auth&quot;</span>
-</span><span data-line="11">    <span class="n">dependencies</span> <span class="o">=</span> <span class="n">create_service_dependencies</span><span class="p">(</span>
-</span><span data-line="12">        <span class="n">AuthServices</span><span class="p">,</span>
-</span><span data-line="13">        <span class="n">key</span><span class="o">=</span><span class="s2">&quot;auth&quot;</span><span class="p">,</span>
-</span><span data-line="14">        <span class="n">filters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;roles&quot;</span><span class="p">:</span> <span class="n">FilterConfig</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="p">),</span> <span class="s2">&quot;users&quot;</span><span class="p">:</span> <span class="n">FilterConfig</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="p">)},</span>
-</span><span data-line="15">    <span class="p">)</span>
-</span><span data-line="16">
-</span><span data-line="17">    <span class="nd">@get</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-</span><span data-line="18">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span>
-</span><span data-line="19">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="20">        <span class="n">auth</span><span class="p">:</span> <span class="n">AuthServices</span><span class="p">,</span>
-</span><span data-line="21">        <span class="n">roles_filters</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">FilterTypes</span><span class="p">],</span> <span class="n">Dependency</span><span class="p">(</span><span class="n">skip_validation</span><span class="o">=</span><span class="kc">True</span><span class="p">)],</span>
-</span><span data-line="22">        <span class="n">users_filters</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">FilterTypes</span><span class="p">],</span> <span class="n">Dependency</span><span class="p">(</span><span class="n">skip_validation</span><span class="o">=</span><span class="kc">True</span><span class="p">)],</span>
-</span><span data-line="23">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span data-line="24">        <span class="k">return</span> <span class="p">{</span>
-</span><span data-line="25">            <span class="s2">&quot;roles&quot;</span><span class="p">:</span> <span class="k">await</span> <span class="n">auth</span><span class="o">.</span><span class="n">roles</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="o">*</span><span class="n">roles_filters</span><span class="p">),</span>
-</span><span data-line="26">            <span class="s2">&quot;users&quot;</span><span class="p">:</span> <span class="k">await</span> <span class="n">auth</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="o">*</span><span class="n">users_filters</span><span class="p">),</span>
-</span><span data-line="27">        <span class="p">}</span>
+</span><span data-line="8"><span class="k">class</span><span class="w"> </span><span class="nc">AuthController</span><span class="p">(</span><span class="n">Controller</span><span class="p">):</span>
+</span><span data-line="9">    <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;/auth&quot;</span>
+</span><span data-line="10">    <span class="n">dependencies</span> <span class="o">=</span> <span class="n">create_service_dependencies</span><span class="p">(</span>
+</span><span data-line="11">        <span class="n">AuthServices</span><span class="p">,</span>
+</span><span data-line="12">        <span class="n">key</span><span class="o">=</span><span class="s2">&quot;auth&quot;</span><span class="p">,</span>
+</span><span data-line="13">        <span class="n">filters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;roles&quot;</span><span class="p">:</span> <span class="n">FilterConfig</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="p">),</span> <span class="s2">&quot;users&quot;</span><span class="p">:</span> <span class="n">FilterConfig</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="p">)},</span>
+</span><span data-line="14">    <span class="p">)</span>
+</span><span data-line="15">
+</span><span data-line="16">    <span class="nd">@get</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+</span><span data-line="17">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span>
+</span><span data-line="18">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="19">        <span class="n">auth</span><span class="p">:</span> <span class="n">AuthServices</span><span class="p">,</span>
+</span><span data-line="20">        <span class="n">roles_filters</span><span class="p">:</span> <span class="n">NamedDependency</span><span class="p">[</span><span class="n">SkipValidation</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">FilterTypes</span><span class="p">]]],</span>
+</span><span data-line="21">        <span class="n">users_filters</span><span class="p">:</span> <span class="n">NamedDependency</span><span class="p">[</span><span class="n">SkipValidation</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">FilterTypes</span><span class="p">]]],</span>
+</span><span data-line="22">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span data-line="23">        <span class="k">return</span> <span class="p">{</span>
+</span><span data-line="24">            <span class="s2">&quot;roles&quot;</span><span class="p">:</span> <span class="k">await</span> <span class="n">auth</span><span class="o">.</span><span class="n">roles</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="o">*</span><span class="n">roles_filters</span><span class="p">),</span>
+</span><span data-line="25">            <span class="s2">&quot;users&quot;</span><span class="p">:</span> <span class="k">await</span> <span class="n">auth</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="o">*</span><span class="n">users_filters</span><span class="p">),</span>
+</span><span data-line="26">        <span class="p">}</span>
 </span></pre></div>
 </div>
 </section>
