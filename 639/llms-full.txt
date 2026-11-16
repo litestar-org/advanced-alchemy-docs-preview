@@ -1079,6 +1079,160 @@ field_filters: FilterConfig = {
 
 Frontend grids such as TanStack Table, AG Grid, and MUI Data Grid map column filters directly to `?titleContains=sql&publishedAtIsNull=false&tagsSlugIn=python&orderBy=-published_at&orderBy=title&currentPage=2&pageSize=25`.
 
+See [Declarative Filters](https://docs.advanced-alchemy.litestar.dev/latest/usage/repositories/filtersets.html) for reusable class-based filters and automatic relationship loading.
+
+Source: https://docs.advanced-alchemy.litestar.dev/latest/usage/repositories/filtersets.html
+
+# Declarative Filters
+
+Use [`FilterSet`](https://docs.advanced-alchemy.litestar.dev/latest/reference/filterset.html#advanced_alchemy.filterset.FilterSet) to group allowed query fields,
+sorting and relationship loading for one mapped model.
+
+## Example Setup
+
+```python
+from sqlalchemy import Column, ForeignKey, Table
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from advanced_alchemy.base import BigIntAuditBase
+from advanced_alchemy.repository import SQLAlchemyAsyncRepository
+
+filterset_post_tag = Table(
+    "filterset_post_tag", BigIntAuditBase.metadata,
+    Column("post_id", ForeignKey("filterset_post.id"), primary_key=True),
+    Column("tag_id", ForeignKey("filterset_tag.id"), primary_key=True),
+)
+
+class FilterSetTag(BigIntAuditBase):
+    __tablename__ = "filterset_tag"
+    slug: Mapped[str]
+
+class FilterSetPost(BigIntAuditBase):
+    __tablename__ = "filterset_post"
+    title: Mapped[str]
+    published: Mapped[bool] = mapped_column(default=False)
+    published_at: Mapped[int] = mapped_column(default=0)
+    tags: Mapped[list[FilterSetTag]] = relationship(secondary=filterset_post_tag)
+
+class FilterSetPostRepository(SQLAlchemyAsyncRepository[FilterSetPost]):
+    pass
+```
+
+## Reusable FilterSets
+
+Use [`FilterSet`](https://docs.advanced-alchemy.litestar.dev/latest/reference/filterset.html#advanced_alchemy.filterset.FilterSet) to keep allowed query fields,
+search, sorting, and pagination together. Pass an instance directly to a repository
+or service read method:
+
+```python
+from advanced_alchemy.filterset import FilterSet
+
+class PostFilters(FilterSet[FilterSetPost]):
+    filter_fields = {
+        "title": {"contains", "eq"},
+        "published": {"eq"},
+        "tags.slug": {"eq", "in"},
+    }
+    sort_fields = {"title", "published_at"}
+    search_fields = {"title", "tags.slug"}
+    config = {"pagination_type": "limit_offset", "pagination_size": 20}
+
+async def find_filtered_posts(db_session: AsyncSession) -> list[FilterSetPost]:
+    repository = FilterSetPostRepository(session=db_session)
+    filters = PostFilters(title__contains="python", tags__slug__eq="sqlalchemy")
+    return await repository.get_many(filters)
+```
+
+The generic argument supplies the mapped model; `model_type` can also be set
+explicitly. FilterSet construction takes typed Python values. Framework providers
+validate and convert HTTP query values. Pydantic remains optional.
+
+Field parameters use double underscores to separate relationship names, the field,
+and the operator: `?tags__slug__eq=sqlalchemy&title__contains=python`. A deeper
+path such as `orders__items__price__ge=10` follows the corresponding configured
+`orders.items.price` path. Only declared fields and operators are accepted.
+Existing `FilterConfig` dictionaries keep their own parameter aliases and behavior.
+
+### Matching Related Rows
+
+Operators on one field describe one matching value. For example,
+`orders__items__price__ge=10&orders__items__price__le=20` requires an item priced
+between 10 and 20. Filters on different fields match independently:
+`orders__status__eq=paid` may match a different order from the matching item.
+This lets each frontend control send its own field, operator, and value.
+
+Deep relationship filters compile into nested correlated `EXISTS` expressions
+inside one SQL statement. When several fields must match the same related row,
+construct an explicit [`RelationshipFilter`](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.RelationshipFilter) containing
+those predicates instead.
+
+### Loading Relationships
+
+Passing a FilterSet directly to a read method also loads relationships referenced
+by active field filters, search, and sorting. To-one paths use joined eager loading;
+collections use select-in loading. SQL Server collections whose parent has a
+composite primary key use subquery loading with deterministic pagination ordering.
+Explicit `load=` options take precedence on overlapping paths.
+
+Loaded collections retain all members allowed by existing loader criteria;
+filtering a post by a matching tag does not restrict its loaded `tags` to that tag.
+Relationships used only by response serialization still need explicit `load=`
+options. Set `auto_load = False` on the FilterSet class to disable inferred loading.
+
+For explicit integration, `filters.to_statement_filters()` returns the ordinary
+filter objects and `filters.load` returns the inferred loading options. Expanding
+only the filter list omits the automatic-loading metadata:
+
+```python
+async def find_posts_with_explicit_filters(db_session: AsyncSession) -> list[FilterSetPost]:
+    repository = FilterSetPostRepository(session=db_session)
+    filters = PostFilters(tags__slug__eq="sqlalchemy")
+    return await repository.get_many(*filters.to_statement_filters(), load=filters.load)
+```
+
+DuckDB can raise an internal database error when UUID-correlated `EXISTS` filters
+are combined with a window-function count. For that query shape, call
+`get_many_and_count(filters, count_with_window_function=False)` to use separate
+data and count queries.
+
+### Custom Filter Methods
+
+Add a typed `filter_<name>` method for application-specific filtering. The method
+returns an existing filter object, a supported SQLAlchemy predicate, or `None`
+to omit the condition:
+
+```python
+class PublishedPostFilters(PostFilters):
+    def filter_only_published(self, value: bool) -> ComparisonFilter:
+        return ComparisonFilter(field_name="published", operator="eq", value=value)
+
+only_published = PublishedPostFilters(only_published=True)
+```
+
+The custom method’s argument annotation supplies the query value type. Custom SQL
+predicates must be supported by the in-memory evaluator when using mock repositories.
+
+### Framework Providers
+
+Pass the FilterSet class to the existing providers; it supplies its own model:
+
+```python
+from advanced_alchemy.extensions.fastapi.providers import provide_filters
+from advanced_alchemy.extensions.litestar.providers import create_service_dependencies
+from advanced_alchemy.service import SQLAlchemyAsyncRepositoryService
+
+class FilterSetPostService(SQLAlchemyAsyncRepositoryService[FilterSetPost]):
+    pass
+
+post_dependencies = create_service_dependencies(FilterSetPostService, "posts", filters=PostFilters)
+post_filter_dependency = provide_filters(PostFilters)
+```
+
+FastAPI’s dependency yields the usual filter list; pass it with `*filters` to a
+repository or service. Litestar service bundles expose the usual aggregate filter
+dependency. For a `ServiceGroup`, configure each member independently with
+`filters={"posts": PostFilters}`. Generated field parameters use the FilterSet’s
+double-underscore names in both frameworks’ OpenAPI schemas.
+
 Source: https://docs.advanced-alchemy.litestar.dev/latest/usage/repositories/advanced.html
 
 # Advanced Repository
@@ -4229,6 +4383,8 @@ In-memory mock repositories (`SQLAlchemyAsyncMockRepository`, `SQLAlchemySyncMoc
 
 Pagination, date range, collection, search, and ordering filters plus cross-dialect [bulk upserts](https://docs.advanced-alchemy.litestar.dev/latest/reference/operations.html).
 
+Reusable typed query definitions, custom filters, and inferred relationship loading.
+
 Read/write session routing, replica selectors, and primary stickiness.
 
 `CacheConfig`, `CacheManager`, and Dogpile L2 query caching.
@@ -4244,6 +4400,64 @@ Standalone `alchemy` CLI commands and programmatic [Alembic migration commands](
 Streaming JSON, JSON Lines, and CSV fixture loaders, batch iterators, and sharded writers.
 
 Dataclass sentinels, dependency caches, sync-to-async portals, and text helpers.
+
+Source: https://docs.advanced-alchemy.litestar.dev/latest/reference/filterset.html
+
+# FilterSet
+
+Reusable filter definitions combine typed field parameters, relationship predicates,
+sorting, and inferred eager loading. See [Declarative Filters](https://docs.advanced-alchemy.litestar.dev/latest/usage/repositories/filtersets.html) for
+examples and matching semantics.
+
+### `advanced_alchemy.filterset.FilterSet`
+
+```python
+class advanced_alchemy.filterset.FilterSet(**values)[source]
+```
+
+Bases: [`StatementFilter`](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.StatementFilter), `Generic`  [`ModelT`]
+
+Reusable typed filters for one mapped model.
+
+Declare `filter_fields` with dotted model paths and instantiate with typed
+double-underscore parameters, such as `orders__price__ge=10`. Different
+fields match independently; operators on one field share a related row.
+Framework providers validate HTTP values before constructing this object.
+
+- **Parameters**: ****values** (*Any*) – Typed field values and configured pagination, ordering or search values.
+- **Raises**: - **ValueError** – An unknown query parameter is supplied.
+- [**ImproperConfigurationError**](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError) – The model or declared fields are invalid.
+
+##### `to_statement_filters`
+
+```python
+to_statement_filters()[source]
+```
+
+Return the compiled primitive filters for explicit query integration.
+
+- **Returns**: A fresh list of native filters and custom SQL expressions.
+- **Return type**: [*list*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list)[[*StatementFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.StatementFilter) | *ColumnElement*[*bool*]]
+
+##### `inferred_load`
+
+```python
+inferred_load(dialect=None)[source]
+```
+
+Infer loading options for active relationship paths.
+
+- **Parameters**: **dialect** (*Any*) – Optional SQLAlchemy dialect, used for composite-key SQL Server loading.
+- **Returns**: Joined to-one, select-in collection, or composite SQL Server subquery options.
+- **Return type**: [*list*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list)[ExecutableOption]
+
+##### `load`
+
+```python
+property load: list[ExecutableOption][source]
+```
+
+Inferred loading options for explicit statement-filter expansion.
 
 Source: https://docs.advanced-alchemy.litestar.dev/latest/reference/base.html
 
@@ -7530,6 +7744,8 @@ Source: https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html
 
 # Filters
 
+See [FilterSet](https://docs.advanced-alchemy.litestar.dev/latest/reference/filterset.html) for reusable class-based filter definitions.
+
 ## Base & Pagination Filters
 
 ### `advanced_alchemy.filters.StatementFilter`
@@ -8058,7 +8274,7 @@ bound to the related model alias, including self-referential relationship paths.
 ### `advanced_alchemy.filters.MultiFilter`
 
 ```python
-class advanced_alchemy.filters.MultiFilter(filters, allowed_relationships=None, max_relationship_depth=3)[source]
+class advanced_alchemy.filters.MultiFilter(filters, allowed_relationships=None, max_relationship_depth=3, allowed_fields=None, max_depth=10, strict=False)[source]
 ```
 
 Bases: [`StatementFilter`](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.StatementFilter)
@@ -10132,7 +10348,7 @@ Create dependency providers for a service or ServiceGroup and optional filters.
 - **error_messages** (*Optional**[**Union**[*[*ErrorMessages*](https://docs.advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*,*[*EmptyType*](https://docs.advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.EmptyType)*]**]*) – The error messages to use for the service.
 - **load** (*Optional**[*[*LoadSpec*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.LoadSpec)*]*) – The load spec to use for a single service.
 - **execution_options** (*Optional**[**dict**[**str**,**Any**]**]*) – The execution options to use for the service.
-- **filters** (*Optional**[**Union**[*[*FilterConfig*](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.FilterConfig)*,**Mapping**[**str**,*[*FilterConfig*](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.FilterConfig)*]**]**]*) – Filter configuration for a single service, or mapping of service attribute name to FilterConfig for a ServiceGroup.
+- **filters** (*Optional**[**Union**[*[*FilterConfig*](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.FilterConfig)*,**type**[*[*FilterSet*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filterset.html#advanced_alchemy.filterset.FilterSet)*[**Any**]**]**,**Mapping**[**str**,**Union**[*[*FilterConfig*](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.FilterConfig)*,**type**[*[*FilterSet*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filterset.html#advanced_alchemy.filterset.FilterSet)*[**Any**]**]**]**]**]**]*) – Filter configuration for a single service, or mapping of service attribute name to FilterConfig for a ServiceGroup.
 - **uniquify** (*bool**|**None*) – Whether to uniquify the service.
 - **count_with_window_function** (*bool**|**None*) – Whether to count with a window function.
 - **dep_defaults** (*Optional**[*[*DependencyDefaults*](https://docs.advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html#advanced_alchemy.extensions.fastapi.providers.DependencyDefaults)*]*) – The dependency defaults to use for the service.
@@ -12093,7 +12309,7 @@ advanced_alchemy.extensions.fastapi.providers.provide_filters(config, dep_defaul
 Create FastAPI dependency providers for filters based on the provided configuration.
 
 - **Returns**: A FastAPI dependency provider function that aggregates multiple filter dependencies.
-- **Return type**: *Callable*[[…], [*list*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list)[[*BeforeAfter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.BeforeAfter) | [*OnBeforeAfter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.OnBeforeAfter) | [*BooleanFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.BooleanFilter) | [*ChoicesFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.ChoicesFilter)[*Any*] | [*CollectionFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.CollectionFilter)[*Any*] | [*LimitOffset*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.LimitOffset) | [*NullFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.NullFilter) | [*NotNullFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.NotNullFilter) | [*OrderBy*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.OrderBy) | [*SearchFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.SearchFilter) | [*NotInCollectionFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.NotInCollectionFilter)[*Any*] | [*NotInSearchFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.NotInSearchFilter) | [*ExistsFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.ExistsFilter) | [*NotExistsFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.NotExistsFilter) | [*ComparisonFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.ComparisonFilter) | [*RelationshipFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.RelationshipFilter) | [*MultiFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.MultiFilter) | [*FilterGroup*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.FilterGroup)]]
+- **Return type**: *Callable*[[…], [*list*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list)[[*BeforeAfter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.BeforeAfter) | [*OnBeforeAfter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.OnBeforeAfter) | [*BooleanFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.BooleanFilter) | [*ChoicesFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.ChoicesFilter)[*Any*] | [*CollectionFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.CollectionFilter)[*Any*] | [*LimitOffset*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.LimitOffset) | [*NullFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.NullFilter) | [*NotNullFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.NotNullFilter) | [*OrderBy*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.OrderBy) | [*SearchFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.SearchFilter) | [*NotInCollectionFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.NotInCollectionFilter)[*Any*] | [*NotInSearchFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.NotInSearchFilter) | [*ExistsFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.ExistsFilter) | [*NotExistsFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.NotExistsFilter) | [*ComparisonFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.ComparisonFilter) | [*RelationshipFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.RelationshipFilter) | [*MultiFilter*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.MultiFilter) | [*FilterGroup*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.FilterGroup)]] | *Callable*[[…], [*list*](https://docs.advanced-alchemy.litestar.dev/latest/reference/repository.html#advanced_alchemy.repository.SQLAlchemyAsyncRepository.list)[[*FilterSet*](https://docs.advanced-alchemy.litestar.dev/latest/reference/filterset.html#advanced_alchemy.filterset.FilterSet)[*Any*]]]
 
 ### `advanced_alchemy.extensions.fastapi.providers.DependencyDefaults`
 
@@ -16217,6 +16433,14 @@ Source: https://docs.advanced-alchemy.litestar.dev/latest/changelog.html
 
 ### Features
 
+- **declare reusable FilterSets with inferred relationship loading**: `FilterSet[Model]` defines allowed query fields, custom filters, search,
+and sorting with double-underscore field parameters. Operators on one
+field match the same related row; different fields match independently.
+Repository and service reads infer relationship loading while preserving
+explicit loading options, pagination totals, and mock repository behavior.
+With contributions from [Morteza Karimi](https://github.com/MortezaKarimi77).
+
+References:
 - **coordinate shared-session services with ServiceGroup**: `ServiceGroup` collects annotated services on one session, with Litestar
 and FastAPI dependency providers. Managed groups enter nested groups and
 custom service factories, forward supported options, and unwind acquired
