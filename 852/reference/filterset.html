@@ -372,7 +372,16 @@ sorting, and inferred eager loading. See <a class="reference internal" href="../
 examples and matching semantics.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="advanced_alchemy.filters.FilterSet">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">FilterSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.filters.FilterSet" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.filters.</span></span><span class="sig-name descname"><span class="pre">FilterSet</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">cursor_defaults</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">require_cursor_secret</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">values</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.filters.FilterSet" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="filters.html#advanced_alchemy.filters.StatementFilter" title="advanced_alchemy.filters.StatementFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">StatementFilter</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelT</span></code>]</p>
 <p>Reusable typed filters for one mapped model.</p>
 <p>Declare <code class="docutils literal notranslate"><span class="pre">filter_fields</span></code> with dotted model paths and instantiate with typed
@@ -381,12 +390,16 @@ fields match independently; operators on one field share a related row.
 Framework providers validate HTTP values before constructing this object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>**values</strong> (<em>Any</em>) – Typed field values and configured pagination, ordering or search values.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cursor_defaults</strong> (<a class="reference internal" href="cursor_pagination.html#advanced_alchemy.utils.dependencies.CursorDefaults" title="advanced_alchemy.utils.dependencies.CursorDefaults"><em>CursorDefaults</em></a><em> | </em><em>None</em>) – Application-wide cursor token options, used where the configuration sets none.</p></li>
+<li><p><strong>require_cursor_secret</strong> (<em>bool</em>) – Refuse to issue or accept unsigned cursor tokens.</p></li>
+<li><p><strong>**values</strong> (<em>Any</em>) – Typed field values and configured pagination, ordering or search values.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>ValueError</strong> – An unknown query parameter is supplied.</p></li>
-<li><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError" title="advanced_alchemy.exceptions.ImproperConfigurationError"><strong>ImproperConfigurationError</strong></a> – The model or declared fields are invalid.</p></li>
+<li><p><a class="reference internal" href="exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError" title="advanced_alchemy.exceptions.ImproperConfigurationError"><strong>ImproperConfigurationError</strong></a> – The model, declared fields, or cursor options are invalid.</p></li>
 </ul>
 </dd>
 </dl>

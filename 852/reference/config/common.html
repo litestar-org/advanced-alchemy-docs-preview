@@ -497,6 +497,9 @@ If left unset, the default configuration will be used.</p>
 <dd><em class="sig-param"><span class="n"><span class="pre">file_object_raise_on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>,</dd>
 <dd><em class="sig-param"><span class="n"><span class="pre">cache_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
 <dd><em class="sig-param"><span class="n"><span class="pre">cache_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">pagination_cursor_secret</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">pagination_cursor_ttl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">pagination_cursor_encrypted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
 </dl>
 
 <span class="sig-paren">)</span><a class="reference internal" href="../../_modules/advanced_alchemy/config/common.html#GenericSQLAlchemyConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig" title="Link to this definition">#</a></dt>
@@ -633,6 +636,31 @@ without it the manager falls back to a no-op <code class="docutils literal notra
 <dd><p>Optional pre-built <a class="reference internal" href="../cache.html#advanced_alchemy.cache.CacheManager" title="advanced_alchemy.cache.CacheManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">CacheManager</span></code></a> instance.</p>
 <p>Takes precedence over <a class="reference internal" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.cache_config" title="advanced_alchemy.config.common.GenericSQLAlchemyConfig.cache_config"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cache_config</span></code></a>. Useful when sharing a single cache manager across
 multiple configs.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.config.common.GenericSQLAlchemyConfig.pagination_cursor_secret">
+<span class="sig-name descname"><span class="pre">pagination_cursor_secret</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.pagination_cursor_secret" title="Link to this definition">#</a></dt>
+<dd><p>Key that signs cursor pagination tokens issued by Litestar and FastAPI filter dependencies.</p>
+<p>Applies to every filter dependency of the application that sets no secret of its own. When unset, the
+<code class="docutils literal notranslate"><span class="pre">ADVANCED_ALCHEMY_PAGINATION_CURSOR_SECRET</span></code> and <code class="docutils literal notranslate"><span class="pre">SECRET_KEY</span></code> environment variables are used.
+Configurations of one application must agree on the value.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../../usage/repositories/cursor_pagination.html"><span class="doc">Cursor Pagination</span></a></p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.config.common.GenericSQLAlchemyConfig.pagination_cursor_ttl">
+<span class="sig-name descname"><span class="pre">pagination_cursor_ttl</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">timedelta</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.pagination_cursor_ttl" title="Link to this definition">#</a></dt>
+<dd><p>Lifetime of cursor pagination tokens in seconds or as a <code class="docutils literal notranslate"><span class="pre">timedelta</span></code>. <code class="docutils literal notranslate"><span class="pre">None</span></code> issues tokens that do not expire.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="advanced_alchemy.config.common.GenericSQLAlchemyConfig.pagination_cursor_encrypted">
+<span class="sig-name descname"><span class="pre">pagination_cursor_encrypted</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#advanced_alchemy.config.common.GenericSQLAlchemyConfig.pagination_cursor_encrypted" title="Link to this definition">#</a></dt>
+<dd><p>Encrypt cursor pagination tokens so clients cannot read the key values.</p>
 </dd></dl>
 
 <dl class="py property">

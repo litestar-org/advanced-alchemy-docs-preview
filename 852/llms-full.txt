@@ -1357,7 +1357,7 @@ async def list_posts(service: CursorPostService, cursor: Optional[str] = None) -
     return service.to_schema(rows, filters=[cursor_filter], pagination_type="cursor")
 ```
 
-`pagination_type="cursor"` makes type checkers infer `CursorPagination[...]`. Passing a `CursorFilter` without it raises [`ImproperConfigurationError`](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError), so a cursor page is never returned where an `OffsetPagination` is declared.
+`to_schema` returns a `CursorPagination` whenever `filters` hold a `CursorFilter`, directly or inside a [`FilterSet`](https://advanced-alchemy.litestar.dev/latest/reference/filterset.html#advanced_alchemy.filters.FilterSet). Type checkers cannot see which filters a list holds, so pass `pagination_type="cursor"` for them to infer `CursorPagination[...]`; without it the call is typed as `OffsetPagination[...]`. `pagination_type="limit_offset"` with a `CursorFilter` raises [`ImproperConfigurationError`](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError).
 
 The response serializes as:
 
@@ -1388,6 +1388,8 @@ Nullable key columns need a NULL placement for keyset comparisons to be correct;
 The filter owns ordering and limits. It replaces the repository’s default `order_by` and any `ORDER BY`, `LIMIT`, or `OFFSET` on the statement, and repositories reject it alongside [`OrderByFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.OrderByFilter), [`LimitOffsetFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.LimitOffsetFilter), or a second cursor filter. Every other filter combines with it as usual.
 
 > **Tip**: Index the keys in the same order and directions, ending with the primary key, for example `(score DESC, id DESC)`. The keyset predicate and `ORDER BY` then read one contiguous index range per page.
+>
+> A nullable key needs more care. PostgreSQL uses the index only when it declares the same NULL placement, for example `(rating DESC NULLS LAST, id DESC)`. MySQL, MariaDB, and SQL Server sort NULLs first ascending and last descending; any other placement is ordered by an extra `CASE` expression that no index serves. On those databases, choose the native placement or a non-nullable key.
 
 ## Counting
 
@@ -1395,7 +1397,7 @@ Cursor pages do not need a total. `get_many` runs one query. `get_many_and_count
 
 ## Signed, Expiring, and Encrypted Tokens
 
-Tokens are URL-safe and record the ordering they were issued for; a token reused with a different ordering is rejected. Without a secret, a token is readable base64 holding the key values of the page’s edge rows, and clients can edit it. Pass `secret` to sign tokens, `ttl` to expire them, and `encrypted=True` to hide the values:
+Tokens are URL-safe and record the ordering they were issued for; a token reused with a different ordering is rejected. Without a secret, a token is readable base64 holding the key values of the page’s edge rows, and clients can edit it, including its expiry. Pass `secret` to sign tokens, `ttl` to expire them, and `encrypted=True` to hide the values:
 
 ```python
 import datetime
@@ -1420,15 +1422,27 @@ cursor_filters: FilterConfig = {
     "sort_field": "created_at",
     "sort_fields": ["created_at", "score"],
     "sort_nulls": "last",
-    "pagination_cursor_secret": "load-from-settings",
 }
 ```
+
+Framework dependencies always sign their tokens and raise [`ImproperConfigurationError`](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError) on a cursor request when no secret is configured. Set the secret once on the SQLAlchemy configuration; every filter dependency and [`FilterSet`](https://advanced-alchemy.litestar.dev/latest/reference/filterset.html#advanced_alchemy.filters.FilterSet) of the application uses it:
+
+```python
+from advanced_alchemy.extensions.litestar import SQLAlchemyAsyncConfig
+
+config = SQLAlchemyAsyncConfig(
+    connection_string="postgresql+asyncpg://app@localhost/app",
+    pagination_cursor_secret="load-from-settings",
+)
+```
+
+`pagination_cursor_ttl` and `pagination_cursor_encrypted` are set the same way, and the FastAPI configuration takes the same options. Each option resolves from the `FilterConfig` or `FilterSet` first, then the SQLAlchemy configuration. The secret then falls back to the `ADVANCED_ALCHEMY_PAGINATION_CURSOR_SECRET` and `SECRET_KEY` environment variables. An application with several configurations must give them the same values. Tokens are signed with a key derived from the secret, never the secret itself, so an application secret shared through `SECRET_KEY` keeps its other uses separate. Use the same secret in every worker process so a token issued by one is accepted by another.
 
 Invalid tokens and sort fields return 400 in Litestar and 422 in FastAPI. [`FilterSet`](https://advanced-alchemy.litestar.dev/latest/reference/filterset.html#advanced_alchemy.filters.FilterSet) classes accept the same configuration and a `cursor` value. See [Litestar Integration](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/litestar.html) and [FastAPI Integration](https://advanced-alchemy.litestar.dev/latest/usage/frameworks/fastapi.html) for complete applications.
 
 ## Custom Value Types
 
-Tokens encode `None`, booleans, numbers, `Decimal`, strings, bytes, `UUID`, dates and times, `timedelta`, and enum members. Register any other key type once at start-up with [`register_cursor_type()`](https://advanced-alchemy.litestar.dev/latest/reference/cursor_pagination.html#advanced_alchemy.filters.register_cursor_type).
+Tokens encode `None`, booleans, numbers, `Decimal`, strings, bytes, `UUID`, dates and times, `timedelta`, and enum members. An enum key needs a column type that names its enum class: `sqlalchemy.types.Enum`, or a `TypeDecorator` whose `python_type` returns the class. Register any other key type once at start-up with [`register_cursor_type()`](https://advanced-alchemy.litestar.dev/latest/reference/cursor_pagination.html#advanced_alchemy.filters.register_cursor_type).
 
 Source: https://advanced-alchemy.litestar.dev/latest/usage/repositories/advanced.html
 
@@ -2831,7 +2845,6 @@ class ArticleController(Controller):
             "sort_field": "views",
             "sort_order": "desc",
             "sort_fields": ["views", "title"],
-            "pagination_cursor_secret": os.environ.get("CURSOR_SECRET", "development-only-secret"),
         },
     )
 
@@ -4719,7 +4732,7 @@ examples and matching semantics.
 ### `advanced_alchemy.filters.FilterSet`
 
 ```python
-class advanced_alchemy.filters.FilterSet(**values)
+class advanced_alchemy.filters.FilterSet(*, cursor_defaults=None, require_cursor_secret=False, **values)
 ```
 
 Bases: [`StatementFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.StatementFilter), `Generic`  [`ModelT`]
@@ -4731,9 +4744,11 @@ double-underscore parameters, such as `orders__price__ge=10`. Different
 fields match independently; operators on one field share a related row.
 Framework providers validate HTTP values before constructing this object.
 
-- **Parameters**: ****values** (*Any*) – Typed field values and configured pagination, ordering or search values.
+- **Parameters**: - **cursor_defaults** ([*CursorDefaults*](https://advanced-alchemy.litestar.dev/latest/reference/cursor_pagination.html#advanced_alchemy.utils.dependencies.CursorDefaults)*|**None*) – Application-wide cursor token options, used where the configuration sets none.
+- **require_cursor_secret** (*bool*) – Refuse to issue or accept unsigned cursor tokens.
+- ****values** (*Any*) – Typed field values and configured pagination, ordering or search values.
 - **Raises**: - **ValueError** – An unknown query parameter is supplied.
-- [**ImproperConfigurationError**](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError) – The model or declared fields are invalid.
+- [**ImproperConfigurationError**](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError) – The model, declared fields, or cursor options are invalid.
 
 ##### `to_statement_filters`
 
@@ -5557,7 +5572,7 @@ alias of [`Empty`](https://advanced-alchemy.litestar.dev/latest/reference/utils.
 ### `advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig`
 
 ```python
-class advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig(create_engine_callable=<function create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, alembic_config=<factory>, routing_config=None)[source]
+class advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig(create_engine_callable=<function create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None)[source]
 ```
 
 Bases: [`GenericSQLAlchemyConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/common.html#advanced_alchemy.config.common.GenericSQLAlchemyConfig)  [`AsyncEngine`, `AsyncSession`, `async_sessionmaker`  [`AsyncSession`]]
@@ -5796,7 +5811,7 @@ Template path.
 ### `advanced_alchemy.config.common.GenericSQLAlchemyConfig`
 
 ```python
-class advanced_alchemy.config.common.GenericSQLAlchemyConfig(create_engine_callable, session_config, session_maker_class, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None)[source]
+class advanced_alchemy.config.common.GenericSQLAlchemyConfig(create_engine_callable, session_config, session_maker_class, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None)[source]
 ```
 
 Bases: `Generic`  [[`EngineT`](https://advanced-alchemy.litestar.dev/latest/reference/config/common.html#advanced_alchemy.config.common.EngineT), [`SessionT`](https://advanced-alchemy.litestar.dev/latest/reference/config/common.html#advanced_alchemy.config.common.SessionT), [`SessionMakerT`](https://advanced-alchemy.litestar.dev/latest/reference/config/common.html#advanced_alchemy.config.common.SessionMakerT)]
@@ -5964,6 +5979,36 @@ Optional pre-built [`CacheManager`](https://advanced-alchemy.litestar.dev/latest
 
 Takes precedence over [`cache_config`](https://advanced-alchemy.litestar.dev/latest/reference/config/common.html#advanced_alchemy.config.common.GenericSQLAlchemyConfig.cache_config). Useful when sharing a single cache manager across
 multiple configs.
+
+##### `pagination_cursor_secret`
+
+```python
+pagination_cursor_secret: str | bytes | None = None
+```
+
+Key that signs cursor pagination tokens issued by Litestar and FastAPI filter dependencies.
+
+Applies to every filter dependency of the application that sets no secret of its own. When unset, the
+`ADVANCED_ALCHEMY_PAGINATION_CURSOR_SECRET` and `SECRET_KEY` environment variables are used.
+Configurations of one application must agree on the value.
+
+> **See Also**: [Cursor Pagination](https://advanced-alchemy.litestar.dev/latest/usage/repositories/cursor_pagination.html)
+
+##### `pagination_cursor_ttl`
+
+```python
+pagination_cursor_ttl: float | timedelta | None = None
+```
+
+Lifetime of cursor pagination tokens in seconds or as a `timedelta`. `None` issues tokens that do not expire.
+
+##### `pagination_cursor_encrypted`
+
+```python
+pagination_cursor_encrypted: bool | None = None
+```
+
+Encrypt cursor pagination tokens so clients cannot read the key values.
 
 ##### `engine_config_dict`
 
@@ -6701,7 +6746,7 @@ For details see: [https://alembic.sqlalchemy.org/en/latest/api/config.html](http
 ### `advanced_alchemy.config.sync.SQLAlchemySyncConfig`
 
 ```python
-class advanced_alchemy.config.sync.SQLAlchemySyncConfig(create_engine_callable=<function create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, alembic_config=<factory>, routing_config=None)[source]
+class advanced_alchemy.config.sync.SQLAlchemySyncConfig(create_engine_callable=<function create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None)[source]
 ```
 
 Bases: [`GenericSQLAlchemyConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/common.html#advanced_alchemy.config.common.GenericSQLAlchemyConfig)  [`Engine`, `Session`, `sessionmaker`  [`Session`]]
@@ -7819,9 +7864,11 @@ Type: [`ModelOrRowMappingT`](https://advanced-alchemy.litestar.dev/latest/refere
 - **total** (*Optional**[**int**]*) – The total number of rows in the data.
 - **filters** (*Union**[**Sequence**[**Union**[*[*StatementFilter*](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.StatementFilter)*,**ColumnElement**[**bool**]**]**]**,**Sequence**[*[*StatementFilter*](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.StatementFilter)*]**,**None**]*) – [`StatementFilter`](https://advanced-alchemy.litestar.dev/latest/reference/filters.html#advanced_alchemy.filters.StatementFilter) | `ColumnElement` collection of route filters.
 - **schema_type** (*Optional**[**type**[*[*ModelDTOT*](https://advanced-alchemy.litestar.dev/latest/reference/service_conversion.html#advanced_alchemy.service.ModelDTOT)*]**]*) – [`ModelDTOT`](https://advanced-alchemy.litestar.dev/latest/reference/service_conversion.html#advanced_alchemy.service.ModelDTOT) Optional schema type to convert the data to
-- **pagination_type** (*Optional**[**Literal**[**"limit_offset"**,**"cursor"**]**]*) – `"cursor"` returns a [`CursorPagination`](https://advanced-alchemy.litestar.dev/latest/reference/service_conversion.html#advanced_alchemy.service.CursorPagination)
-built from the [`CursorFilter`](https://advanced-alchemy.litestar.dev/latest/reference/cursor_pagination.html#advanced_alchemy.filters.CursorFilter) in `filters`; `total` is ignored.
-`"limit_offset"` or omitted returns an [`OffsetPagination`](https://advanced-alchemy.litestar.dev/latest/reference/service_conversion.html#advanced_alchemy.service.OffsetPagination).
+- **pagination_type** (*Optional**[**Literal**[**"limit_offset"**,**"cursor"**]**]*) – Pagination container to build. Omitted, a [`CursorFilter`](https://advanced-alchemy.litestar.dev/latest/reference/cursor_pagination.html#advanced_alchemy.filters.CursorFilter)
+in `filters` returns a [`CursorPagination`](https://advanced-alchemy.litestar.dev/latest/reference/service_conversion.html#advanced_alchemy.service.CursorPagination) and anything
+else an [`OffsetPagination`](https://advanced-alchemy.litestar.dev/latest/reference/service_conversion.html#advanced_alchemy.service.OffsetPagination). `"cursor"` and
+`"limit_offset"` require that container and give type checkers its exact type; `total` is
+ignored for cursor pages.
 - **Raises**: - [**AdvancedAlchemyError**](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.AdvancedAlchemyError) – If `schema_type` is not a valid Pydantic, Msgspec, or attrs schema and all libraries are not installed.
 - [**ImproperConfigurationError**](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError) – If `pagination_type` does not match the pagination filter in `filters`.
 - **Returns**: [`ModelProtocol`](https://advanced-alchemy.litestar.dev/latest/reference/base.html#advanced_alchemy.base.ModelProtocol) | `RowMapping` | [`OffsetPagination`](https://advanced-alchemy.litestar.dev/latest/reference/service_conversion.html#advanced_alchemy.service.OffsetPagination) | `msgspec.Struct` | `pydantic.BaseModel` | `attrs` class
@@ -9060,6 +9107,106 @@ Call once at application start-up, before any cursor is issued.
 - **encoder** (*Callable**[**[**Any**]**,**str**]*) – Converts a value to text.
 - **decoder** (*Callable**[**[**str**]**,**Any**]*) – Restores a value from text.
 - **Raises**: **ValueError** – The type or tag is already registered, reserved, or invalid.
+
+## Framework Settings
+
+Options the Litestar and FastAPI filter dependencies resolve for each request. See
+[Cursor Pagination](https://advanced-alchemy.litestar.dev/latest/usage/repositories/cursor_pagination.html) for how the secret is configured.
+
+### `advanced_alchemy.utils.dependencies.CursorSettings`
+
+```python
+class advanced_alchemy.utils.dependencies.CursorSettings(allowed_fields, default_field, default_order, nulls, secret, ttl, encrypted)[source]
+```
+
+Bases: `object`
+
+Cursor pagination settings resolved from [`FilterConfig`](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dependencies.FilterConfig) once, when dependencies are built.
+
+##### `token_options`
+
+```python
+token_options(defaults=None, *, require_secret=False)[source]
+```
+
+Resolve the secret, lifetime, and encryption flag for issued and accepted tokens.
+
+Each option comes from the filter configuration, then `defaults`. The secret then
+falls back to the [`CURSOR_SECRET_ENV_VARS`](https://advanced-alchemy.litestar.dev/latest/reference/cursor_pagination.html#advanced_alchemy.utils.dependencies.CURSOR_SECRET_ENV_VARS) environment variables. Tokens are
+keyed with a value derived from the secret, so the secret itself never signs a token.
+
+- **Parameters**: - **defaults** ([*CursorDefaults*](https://advanced-alchemy.litestar.dev/latest/reference/cursor_pagination.html#advanced_alchemy.utils.dependencies.CursorDefaults)*|**None*) – Application-wide options.
+- **require_secret** (*bool*) – Refuse to issue or accept unsigned tokens.
+- **Returns**: The token key, lifetime, and encryption flag.
+- **Raises**: [**ImproperConfigurationError**](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError) – No secret is configured and one is required or encryption is enabled.
+- **Return type**: *tuple*[*bytes* | *None*, *float* | *timedelta* | *None*, *bool*]
+
+##### `build`
+
+```python
+build(*, cursor, page_size, order_by=None, sort_order=None, defaults=None, require_secret=False)[source]
+```
+
+Build the cursor filter for one request.
+
+- **Parameters**: - **cursor** (*str**|**None*) – Token from the request, or `None` for the first page.
+- **page_size** (*int*) – Validated page size.
+- **order_by** (*str**|**Sequence**[**str**]**|**None*) – Requested ordering tokens; `-name` sorts descending.
+- **sort_order** (*'asc'**|**'desc'**|**None*) – Direction for a single unprefixed `order_by` token.
+- **defaults** ([*CursorDefaults*](https://advanced-alchemy.litestar.dev/latest/reference/cursor_pagination.html#advanced_alchemy.utils.dependencies.CursorDefaults)*|**None*) – Application-wide token options.
+- **require_secret** (*bool*) – Refuse to issue or accept unsigned tokens.
+- **Returns**: The request’s cursor filter.
+- **Raises**: - **ValueError** – The ordering is not allowed or the token is invalid
+ ([`InvalidCursorError`](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.InvalidCursorError)).
+- [**ImproperConfigurationError**](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError) – A secret is required and none is configured.
+- **Return type**: [*CursorFilter*](https://advanced-alchemy.litestar.dev/latest/reference/cursor_pagination.html#advanced_alchemy.filters.CursorFilter)
+
+### `advanced_alchemy.utils.dependencies.resolve_cursor_settings`
+
+```python
+advanced_alchemy.utils.dependencies.resolve_cursor_settings(config, model=None)[source]
+```
+
+Validate cursor options in `config` and resolve them for per-request use.
+
+- **Parameters**: - **config** ([*FilterConfig*](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dependencies.FilterConfig)) – Filter configuration with `pagination_type="cursor"`.
+- **model** (*type**[**Any**]**|**None*) – Mapped model, used to validate `sort_fields` when known.
+- **Returns**: Resolved settings.
+- **Raises**: [**ImproperConfigurationError**](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError) – A sort path crosses a relationship, or the secret or TTL is invalid.
+- **Return type**: [*CursorSettings*](https://advanced-alchemy.litestar.dev/latest/reference/cursor_pagination.html#advanced_alchemy.utils.dependencies.CursorSettings)
+
+### `advanced_alchemy.utils.dependencies.CursorDefaults`
+
+```python
+class advanced_alchemy.utils.dependencies.CursorDefaults(secret=None, ttl=None, encrypted=None)[source]
+```
+
+Bases: `object`
+
+Application-wide cursor token options, used where a filter configuration sets none.
+
+### `advanced_alchemy.utils.dependencies.resolve_cursor_defaults`
+
+```python
+advanced_alchemy.utils.dependencies.resolve_cursor_defaults(configs)[source]
+```
+
+Resolve application-wide cursor token options from an application’s SQLAlchemy configurations.
+
+- **Parameters**: **configs** (*Iterable**[**Any**]*) – Configurations carrying `pagination_cursor_secret`, `pagination_cursor_ttl`,
+and `pagination_cursor_encrypted`.
+- **Returns**: The options the configurations set.
+- **Raises**: [**ImproperConfigurationError**](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError) – A secret is empty, a TTL is not a positive finite duration,
+ or two configurations set different values for one option.
+- **Return type**: [*CursorDefaults*](https://advanced-alchemy.litestar.dev/latest/reference/cursor_pagination.html#advanced_alchemy.utils.dependencies.CursorDefaults)
+
+### `advanced_alchemy.utils.dependencies.CURSOR_SECRET_ENV_VARS`
+
+```python
+advanced_alchemy.utils.dependencies.CURSOR_SECRET_ENV_VARS: Final = ('ADVANCED_ALCHEMY_PAGINATION_CURSOR_SECRET', 'SECRET_KEY')
+```
+
+Environment variables read, in order, for a cursor secret no configuration provides.
 
 Source: https://advanced-alchemy.litestar.dev/latest/reference/operations.html
 
@@ -11036,7 +11183,7 @@ Given a value of indeterminate type, determine if this value is supported by the
 ### `advanced_alchemy.extensions.litestar.plugins.SQLAlchemyAsyncConfig`
 
 ```python
-class advanced_alchemy.extensions.litestar.plugins.SQLAlchemyAsyncConfig(create_engine_callable=<function create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, alembic_config=<factory>, routing_config=None, before_send_handler=None, engine_dependency_key='db_engine', session_dependency_key='db_session', engine_app_state_key='db_engine', session_maker_app_state_key='session_maker_class', session_scope_key='_sqlalchemy_db_session', set_default_exception_handler=True)
+class advanced_alchemy.extensions.litestar.plugins.SQLAlchemyAsyncConfig(create_engine_callable=<function create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, before_send_handler=None, engine_dependency_key='db_engine', session_dependency_key='db_session', engine_app_state_key='db_engine', session_maker_app_state_key='session_maker_class', session_scope_key='_sqlalchemy_db_session', set_default_exception_handler=True)
 ```
 
 Bases: [`SQLAlchemyAsyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/asyncio.html#advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig)
@@ -11081,7 +11228,7 @@ Create all metadata
 ### `advanced_alchemy.extensions.litestar.plugins.SQLAlchemySyncConfig`
 
 ```python
-class advanced_alchemy.extensions.litestar.plugins.SQLAlchemySyncConfig(create_engine_callable=<function create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, alembic_config=<factory>, routing_config=None, before_send_handler=None, engine_dependency_key='db_engine', session_dependency_key='db_session', engine_app_state_key='db_engine', session_maker_app_state_key='session_maker_class', session_scope_key='_sqlalchemy_db_session', set_default_exception_handler=True)
+class advanced_alchemy.extensions.litestar.plugins.SQLAlchemySyncConfig(create_engine_callable=<function create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, before_send_handler=None, engine_dependency_key='db_engine', session_dependency_key='db_session', engine_app_state_key='db_engine', session_maker_app_state_key='session_maker_class', session_scope_key='_sqlalchemy_db_session', set_default_exception_handler=True)
 ```
 
 Bases: [`SQLAlchemySyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig)
@@ -12784,6 +12931,16 @@ AdvancedAlchemy integration for FastAPI applications.
 This class manages SQLAlchemy sessions and engine lifecycle within a FastAPI application.
 It provides middleware for handling transactions based on commit strategies.
 
+##### `init_app`
+
+```python
+init_app(app)
+```
+
+Initialize the application and report invalid pagination cursors as validation errors.
+
+- **Parameters**: **app** (*Starlette*) – The FastAPI application instance.
+
 ##### `provide_service`
 
 ```python
@@ -12984,6 +13141,14 @@ property config: Sequence[SQLAlchemyAsyncConfig | SQLAlchemySyncConfig]
 ```
 
 Current Advanced Alchemy configuration.
+
+##### `cursor_defaults`
+
+```python
+property cursor_defaults: CursorDefaults
+```
+
+Cursor token options the configurations set for the application’s filter dependencies.
 
 ##### `init_app`
 
@@ -13276,7 +13441,7 @@ known Starlette issues with BaseHTTPMiddleware and generator dependencies.
 ### `advanced_alchemy.extensions.starlette.SQLAlchemyAsyncConfig`
 
 ```python
-class advanced_alchemy.extensions.starlette.SQLAlchemyAsyncConfig(create_engine_callable=<function create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, alembic_config=<factory>, routing_config=None, app=None, commit_mode='manual', engine_key='db_engine', session_key='db_session', session_maker_key='session_maker_class')
+class advanced_alchemy.extensions.starlette.SQLAlchemyAsyncConfig(create_engine_callable=<function create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, app=None, commit_mode='manual', engine_key='db_engine', session_key='db_session', session_maker_key='session_maker_class')
 ```
 
 Bases: [`SQLAlchemyAsyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/asyncio.html#advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig)
@@ -13429,7 +13594,7 @@ Ensures that all connections are properly closed during application shutdown.
 ### `advanced_alchemy.extensions.starlette.SQLAlchemySyncConfig`
 
 ```python
-class advanced_alchemy.extensions.starlette.SQLAlchemySyncConfig(create_engine_callable=<function create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, alembic_config=<factory>, routing_config=None, app=None, commit_mode='manual', engine_key='db_engine', session_key='db_session', session_maker_key='session_maker_class')
+class advanced_alchemy.extensions.starlette.SQLAlchemySyncConfig(create_engine_callable=<function create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, app=None, commit_mode='manual', engine_key='db_engine', session_key='db_session', session_maker_key='session_maker_class')
 ```
 
 Bases: [`SQLAlchemySyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig)
@@ -13770,7 +13935,7 @@ Retrieve the Advanced Alchemy extension from the Flask application.
 ### `advanced_alchemy.extensions.flask.SQLAlchemyAsyncConfig`
 
 ```python
-class advanced_alchemy.extensions.flask.SQLAlchemyAsyncConfig(create_engine_callable=<function create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, alembic_config=<factory>, routing_config=None, app=None, commit_mode='manual')
+class advanced_alchemy.extensions.flask.SQLAlchemyAsyncConfig(create_engine_callable=<function create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, app=None, commit_mode='manual')
 ```
 
 Bases: [`SQLAlchemyAsyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/asyncio.html#advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig)
@@ -13843,7 +14008,7 @@ Create all metadata tables in the database.
 ### `advanced_alchemy.extensions.flask.SQLAlchemySyncConfig`
 
 ```python
-class advanced_alchemy.extensions.flask.SQLAlchemySyncConfig(create_engine_callable=<function create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, alembic_config=<factory>, routing_config=None, app=None, commit_mode='manual')
+class advanced_alchemy.extensions.flask.SQLAlchemySyncConfig(create_engine_callable=<function create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, app=None, commit_mode='manual')
 ```
 
 Bases: [`SQLAlchemySyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig)
@@ -14230,7 +14395,7 @@ Add an engine dependency to the Sanic app.
 ### `advanced_alchemy.extensions.sanic.SQLAlchemyAsyncConfig`
 
 ```python
-class advanced_alchemy.extensions.sanic.SQLAlchemyAsyncConfig(create_engine_callable=<function create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, alembic_config=<factory>, routing_config=None, _app=None, commit_mode='manual', engine_key='db_engine', session_key='db_session', session_maker_key='session_maker_class')
+class advanced_alchemy.extensions.sanic.SQLAlchemyAsyncConfig(create_engine_callable=<function create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, _app=None, commit_mode='manual', engine_key='db_engine', session_key='db_session', session_maker_key='session_maker_class')
 ```
 
 Bases: [`SQLAlchemyAsyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/asyncio.html#advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig)
@@ -14412,7 +14577,7 @@ Ensures that all connections are properly closed during application shutdown.
 ### `advanced_alchemy.extensions.sanic.SQLAlchemySyncConfig`
 
 ```python
-class advanced_alchemy.extensions.sanic.SQLAlchemySyncConfig(create_engine_callable=<function create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, alembic_config=<factory>, routing_config=None, _app=None, commit_mode='manual', engine_key='db_engine', session_key='db_session', session_maker_key='session_maker_class')
+class advanced_alchemy.extensions.sanic.SQLAlchemySyncConfig(create_engine_callable=<function create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, _app=None, commit_mode='manual', engine_key='db_engine', session_key='db_session', session_maker_key='session_maker_class')
 ```
 
 Bases: [`SQLAlchemySyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig)
@@ -16703,47 +16868,6 @@ Resolve public query names once, validating only opt-in custom naming.
 
 - **Return type**: *dict*[*str*, *str*]
 
-### `advanced_alchemy.utils.dependencies.CursorSettings`
-
-```python
-class advanced_alchemy.utils.dependencies.CursorSettings(allowed_fields, default_field, default_order, nulls, secret, ttl, encrypted)[source]
-```
-
-Bases: `object`
-
-Cursor pagination settings resolved from [`FilterConfig`](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dependencies.FilterConfig) once, when dependencies are built.
-
-##### `build`
-
-```python
-build(*, cursor, page_size, order_by=None, sort_order=None)[source]
-```
-
-Build the cursor filter for one request.
-
-- **Parameters**: - **cursor** (*str**|**None*) – Token from the request, or `None` for the first page.
-- **page_size** (*int*) – Validated page size.
-- **order_by** (*str**|**Sequence**[**str**]**|**None*) – Requested ordering tokens; `-name` sorts descending.
-- **sort_order** (*'asc'**|**'desc'**|**None*) – Direction for a single unprefixed `order_by` token.
-- **Returns**: The request’s cursor filter.
-- **Raises**: **ValueError** – The ordering is not allowed or the token is invalid
- ([`InvalidCursorError`](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.InvalidCursorError)).
-- **Return type**: [*CursorFilter*](https://advanced-alchemy.litestar.dev/latest/reference/cursor_pagination.html#advanced_alchemy.filters.CursorFilter)
-
-### `advanced_alchemy.utils.dependencies.resolve_cursor_settings`
-
-```python
-advanced_alchemy.utils.dependencies.resolve_cursor_settings(config, model=None)[source]
-```
-
-Validate cursor options in `config` and resolve them for per-request use.
-
-- **Parameters**: - **config** ([*FilterConfig*](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dependencies.FilterConfig)) – Filter configuration with `pagination_type="cursor"`.
-- **model** (*type**[**Any**]**|**None*) – Mapped model, used to validate `sort_fields` when known.
-- **Returns**: Resolved settings.
-- **Raises**: [**ImproperConfigurationError**](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError) – A sort path crosses a relationship, or the secret or TTL is invalid.
-- **Return type**: [*CursorSettings*](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dependencies.CursorSettings)
-
 ### `advanced_alchemy.utils.dependencies.normalize_field_name_types`
 
 ```python
@@ -17037,7 +17161,7 @@ out if it’s a function or method
 ### `advanced_alchemy.utils.deprecation.warn_deprecation`
 
 ```python
-advanced_alchemy.utils.deprecation.warn_deprecation(version, deprecated_name, kind, *, removal_in=None, alternative=None, info=None, pending=False)[source]
+advanced_alchemy.utils.deprecation.warn_deprecation(version, deprecated_name, kind, *, removal_in=None, alternative=None, info=None, pending=False, stacklevel=2)[source]
 ```
 
 Warn about a call to a (soon to be) deprecated function.
@@ -17049,6 +17173,7 @@ Warn about a call to a (soon to be) deprecated function.
 - **info** (*str**|**None*) – Additional information
 - **pending** (*bool*) – Use `PendingDeprecationWarning` instead of `DeprecationWarning`
 - **kind** (*'function'**|**'method'**|**'classmethod'**|**'attribute'**|**'property'**|**'class'**|**'parameter'**|**'import'*) – Type of the deprecated thing
+- **stacklevel** (*int*) – Frames between the warning and the code it is attributed to; `2` is the caller of this function
 
 Source: https://advanced-alchemy.litestar.dev/latest/changelog.html
 
@@ -17061,19 +17186,24 @@ Source: https://advanced-alchemy.litestar.dev/latest/changelog.html
 - **add cursor (keyset) pagination**: [`CursorFilter`](https://advanced-alchemy.litestar.dev/latest/reference/cursor_pagination.html#advanced_alchemy.filters.CursorFilter) pages by the ordering keys of
 the last row a client saw, with the primary key appended as a tiebreaker,
 explicit NULL placement, and a `limit + 1` fetch that detects the last page.
-`to_schema(..., pagination_type="cursor")` returns a typed
-[`CursorPagination`](https://advanced-alchemy.litestar.dev/latest/reference/service_conversion.html#advanced_alchemy.service.CursorPagination) with `next_cursor`,
-`previous_cursor`, `has_next`, and `has_previous`; existing
-`to_schema` calls keep returning `OffsetPagination`. Tokens are bound
+`to_schema` returns a [`CursorPagination`](https://advanced-alchemy.litestar.dev/latest/reference/service_conversion.html#advanced_alchemy.service.CursorPagination)
+with `next_cursor`, `previous_cursor`, `has_next`, and `has_previous`
+when `filters` hold a `CursorFilter`, and `pagination_type="cursor"`
+types the result; calls without a `CursorFilter` keep returning
+`OffsetPagination`. Tokens are bound
 to their ordering and can be signed, expire, or be encrypted.
 `FilterConfig` and `FilterSet` accept `pagination_type="cursor"`, and
 the Litestar and FastAPI providers expose `cursor`, `pageSize`,
 `orderBy`, and `sortOrder` with the existing sort allowlist and
-`pagination_max_size`. SQL and in-memory repositories reject conflicting
+`pagination_max_size`. Provider tokens are always signed: set
+`pagination_cursor_secret` once on the SQLAlchemy configuration, per
+filter configuration, or through the
+`ADVANCED_ALCHEMY_PAGINATION_CURSOR_SECRET` or `SECRET_KEY` environment
+variables. SQL and in-memory repositories reject conflicting
 pagination filters and count the full filtered set. With contributions
 from [Pavel Kirilin](https://github.com/s3rius).
 
-References: [https://github.com/litestar-org/advanced-alchemy/issues/564](https://github.com/litestar-org/advanced-alchemy/issues/564), [https://github.com/litestar-org/advanced-alchemy/pull/795](https://github.com/litestar-org/advanced-alchemy/pull/795)
+References: [https://github.com/litestar-org/advanced-alchemy/issues/564](https://github.com/litestar-org/advanced-alchemy/issues/564), [https://github.com/litestar-org/advanced-alchemy/pull/852](https://github.com/litestar-org/advanced-alchemy/pull/852)
 - **add optional pagination_max_size cap to FilterConfig and FilterSet**: Adds an optional `pagination_max_size` key (defaulting to `None`) to
 `FilterConfig` and `FilterSet` to enforce an upper bound on
 `pageSize` / `page_size` via OpenAPI `maximum` and framework

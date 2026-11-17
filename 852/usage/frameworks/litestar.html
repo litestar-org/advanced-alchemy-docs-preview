@@ -607,34 +607,33 @@ poetry</label><div class="sd-tab-content docutils" id="sd-tab-item-3-content">
 </span><span data-line="12">            <span class="s2">"sort_field"</span><span class="p">:</span> <span class="s2">"views"</span><span class="p">,</span>
 </span><span data-line="13">            <span class="s2">"sort_order"</span><span class="p">:</span> <span class="s2">"desc"</span><span class="p">,</span>
 </span><span data-line="14">            <span class="s2">"sort_fields"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"views"</span><span class="p">,</span> <span class="s2">"title"</span><span class="p">],</span>
-</span><span data-line="15">            <span class="s2">"pagination_cursor_secret"</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"CURSOR_SECRET"</span><span class="p">,</span> <span class="s2">"development-only-secret"</span><span class="p">),</span>
-</span><span data-line="16">        <span class="p">},</span>
-</span><span data-line="17">    <span class="p">)</span>
-</span><span data-line="18">
-</span><span data-line="19">    <span class="nd">@post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"/"</span><span class="p">)</span>
-</span><span data-line="20">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_article</span><span class="p">(</span>
-</span><span data-line="21">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="22">        <span class="n">articles_service</span><span class="p">:</span> <span class="n">NamedDependency</span><span class="p">[</span><span class="n">ArticleService</span><span class="p">],</span>
-</span><span data-line="23">        <span class="n">data</span><span class="p">:</span> <span class="n">JSONBody</span><span class="p">[</span><span class="n">ArticleCreate</span><span class="p">],</span>
-</span><span data-line="24">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ArticleSchema</span><span class="p">:</span>
-</span><span data-line="25"><span class="w">        </span><span class="sd">"""Create an article."""</span>
-</span><span data-line="26">        <span class="n">obj</span> <span class="o">=</span> <span class="k">await</span> <span class="n">articles_service</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span data-line="27">        <span class="k">return</span> <span class="n">articles_service</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">schema_type</span><span class="o">=</span><span class="n">ArticleSchema</span><span class="p">)</span>
-</span><span data-line="28">
-</span><span data-line="29">    <span class="nd">@get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"/"</span><span class="p">)</span>
-</span><span data-line="30">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">list_articles</span><span class="p">(</span>
-</span><span data-line="31">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="32">        <span class="n">articles_service</span><span class="p">:</span> <span class="n">NamedDependency</span><span class="p">[</span><span class="n">ArticleService</span><span class="p">],</span>
-</span><span data-line="33">        <span class="n">filters</span><span class="p">:</span> <span class="n">NamedDependency</span><span class="p">[</span><span class="n">SkipValidation</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterTypes</span><span class="p">]]],</span>
-</span><span data-line="34">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">CursorPagination</span><span class="p">[</span><span class="n">ArticleSchema</span><span class="p">]:</span>
-</span><span data-line="35"><span class="w">        </span><span class="sd">"""List articles one cursor page at a time."""</span>
-</span><span data-line="36">        <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">articles_service</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span><span class="o">*</span><span class="n">filters</span><span class="p">)</span>
-</span><span data-line="37">        <span class="k">return</span> <span class="n">articles_service</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span>
-</span><span data-line="38">            <span class="n">results</span><span class="p">,</span>
-</span><span data-line="39">            <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span>
-</span><span data-line="40">            <span class="n">schema_type</span><span class="o">=</span><span class="n">ArticleSchema</span><span class="p">,</span>
-</span><span data-line="41">            <span class="n">pagination_type</span><span class="o">=</span><span class="s2">"cursor"</span><span class="p">,</span>
-</span><span data-line="42">        <span class="p">)</span>
+</span><span data-line="15">        <span class="p">},</span>
+</span><span data-line="16">    <span class="p">)</span>
+</span><span data-line="17">
+</span><span data-line="18">    <span class="nd">@post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"/"</span><span class="p">)</span>
+</span><span data-line="19">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_article</span><span class="p">(</span>
+</span><span data-line="20">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="21">        <span class="n">articles_service</span><span class="p">:</span> <span class="n">NamedDependency</span><span class="p">[</span><span class="n">ArticleService</span><span class="p">],</span>
+</span><span data-line="22">        <span class="n">data</span><span class="p">:</span> <span class="n">JSONBody</span><span class="p">[</span><span class="n">ArticleCreate</span><span class="p">],</span>
+</span><span data-line="23">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ArticleSchema</span><span class="p">:</span>
+</span><span data-line="24"><span class="w">        </span><span class="sd">"""Create an article."""</span>
+</span><span data-line="25">        <span class="n">obj</span> <span class="o">=</span> <span class="k">await</span> <span class="n">articles_service</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">auto_commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="26">        <span class="k">return</span> <span class="n">articles_service</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">schema_type</span><span class="o">=</span><span class="n">ArticleSchema</span><span class="p">)</span>
+</span><span data-line="27">
+</span><span data-line="28">    <span class="nd">@get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"/"</span><span class="p">)</span>
+</span><span data-line="29">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">list_articles</span><span class="p">(</span>
+</span><span data-line="30">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="31">        <span class="n">articles_service</span><span class="p">:</span> <span class="n">NamedDependency</span><span class="p">[</span><span class="n">ArticleService</span><span class="p">],</span>
+</span><span data-line="32">        <span class="n">filters</span><span class="p">:</span> <span class="n">NamedDependency</span><span class="p">[</span><span class="n">SkipValidation</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterTypes</span><span class="p">]]],</span>
+</span><span data-line="33">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">CursorPagination</span><span class="p">[</span><span class="n">ArticleSchema</span><span class="p">]:</span>
+</span><span data-line="34"><span class="w">        </span><span class="sd">"""List articles one cursor page at a time."""</span>
+</span><span data-line="35">        <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">articles_service</span><span class="o">.</span><span class="n">get_many</span><span class="p">(</span><span class="o">*</span><span class="n">filters</span><span class="p">)</span>
+</span><span data-line="36">        <span class="k">return</span> <span class="n">articles_service</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span>
+</span><span data-line="37">            <span class="n">results</span><span class="p">,</span>
+</span><span data-line="38">            <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span>
+</span><span data-line="39">            <span class="n">schema_type</span><span class="o">=</span><span class="n">ArticleSchema</span><span class="p">,</span>
+</span><span data-line="40">            <span class="n">pagination_type</span><span class="o">=</span><span class="s2">"cursor"</span><span class="p">,</span>
+</span><span data-line="41">        <span class="p">)</span>
 </span></pre></div>
 </div>
 <p>See <a class="reference internal" href="../repositories/cursor_pagination.html"><span class="doc">Cursor Pagination</span></a> for ordering keys, token signing, and indexing.</p>

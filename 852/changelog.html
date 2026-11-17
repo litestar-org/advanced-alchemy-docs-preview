@@ -629,18 +629,23 @@ data-aria-dark="Switch to auto color mode">
 <p><a class="reference internal" href="reference/cursor_pagination.html#advanced_alchemy.filters.CursorFilter" title="advanced_alchemy.filters.CursorFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">CursorFilter</span></code></a> pages by the ordering keys of
 the last row a client saw, with the primary key appended as a tiebreaker,
 explicit NULL placement, and a <code class="docutils literal notranslate"><span class="pre">limit</span> <span class="pre">+</span> <span class="pre">1</span></code> fetch that detects the last page.
-<code class="docutils literal notranslate"><span class="pre">to_schema(...,</span> <span class="pre">pagination_type=&quot;cursor&quot;)</span></code> returns a typed
-<a class="reference internal" href="reference/service_conversion.html#advanced_alchemy.service.CursorPagination" title="advanced_alchemy.service.CursorPagination"><code class="xref py py-class docutils literal notranslate"><span class="pre">CursorPagination</span></code></a> with <code class="docutils literal notranslate"><span class="pre">next_cursor</span></code>,
-<code class="docutils literal notranslate"><span class="pre">previous_cursor</span></code>, <code class="docutils literal notranslate"><span class="pre">has_next</span></code>, and <code class="docutils literal notranslate"><span class="pre">has_previous</span></code>; existing
-<code class="docutils literal notranslate"><span class="pre">to_schema</span></code> calls keep returning <code class="docutils literal notranslate"><span class="pre">OffsetPagination</span></code>. Tokens are bound
+<code class="docutils literal notranslate"><span class="pre">to_schema</span></code> returns a <a class="reference internal" href="reference/service_conversion.html#advanced_alchemy.service.CursorPagination" title="advanced_alchemy.service.CursorPagination"><code class="xref py py-class docutils literal notranslate"><span class="pre">CursorPagination</span></code></a>
+with <code class="docutils literal notranslate"><span class="pre">next_cursor</span></code>, <code class="docutils literal notranslate"><span class="pre">previous_cursor</span></code>, <code class="docutils literal notranslate"><span class="pre">has_next</span></code>, and <code class="docutils literal notranslate"><span class="pre">has_previous</span></code>
+when <code class="docutils literal notranslate"><span class="pre">filters</span></code> hold a <code class="docutils literal notranslate"><span class="pre">CursorFilter</span></code>, and <code class="docutils literal notranslate"><span class="pre">pagination_type=&quot;cursor&quot;</span></code>
+types the result; calls without a <code class="docutils literal notranslate"><span class="pre">CursorFilter</span></code> keep returning
+<code class="docutils literal notranslate"><span class="pre">OffsetPagination</span></code>. Tokens are bound
 to their ordering and can be signed, expire, or be encrypted.
 <code class="docutils literal notranslate"><span class="pre">FilterConfig</span></code> and <code class="docutils literal notranslate"><span class="pre">FilterSet</span></code> accept <code class="docutils literal notranslate"><span class="pre">pagination_type=&quot;cursor&quot;</span></code>, and
 the Litestar and FastAPI providers expose <code class="docutils literal notranslate"><span class="pre">cursor</span></code>, <code class="docutils literal notranslate"><span class="pre">pageSize</span></code>,
 <code class="docutils literal notranslate"><span class="pre">orderBy</span></code>, and <code class="docutils literal notranslate"><span class="pre">sortOrder</span></code> with the existing sort allowlist and
-<code class="docutils literal notranslate"><span class="pre">pagination_max_size</span></code>. SQL and in-memory repositories reject conflicting
+<code class="docutils literal notranslate"><span class="pre">pagination_max_size</span></code>. Provider tokens are always signed: set
+<code class="docutils literal notranslate"><span class="pre">pagination_cursor_secret</span></code> once on the SQLAlchemy configuration, per
+filter configuration, or through the
+<code class="docutils literal notranslate"><span class="pre">ADVANCED_ALCHEMY_PAGINATION_CURSOR_SECRET</span></code> or <code class="docutils literal notranslate"><span class="pre">SECRET_KEY</span></code> environment
+variables. SQL and in-memory repositories reject conflicting
 pagination filters and count the full filtered set. With contributions
 from <a class="reference external" href="https://github.com/s3rius">Pavel Kirilin</a>.</p>
-<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/564">https://github.com/litestar-org/advanced-alchemy/issues/564</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/795">https://github.com/litestar-org/advanced-alchemy/pull/795</a></span></p>
+<p>References: <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/issues/564">https://github.com/litestar-org/advanced-alchemy/issues/564</a></span>, <span><a class="reference external" href="https://github.com/litestar-org/advanced-alchemy/pull/852">https://github.com/litestar-org/advanced-alchemy/pull/852</a></span></p>
 </div>
 </dd>
 <dt>add optional pagination_max_size cap to FilterConfig and FilterSet<a class="headerlink reference internal" href="#1.13.0-add optional pagination_max_size cap to filterconfig and filterset" id="1.13.0-add optional pagination_max_size cap to filterconfig and filterset">#</a></dt><dd><div class="changelog-change docutils container">
