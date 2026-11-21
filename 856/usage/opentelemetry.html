@@ -372,13 +372,40 @@ data-aria-dark="Switch to auto color mode">
 <p>Advanced Alchemy looks up SQLAlchemy’s <code class="docutils literal notranslate"><span class="pre">create_engine</span></code> and <code class="docutils literal notranslate"><span class="pre">create_async_engine</span></code> each time it creates an engine. OpenTelemetry’s <a class="reference external" href="https://pypi.org/project/opentelemetry-instrumentation-sqlalchemy/">SQLAlchemy instrumentation</a> therefore traces the engines Advanced Alchemy creates with its default factories, including each engine in a <a class="reference internal" href="routing.html"><span class="doc">routing</span></a> configuration, without an Advanced Alchemy setting.</p>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label aria-controls="sd-tab-item-0-content" class="sd-tab-label" data-sync-group="pkg" data-sync-id="uv" for="sd-tab-item-0">
+uv</label><div class="sd-tab-content docutils" id="sd-tab-item-0-content">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">uv<span class="w"> </span>add<span class="w"> </span>opentelemetry-sdk<span class="w"> </span>opentelemetry-instrumentation-sqlalchemy
+</span></pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label aria-controls="sd-tab-item-1-content" class="sd-tab-label" data-sync-group="pkg" data-sync-id="pip" for="sd-tab-item-1">
+pip</label><div class="sd-tab-content docutils" id="sd-tab-item-1-content">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">pip<span class="w"> </span>install<span class="w"> </span>opentelemetry-sdk<span class="w"> </span>opentelemetry-instrumentation-sqlalchemy
 </span></pre></div>
+</div>
+</div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+<label aria-controls="sd-tab-item-2-content" class="sd-tab-label" data-sync-group="pkg" data-sync-id="pdm" for="sd-tab-item-2">
+pdm</label><div class="sd-tab-content docutils" id="sd-tab-item-2-content">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">pdm<span class="w"> </span>add<span class="w"> </span>opentelemetry-sdk<span class="w"> </span>opentelemetry-instrumentation-sqlalchemy
+</span></pre></div>
+</div>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-0" type="radio">
+<label aria-controls="sd-tab-item-3-content" class="sd-tab-label" data-sync-group="pkg" data-sync-id="poetry" for="sd-tab-item-3">
+poetry</label><div class="sd-tab-content docutils" id="sd-tab-item-3-content">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">poetry<span class="w"> </span>add<span class="w"> </span>opentelemetry-sdk<span class="w"> </span>opentelemetry-instrumentation-sqlalchemy
+</span></pre></div>
+</div>
+</div>
 </div>
 </section>
 <section id="enabling-tracing">
 <h2>Enabling Tracing<a class="headerlink" href="#enabling-tracing" title="Link to this heading">#</a></h2>
-<p>Call <code class="docutils literal notranslate"><span class="pre">SQLAlchemyInstrumentor().instrument()</span></code> once at application startup, before the first engine is created:</p>
+<p>Call <code class="docutils literal notranslate"><span class="pre">SQLAlchemyInstrumentor().instrument()</span></code> once before the first engine is created. For standalone configs and Litestar, calling it before app startup works because engines are created during lifespan startup. For FastAPI, Starlette, Flask, and Sanic, call it before attaching <code class="docutils literal notranslate"><span class="pre">AdvancedAlchemy(config,</span> <span class="pre">app)</span></code> or calling <code class="docutils literal notranslate"><span class="pre">init_app(app)</span></code>, which creates engines eagerly:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">opentelemetry.instrumentation.sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyInstrumentor</span>
 </span><span data-line="2">
 </span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemyAsyncConfig</span>
@@ -391,7 +418,7 @@ data-aria-dark="Switch to auto color mode">
 <p>Queries on those engines are then traced. Which spans are recorded and exported depends on the OpenTelemetry SDK configuration (tracer provider, exporter, sampling), which your application sets up; Advanced Alchemy does not.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Each <code class="docutils literal notranslate"><span class="pre">opentelemetry-instrumentation-sqlalchemy</span></code> release declares the SQLAlchemy and Python versions it supports. For example, 0.66b2 requires Python 3.10 or later and SQLAlchemy earlier than 2.1. On an unsupported SQLAlchemy version, <code class="docutils literal notranslate"><span class="pre">instrument()</span></code> logs an error and traces nothing.</p>
+<p>Advanced Alchemy does not add an OpenTelemetry dependency, so installs and tests across Python 3.9–3.15 and SQLAlchemy 2.0/2.1 are unaffected. Each <code class="docutils literal notranslate"><span class="pre">opentelemetry-instrumentation-sqlalchemy</span></code> release enforces its own Python and SQLAlchemy version bounds; for example, 0.66b2 requires Python 3.10 or later and SQLAlchemy earlier than 2.1. On an unsupported SQLAlchemy version, <code class="docutils literal notranslate"><span class="pre">instrument()</span></code> logs a version conflict and skips tracing gracefully without breaking engine creation.</p>
 </div>
 </section>
 <section id="engines-created-elsewhere">

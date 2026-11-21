@@ -2262,12 +2262,24 @@ Advanced Alchemy looks up SQLAlchemy’s `create_engine` and `create_async_engin
 ## Installation
 
 ```bash
+uv add opentelemetry-sdk opentelemetry-instrumentation-sqlalchemy
+```
+
+```bash
 pip install opentelemetry-sdk opentelemetry-instrumentation-sqlalchemy
+```
+
+```bash
+pdm add opentelemetry-sdk opentelemetry-instrumentation-sqlalchemy
+```
+
+```bash
+poetry add opentelemetry-sdk opentelemetry-instrumentation-sqlalchemy
 ```
 
 ## Enabling Tracing
 
-Call `SQLAlchemyInstrumentor().instrument()` once at application startup, before the first engine is created:
+Call `SQLAlchemyInstrumentor().instrument()` once before the first engine is created. For standalone configs and Litestar, calling it before app startup works because engines are created during lifespan startup. For FastAPI, Starlette, Flask, and Sanic, call it before attaching `AdvancedAlchemy(config, app)` or calling `init_app(app)`, which creates engines eagerly:
 
 ```python
 from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
@@ -2281,7 +2293,7 @@ config = SQLAlchemyAsyncConfig(connection_string="postgresql+asyncpg://user:pass
 
 Queries on those engines are then traced. Which spans are recorded and exported depends on the OpenTelemetry SDK configuration (tracer provider, exporter, sampling), which your application sets up; Advanced Alchemy does not.
 
-> **Note**: Each `opentelemetry-instrumentation-sqlalchemy` release declares the SQLAlchemy and Python versions it supports. For example, 0.66b2 requires Python 3.10 or later and SQLAlchemy earlier than 2.1. On an unsupported SQLAlchemy version, `instrument()` logs an error and traces nothing.
+> **Note**: Advanced Alchemy does not add an OpenTelemetry dependency, so installs and tests across Python 3.9–3.15 and SQLAlchemy 2.0/2.1 are unaffected. Each `opentelemetry-instrumentation-sqlalchemy` release enforces its own Python and SQLAlchemy version bounds; for example, 0.66b2 requires Python 3.10 or later and SQLAlchemy earlier than 2.1. On an unsupported SQLAlchemy version, `instrument()` logs a version conflict and skips tracing gracefully without breaking engine creation.
 
 ## Engines Created Elsewhere
 
@@ -5672,6 +5684,8 @@ create_engine_callable(**kwargs)
 Callable that creates an `AsyncEngine` instance or instance of its
 subclass.
 
+Defaults to `sqlalchemy.ext.asyncio.create_async_engine()`, resolved at call time.
+
 - **Return type**: *AsyncEngine*
 
 ##### `session_config`
@@ -6842,6 +6856,8 @@ create_engine_callable(**kwargs)
 ```
 
 Callable that creates an `Engine` instance or instance of its subclass.
+
+Defaults to `sqlalchemy.create_engine()`, resolved at call time.
 
 - **Return type**: *Engine*
 
@@ -10253,7 +10269,7 @@ Route to appropriate engine based on operation and context.
 ### `advanced_alchemy.routing.RoutingAsyncSessionMaker`
 
 ```python
-class advanced_alchemy.routing.RoutingAsyncSessionMaker(routing_config, engine_config=None, session_config=None, create_engine_callable=_create_async_engine)
+class advanced_alchemy.routing.RoutingAsyncSessionMaker(routing_config, engine_config=None, session_config=None, create_engine_callable=None)
 ```
 
 Bases: `object`
@@ -10293,7 +10309,7 @@ Call this when shutting down to properly release database connections.
 ### `advanced_alchemy.routing.RoutingSyncSessionMaker`
 
 ```python
-class advanced_alchemy.routing.RoutingSyncSessionMaker(routing_config, engine_config=None, session_config=None, create_engine_callable=_create_engine)
+class advanced_alchemy.routing.RoutingSyncSessionMaker(routing_config, engine_config=None, session_config=None, create_engine_callable=None)
 ```
 
 Bases: `object`
