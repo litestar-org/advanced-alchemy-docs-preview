@@ -113,6 +113,7 @@ Enable routing, caching, migrations, and fixture seeding without rewriting repos
 
 - [Replica Routing](https://advanced-alchemy.litestar.dev/latest/usage/routing.html): Route writes to a primary database and distribute reads across replica pools.
 - [Caching](https://advanced-alchemy.litestar.dev/latest/usage/caching.html): Cache lookups in memory, Redis, or Memcached with automatic invalidation on commit.
+- [OpenTelemetry](https://advanced-alchemy.litestar.dev/latest/usage/opentelemetry.html): Trace queries, including routed replicas, with OpenTelemetry’s SQLAlchemy instrumentation.
 - [CLI & Migrations](https://advanced-alchemy.litestar.dev/latest/usage/cli.html): Generate and apply Alembic schema migrations from the terminal.
 - [Database Seeding](https://advanced-alchemy.litestar.dev/latest/usage/database_seeding.html): Stream and load seed data from JSON, JSONL, or CSV fixtures.
 
@@ -2251,6 +2252,64 @@ setup_cache_listeners()
 ```
 
 See [Caching](https://advanced-alchemy.litestar.dev/latest/reference/cache.html) for the full caching API reference.
+
+Source: https://advanced-alchemy.litestar.dev/latest/usage/opentelemetry.html
+
+# OpenTelemetry
+
+Advanced Alchemy looks up SQLAlchemy’s `create_engine` and `create_async_engine` each time it creates an engine. OpenTelemetry’s [SQLAlchemy instrumentation](https://pypi.org/project/opentelemetry-instrumentation-sqlalchemy/) therefore traces the engines Advanced Alchemy creates with its default factories, including each engine in a [routing](https://advanced-alchemy.litestar.dev/latest/usage/routing.html) configuration, without an Advanced Alchemy setting.
+
+## Installation
+
+```bash
+uv add opentelemetry-sdk opentelemetry-instrumentation-sqlalchemy
+```
+
+```bash
+pip install opentelemetry-sdk opentelemetry-instrumentation-sqlalchemy
+```
+
+```bash
+pdm add opentelemetry-sdk opentelemetry-instrumentation-sqlalchemy
+```
+
+```bash
+poetry add opentelemetry-sdk opentelemetry-instrumentation-sqlalchemy
+```
+
+## Enabling Tracing
+
+Call `SQLAlchemyInstrumentor().instrument()` once before the first engine is created. For standalone configs and Litestar, calling it before app startup works because engines are created during lifespan startup. For FastAPI, Starlette, Flask, and Sanic, call it before attaching `AdvancedAlchemy(config, app)` or calling `init_app(app)`, which creates engines eagerly:
+
+```python
+from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
+
+from advanced_alchemy.config import SQLAlchemyAsyncConfig
+
+SQLAlchemyInstrumentor().instrument()
+
+config = SQLAlchemyAsyncConfig(connection_string="postgresql+asyncpg://user:pass@localhost/db")
+```
+
+Queries on those engines are then traced. Which spans are recorded and exported depends on the OpenTelemetry SDK configuration (tracer provider, exporter, sampling), which your application sets up; Advanced Alchemy does not.
+
+> **Note**: Advanced Alchemy does not add an OpenTelemetry dependency, so installs and tests across Python 3.9–3.15 and SQLAlchemy 2.0/2.1 are unaffected. Each `opentelemetry-instrumentation-sqlalchemy` release enforces its own Python and SQLAlchemy version bounds; for example, 0.66b2 requires Python 3.10 or later and SQLAlchemy earlier than 2.1. On an unsupported SQLAlchemy version, `instrument()` logs a version conflict and skips tracing gracefully without breaking engine creation.
+
+## Engines Created Elsewhere
+
+`instrument()` traces engines created through SQLAlchemy’s factories after it runs. It does not trace:
+
+- an engine created before that call, such as one passed as `engine_instance` or through `session_config` `bind` / `binds`
+- engines owned by a custom `session_maker`
+- engines returned by a custom `create_engine_callable` that keeps its own reference to the factory
+
+Calls to `instrument()` are ignored while the instrumentor is already active, so pass existing engines to the first call. Async engines need their `sync_engine`:
+
+```python
+SQLAlchemyInstrumentor().instrument(engines=[engine.sync_engine])
+```
+
+This covers engines that already exist. Engines that a custom factory creates later through its own reference to the factory cannot be added afterwards.
 
 Source: https://advanced-alchemy.litestar.dev/latest/usage/cli.html
 
@@ -5584,7 +5643,7 @@ alias of [`Empty`](https://advanced-alchemy.litestar.dev/latest/reference/utils.
 ### `advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig`
 
 ```python
-class advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig(create_engine_callable=<function create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None)[source]
+class advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig(create_engine_callable=<function _create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None)[source]
 ```
 
 Bases: [`GenericSQLAlchemyConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/common.html#advanced_alchemy.config.common.GenericSQLAlchemyConfig)  [`AsyncEngine`, `AsyncSession`, `async_sessionmaker`  [`AsyncSession`]]
@@ -5619,13 +5678,15 @@ Async SQLAlchemy Configuration.
 ##### `create_engine_callable`
 
 ```python
-create_engine_callable(**kw)
+create_engine_callable(**kwargs)
 ```
 
 Callable that creates an `AsyncEngine` instance or instance of its
 subclass.
 
-- **Return type**: AsyncEngine
+Defaults to `sqlalchemy.ext.asyncio.create_async_engine()`, resolved at call time.
+
+- **Return type**: *AsyncEngine*
 
 ##### `session_config`
 
@@ -6758,7 +6819,7 @@ For details see: [https://alembic.sqlalchemy.org/en/latest/api/config.html](http
 ### `advanced_alchemy.config.sync.SQLAlchemySyncConfig`
 
 ```python
-class advanced_alchemy.config.sync.SQLAlchemySyncConfig(create_engine_callable=<function create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None)[source]
+class advanced_alchemy.config.sync.SQLAlchemySyncConfig(create_engine_callable=<function _create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None)[source]
 ```
 
 Bases: [`GenericSQLAlchemyConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/common.html#advanced_alchemy.config.common.GenericSQLAlchemyConfig)  [`Engine`, `Session`, `sessionmaker`  [`Session`]]
@@ -6796,7 +6857,9 @@ create_engine_callable(**kwargs)
 
 Callable that creates an `Engine` instance or instance of its subclass.
 
-- **Return type**: Engine
+Defaults to `sqlalchemy.create_engine()`, resolved at call time.
+
+- **Return type**: *Engine*
 
 ##### `session_config`
 
@@ -10206,7 +10269,7 @@ Route to appropriate engine based on operation and context.
 ### `advanced_alchemy.routing.RoutingAsyncSessionMaker`
 
 ```python
-class advanced_alchemy.routing.RoutingAsyncSessionMaker(routing_config, engine_config=None, session_config=None, create_engine_callable=create_async_engine)
+class advanced_alchemy.routing.RoutingAsyncSessionMaker(routing_config, engine_config=None, session_config=None, create_engine_callable=None)
 ```
 
 Bases: `object`
@@ -10246,7 +10309,7 @@ Call this when shutting down to properly release database connections.
 ### `advanced_alchemy.routing.RoutingSyncSessionMaker`
 
 ```python
-class advanced_alchemy.routing.RoutingSyncSessionMaker(routing_config, engine_config=None, session_config=None, create_engine_callable=create_engine)
+class advanced_alchemy.routing.RoutingSyncSessionMaker(routing_config, engine_config=None, session_config=None, create_engine_callable=None)
 ```
 
 Bases: `object`
@@ -11187,7 +11250,7 @@ Given a value of indeterminate type, determine if this value is supported by the
 ### `advanced_alchemy.extensions.litestar.plugins.SQLAlchemyAsyncConfig`
 
 ```python
-class advanced_alchemy.extensions.litestar.plugins.SQLAlchemyAsyncConfig(create_engine_callable=<function create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, before_send_handler=None, engine_dependency_key='db_engine', session_dependency_key='db_session', engine_app_state_key='db_engine', session_maker_app_state_key='session_maker_class', session_scope_key='_sqlalchemy_db_session', set_default_exception_handler=True)
+class advanced_alchemy.extensions.litestar.plugins.SQLAlchemyAsyncConfig(create_engine_callable=<function _create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, before_send_handler=None, engine_dependency_key='db_engine', session_dependency_key='db_session', engine_app_state_key='db_engine', session_maker_app_state_key='session_maker_class', session_scope_key='_sqlalchemy_db_session', set_default_exception_handler=True)
 ```
 
 Bases: [`SQLAlchemyAsyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/asyncio.html#advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig)
@@ -11232,7 +11295,7 @@ Create all metadata
 ### `advanced_alchemy.extensions.litestar.plugins.SQLAlchemySyncConfig`
 
 ```python
-class advanced_alchemy.extensions.litestar.plugins.SQLAlchemySyncConfig(create_engine_callable=<function create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, before_send_handler=None, engine_dependency_key='db_engine', session_dependency_key='db_session', engine_app_state_key='db_engine', session_maker_app_state_key='session_maker_class', session_scope_key='_sqlalchemy_db_session', set_default_exception_handler=True)
+class advanced_alchemy.extensions.litestar.plugins.SQLAlchemySyncConfig(create_engine_callable=<function _create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, before_send_handler=None, engine_dependency_key='db_engine', session_dependency_key='db_session', engine_app_state_key='db_engine', session_maker_app_state_key='session_maker_class', session_scope_key='_sqlalchemy_db_session', set_default_exception_handler=True)
 ```
 
 Bases: [`SQLAlchemySyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig)
@@ -13445,7 +13508,7 @@ known Starlette issues with BaseHTTPMiddleware and generator dependencies.
 ### `advanced_alchemy.extensions.starlette.SQLAlchemyAsyncConfig`
 
 ```python
-class advanced_alchemy.extensions.starlette.SQLAlchemyAsyncConfig(create_engine_callable=<function create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, app=None, commit_mode='manual', engine_key='db_engine', session_key='db_session', session_maker_key='session_maker_class')
+class advanced_alchemy.extensions.starlette.SQLAlchemyAsyncConfig(create_engine_callable=<function _create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, app=None, commit_mode='manual', engine_key='db_engine', session_key='db_session', session_maker_key='session_maker_class')
 ```
 
 Bases: [`SQLAlchemyAsyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/asyncio.html#advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig)
@@ -13598,7 +13661,7 @@ Ensures that all connections are properly closed during application shutdown.
 ### `advanced_alchemy.extensions.starlette.SQLAlchemySyncConfig`
 
 ```python
-class advanced_alchemy.extensions.starlette.SQLAlchemySyncConfig(create_engine_callable=<function create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, app=None, commit_mode='manual', engine_key='db_engine', session_key='db_session', session_maker_key='session_maker_class')
+class advanced_alchemy.extensions.starlette.SQLAlchemySyncConfig(create_engine_callable=<function _create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, app=None, commit_mode='manual', engine_key='db_engine', session_key='db_session', session_maker_key='session_maker_class')
 ```
 
 Bases: [`SQLAlchemySyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig)
@@ -13939,7 +14002,7 @@ Retrieve the Advanced Alchemy extension from the Flask application.
 ### `advanced_alchemy.extensions.flask.SQLAlchemyAsyncConfig`
 
 ```python
-class advanced_alchemy.extensions.flask.SQLAlchemyAsyncConfig(create_engine_callable=<function create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, app=None, commit_mode='manual')
+class advanced_alchemy.extensions.flask.SQLAlchemyAsyncConfig(create_engine_callable=<function _create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, app=None, commit_mode='manual')
 ```
 
 Bases: [`SQLAlchemyAsyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/asyncio.html#advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig)
@@ -14012,7 +14075,7 @@ Create all metadata tables in the database.
 ### `advanced_alchemy.extensions.flask.SQLAlchemySyncConfig`
 
 ```python
-class advanced_alchemy.extensions.flask.SQLAlchemySyncConfig(create_engine_callable=<function create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, app=None, commit_mode='manual')
+class advanced_alchemy.extensions.flask.SQLAlchemySyncConfig(create_engine_callable=<function _create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, app=None, commit_mode='manual')
 ```
 
 Bases: [`SQLAlchemySyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig)
@@ -14399,7 +14462,7 @@ Add an engine dependency to the Sanic app.
 ### `advanced_alchemy.extensions.sanic.SQLAlchemyAsyncConfig`
 
 ```python
-class advanced_alchemy.extensions.sanic.SQLAlchemyAsyncConfig(create_engine_callable=<function create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, _app=None, commit_mode='manual', engine_key='db_engine', session_key='db_session', session_maker_key='session_maker_class')
+class advanced_alchemy.extensions.sanic.SQLAlchemyAsyncConfig(create_engine_callable=<function _create_async_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.ext.asyncio.session.async_sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, _app=None, commit_mode='manual', engine_key='db_engine', session_key='db_session', session_maker_key='session_maker_class')
 ```
 
 Bases: [`SQLAlchemyAsyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/asyncio.html#advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig)
@@ -14581,7 +14644,7 @@ Ensures that all connections are properly closed during application shutdown.
 ### `advanced_alchemy.extensions.sanic.SQLAlchemySyncConfig`
 
 ```python
-class advanced_alchemy.extensions.sanic.SQLAlchemySyncConfig(create_engine_callable=<function create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, _app=None, commit_mode='manual', engine_key='db_engine', session_key='db_session', session_maker_key='session_maker_class')
+class advanced_alchemy.extensions.sanic.SQLAlchemySyncConfig(create_engine_callable=<function _create_engine>, session_config=<factory>, session_maker_class=<class 'sqlalchemy.orm.session.sessionmaker'>, connection_string=None, engine_config=<factory>, session_maker=None, engine_instance=None, create_all=False, metadata=None, bind_key=None, enable_touch_updated_timestamp_listener=True, enable_file_object_listener=True, file_object_raise_on_error=True, cache_config=None, cache_manager=None, pagination_cursor_secret=None, pagination_cursor_ttl=None, pagination_cursor_encrypted=None, alembic_config=<factory>, routing_config=None, _app=None, commit_mode='manual', engine_key='db_engine', session_key='db_session', session_maker_key='session_maker_class')
 ```
 
 Bases: [`SQLAlchemySyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig)
