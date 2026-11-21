@@ -17431,15 +17431,18 @@ optional `advanced-alchemy[cryptography]` extra (raising
 `cryptography` is not installed) while keeping core installs free of
 optional dependencies. Both direct [`CursorFilter`](https://advanced-alchemy.litestar.dev/latest/reference/cursor_pagination.html#advanced_alchemy.filters.CursorFilter)
 calls and framework providers now derive signing and encryption keys
-consistently inside the cursor codec. Also rejects boolean cursor values for
-numeric columns, supports boolean columns in keyset predicates, handles
-non-orderable `Enum` columns in
+consistently inside the cursor codec. Signed tokens issued by a direct
+`CursorFilter(..., secret=...)` and encrypted tokens issued on `1.13.0b1`
+or `1.13.0b2` are rejected and must be reissued; signed tokens issued by the
+Litestar and FastAPI providers stay valid. Also rejects boolean cursor
+values for numeric columns, pages by boolean columns, orders `Enum` columns
+by their stored value in
 [`paginate_items()`](https://advanced-alchemy.litestar.dev/latest/reference/cursor_pagination.html#advanced_alchemy.filters.CursorFilter), deduplicates
 repeated key names in [`normalize_cursor_keys()`](https://advanced-alchemy.litestar.dev/latest/reference/cursor_pagination.html#advanced_alchemy.filters.normalize_cursor_keys)
 errors, and adds a core-only CI import check. With contributions from
 [Pavel Kirilin](https://github.com/s3rius).
 
-References: [https://github.com/litestar-org/advanced-alchemy/issues/858](https://github.com/litestar-org/advanced-alchemy/issues/858), [https://github.com/litestar-org/advanced-alchemy/issues/859](https://github.com/litestar-org/advanced-alchemy/issues/859), [https://github.com/litestar-org/advanced-alchemy/issues/860](https://github.com/litestar-org/advanced-alchemy/issues/860), [https://github.com/litestar-org/advanced-alchemy/issues/861](https://github.com/litestar-org/advanced-alchemy/issues/861), [https://github.com/litestar-org/advanced-alchemy/issues/862](https://github.com/litestar-org/advanced-alchemy/issues/862), [https://github.com/litestar-org/advanced-alchemy/pull/857](https://github.com/litestar-org/advanced-alchemy/pull/857)
+References: [https://github.com/litestar-org/advanced-alchemy/issues/858](https://github.com/litestar-org/advanced-alchemy/issues/858), [https://github.com/litestar-org/advanced-alchemy/issues/859](https://github.com/litestar-org/advanced-alchemy/issues/859), [https://github.com/litestar-org/advanced-alchemy/issues/860](https://github.com/litestar-org/advanced-alchemy/issues/860), [https://github.com/litestar-org/advanced-alchemy/issues/861](https://github.com/litestar-org/advanced-alchemy/issues/861), [https://github.com/litestar-org/advanced-alchemy/issues/862](https://github.com/litestar-org/advanced-alchemy/issues/862), [https://github.com/litestar-org/advanced-alchemy/pull/857](https://github.com/litestar-org/advanced-alchemy/pull/857), [https://github.com/litestar-org/advanced-alchemy/pull/863](https://github.com/litestar-org/advanced-alchemy/pull/863)
 - **fix Oracle JSON round trips**: `JsonB` and `ORA_JSONB` encode values once, store Python `None` as
 SQL `NULL`, and read large documents through BLOB transport. Oracle
 21c and later use native `JSON` when supported by SQLAlchemy.
