@@ -277,6 +277,7 @@ data-aria-dark="Switch to auto color mode">
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
 <li><a class="reference internal" href="#configuration-region-management">Configuration &amp; Region Management</a></li>
+<li><a class="reference internal" href="#custom-regions">Custom Regions</a></li>
 <li><a class="reference internal" href="#serialization-listeners">Serialization &amp; Listeners</a></li>
 </ul>
 </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/litestar-org/advanced-alchemy"
@@ -503,7 +504,7 @@ like Redis or Memcached.</p>
 </div>
 <dl class="py property">
 <dt class="sig sig-object py" id="advanced_alchemy.cache.CacheManager.region">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">region</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">SyncCacheRegionProtocol</span></span><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.region" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">region</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#advanced_alchemy.cache.SyncCacheRegionProtocol" title="advanced_alchemy.cache._null.SyncCacheRegionProtocol"><span class="pre">SyncCacheRegionProtocol</span></a></span><a class="headerlink" href="#advanced_alchemy.cache.CacheManager.region" title="Link to this definition">#</a></dt>
 <dd><p>Get the cache region, creating it if necessary.</p>
 <p>The region is lazily initialized on first access. If dogpile.cache
 is not installed or initialization fails, returns a NullRegion that
@@ -700,6 +701,155 @@ environments.</p>
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="custom-regions">
+<h2>Custom Regions<a class="headerlink" href="#custom-regions" title="Link to this heading">#</a></h2>
+<p>Types for building a custom region supplied through
+<code class="docutils literal notranslate"><span class="pre">CacheConfig(region_factory=...)</span></code>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.SyncCacheRegionProtocol">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.cache.</span></span><span class="sig-name descname"><span class="pre">SyncCacheRegionProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.cache.SyncCacheRegionProtocol" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<p>Protocol defining the synchronous cache region interface used by CacheManager.</p>
+<p>This protocol is compatible with both dogpile.cache.CacheRegion and NullRegion.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.AsyncCacheRegionProtocol">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.cache.</span></span><span class="sig-name descname"><span class="pre">AsyncCacheRegionProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.cache.AsyncCacheRegionProtocol" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<p>Protocol defining the asynchronous cache region interface.</p>
+<p>This protocol defines async versions of cache region operations,
+suitable for use with native async cache backends.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">CacheManager</span></code> currently requires a synchronous region, even for its
+async methods, which run the sync operations in a worker thread.</p>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.NullRegion">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">advanced_alchemy.cache.</span></span><span class="sig-name descname"><span class="pre">NullRegion</span></span><a class="headerlink" href="#advanced_alchemy.cache.NullRegion" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A no-op cache region that provides the same interface as dogpile.cache.CacheRegion.</p>
+<p>This class is used when dogpile.cache is not installed or when caching
+is disabled. All operations are no-ops that don’t actually cache anything.</p>
+<p>The interface matches the subset of dogpile.cache.CacheRegion methods
+that are used by the CacheManager.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.NullRegion.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.cache.NullRegion.get" title="Link to this definition">#</a></dt>
+<dd><p>Get a value from the cache (always returns NO_VALUE).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – The cache key.</p></li>
+<li><p><strong>expiration_time</strong> (<em>int</em><em> | </em><em>None</em>) – Ignored.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Always returns NO_VALUE to indicate a cache miss.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Any</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.NullRegion.get_or_create">
+<span class="sig-name descname"><span class="pre">get_or_create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.cache.NullRegion.get_or_create" title="Link to this definition">#</a></dt>
+<dd><p>Get or create a value (always calls the creator).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – The cache key.</p></li>
+<li><p><strong>creator</strong> (<em>Callable</em><em>[</em><em>[</em><em>]</em><em>, </em><em>T</em><em>]</em>) – Function to create the value.</p></li>
+<li><p><strong>expiration_time</strong> (<em>int</em><em> | </em><em>None</em>) – Ignored.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result of calling the creator function.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>T</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.NullRegion.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.cache.NullRegion.set" title="Link to this definition">#</a></dt>
+<dd><p>Set a value in the cache (no-op).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – The cache key.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The value to cache.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.NullRegion.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.cache.NullRegion.delete" title="Link to this definition">#</a></dt>
+<dd><p>Delete a value from the cache (no-op).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>str</em>) – The cache key to delete.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.NullRegion.invalidate">
+<span class="sig-name descname"><span class="pre">invalidate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.cache.NullRegion.invalidate" title="Link to this definition">#</a></dt>
+<dd><p>Invalidate all cached values (no-op).</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.NullRegion.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span>
+
+<dl>
+<dd><em class="sig-param"><span class="n"><span class="pre">backend</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">expiration_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="n"><span class="pre">arguments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>,</dd>
+<dd><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em>,</dd>
+</dl>
+
+<span class="sig-paren">)</span><a class="headerlink" href="#advanced_alchemy.cache.NullRegion.configure" title="Link to this definition">#</a></dt>
+<dd><p>Configure the region (no-op, returns self).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>backend</strong> (<em>str</em>) – Ignored.</p></li>
+<li><p><strong>expiration_time</strong> (<em>int</em><em> | </em><em>None</em>) – Ignored.</p></li>
+<li><p><strong>arguments</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em>) – Ignored.</p></li>
+<li><p><strong>**kwargs</strong> (<em>Any</em>) – Ignored.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Self for method chaining.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#advanced_alchemy.cache.NullRegion" title="advanced_alchemy.cache._null.NullRegion"><em>NullRegion</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="advanced_alchemy.cache.NO_VALUE">
+<span class="sig-prename descclassname"><span class="pre">advanced_alchemy.cache.</span></span><span class="sig-name descname"><span class="pre">NO_VALUE</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></span><a class="headerlink" href="#advanced_alchemy.cache.NO_VALUE" title="Link to this definition">#</a></dt>
+<dd><p>Cache-miss sentinel. A custom region returns it from <code class="docutils literal notranslate"><span class="pre">get</span></code> on a miss.</p>
 </dd></dl>
 
 </section>

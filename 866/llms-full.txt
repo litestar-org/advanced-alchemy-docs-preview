@@ -10909,6 +10909,134 @@ Invalidate all cached values (async).
 > the configured prefix. Use with caution in shared cache
 > environments.
 
+## Custom Regions
+
+Types for building a custom region supplied through
+`CacheConfig(region_factory=...)`.
+
+### `advanced_alchemy.cache.SyncCacheRegionProtocol`
+
+```python
+class advanced_alchemy.cache.SyncCacheRegionProtocol(*args, **kwargs)
+```
+
+Bases: `Protocol`
+
+Protocol defining the synchronous cache region interface used by CacheManager.
+
+This protocol is compatible with both dogpile.cache.CacheRegion and NullRegion.
+
+### `advanced_alchemy.cache.AsyncCacheRegionProtocol`
+
+```python
+class advanced_alchemy.cache.AsyncCacheRegionProtocol(*args, **kwargs)
+```
+
+Bases: `Protocol`
+
+Protocol defining the asynchronous cache region interface.
+
+This protocol defines async versions of cache region operations,
+suitable for use with native async cache backends.
+
+> **Note**: `CacheManager` currently requires a synchronous region, even for its
+> async methods, which run the sync operations in a worker thread.
+
+### `advanced_alchemy.cache.NullRegion`
+
+```python
+class advanced_alchemy.cache.NullRegion
+```
+
+Bases: `object`
+
+A no-op cache region that provides the same interface as dogpile.cache.CacheRegion.
+
+This class is used when dogpile.cache is not installed or when caching
+is disabled. All operations are no-ops that don’t actually cache anything.
+
+The interface matches the subset of dogpile.cache.CacheRegion methods
+that are used by the CacheManager.
+
+##### `get`
+
+```python
+get(key, expiration_time=None)
+```
+
+Get a value from the cache (always returns NO_VALUE).
+
+- **Parameters**: - **key** (*str*) – The cache key.
+- **expiration_time** (*int**|**None*) – Ignored.
+- **Returns**: Always returns NO_VALUE to indicate a cache miss.
+- **Return type**: *Any*
+
+##### `get_or_create`
+
+```python
+get_or_create(key, creator, expiration_time=None)
+```
+
+Get or create a value (always calls the creator).
+
+- **Parameters**: - **key** (*str*) – The cache key.
+- **creator** (*Callable**[**[**]**,**T**]*) – Function to create the value.
+- **expiration_time** (*int**|**None*) – Ignored.
+- **Returns**: The result of calling the creator function.
+- **Return type**: *T*
+
+##### `set`
+
+```python
+set(key, value)
+```
+
+Set a value in the cache (no-op).
+
+- **Parameters**: - **key** (*str*) – The cache key.
+- **value** (*Any*) – The value to cache.
+
+##### `delete`
+
+```python
+delete(key)
+```
+
+Delete a value from the cache (no-op).
+
+- **Parameters**: **key** (*str*) – The cache key to delete.
+
+##### `invalidate`
+
+```python
+invalidate()
+```
+
+Invalidate all cached values (no-op).
+
+##### `configure`
+
+```python
+configure(backend, expiration_time=None, arguments=None, **kwargs)
+```
+
+Configure the region (no-op, returns self).
+
+- **Parameters**: - **backend** (*str*) – Ignored.
+- **expiration_time** (*int**|**None*) – Ignored.
+- **arguments** (*dict**[**str**,**Any**]**|**None*) – Ignored.
+- ****kwargs** (*Any*) – Ignored.
+- **Returns**: Self for method chaining.
+- **Return type**: [*NullRegion*](https://advanced-alchemy.litestar.dev/latest/reference/cache.html#advanced_alchemy.cache.NullRegion)
+
+### `advanced_alchemy.cache.NO_VALUE`
+
+```python
+advanced_alchemy.cache.NO_VALUE: Any
+```
+
+Cache-miss sentinel. A custom region returns it from `get` on a miss.
+
 ## Serialization & Listeners
 
 ### `advanced_alchemy.cache.default_serializer`
@@ -11135,7 +11263,7 @@ advanced_alchemy.extensions.litestar.providers.create_service_dependencies(servi
 Create dependency providers for a service or ServiceGroup and optional filters.
 
 - **Parameters**: - **key** (*str*) – The key to use for the dependency provider.
-- **service_class** (*type**[**AsyncServiceT_co**|**SyncServiceT_co**|**ServiceGroupT**]*) – The service or ServiceGroup class to create a dependency provider for.
+- **service_class** (*type**[**AsyncServiceT_co**|**SyncServiceT_co**|**AsyncQueryServiceT_co**|**SyncQueryServiceT_co**|**ServiceGroupT**]*) – The service or ServiceGroup class to create a dependency provider for.
 - **statement** (*Optional**[**Select**[**Any**]**]*) – The statement to use for a single service.
 - **config** (*Optional**[**Union**[*[*SQLAlchemyAsyncConfig*](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/plugins.html#advanced_alchemy.extensions.litestar.plugins.SQLAlchemyAsyncConfig)*,*[*SQLAlchemySyncConfig*](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/plugins.html#advanced_alchemy.extensions.litestar.plugins.SQLAlchemySyncConfig)*]**]*) – The configuration to use for the service.
 - **error_messages** (*Optional**[**Union**[*[*ErrorMessages*](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*,*[*EmptyType*](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.EmptyType)*]**]*) – The error messages to use for the service.
@@ -11157,7 +11285,7 @@ advanced_alchemy.extensions.litestar.providers.create_service_provider(service_c
 
 Create a dependency provider for a service or ServiceGroup with a configurable session key.
 
-- **Parameters**: - **service_class** (*type**[**AsyncServiceT_co**|**SyncServiceT_co**|**ServiceGroupT**]*) – The service or ServiceGroup class to instantiate per request.
+- **Parameters**: - **service_class** (*type**[**AsyncServiceT_co**|**SyncServiceT_co**|**AsyncQueryServiceT_co**|**SyncQueryServiceT_co**|**ServiceGroupT**]*) – The service or ServiceGroup class to instantiate per request.
 - **statement** (*Optional**[**Select**[**Any**]**]*) – An optional SQLAlchemy Select statement to scope a single service.
 - **config** (*Optional**[**Union**[*[*SQLAlchemyAsyncConfig*](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/plugins.html#advanced_alchemy.extensions.litestar.plugins.SQLAlchemyAsyncConfig)*,*[*SQLAlchemySyncConfig*](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/plugins.html#advanced_alchemy.extensions.litestar.plugins.SQLAlchemySyncConfig)*]**]*) – An optional SQLAlchemy configuration object.
 - **error_messages** (*Optional**[**Union**[*[*ErrorMessages*](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*,*[*EmptyType*](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.EmptyType)*]**]*) – Optional custom error messages for the service.
@@ -11166,7 +11294,7 @@ Create a dependency provider for a service or ServiceGroup with a configurable s
 - **uniquify** (*bool**|**None*) – Optional flag to uniquify results.
 - **count_with_window_function** (*bool**|**None*) – Optional flag to use window function for counting.
 - **Returns**: A dependency provider function suitable for Litestar’s DI system.
-- **Return type**: *Callable*[[…], *AsyncGenerator*[*Union*[AsyncServiceT_co, ServiceGroupT], *None*] | *Generator*[*Union*[SyncServiceT_co, ServiceGroupT], *None*, *None*]]
+- **Return type**: *Callable*[[…], *AsyncGenerator*[*Union*[AsyncServiceT_co, AsyncQueryServiceT_co, ServiceGroupT], *None*] | *Generator*[*Union*[SyncServiceT_co, SyncQueryServiceT_co, ServiceGroupT], *None*, *None*]]
 
 ### `advanced_alchemy.extensions.litestar.providers.FilterConfig`
 
@@ -13035,7 +13163,7 @@ provide_service(service_class, /, key=None, statement=None, error_messages=Empty
 
 Provides a service or ServiceGroup instance for dependency injection.
 
-- **Parameters**: - **service_class** (*type**[**AsyncServiceT_co**|**SyncServiceT_co**|**ServiceGroupT**]*) – The service or ServiceGroup class to provide.
+- **Parameters**: - **service_class** (*type**[**AsyncServiceT_co**|**SyncServiceT_co**|**AsyncQueryServiceT_co**|**SyncQueryServiceT_co**|**ServiceGroupT**]*) – The service or ServiceGroup class to provide.
 - **key** (*Optional**[**str**]*) – Optional key for the service.
 - **statement** (*Optional**[**Select**[**Any**]**]*) – Optional SQLAlchemy statement.
 - **error_messages** (*Optional**[**Union**[*[*ErrorMessages*](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ErrorMessages)*,*[*EmptyType*](https://advanced-alchemy.litestar.dev/latest/reference/utils.html#advanced_alchemy.utils.dataclass.EmptyType)*]**]*) – Optional error messages.
@@ -13044,7 +13172,7 @@ Provides a service or ServiceGroup instance for dependency injection.
 - **uniquify** (*bool**|**None*) – Optional flag to uniquify the service.
 - **count_with_window_function** (*bool**|**None*) – Optional flag to use window function for counting.
 - **Returns**: A callable that returns an async generator or generator providing the target instance.
-- **Return type**: *Callable*[…, *Union*[*AsyncGenerator*[*Union*[AsyncServiceT_co, ServiceGroupT], *None*], *Generator*[*Union*[SyncServiceT_co, ServiceGroupT], *None*, *None*]]]
+- **Return type**: *Callable*[…, *Union*[*AsyncGenerator*[*Union*[AsyncServiceT_co, AsyncQueryServiceT_co, ServiceGroupT], *None*], *Generator*[*Union*[SyncServiceT_co, SyncQueryServiceT_co, ServiceGroupT], *None*, *None*]]]
 
 ##### `provide_filters`
 
@@ -13101,7 +13229,7 @@ advanced_alchemy.extensions.fastapi.providers.provide_service(service_class, /, 
 Create a FastAPI dependency provider for a service or ServiceGroup.
 
 - **Returns**: A generator-based FastAPI dependency provider managing service and session lifecycle.
-- **Return type**: *Callable*[[…], *AsyncGenerator*[*AsyncServiceT_co*, *None*] | *Generator*[*SyncServiceT_co*, *None*, *None*] | *AsyncGenerator*[*ServiceGroupT*, *None*] | *Generator*[*ServiceGroupT*, *None*, *None*]]
+- **Return type**: *Callable*[[…], *AsyncGenerator*[*AsyncServiceT_co*, *None*] | *Generator*[*SyncServiceT_co*, *None*, *None*] | *AsyncGenerator*[*AsyncQueryServiceT_co*, *None*] | *Generator*[*SyncQueryServiceT_co*, *None*, *None*] | *AsyncGenerator*[*ServiceGroupT*, *None*] | *Generator*[*ServiceGroupT*, *None*, *None*]]
 
 ### `advanced_alchemy.extensions.fastapi.providers.provide_filters`
 
@@ -17269,6 +17397,34 @@ Source: https://advanced-alchemy.litestar.dev/latest/changelog.html
 
 ### Features
 
+- **export NO_VALUE and cache region protocols from the cache package**: Re-exports [`NO_VALUE`](https://advanced-alchemy.litestar.dev/latest/reference/cache.html#advanced_alchemy.cache.NO_VALUE),
+[`SyncCacheRegionProtocol`](https://advanced-alchemy.litestar.dev/latest/reference/cache.html#advanced_alchemy.cache.SyncCacheRegionProtocol),
+[`AsyncCacheRegionProtocol`](https://advanced-alchemy.litestar.dev/latest/reference/cache.html#advanced_alchemy.cache.AsyncCacheRegionProtocol), and
+[`NullRegion`](https://advanced-alchemy.litestar.dev/latest/reference/cache.html#advanced_alchemy.cache.NullRegion) from `advanced_alchemy.cache`
+so custom [`CacheConfig`](https://advanced-alchemy.litestar.dev/latest/reference/cache.html#advanced_alchemy.cache.CacheConfig) `region_factory`
+implementations no longer need to import from the private
+`advanced_alchemy.cache._null` module. With contributions from
+[Osama Zuhdi Osama Quttenh](https://github.com/osamaps518).
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/864](https://github.com/litestar-org/advanced-alchemy/issues/864), [https://github.com/litestar-org/advanced-alchemy/pull/865](https://github.com/litestar-org/advanced-alchemy/pull/865)
+- **support query and read-only services in Litestar and FastAPI providers**: [`create_service_provider()`](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.create_service_provider),
+[`create_service_dependencies()`](https://advanced-alchemy.litestar.dev/latest/reference/extensions/litestar/index.html#advanced_alchemy.extensions.litestar.providers.create_service_dependencies),
+[`provide_service()`](https://advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html#advanced_alchemy.extensions.fastapi.providers.provide_service), and
+[`provide_service()`](https://advanced-alchemy.litestar.dev/latest/reference/extensions/fastapi/index.html#advanced_alchemy.extensions.fastapi.AdvancedAlchemy.provide_service)
+now support standalone
+[`SQLAlchemyAsyncQueryService`](https://advanced-alchemy.litestar.dev/latest/reference/service.html#advanced_alchemy.service.SQLAlchemyAsyncQueryService),
+[`SQLAlchemySyncQueryService`](https://advanced-alchemy.litestar.dev/latest/reference/service.html#advanced_alchemy.service.SQLAlchemySyncQueryService),
+[`SQLAlchemyAsyncRepositoryReadService`](https://advanced-alchemy.litestar.dev/latest/reference/service.html#advanced_alchemy.service.SQLAlchemyAsyncRepositoryReadService), and
+[`SQLAlchemySyncRepositoryReadService`](https://advanced-alchemy.litestar.dev/latest/reference/service.html#advanced_alchemy.service.SQLAlchemySyncRepositoryReadService)
+targets. Query service providers instantiate targets via
+`service_class.new(session=..., config=...)` and raise
+[`ImproperConfigurationError`](https://advanced-alchemy.litestar.dev/latest/reference/exceptions.html#advanced_alchemy.exceptions.ImproperConfigurationError) when
+repository-only options (`statement`, `error_messages`, `load`,
+`execution_options`, `uniquify`, or `count_with_window_function`) are
+supplied, with matching static typing overloads across both extensions.
+With contributions from [Osama Zuhdi Osama Quttenh](https://github.com/osamaps518).
+
+References: [https://github.com/litestar-org/advanced-alchemy/issues/868](https://github.com/litestar-org/advanced-alchemy/issues/868), [https://github.com/litestar-org/advanced-alchemy/pull/869](https://github.com/litestar-org/advanced-alchemy/pull/869), [https://github.com/litestar-org/advanced-alchemy/pull/870](https://github.com/litestar-org/advanced-alchemy/pull/870)
 - **support OpenTelemetry through late-bound engine factories**: [`SQLAlchemySyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/sync.html#advanced_alchemy.config.sync.SQLAlchemySyncConfig),
 [`SQLAlchemyAsyncConfig`](https://advanced-alchemy.litestar.dev/latest/reference/config/asyncio.html#advanced_alchemy.config.asyncio.SQLAlchemyAsyncConfig),
 [`RoutingSyncSessionMaker`](https://advanced-alchemy.litestar.dev/latest/reference/routing.html#advanced_alchemy.routing.RoutingSyncSessionMaker), and

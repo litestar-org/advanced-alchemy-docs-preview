@@ -393,45 +393,52 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="61"><span class="sd">        )</span>
 </span><span data-line="62">
 </span><span data-line="63"><span class="sd">Note:</span>
-</span><span data-line="64"><span class="sd">    This module requires the optional ``dogpile.cache`` dependency.</span>
-</span><span data-line="65"><span class="sd">    Install with: ``pip install advanced-alchemy[dogpile]``</span>
+</span><span data-line="64"><span class="sd">    The ``dogpile.cache`` dependency is optional. It is required for the</span>
+</span><span data-line="65"><span class="sd">    dogpile backends: ``pip install advanced-alchemy[dogpile]``</span>
 </span><span data-line="66">
-</span><span data-line="67"><span class="sd">    Without dogpile.cache installed, the cache manager will use a</span>
-</span><span data-line="68"><span class="sd">    NullRegion that provides the same interface but doesn't cache.</span>
-</span><span data-line="69">
-</span><span data-line="70"><span class="sd">Manual Setup:</span>
-</span><span data-line="71"><span class="sd">    If not using the config system, call ``setup_cache_listeners()``</span>
-</span><span data-line="72"><span class="sd">    during application initialization and pass cache_manager explicitly::</span>
-</span><span data-line="73">
-</span><span data-line="74"><span class="sd">        from advanced_alchemy.cache import (</span>
-</span><span data-line="75"><span class="sd">            CacheConfig,</span>
-</span><span data-line="76"><span class="sd">            CacheManager,</span>
-</span><span data-line="77"><span class="sd">            setup_cache_listeners,</span>
-</span><span data-line="78"><span class="sd">        )</span>
-</span><span data-line="79">
-</span><span data-line="80"><span class="sd">        cache_manager = CacheManager(</span>
-</span><span data-line="81"><span class="sd">            CacheConfig(backend="dogpile.cache.memory")</span>
-</span><span data-line="82"><span class="sd">        )</span>
-</span><span data-line="83"><span class="sd">        setup_cache_listeners()</span>
-</span><span data-line="84">
-</span><span data-line="85"><span class="sd">        repo = UserRepository(</span>
-</span><span data-line="86"><span class="sd">            session=session, cache_manager=cache_manager</span>
-</span><span data-line="87"><span class="sd">        )</span>
-</span><span data-line="88"><span class="sd">"""</span>
-</span><span data-line="89">
-</span><span data-line="90"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy._listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup_cache_listeners</span>
-</span><span data-line="91"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.cache.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">CacheConfig</span>
-</span><span data-line="92"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.cache.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">DOGPILE_CACHE_INSTALLED</span><span class="p">,</span> <span class="n">CacheManager</span>
-</span><span data-line="93"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.cache.serializers</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_deserializer</span><span class="p">,</span> <span class="n">default_serializer</span>
-</span><span data-line="94">
-</span><span data-line="95"><span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-</span><span data-line="96">    <span class="s2">"DOGPILE_CACHE_INSTALLED"</span><span class="p">,</span>
-</span><span data-line="97">    <span class="s2">"CacheConfig"</span><span class="p">,</span>
-</span><span data-line="98">    <span class="s2">"CacheManager"</span><span class="p">,</span>
-</span><span data-line="99">    <span class="s2">"default_deserializer"</span><span class="p">,</span>
-</span><span data-line="100">    <span class="s2">"default_serializer"</span><span class="p">,</span>
-</span><span data-line="101">    <span class="s2">"setup_cache_listeners"</span><span class="p">,</span>
-</span><span data-line="102"><span class="p">)</span>
+</span><span data-line="67"><span class="sd">    A custom region supplied through ``CacheConfig(region_factory=...)``</span>
+</span><span data-line="68"><span class="sd">    does not need dogpile.cache. Without dogpile.cache and without a</span>
+</span><span data-line="69"><span class="sd">    region factory, the cache manager falls back to a NullRegion that</span>
+</span><span data-line="70"><span class="sd">    provides the same interface but doesn't cache.</span>
+</span><span data-line="71">
+</span><span data-line="72"><span class="sd">Manual Setup:</span>
+</span><span data-line="73"><span class="sd">    If not using the config system, call ``setup_cache_listeners()``</span>
+</span><span data-line="74"><span class="sd">    during application initialization and pass cache_manager explicitly::</span>
+</span><span data-line="75">
+</span><span data-line="76"><span class="sd">        from advanced_alchemy.cache import (</span>
+</span><span data-line="77"><span class="sd">            CacheConfig,</span>
+</span><span data-line="78"><span class="sd">            CacheManager,</span>
+</span><span data-line="79"><span class="sd">            setup_cache_listeners,</span>
+</span><span data-line="80"><span class="sd">        )</span>
+</span><span data-line="81">
+</span><span data-line="82"><span class="sd">        cache_manager = CacheManager(</span>
+</span><span data-line="83"><span class="sd">            CacheConfig(backend="dogpile.cache.memory")</span>
+</span><span data-line="84"><span class="sd">        )</span>
+</span><span data-line="85"><span class="sd">        setup_cache_listeners()</span>
+</span><span data-line="86">
+</span><span data-line="87"><span class="sd">        repo = UserRepository(</span>
+</span><span data-line="88"><span class="sd">            session=session, cache_manager=cache_manager</span>
+</span><span data-line="89"><span class="sd">        )</span>
+</span><span data-line="90"><span class="sd">"""</span>
+</span><span data-line="91">
+</span><span data-line="92"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy._listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup_cache_listeners</span>
+</span><span data-line="93"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.cache._null</span><span class="w"> </span><span class="kn">import</span> <span class="n">NO_VALUE</span><span class="p">,</span> <span class="n">AsyncCacheRegionProtocol</span><span class="p">,</span> <span class="n">NullRegion</span><span class="p">,</span> <span class="n">SyncCacheRegionProtocol</span>
+</span><span data-line="94"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.cache.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">CacheConfig</span>
+</span><span data-line="95"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.cache.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">DOGPILE_CACHE_INSTALLED</span><span class="p">,</span> <span class="n">CacheManager</span>
+</span><span data-line="96"><span class="kn">from</span><span class="w"> </span><span class="nn">advanced_alchemy.cache.serializers</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_deserializer</span><span class="p">,</span> <span class="n">default_serializer</span>
+</span><span data-line="97">
+</span><span data-line="98"><span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="99">    <span class="s2">"DOGPILE_CACHE_INSTALLED"</span><span class="p">,</span>
+</span><span data-line="100">    <span class="s2">"NO_VALUE"</span><span class="p">,</span>
+</span><span data-line="101">    <span class="s2">"AsyncCacheRegionProtocol"</span><span class="p">,</span>
+</span><span data-line="102">    <span class="s2">"CacheConfig"</span><span class="p">,</span>
+</span><span data-line="103">    <span class="s2">"CacheManager"</span><span class="p">,</span>
+</span><span data-line="104">    <span class="s2">"NullRegion"</span><span class="p">,</span>
+</span><span data-line="105">    <span class="s2">"SyncCacheRegionProtocol"</span><span class="p">,</span>
+</span><span data-line="106">    <span class="s2">"default_deserializer"</span><span class="p">,</span>
+</span><span data-line="107">    <span class="s2">"default_serializer"</span><span class="p">,</span>
+</span><span data-line="108">    <span class="s2">"setup_cache_listeners"</span><span class="p">,</span>
+</span><span data-line="109"><span class="p">)</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
